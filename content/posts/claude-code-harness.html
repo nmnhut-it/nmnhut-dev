@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khám phá Kiến trúc Claude Code</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 60vh;
+            max-height: 400px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 40vh; min-height: 300px; }
+        }
+
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        .flow-line-vertical { width: 2px; height: 30px; background-color: #cbd5e1; margin: 0 auto; position: relative;}
+        .flow-line-vertical::after { content: '▼'; position: absolute; bottom: -10px; left: -5px; color: #cbd5e1; font-size: 12px; }
+        
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .modal-overlay { backdrop-filter: blur(4px); animation: fadeInModal 0.2s ease-out forwards; }
+        .modal-content { animation: slideUpModal 0.3s ease-out forwards; }
+        @keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUpModal { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+        .chatml-token { color: #f472b6; font-weight: 700; } /* pink-400 */
+        .chatml-role { color: #c084fc; font-weight: 700; } /* purple-400 */
+        .xml-tag { color: #60a5fa; } /* blue-400 */
+        .xml-attr { color: #a7f3d0; } /* emerald-200 */
+        .json-string { color: #a7f3d0; }
+        .comment { color: #64748b; font-style: italic; }
+
+        .sim-block { animation: slideInRight 0.4s ease-out forwards; border-left: 3px solid transparent; margin-bottom: 1rem; padding: 1rem; background: #252526; border-radius: 0.5rem; }
+        .sim-block.new-chunk { border-left-color: #10b981; background: rgba(16, 185, 129, 0.08); box-shadow: 0 0 15px rgba(16, 185, 129, 0.1); }
+        .sim-block.system { border-left-color: #64748b; }
+        .sim-block.user { border-left-color: #3b82f6; }
+        .sim-block.assistant { border-left-color: #c084fc; }
+        .sim-block.tool { border-left-color: #f59e0b; }
+        
+        .raw-view-container {
+            background-color: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            color: #d4d4d4;
+            white-space: pre-wrap;
+            font-family: monospace;
+            line-height: 1.6;
+        }
+
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        .typing-dot { animation: typing 1.4s infinite ease-in-out both; display: inline-block; width: 6px; height: 6px; background-color: #c084fc; border-radius: 50%; margin: 0 2px; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex flex-col md:flex-row min-h-screen">
+
+    <header class="md:hidden bg-white shadow-sm p-4 sticky top-0 z-50 flex justify-between items-center">
+        <h1 class="text-xl font-bold text-slate-900">Claude Code Arch</h1>
+        <button id="mobileMenuBtn" class="text-slate-600 p-2 focus:outline-none">
+            <span class="text-2xl">☰</span>
+        </button>
+    </header>
+
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-64 bg-white border-r border-slate-200 fixed md:sticky top-0 h-screen overflow-y-auto custom-scrollbar z-40 transition-transform duration-300">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold text-slate-900 tracking-tight">Claude Code</h2>
+            <p class="text-sm text-slate-500 mt-1">Kiến trúc Hệ thống</p>
+        </div>
+        <ul class="flex-1 px-4 space-y-2 pb-6">
+            <li><a href="#muc-dich" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">1. Mục đích Framework</a></li>
+            <li><a href="#luong-thuc-thi" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">2. Luồng thực thi</a></li>
+            <li><a href="#co-che-hook" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">3. Lifecycle Hooks</a></li>
+            <li><a href="#khoi-tao-agent" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">4. Khởi tạo & Token</a></li>
+            <li><a href="#xu-ly-dau-ra" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">5. Xử lý đầu ra</a></li>
+            <li><a href="#quan-ly-trang-thai" class="nav-link block p-3 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-blue-600 transition-colors">6. File System State</a></li>
+            <li><a href="#thuc-tien-workflow" class="nav-link block p-3 rounded-lg text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-100 transition-colors mt-4">7. Interactive Simulator</a></li>
+        </ul>
+    </nav>
+
+    <main class="flex-1 p-6 md:p-12 max-w-5xl mx-auto w-full">
+        
+        <section id="muc-dich" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">1. Mục đích của Framework điều phối</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">Việc gọi API LLM thuần túy không đủ để xây dựng một AI Agent tự hành. Claude Code CLI đóng vai trò như một lớp vỏ (Harness) bao bọc quanh LLM, giải quyết ba vấn đề cốt lõi:</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-4 text-blue-500">🧠</div>
+                    <h3 class="text-lg font-semibold mb-2">Quản lý ngữ cảnh</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Phân chia công việc thông minh, tránh việc nạp toàn bộ mã nguồn vào mỗi lượt tương tác, ngăn chặn tình trạng bão hòa cửa sổ ngữ cảnh.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-4 text-emerald-500">📉</div>
+                    <h3 class="text-lg font-semibold mb-2">Kiểm soát tài nguyên</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Tối ưu hóa việc gửi dữ liệu lặp lại giữa các lượt gọi. Cấu trúc lại luồng dữ liệu để giảm thiểu tối đa lượng token tiêu thụ thông qua Cache.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-4 text-amber-500">⚡</div>
+                    <h3 class="text-lg font-semibold mb-2">Xử lý song song</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">Kiến trúc đa tác vụ cho phép thực hiện đồng thời các thao tác như đọc file, tìm kiếm thông tin thông qua cơ chế Sub-agents.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="luong-thuc-thi" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">2. Luồng thực thi vòng lặp (Control Flow)</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                Thay vì cơ chế "hỏi-đáp" một lần, hệ thống duy trì một quy trình lặp đi lặp lại tự động.
+            </p>
+            <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 flex flex-col items-center overflow-x-auto">
+                <div class="w-full max-w-lg">
+                    <div class="bg-slate-700 text-white p-4 rounded-lg text-center shadow-md relative z-10 mx-auto w-64 group cursor-pointer hover:bg-slate-800 transition-colors">
+                        <div class="font-semibold">1. Nạp ngữ cảnh</div>
+                        <div class="text-xs text-slate-300 mt-1">Nối phần tiền tố và lịch sử (Context Window)</div>
+                    </div>
+                    <div class="flow-line-vertical"></div>
+                    <div class="bg-blue-500 text-white p-4 rounded-lg text-center shadow-md relative z-10 mx-auto w-64 group cursor-pointer hover:bg-blue-600 transition-colors">
+                        <div class="font-semibold">2. LLM Inference</div>
+                        <div class="text-xs text-blue-100 mt-1">Phân tích yêu cầu và sinh Token</div>
+                    </div>
+                    <div class="flow-line-vertical"></div>
+                    <div class="bg-slate-100 border-2 border-slate-300 p-4 rounded-lg text-center shadow-sm relative z-10 mx-auto w-64">
+                        <div class="font-bold text-slate-800">3. Đánh giá Trạng thái</div>
+                    </div>
+                    <div class="flex flex-col md:flex-row justify-between mt-6 relative px-4 md:px-0">
+                        <div class="hidden md:block absolute top-0 left-1/4 right-1/4 h-px bg-slate-300"></div>
+                        <div class="flex flex-col items-center w-full md:w-1/2 mb-8 md:mb-0 relative">
+                            <div class="hidden md:block flow-line-vertical mt-[-10px]"></div>
+                            <div class="bg-white px-3 py-1 text-xs text-slate-500 font-mono mb-2 md:mt-2 rounded border border-slate-200">Model gọi: 'end_turn'</div>
+                            <div class="bg-emerald-500 text-white p-4 rounded-full text-center shadow-md w-32 h-32 flex flex-col justify-center">
+                                <div class="font-bold">Kết thúc</div>
+                                <div class="text-xs mt-1">Trả kết quả User</div>
+                            </div>
+                        </div>
+                        <div class="flex flex-col items-center w-full md:w-1/2 relative">
+                            <div class="hidden md:block flow-line-vertical mt-[-10px]"></div>
+                            <div class="bg-white px-3 py-1 text-xs text-slate-500 font-mono mb-2 md:mt-2 rounded border border-slate-200">Model gọi: 'tool_use'</div>
+                            <div class="bg-amber-500 text-white p-4 rounded-lg text-center shadow-md w-56 mb-4">
+                                <div class="font-semibold">4. Chạy Công cụ (Local)</div>
+                                <div class="text-xs text-amber-100 mt-1">VD: Bash, Đọc File, Search</div>
+                            </div>
+                            <div class="text-slate-400 mb-2">▼</div>
+                            <div class="bg-amber-600 text-white p-4 rounded-lg text-center shadow-md w-56 relative z-10">
+                                <div class="font-semibold">5. Thu thập kết quả Tool</div>
+                                <div class="text-xs text-amber-100 mt-1">Đóng gói thành XML/JSON</div>
+                            </div>
+                            <div class="mt-6 p-3 bg-slate-50 border border-dashed border-slate-300 rounded text-center text-sm text-slate-500 w-full font-semibold">
+                                ↺ Quay lại Bước 1
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="co-che-hook" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">3. Hệ thống Lifecycle Hooks</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                Hooks cho phép lập trình viên (hoặc Framework) can thiệp vào vòng đời hoạt động của LLM. Claude Code phân chia Hooks thành 3 nhịp độ chính.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                <div class="flex border-b border-slate-200 bg-slate-50 flex-wrap">
+                    <button class="tab-btn flex-1 py-3 px-4 text-sm md:text-base text-center font-medium text-blue-600 border-b-2 border-blue-600 focus:outline-none transition-colors" data-target="tab-session">
+                        1. Nhịp Session (Phiên)
+                    </button>
+                    <button class="tab-btn flex-1 py-3 px-4 text-sm md:text-base text-center font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent focus:outline-none transition-colors" data-target="tab-turn">
+                        2. Nhịp Turn (Lượt)
+                    </button>
+                    <button class="tab-btn flex-1 py-3 px-4 text-sm md:text-base text-center font-medium text-slate-500 hover:text-slate-700 border-b-2 border-transparent focus:outline-none transition-colors" data-target="tab-tool">
+                        3. Nhịp Tool (Công cụ)
+                    </button>
+                </div>
+
+                <div class="p-6 md:p-8">
+                    <!-- Session Hooks -->
+                    <div id="tab-session" class="tab-content active">
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">SessionStart & SessionEnd</h3>
+                        <p class="text-slate-600 mb-4">Can thiệp khi ứng dụng Agent bắt đầu khởi động hoặc bị tắt.</p>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 font-mono text-sm">
+                            <span class="text-blue-600 font-bold">Ví dụ (SessionStart):</span> Tiêm thông tin môi trường (Hệ điều hành, Project Context, Coding Standards) trực tiếp vào System Prompt của Model trước khi phiên bắt đầu.
+                        </div>
+                    </div>
+
+                    <!-- Turn Hooks -->
+                    <div id="tab-turn" class="tab-content">
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">UserPromptSubmit, Stop & StopFailure</h3>
+                        <p class="text-slate-600 mb-4">Nhịp Turn quản lý từng vòng lặp hỏi/đáp. Đây là nơi triển khai cơ chế "Tự sửa lỗi" (Self-Correction) rất mạnh mẽ.</p>
+                        <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 font-mono text-sm">
+                            <span class="text-amber-600 font-bold">Ứng dụng Hook `Stop`:</span><br>
+                            Khi LLM đòi dừng lại (end_turn) vì nghĩ đã code xong. Hook `Stop` sẽ kích hoạt tự động chạy Unit Test (VD: `npm test`).<br>
+                            - Nếu Test PASS: Trả về <span class="text-green-600">exit code 0</span> -> Cho phép dừng.<br>
+                            - Nếu Test FAIL: Trả về <span class="text-red-600">exit code 2</span> -> Framework **chặn LLM lại**, nhét log lỗi vào Context và ép LLM phải vòng lại sửa lỗi!
+                        </div>
+                    </div>
+
+                    <!-- Tool Hooks -->
+                    <div id="tab-tool" class="tab-content">
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">PreToolUse & PostToolUse</h3>
+                        <p class="text-slate-600 mb-4">Bảo vệ hệ thống và kiểm soát dữ liệu liên quan đến việc thực thi câu lệnh Local.</p>
+                        <div class="space-y-4">
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 font-mono text-sm">
+                                <span class="text-blue-600 font-bold">PreToolUse:</span> Đánh chặn khi LLM gọi lệnh nguy hiểm (VD: `rm -rf`). Hook này có thể sửa đổi lệnh thành `rm -rf --dry-run` trước khi thực thi để bảo vệ máy tính.
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 font-mono text-sm">
+                                <span class="text-purple-600 font-bold">PostToolUse:</span> Khi một lệnh Bash trả về kết quả quá dài (1 triệu dòng log), Hook này sẽ cắt bớt (truncate) chuỗi kết quả trước khi đưa lại vào Context Window để tránh tốn Token.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="khoi-tao-agent" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">4. Phương pháp khởi tạo & Phân bổ Token</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                Khi cần chia nhỏ công việc cho các Sub-agents, hệ thống hỗ trợ 2 phương pháp. Khởi tạo Kế thừa (Fork) là kỹ thuật quan trọng nhất để tối ưu chi phí thông qua <strong>Context Caching</strong>.
+            </p>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+                <h3 class="text-lg font-semibold text-center mb-6 text-slate-700">So sánh tiêu thụ Token (Giả lập khởi tạo 5 Sub-agents)</h3>
+                <div class="chart-container">
+                    <canvas id="tokenChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="border border-slate-200 rounded-lg p-6 bg-slate-50">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-slate-800">Khởi tạo Độc lập (Vanilla)</h3>
+                        <span class="bg-slate-200 text-slate-700 text-xs px-2 py-1 rounded font-mono">Isolated</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-700">
+                        <li><strong>Cơ chế:</strong> Sub-agent bắt đầu với Prompt trắng tinh.</li>
+                        <li><strong>Chi phí:</strong> Toàn bộ lượng token phải tính phí từ đầu (Không hit cache).</li>
+                        <li><strong>Áp dụng:</strong> Các task rời rạc không cần ngữ cảnh (VD: Agent dịch thuật).</li>
+                    </ul>
+                </div>
+                
+                <div class="border border-blue-200 rounded-lg p-6 bg-blue-50 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs px-3 py-1 font-bold rounded-bl-lg">Tối ưu chi phí</div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-blue-900">Khởi tạo Kế thừa (Fork)</h3>
+                        <span class="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded font-mono">Shared Memory</span>
+                    </div>
+                    <ul class="space-y-2 text-sm text-blue-900">
+                        <li><strong>Cơ chế:</strong> Sao chép toàn bộ lịch sử hội thoại hiện tại.</li>
+                        <li><strong>Chi phí:</strong> Nhờ cơ chế KV-Cache của LLM, phần lịch sử cũ được tái sử dụng (0đ), chỉ tính phí phần token mới sinh ra.</li>
+                        <li><strong>Áp dụng:</strong> Agent định dạng (Formatter) cần đọc lại kết quả của các Agent trước đó.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="xu-ly-dau-ra" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">5. Cơ chế Xử lý Đầu ra của Sub-agent</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                Để tránh việc bộ nhớ của Parent Agent bị quá tải (Context Overflow), dữ liệu từ các Sub-agents không được đẩy trực tiếp lên mà phải đi qua quy trình "tóm lược" nghiêm ngặt.
+            </p>
+
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                <div class="flex flex-col gap-6">
+                    <!-- Step A -->
+                    <div class="relative pl-8 md:pl-0 border-l-2 md:border-l-0 border-slate-200 ml-4 md:ml-0">
+                        <div class="md:hidden absolute w-4 h-4 bg-blue-500 rounded-full -left-[9px] top-1"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                            <div class="hidden md:flex col-span-2 justify-end pr-6">
+                                <div class="bg-blue-100 text-blue-700 font-bold w-10 h-10 rounded-full flex items-center justify-center">A</div>
+                            </div>
+                            <div class="md:col-span-10">
+                                <h3 class="text-lg font-bold text-slate-800">Agent Tool Interface</h3>
+                                <p class="text-slate-600 text-sm mt-1">Việc tạo Sub-agent được tính như một hành động <code class="text-pink-600">tool_call</code>. Khi Sub-agent chạy xong, kết quả trả về như một <code class="text-emerald-600">tool_response</code>.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Step B -->
+                    <div class="relative pl-8 md:pl-0 border-l-2 md:border-l-0 border-slate-200 ml-4 md:ml-0">
+                        <div class="md:hidden absolute w-4 h-4 bg-emerald-500 rounded-full -left-[9px] top-1"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                            <div class="hidden md:flex col-span-2 justify-end pr-6">
+                                <div class="bg-emerald-100 text-emerald-700 font-bold w-10 h-10 rounded-full flex items-center justify-center">B</div>
+                            </div>
+                            <div class="md:col-span-10">
+                                <h3 class="text-lg font-bold text-slate-800">Summarization (Lọc rác)</h3>
+                                <p class="text-slate-600 text-sm mt-1 mb-2">Framework sẽ tự động loại bỏ chuỗi suy luận nội bộ (thinking steps) của Sub-agent, chỉ giữ lại văn bản Text tổng hợp cuối cùng.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Step C -->
+                    <div class="relative pl-8 md:pl-0 border-l-2 md:border-l-0 border-transparent ml-4 md:ml-0">
+                        <div class="md:hidden absolute w-4 h-4 bg-amber-500 rounded-full -left-[9px] top-1"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
+                            <div class="hidden md:flex col-span-2 justify-end pr-6">
+                                <div class="bg-amber-100 text-amber-700 font-bold w-10 h-10 rounded-full flex items-center justify-center">C</div>
+                            </div>
+                            <div class="md:col-span-10">
+                                <h3 class="text-lg font-bold text-slate-800">Context Integration</h3>
+                                <p class="text-slate-600 text-sm mt-1">Kết quả sạch được nối (append) vào cuối mảng Message của Parent Agent để đọc trong vòng lặp tiếp theo.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="quan-ly-trang-thai" class="mb-24 pt-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">6. Quản lý trạng thái qua File System</h2>
+            <p class="text-lg text-slate-600 mb-8 leading-relaxed">
+                Thay vì dùng Database cồng kềnh, mạng lưới Agent liên lạc với nhau thông qua một hệ thống file JSON cục bộ cực kỳ nhẹ nhàng.
+            </p>
+
+            <div class="bg-slate-900 rounded-xl shadow-lg p-1 overflow-hidden font-mono text-sm max-w-2xl">
+                <div class="flex items-center px-4 py-2 bg-slate-800 rounded-t-lg border-b border-slate-700">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <div class="mx-auto text-slate-400 text-xs">/claude_code/.internal_state/</div>
+                </div>
+                
+                <div class="p-4 text-slate-300 bg-slate-900 h-56 overflow-y-auto">
+                    <div class="mb-3 text-emerald-400"># Cấu trúc lưu trữ hộp thư nội bộ (Inbox)</div>
+                    
+                    <div class="flex hover:bg-slate-800 p-1 rounded transition-colors group relative">
+                        <span class="mr-2">🔒</span> <span class="text-slate-100">system.lock</span>
+                        <span class="ml-auto text-xs text-slate-500">Ngăn đụng độ ghi file (Concurrency)</span>
+                    </div>
+
+                    <div class="flex hover:bg-slate-800 p-1 rounded transition-colors group relative mt-2">
+                        <span class="mr-2">📄</span> <span class="text-blue-300">inbox_parent.json</span>
+                    </div>
+                    
+                    <div class="flex hover:bg-slate-800 p-1 rounded transition-colors group relative">
+                        <span class="mr-2 text-yellow-500">⚙️</span> <span class="text-slate-100">inbox_agent_search.json</span>
+                        <span class="ml-4 text-xs text-yellow-600 border border-yellow-800 px-1 rounded">{ "_internal": true }</span>
+                    </div>
+                    
+                    <div class="pl-6 text-slate-500 mt-1 mb-2 italic"># Cờ _internal ẩn file này khỏi giao diện người dùng.</div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-700">
+                        <span class="text-emerald-400 font-bold">API: SendMessage()</span>
+                        <p class="text-xs text-slate-400 mt-1">Ghi dữ liệu dạng broadcast đến nhiều inbox cùng lúc.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="thuc-tien-workflow" class="mb-24 pt-8 border-t-4 border-indigo-200">
+            <div class="flex items-center mb-4">
+                <span class="bg-indigo-600 text-white px-3 py-1 rounded-full text-sm font-bold mr-3 animate-pulse">INTERACTIVE</span>
+                <h2 class="text-3xl font-extrabold text-slate-900">7. Tầng Inference & Raw Payload View</h2>
+            </div>
+            <p class="text-lg text-slate-600 mb-2 leading-relaxed">
+                Khám phá thực tế cách Framework lắp ráp bộ nhớ (Context Window) và gửi chuỗi Raw String xuống API Model thông qua Use Case: <strong>"Tổng hợp tin tức"</strong>.
+            </p>
+            <p class="text-sm font-bold text-pink-600 mb-8 bg-pink-50 p-3 inline-block rounded border border-pink-200 shadow-sm">
+                👉 CLICK VÀO TỪNG NODE TRÊN ĐỒ THỊ để mở Simulator. Bấm nút "Bước tiếp" để xem LLM nối Context ra sao!
+            </p>
+
+            <div class="bg-slate-900 p-12 rounded-2xl shadow-2xl border border-slate-700 relative overflow-x-auto min-h-[500px] flex justify-center">
+                <div class="min-w-[600px] flex flex-col items-center relative w-full">
+                    
+                    <!-- Lớp 1: Parent -->
+                    <div class="z-10 group relative flex flex-col items-center cursor-pointer hover:-translate-y-2 transition-transform duration-300" onclick="openPayloadModal('parent')">
+                        <div class="absolute -inset-2 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-300"></div>
+                        <div class="bg-slate-800 border-2 border-blue-500 text-white px-8 py-5 rounded-xl shadow-2xl relative w-72 text-center">
+                            <div class="text-3xl mb-2">👔</div>
+                            <h4 class="font-bold text-xl mb-1">Parent Orchestrator</h4>
+                            <div class="text-xs text-blue-300 bg-blue-900/50 px-2 py-1 rounded">Mô phỏng Parent Context</div>
+                        </div>
+                    </div>
+
+                    <!-- Đường nối -->
+                    <div class="w-px h-12 bg-slate-500"></div>
+                    <div class="w-3/4 h-px bg-slate-500 relative">
+                        <div class="absolute top-0 left-0 w-px h-10 bg-slate-500"></div>
+                        <div class="absolute top-0 right-0 w-px h-10 bg-slate-500"></div>
+                    </div>
+
+                    <!-- Lớp 2: Sub-agents -->
+                    <div class="flex justify-between w-3/4 mt-10 z-10">
+                        <div class="group relative flex flex-col items-center cursor-pointer hover:-translate-y-2 transition-transform duration-300" onclick="openPayloadModal('sub1')">
+                            <div class="absolute -inset-2 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-300"></div>
+                            <div class="bg-slate-800 border-2 border-emerald-500 text-white px-6 py-5 rounded-xl shadow-2xl relative w-56 text-center">
+                                <div class="text-3xl mb-2">🔍</div>
+                                <h4 class="font-bold text-lg mb-1">Agent: Search</h4>
+                                <div class="text-[10px] text-emerald-300 bg-emerald-900/50 px-2 py-1 rounded">Chờ trả kết quả Search</div>
+                            </div>
+                        </div>
+
+                        <div class="group relative flex flex-col items-center cursor-pointer hover:-translate-y-2 transition-transform duration-300" onclick="openPayloadModal('sub2')">
+                            <div class="absolute -inset-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl blur opacity-40 group-hover:opacity-100 transition duration-300"></div>
+                            <div class="bg-slate-800 border-2 border-amber-500 text-white px-6 py-5 rounded-xl shadow-2xl relative w-56 text-center">
+                                <div class="text-3xl mb-2">🕷️</div>
+                                <h4 class="font-bold text-lg mb-1">Agent: Scrape</h4>
+                                <div class="text-[10px] text-amber-300 bg-amber-900/50 px-2 py-1 rounded">Chờ đọc Content</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gom luồng -->
+                    <div class="flex w-3/4 mt-0 relative">
+                        <div class="absolute top-0 left-0 w-px h-16 bg-slate-500"></div>
+                        <div class="absolute top-0 right-0 w-px h-16 bg-slate-500"></div>
+                    </div>
+                    <div class="w-3/4 h-px bg-slate-500 mt-16"></div>
+                    <div class="w-px h-12 bg-slate-500"></div>
+
+                    <!-- Lớp 3: Fork Agent -->
+                    <div class="z-10 group relative flex flex-col items-center cursor-pointer hover:-translate-y-2 transition-transform duration-300" onclick="openPayloadModal('fork')">
+                        <div class="absolute -inset-2 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl blur opacity-60 group-hover:opacity-100 transition duration-300 animate-pulse"></div>
+                        <div class="bg-slate-800 border-2 border-purple-400 text-white px-8 py-6 rounded-xl shadow-2xl relative w-80 text-center">
+                            <div class="absolute -top-4 -right-4 bg-indigo-600 text-xs font-bold px-3 py-1.5 rounded-full shadow-lg border border-indigo-400">🔥 CONTEXT CACHE HIT</div>
+                            <div class="text-3xl mb-2">✍️</div>
+                            <h4 class="font-bold text-xl mb-1 text-purple-100">Fork Agent (Formatter)</h4>
+                            <div class="text-xs text-purple-300 bg-purple-900/50 px-2 py-1 rounded">Tổng hợp & End Turn</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="payloadModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-slate-900/80 modal-overlay cursor-pointer" onclick="closeModal()"></div>
+        
+        <div class="relative bg-[#1e1e1e] text-[#d4d4d4] rounded-2xl shadow-2xl w-full max-w-5xl h-[85vh] flex flex-col modal-content border border-slate-700 overflow-hidden font-mono text-sm">
+            
+            <div class="bg-[#2d2d2d] flex flex-col sm:flex-row items-center justify-between px-4 py-3 border-b border-[#3c3c3c] gap-4 shrink-0">
+                <div class="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-start">
+                    <div class="flex gap-1.5 shrink-0">
+                        <div class="w-3.5 h-3.5 rounded-full bg-[#ff5f56] cursor-pointer hover:opacity-80" onclick="closeModal()"></div>
+                        <div class="w-3.5 h-3.5 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-3.5 h-3.5 rounded-full bg-[#28c940]"></div>
+                    </div>
+                    
+                    <h3 id="modalTitle" class="font-bold text-slate-300 ml-2 truncate w-32 sm:w-auto"></h3>
+                    
+                    <div id="viewToggleGroup" class="hidden flex bg-[#1e1e1e] rounded border border-[#3c3c3c] overflow-hidden ml-auto sm:ml-2 shrink-0">
+                        <button id="btnViewLogic" class="bg-blue-600 text-white px-2 sm:px-3 py-1 text-[10px] font-bold uppercase transition-colors">Blocks</button>
+                        <button id="btnViewRaw" class="text-slate-400 hover:text-white hover:bg-slate-700 px-2 sm:px-3 py-1 text-[10px] font-bold uppercase transition-colors">Raw</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end flex-wrap sm:flex-nowrap mt-3 sm:mt-0">
+                    <div class="flex gap-4 text-xs items-center mr-2">
+                        <div class="flex flex-col items-end hidden sm:flex">
+                            <span class="text-slate-500">Trạng thái</span>
+                            <span id="simStatus" class="text-blue-400 font-bold">Chờ lệnh</span>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <span class="text-slate-500">Tổng Context</span>
+                            <span id="simTokenCount" class="text-emerald-400 font-bold border border-emerald-900 bg-emerald-900/30 px-2 py-0.5 rounded">0 Tokens</span>
+                        </div>
+                    </div>
+                    
+                    <button id="startSimBtn" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded text-xs font-bold transition-colors flex items-center gap-2 shadow-lg w-full sm:w-auto justify-center">
+                        Bắt đầu mô phỏng
+                    </button>
+                    
+                    <div id="simControls" class="hidden flex gap-2 w-full sm:w-auto">
+                        <button id="btnNextStep" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded text-xs font-bold transition-colors flex items-center gap-1 shadow-lg flex-1 sm:flex-none justify-center">
+                            <span>⏭️</span> Bước tiếp
+                        </button>
+                        <button id="btnAutoRun" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2 rounded text-xs font-bold transition-colors flex items-center gap-1 shadow-lg flex-1 sm:flex-none justify-center" title="Tự động chạy các bước còn lại">
+                            <span>▶️</span> Tự động
+                        </button>
+                    </div>
+                    
+                    <button id="resetSimBtn" class="text-slate-400 border border-slate-600 hover:bg-slate-700 hover:text-white px-3 py-2 rounded text-xs transition-colors hidden">
+                        ↺ Reset
+                    </button>
+                </div>
+            </div>
+
+            <div id="simTerminal" class="p-4 md:p-6 flex-1 overflow-y-auto custom-scrollbar bg-[#1e1e1e] flex flex-col relative">
+                <div id="simPlaceholder" class="absolute inset-0 flex items-center justify-center text-slate-500 text-center flex-col p-4">
+                    <div class="text-5xl mb-4 opacity-50">🗄️</div>
+                    <h3 class="text-xl font-bold text-slate-400 mb-2">Bộ nhớ (Context Window) đang trống</h3>
+                    <p class="text-sm">Bấm nút <strong class="text-indigo-400">Bắt đầu</strong> để mô phỏng quá trình nạp Context.</p>
+                </div>
+                
+                <div id="simContent" class="hidden flex-col w-full"></div>
+
+                <div id="simTyping" class="hidden mt-4 sim-block assistant self-start bg-[#252526] p-3 rounded-lg border border-slate-700 w-fit">
+                    <span class="text-xs text-purple-400 font-bold block mb-1">LLM Inference Engine (Thinking)...</span>
+                    <div class="flex mt-2"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Sidebar & Mobile Menu Logic ---
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('flex');
+            sidebar.classList.toggle('absolute');
+            sidebar.classList.toggle('bg-white');
+            sidebar.classList.toggle('shadow-2xl');
+        });
+
+        // --- Tabs Logic for Section 3 ---
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => {
+                    b.classList.remove('text-blue-600', 'border-blue-600');
+                    b.classList.add('text-slate-500', 'border-transparent');
+                });
+                tabContents.forEach(c => c.classList.remove('active'));
+                btn.classList.remove('text-slate-500', 'border-transparent');
+                btn.classList.add('text-blue-600', 'border-blue-600');
+                const targetId = btn.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        // --- Chart.js Init for Section 4 ---
+        window.onload = function() {
+            const ctx = document.getElementById('tokenChart');
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Vanilla (Độc lập)', 'Fork (Kế thừa)'],
+                        datasets: [
+                            {
+                                label: 'Token tính phí',
+                                data: [131000, 21000],
+                                backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            },
+                            {
+                                label: 'Token từ Cache (Miễn phí)',
+                                data: [0, 126000],
+                                backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                            }
+                        ]
+                    },
+                    options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true }, y: { stacked: true } } }
+                });
+            }
+        };
+
+        // --- Simulator Data (ChatML Raw Strings) ---
+        const simulationData = {
+            parent: {
+                title: "parent_orchestrator.log",
+                steps: [
+                    {
+                        role: "system", tokens: 450, delay: 500,
+                        uiHint: "Khởi tạo luật chơi và cung cấp danh sách Tools",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">system</span>\nBạn là Parent Orchestrator. Hãy dùng công cụ để chia nhỏ tác vụ.\n<span class="xml-tag">&lt;tools&gt;</span>\n  <span class="xml-tag">&lt;tool_description&gt;</span>\n    <span class="xml-tag">&lt;tool_name&gt;</span>AgentTool_Spawn<span class="xml-tag">&lt;/tool_name&gt;</span>\n  <span class="xml-tag">&lt;/tool_description&gt;</span>\n<span class="xml-tag">&lt;/tools&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "user", tokens: 25, delay: 800,
+                        uiHint: "Yêu cầu ban đầu từ người dùng",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\nTổng hợp tin tức công nghệ AI sáng nay giúp tôi.\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "assistant", tokens: 120, delay: 1500,
+                        uiHint: "LLM suy nghĩ: Cần tìm kiếm tin tức",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">assistant</span>\n<span class="comment">// Cần dữ liệu mới, tôi sẽ tạo Agent tìm kiếm</span>\n<span class="xml-tag">&lt;tool_call&gt;</span>\n  <span class="xml-tag">&lt;tool_name&gt;</span>AgentTool_Spawn<span class="xml-tag">&lt;/tool_name&gt;</span>\n  <span class="xml-tag">&lt;parameters&gt;</span><span class="xml-tag">&lt;role&gt;</span>Search Agent<span class="xml-tag">&lt;/role&gt;</span><span class="xml-tag">&lt;/parameters&gt;</span>\n<span class="xml-tag">&lt;/tool_call&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "tool", tokens: 150, delay: 1000,
+                        uiHint: "⚡ Framework trả kết quả Tool về cho Parent",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\n<span class="xml-tag">&lt;tool_result</span> <span class="xml-attr">name</span>=<span class="json-string">"AgentTool_Spawn"</span><span class="xml-tag">&gt;</span>\nSub-agent [Search] đã khởi chạy thành công và đang chạy ngầm.\n<span class="xml-tag">&lt;/tool_result&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    }
+                ]
+            },
+            sub1: {
+                title: "subagent_search.log",
+                steps: [
+                    {
+                        role: "system", tokens: 200, delay: 600,
+                        uiHint: "System Prompt dành riêng cho Search Agent",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">system</span>\nBạn là Search Agent. Nhiệm vụ của bạn là tìm kiếm thông tin mới nhất trên web.\n<span class="xml-tag">&lt;tools&gt;</span><span class="xml-tag">&lt;tool_name&gt;</span>duckduckgo_search<span class="xml-tag">&lt;/tool_name&gt;</span><span class="xml-tag">&lt;/tools&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "user", tokens: 40, delay: 800,
+                        uiHint: "Parent truyền task xuống",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\n[Task]: Tổng hợp tin tức công nghệ AI sáng nay.\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "assistant", tokens: 60, delay: 1500,
+                        uiHint: "Agent gọi công cụ Search",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">assistant</span>\n<span class="xml-tag">&lt;tool_call&gt;</span>\n  <span class="xml-tag">&lt;tool_name&gt;</span>duckduckgo_search<span class="xml-tag">&lt;/tool_name&gt;</span>\n  <span class="xml-tag">&lt;parameters&gt;</span><span class="xml-tag">&lt;query&gt;</span>latest AI news today<span class="xml-tag">&lt;/query&gt;</span><span class="xml-tag">&lt;/parameters&gt;</span>\n<span class="xml-tag">&lt;/tool_call&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "tool", tokens: 350, delay: 1200,
+                        uiHint: "⚡ Kết quả trả về từ Internet",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\n<span class="xml-tag">&lt;tool_result</span> <span class="xml-attr">name</span>=<span class="json-string">"duckduckgo_search"</span><span class="xml-tag">&gt;</span>\n[Kết quả]\n1. Anthropic ra mắt Claude Code (url: anthropic.com/code)\n2. OpenAI công bố Sora API (url: openai.com/sora)\n<span class="xml-tag">&lt;/tool_result&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "assistant", tokens: 100, delay: 1500,
+                        uiHint: "Agent hoàn thành nhiệm vụ và đóng gói dữ liệu",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">assistant</span>\n<span class="xml-tag">&lt;tool_call&gt;</span>\n  <span class="xml-tag">&lt;tool_name&gt;</span>return_agent_result<span class="xml-tag">&lt;/tool_name&gt;</span>\n  <span class="xml-tag">&lt;parameters&gt;</span>\n    <span class="xml-tag">&lt;summary&gt;</span>Đã tìm thấy 2 bài viết chính: Claude Code và Sora API.<span class="xml-tag">&lt;/summary&gt;</span>\n  <span class="xml-tag">&lt;/parameters&gt;</span>\n<span class="xml-tag">&lt;/tool_call&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    }
+                ]
+            },
+            fork: {
+                title: "fork_formatter_agent.log",
+                steps: [
+                    {
+                        role: "system", tokens: 3600, delay: 1000,
+                        uiHint: "⚡ ĐỌC TỪ CACHE: Copy toàn bộ lịch sử (System, User, Tools) của Parent",
+                        content: `<span class="comment">// ----------------------------------------------------</span>\n<span class="comment">// 🚀 CACHE HIT: Lịch sử Parent đã được nạp không tốn phí tính toán mới.</span>\n<span class="comment">// ----------------------------------------------------</span>\n<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">system</span>\nBạn là Parent Orchestrator...\n<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\nTổng hợp tin AI...\n<span class="comment">... [Các block trước đó đã bị ẩn để tiết kiệm UI] ...</span>`
+                    },
+                    {
+                        role: "user", tokens: 800, delay: 1200,
+                        uiHint: "Nối thêm kết quả từ các Sub-agent (Dữ liệu mới)",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">user</span>\n<span class="xml-tag">&lt;tool_result</span> <span class="xml-attr">name</span>=<span class="json-string">"AgentTool_Spawn"</span><span class="xml-tag">&gt;</span>\n[Data từ Scrape Agent]:\n1. Claude Code CLI hỗ trợ lập trình tự động.\n2. Sora API có tính năng real-time.\n<span class="xml-tag">&lt;/tool_result&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    },
+                    {
+                        role: "assistant", tokens: 450, delay: 2500,
+                        uiHint: "Hoàn tất Task & Render Markdown gửi cho người dùng",
+                        content: `<span class="chatml-token">&lt;|im_start|&gt;</span><span class="chatml-role">assistant</span>\nDưới đây là bản tin công nghệ AI sáng nay:\n\n# 🚀 Điểm tin Nổi bật\n**1. Anthropic & Claude Code**\nCông cụ CLI mới hứa hẹn thay đổi cách dev làm việc.\n\n**2. OpenAI Sora API**\nKhả năng render real-time...\n\n<span class="xml-tag">&lt;tool_call&gt;</span>\n  <span class="xml-tag">&lt;tool_name&gt;</span>end_turn<span class="xml-tag">&lt;/tool_name&gt;</span>\n<span class="xml-tag">&lt;/tool_call&gt;</span>\n<span class="chatml-token">&lt;|im_end|&gt;</span>`
+                    }
+                ]
+            }
+        };
+
+        // --- Simulator State Variables ---
+        const modal = document.getElementById('payloadModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const viewToggleGroup = document.getElementById('viewToggleGroup');
+        const btnViewLogic = document.getElementById('btnViewLogic');
+        const btnViewRaw = document.getElementById('btnViewRaw');
+        const startSimBtn = document.getElementById('startSimBtn');
+        const resetSimBtn = document.getElementById('resetSimBtn');
+        const simTerminal = document.getElementById('simTerminal');
+        const simContent = document.getElementById('simContent');
+        const simPlaceholder = document.getElementById('simPlaceholder');
+        const simTyping = document.getElementById('simTyping');
+        const simStatus = document.getElementById('simStatus');
+        const simTokenCount = document.getElementById('simTokenCount');
+        
+        let simTimeoutIds = [];
+        let currentTokens = 0;
+        let activeNodeType = null; 
+        let isRawView = false;
+        let revealedSteps = [];
+        let currentStepIndex = 0;
+        let isSimulating = false;
+        let isAutoRunning = false;
+        let isProcessingStep = false;
+
+        function updateScroll() { simTerminal.scrollTop = simTerminal.scrollHeight; }
+
+        function openPayloadModal(nodeType) {
+            activeNodeType = nodeType;
+            if(!simulationData[nodeType]) return;
+            modalTitle.innerText = simulationData[nodeType].title;
+            resetSimulation(); 
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            simTimeoutIds.forEach(clearTimeout);
+            simTimeoutIds = [];
+            isSimulating = false;
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function setViewMode(rawMode) {
+            isRawView = rawMode;
+            if(rawMode) {
+                btnViewRaw.classList.replace('text-slate-400', 'text-white');
+                btnViewRaw.classList.replace('hover:text-white', 'bg-blue-600');
+                btnViewLogic.classList.replace('bg-blue-600', 'text-slate-400');
+                btnViewLogic.classList.replace('text-white', 'hover:text-white');
+            } else {
+                btnViewLogic.classList.replace('text-slate-400', 'text-white');
+                btnViewLogic.classList.replace('hover:text-white', 'bg-blue-600');
+                btnViewRaw.classList.replace('bg-blue-600', 'text-slate-400');
+                btnViewRaw.classList.replace('text-white', 'hover:text-white');
+            }
+            if(revealedSteps.length > 0) renderDisplay();
+        }
+
+        btnViewLogic.addEventListener('click', () => setViewMode(false));
+        btnViewRaw.addEventListener('click', () => setViewMode(true));
+
+        function renderDisplay() {
+            simContent.innerHTML = '';
+            if (!isRawView) {
+                revealedSteps.forEach((step, index) => {
+                    const block = document.createElement('div');
+                    const isLast = index === revealedSteps.length - 1;
+                    let roleTitle = step.role.toUpperCase();
+                    if(step.role === 'tool') roleTitle = "TOOL RESULT";
+                    block.className = `sim-block ${step.role} ${isLast && isSimulating ? 'new-chunk' : ''}`;
+                    block.innerHTML = `
+                        <div class="flex justify-between items-center mb-2 border-b border-slate-700/50 pb-1">
+                            <span class="text-[10px] text-slate-500 font-bold tracking-widest">${roleTitle} APPENDED</span>
+                            <span class="text-xs text-indigo-300 italic px-2 py-0.5 rounded bg-indigo-900/30">${step.uiHint || ''}</span>
+                        </div>
+                        <pre class="whitespace-pre-wrap leading-relaxed font-mono">${step.content}</pre>
+                    `;
+                    simContent.appendChild(block);
+                });
+            } else {
+                const rawContainer = document.createElement('div');
+                rawContainer.className = 'raw-view-container';
+                rawContainer.innerHTML = revealedSteps.map(step => step.content).join('\n');
+                simContent.appendChild(rawContainer);
+            }
+            updateScroll();
+        }
+
+        function resetSimulation() {
+            simTimeoutIds.forEach(clearTimeout);
+            simTimeoutIds = [];
+            revealedSteps = [];
+            isSimulating = false;
+            isAutoRunning = false;
+            isProcessingStep = false;
+            currentStepIndex = 0;
+            
+            simContent.innerHTML = '';
+            simContent.classList.add('hidden');
+            simPlaceholder.classList.remove('hidden');
+            simTyping.classList.add('hidden');
+            viewToggleGroup.classList.add('hidden');
+            
+            startSimBtn.classList.remove('hidden');
+            document.getElementById('simControls').classList.add('hidden');
+            document.getElementById('btnNextStep').disabled = false;
+            document.getElementById('btnNextStep').classList.remove('opacity-50', 'cursor-not-allowed');
+            document.getElementById('btnAutoRun').classList.remove('hidden');
+            resetSimBtn.classList.add('hidden');
+            
+            currentTokens = 0;
+            simTokenCount.innerText = '0 Tokens';
+            simStatus.innerText = 'Chờ lệnh';
+            simStatus.className = 'text-blue-400 font-bold';
+            
+            setViewMode(false);
+        }
+
+        const sleep = ms => new Promise(resolve => {
+            const id = setTimeout(resolve, ms);
+            simTimeoutIds.push(id);
+        });
+
+        async function processNextStep() {
+            if (!activeNodeType || !simulationData[activeNodeType]) return;
+            const steps = simulationData[activeNodeType].steps;
+            if (currentStepIndex >= steps.length || isProcessingStep) return;
+            
+            isProcessingStep = true;
+            isSimulating = true;
+            
+            const btnNextStep = document.getElementById('btnNextStep');
+            btnNextStep.disabled = true;
+            btnNextStep.classList.add('opacity-50', 'cursor-not-allowed');
+
+            const step = steps[currentStepIndex];
+            
+            if (step.role === 'assistant') {
+                renderDisplay(); 
+                simTyping.classList.remove('hidden');
+                simTerminal.appendChild(simTyping);
+                simStatus.innerText = 'Đang sinh Token...';
+                simStatus.className = 'text-amber-400 font-bold animate-pulse';
+                updateScroll();
+                await sleep(1000);
+            } else if (currentStepIndex > 0) {
+                await sleep(400); 
+            }
+
+            if (!isSimulating) return;
+
+            simTyping.classList.add('hidden');
+            revealedSteps.push(step);
+            renderDisplay();
+            
+            currentTokens += step.tokens;
+            simTokenCount.innerText = new Intl.NumberFormat('en-US').format(currentTokens) + ' Tokens';
+            
+            if (step.role === 'tool') {
+                simStatus.innerText = 'Chờ Tool...';
+                simStatus.className = 'text-purple-400 font-bold';
+            } else if (currentStepIndex === steps.length - 1) {
+                simStatus.innerText = 'Hoàn tất';
+                simStatus.className = 'text-green-400 font-bold';
+                renderDisplay();
+            } else {
+                simStatus.innerText = 'Chờ lượt tiếp';
+                simStatus.className = 'text-emerald-400 font-bold';
+            }
+
+            currentStepIndex++;
+            isProcessingStep = false;
+            btnNextStep.disabled = false;
+            btnNextStep.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            if (currentStepIndex >= steps.length) {
+                document.getElementById('simControls').classList.add('hidden');
+                isAutoRunning = false;
+            } else if (isAutoRunning) {
+                simTimeoutIds.push(setTimeout(processNextStep, step.delay || 1000));
+            }
+        }
+
+        startSimBtn.addEventListener('click', () => {
+            startSimBtn.classList.add('hidden');
+            document.getElementById('simControls').classList.remove('hidden');
+            resetSimBtn.classList.remove('hidden');
+            simPlaceholder.classList.add('hidden');
+            viewToggleGroup.classList.remove('hidden');
+            simContent.classList.remove('hidden');
+            processNextStep();
+        });
+
+        document.getElementById('btnNextStep').addEventListener('click', () => {
+            isAutoRunning = false;
+            document.getElementById('btnAutoRun').classList.remove('hidden');
+            processNextStep();
+        });
+
+        document.getElementById('btnAutoRun').addEventListener('click', () => {
+            isAutoRunning = true;
+            document.getElementById('btnAutoRun').classList.add('hidden');
+            document.getElementById('btnNextStep').classList.add('opacity-50', 'cursor-not-allowed');
+            processNextStep();
+        });
+
+        resetSimBtn.addEventListener('click', resetSimulation);
+    </script>
+</body>
+</html>

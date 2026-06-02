@@ -1,0 +1,13 @@
+{
+  "name": "nmnhut-dev",
+  "private": true,
+  "description": "Personal blog by Minh-Nhut Nguyen (Hugo + PaperMod)",
+  "scripts": {
+    "build": "hugo --minify",
+    "preview": "hugo server -D",
+    "deploy": "hugo --minify && wrangler pages deploy public --project-name=nmnhut-dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
+  }
+}
