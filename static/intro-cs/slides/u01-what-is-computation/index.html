@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 1 — What is Computation? (Your First Python)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 1 &middot; High school CS in Python</p>
+          <h1>What is Computation?</h1>
+          <p class="lede">No slides-first lecture. You'll write and <em>run</em> real Python on these slides in the next two minutes — right here in the browser.</p>
+          <aside class="notes">Hook-first unit. Learners run code before we define anything. Optional 3-min opener: "be the computer" — a student gives you literal instructions to draw a shape or make a sandwich; follow them maliciously literally until it fails. Land: "computers do EXACTLY what you say." Then jump to slide 2.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Predict, then Run</h2>
+          <p class="learner-action">Guess each line's output <strong>before</strong> you press Run. Then run it.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">print("7" + "7")
+print(7 + 7)
+print("ha" * 20)</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p class="pg-hint">First run loads Python in the browser — a few seconds, once.</p>
+          <aside class="notes">The surprise IS the lesson. "7" + "7" is 77 (gluing text); 7 + 7 is 14 (adding numbers). "ha" * 20 spams hahaha. They just met strings vs numbers — the machine sees "7" and 7 as different DATA. Have them predict out loud first.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Why Two Answers?</h2>
+          <div class="rule-board">
+            <div><strong>"7"</strong><p>text (a <em>string</em>) — the machine sees a symbol</p></div>
+            <div><strong>7</strong><p>a number (an <em>int</em>) — the machine can do math</p></div>
+          </div>
+          <p>Same key on your keyboard, two different kinds of <strong>data</strong>. Choosing how to store something as data is the whole game.</p>
+          <aside class="notes">This is the representation thread landing on the very first surprise. Quotes = text; no quotes = number. "+" glues text but adds numbers. That's Unit 0's idea in code.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Make It Talk to You</h2>
+          <p class="learner-action">Run it, type your name when it asks. Then change the message and run again.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">name = input("What's your name? ")
+print("Hello " + name + " — welcome to Python!")
+print(name * 3)</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p class="pg-hint">A box pops up for your name. That's <code>input()</code>.</p>
+          <aside class="notes">Instant personalization = ownership. name is a VARIABLE holding text you typed. Dare them: make it print the name 100 times, or change the greeting. First variable, first input, first "it talked to ME," under 5 minutes.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>The One Big Rule</h2>
+          <p class="insight">A computer does <strong>exactly</strong> what you tell it — no more, no less. Fast, not smart.</p>
+          <p>It can't guess what you meant. If the output is wrong, the <em>instructions</em> were wrong. That's not failure — that's the job.</p>
+          <aside class="notes">Now that they've run code, name the big idea (CS50's PB&amp;J point). Tie to the "be the computer" opener if you did it. This reframes bugs as normal, not personal.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Draw With a Loop</h2>
+          <p class="learner-action">Run it. Then change <code>"*"</code> to <code>"&#128293;"</code>, and change the <code>6</code> to <code>11</code>. Run again.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">for i in range(1, 6):
+    print("*" * i)</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p class="pg-hint">A <code>for</code> loop repeats a line. You'll learn loops properly in Unit 2 — for now, watch the shape grow.</p>
+          <aside class="notes">Loops sell themselves when you SEE the triangle grow. Don't teach range() formally yet — let them tinker. Changing one number changes the picture = the type-in-and-modify tradition (Ahl/Sweigart).</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Numbers Are Data</h2>
+          <p class="learner-action">Predict each result, then run. Try changing the numbers.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">print(7 + 2)     # add
+print(7 / 2)     # divide  -> a decimal
+print(7 // 2)    # whole part
+print(7 % 2)     # remainder
+print(2 ** 10)   # power</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <aside class="notes">A single / always gives a float (3.5). // is floor division, % is remainder (huge later: even/odd, digits), ** is power. A whole number is an int, a decimal is a float.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Names for Values</h2>
+          <p class="learner-action">Change the price or quantity and re-run.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">price = 8
+quantity = 3
+total = price * quantity
+print("Total:", total)</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p>The <code>=</code> sign <strong>stores</strong> a value under a name so you can reuse it.</p>
+          <aside class="notes">A variable is a labeled box in memory. = means "store this," not math equality. Descriptive names make code readable.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>It Only Does What You Say</h2>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">radius = 2
+area = 3.14159 * radius * radius
+print("area is", area)
+
+radius = radius + 1     # change radius
+print("radius is now", radius)
+print("area is still", area)   # unchanged!</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p class="insight">Changing <code>radius</code> does <em>not</em> update <code>area</code>. The computer never re-figures things for you.</p>
+          <aside class="notes">The lecture's punchline, now runnable. area was computed once and stays put. This kills a huge class of beginner confusion — run it and let the "still 12.56636" surprise land.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Types, and Switching Between Them</h2>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">print(type(5))      # int
+print(type(3.14))   # float
+print(type("hi"))   # str  (text)
+print(int(3.9))     # 3  -- chops, does NOT round
+print(str(42) + "!")# text</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <p>Every value has a <strong>type</strong> that decides what you can do with it.</p>
+          <aside class="notes">int() truncates toward zero: 3.9 -> 3, not 4. str() turns a number into text so you can glue it. bool (True/False) shows up in Unit 2.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Everything Is Data</h2>
+          <div class="flow-row" aria-label="representations">
+            <span>A number<br><small>5</small></span>
+            <span>A picture<br><small>grid of 0s and 1s</small></span>
+            <span>A word<br><small>a row of letters</small></span>
+          </div>
+          <p>Unit 0's triangle was a grid of numbers. All course long, one question: <strong>how is this stored as data?</strong></p>
+          <aside class="notes">Tie back to Unit 0 and forward: text (Unit 3), lists (Unit 5), maps (Unit 6). Representation is the spine.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>A Game You Own</h2>
+          <p class="learner-action">Run it and play. Then change <strong>one thing</strong>: make it 1&ndash;100, or give fewer tries.</p>
+          <div class="playground">
+            <textarea class="pg-code" spellcheck="false">import random
+secret = random.randint(1, 20)
+print("I'm thinking of a number from 1 to 20.")
+for attempt in range(1, 7):
+    guess = int(input("Your guess: "))
+    if guess &lt; secret:
+        print("Too low!")
+    elif guess &gt; secret:
+        print("Too high!")
+    else:
+        print("You got it in", attempt, "tries!")
+        break
+else:
+    print("Out of tries — it was", secret)</textarea>
+            <button class="pg-run" type="button">Run &#9654;</button>
+            <pre class="pg-out"></pre>
+          </div>
+          <aside class="notes">A full, playable game in ~12 lines — the type-in-a-game hook (Ahl/Sweigart). They win first, THEN modify (range, tries, add an insult on wrong guesses). It quietly uses everything: variables, input, a loop, if/elif/else, random. We'll unpack all of it in Units 2-3.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="1">
+            <p class="quiz-question">What does <code>9 / 2</code> give in Python?</p>
+            <button>4 (an int)</button>
+            <button>4.5 (a float)</button>
+            <button>5 (an int)</button>
+            <button>an error</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">A single / always makes a float, even when it divides evenly: 8 / 2 is 4.0. Use // for whole-number division.</aside>
+        </section>
+
+        <section data-narration-id="s14">
+          <h2>You Already Did It</h2>
+          <ul>
+            <li>You <strong>ran real Python</strong> — printed, did math, used a variable, played a game.</li>
+            <li>A computer only does what you tell it — and every value has a type.</li>
+            <li>The big question all year: <strong>how is this stored as data?</strong></li>
+          </ul>
+          <p>Next: <strong>choices &amp; repetition</strong> — so the program can decide and repeat on its own.</p>
+          <aside class="notes">They leave having MADE something. Point them at the Unit 1 exercises (print, arithmetic, variables, is_even with %). Bridge to Unit 2.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+    <script src="../shared/playground.js"></script>
+  </body>
+</html>

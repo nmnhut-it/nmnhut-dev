@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 11 — Efficiency, Deeper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 11 &middot; High school CS in Python</p>
+          <h1>Efficiency, Deeper</h1>
+          <p class="lede">Three speeds of growth — logarithmic, linear, exponential — and how to feel them in real code. Based on MIT 6.0001, Lecture 11.</p>
+          <aside class="notes">Unit 10 taught counting steps instead of timing seconds. Unit 11 gives that counting a shape: how does the work grow as the input grows? The whole deck is log vs linear vs exponential, made concrete.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Recap: We Count Steps, Not Seconds</h2>
+          <p>In Unit 10 we stopped timing a stopwatch and started counting steps. The question that matters:</p>
+          <p class="insight">As the input <strong>n</strong> gets bigger, how fast does the work grow?</p>
+          <div class="flow-row" aria-label="three speeds">
+            <span>Logarithmic<br><small>barely grows</small></span>
+            <span>Linear<br><small>grows steadily</small></span>
+            <span>Exponential<br><small>explodes</small></span>
+          </div>
+          <aside class="notes">Anchor to Unit 10: orders of growth, dropping constants. Today we make three of those classes vivid and show how a design choice moves you between them. Do not define logarithm formally yet — build the feel first.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Guess My Number</h2>
+          <p>I'm thinking of a number from <strong>1 to 100</strong>. Each guess, I tell you "higher" or "lower." What's your best move?</p>
+          <div class="rule-board">
+            <div><strong>Guess in order</strong><p>1, 2, 3, 4... up to 100 tries. Slow.</p></div>
+            <div><strong>Guess the middle</strong><p>50! Every answer throws away <em>half</em> the numbers left.</p></div>
+          </div>
+          <p class="learner-action">Play it: I say 73. Guess 50 &rarr; "higher" &rarr; 75 &rarr; "lower"... How many guesses until you're stuck on one number?</p>
+          <aside class="notes">The number-guessing game is binary search in disguise. Let a student actually play. The point they should feel: chopping in half is wildly faster than walking up one at a time.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Halving Is Shockingly Fast</h2>
+          <p>Start with 100 numbers. Each guess halves what's left:</p>
+          <div class="big-rule">100 &rarr; 50 &rarr; 25 &rarr; 13 &rarr; 7 &rarr; 4 &rarr; 2 &rarr; 1</div>
+          <p>Just <strong>7 guesses</strong> to pin down any number in 1..100. That "how many times can I halve n" count is called <strong>O(log n)</strong> — logarithmic time.</p>
+          <p class="insight">Double the range to 200? You need only <strong>one</strong> more guess. That's what makes log growth amazing.</p>
+          <aside class="notes">log base 2 of 100 is about 6.6, so 7 halvings. The killer feature: to handle twice as much input you add a single step, not twice the steps. Do not prove anything — just show the halving chain and the "+1 for double" fact.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Scan Everything vs. Cut in Half</h2>
+          <div class="rule-board">
+            <div><strong>Linear — O(n)</strong><p>Check items one by one. A list twice as long takes twice as long. Shrinks by <em>one</em> each step.</p></div>
+            <div><strong>Logarithmic — O(log n)</strong><p>Jump to the middle, throw away half. A list twice as long takes just <em>one more</em> step.</p></div>
+          </div>
+          <p>Cutting the problem by a <strong>factor</strong> each step is the whole secret of log time. But halving only works if the list is <strong>sorted</strong> — that's the price.</p>
+          <aside class="notes">Contrast the two signatures: minus one each step (linear) vs cut by a factor each step (log). Sortedness is what lets you know which half to keep. This sets up binary search as the code version of the guessing game.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Binary Search: The Guessing Game in Code</h2>
+          <pre><code class="language-python" data-trim>def binary_search(L, target):     # L must be sorted
+    low = 0
+    high = len(L) - 1
+    while low &lt;= high:
+        mid = (low + high) // 2       # the "middle guess"
+        if L[mid] == target:
+            return mid                # found it
+        elif L[mid] &lt; target:
+            low = mid + 1             # answer is "higher"
+        else:
+            high = mid - 1           # answer is "lower"
+    return -1                         # not in the list</code></pre>
+          <p><code>low</code> and <code>high</code> squeeze together, halving the range each loop &rarr; <strong>O(log n)</strong>.</p>
+          <aside class="notes">Read it as the guessing game: mid is the guess, low/high track "higher/lower". No slicing, so each loop is constant work and the loop runs about log n times. Trace it once on a tiny sorted list live.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Log vs. Linear: See the Gap</h2>
+          <div class="table-card">
+            <span><strong>n</strong></span>
+            <span><strong>Linear steps (scan)</strong></span>
+            <span><strong>Log steps (halve)</strong></span>
+            <span>10</span><span>10</span><span>~4</span>
+            <span>1,000</span><span>1,000</span><span>~10</span>
+            <span>1,000,000</span><span>1,000,000</span><span>~20</span>
+          </div>
+          <p class="insight">A million items: scanning takes a million checks; halving takes about <strong>20</strong>. Same job, wildly different cost.</p>
+          <aside class="notes">Let the numbers land. log2 of a million is about 20. This is the payoff slide for log time. Emphasize: the log column barely moves even as n explodes down the rows.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>The Slow Direction: Doing the Same Work Twice</h2>
+          <pre><code class="language-python" data-trim>def fib(n):
+    if n == 0 or n == 1:
+        return n
+    return fib(n - 1) + fib(n - 2)   # TWO calls each time</code></pre>
+          <p>To get <code>fib(5)</code> it computes <code>fib(4)</code> <em>and</em> <code>fib(3)</code>... which each split again. The same little answers get recomputed over and over.</p>
+          <p class="insight">Two calls per step makes the work <strong>branch</strong> and pile up — <strong>O(2ⁿ)</strong>, exponential.</p>
+          <aside class="notes">Draw the call tree for fib(5): fib(3) appears twice, fib(2) three times. The cost is the branching, not the answer. This is the opposite of halving — instead of throwing work away, it duplicates it.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Three Speeds, Side by Side</h2>
+          <div class="table-card">
+            <span><strong>n</strong></span>
+            <span><strong>log n</strong></span>
+            <span><strong>n</strong></span>
+            <span><strong>2ⁿ</strong></span>
+            <span>5</span><span>~2</span><span>5</span><span>32</span>
+            <span>10</span><span>~3</span><span>10</span><span>1,024</span>
+            <span>20</span><span>~4</span><span>20</span><span>1,048,576</span>
+            <span>50</span><span>~6</span><span>50</span><span>a quadrillion+</span>
+          </div>
+          <p class="insight">Log stays tiny. Linear keeps pace with n. Exponential runs off the page — <code>fib(50)</code> the naive way would take longer than your lifetime.</p>
+          <aside class="notes">This is the vivid centerpiece. 2^50 is over a quadrillion. The lesson: the class you land in matters far more than any clever tweak inside a step. Now show how to escape exponential.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>The Fix: Remember Your Answers</h2>
+          <pre><code class="language-python" data-trim>def fib(n, memo=None):
+    if memo is None:
+        memo = {}                # a dict: number -> its answer
+    if n == 0 or n == 1:
+        return n
+    if n in memo:                # already worked this out?
+        return memo[n]           # reuse it, don't redo it
+    memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+    return memo[n]</code></pre>
+          <p class="insight">Store each <code>fib(k)</code> once in a dictionary. Now every value is computed a single time &rarr; <strong>O(2ⁿ) becomes O(n)</strong>. This trick is called <strong>memoization</strong>.</p>
+          <aside class="notes">Representation thread: the dict is a key-to-value map (Unit 6) used as a memory of solved subproblems. Same answers, exponentially less work. The branching tree collapses to n distinct values. Note the fresh-dict guard so a new top-level call starts clean.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">Guessing a number from 1 to 100 by always picking the middle, about how many guesses do you need in the worst case?</p>
+            <button>100</button>
+            <button>50</button>
+            <button>About 7</button>
+            <button>1</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Answer: about 7 — you can halve 100 down to 1 about seven times, so it's O(log n). Scanning in order would be up to 100 (linear). More questions in the L11 quiz.md.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li><strong>Logarithmic (log n):</strong> cut the problem in half each step — barely grows. Binary search, guess-the-number.</li>
+            <li><strong>Linear (n):</strong> touch everything once — grows steadily.</li>
+            <li><strong>Exponential (2ⁿ):</strong> branching work that redoes itself — explodes. Fix it by remembering answers (memoization).</li>
+          </ul>
+          <p>Next: <strong>searching &amp; sorting</strong> — where choosing the right order pays off.</p>
+          <aside class="notes">Bridge to Unit 12: binary search needed a sorted list, which is exactly why sorting matters. Point students at the Unit 11 exercises: binary_search, fib_naive vs fib_memo.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

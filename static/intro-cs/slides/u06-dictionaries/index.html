@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 6 — Dictionaries (+ gentle recursion)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 6 &middot; High school CS in Python</p>
+          <h1>Dictionaries</h1>
+          <p class="lede">A new way to store data: look things up <em>by name</em>, not by position. Then a gentle first look at recursion. Based on MIT 6.0001, Lecture 6.</p>
+          <aside class="notes">Lists let us look up by position (index 0, 1, 2). A dictionary lets us look up by a label we choose. That's the big idea today, plus a friendly intro to a function that calls itself.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>The Problem: Two Lists That Must Stay in Sync</h2>
+          <pre><code class="language-python" data-trim>names  = ["Ana", "John", "Sam"]
+grades = ["B",   "A+",   "C"]
+
+# What is John's grade? Find where "John" is, then peek grades:
+grades[names.index("John")]   # "A+"  -- clumsy!</code></pre>
+          <p>Two lists, glued together only by matching positions. Add a name but forget the grade and everything shifts out of line.</p>
+          <aside class="notes">Set up the pain: parallel lists force you to juggle a shared index. One slip and name and grade no longer line up. There is a data type built exactly for this.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>A Dictionary: Key &rarr; Value</h2>
+          <pre><code class="language-python" data-trim>grades = {"Ana": "B", "John": "A+", "Sam": "C"}
+#          key    value</code></pre>
+          <p>Curly braces <code>{ }</code>. Each entry is a <strong>key</strong>, a colon, then its <strong>value</strong>. The key is the label you look things up by.</p>
+          <p class="insight">A dictionary <strong>maps keys to values</strong> — lookup by name, not by position.</p>
+          <aside class="notes">This is the representation thread for the unit. A list is indexed by 0,1,2. A dictionary is indexed by whatever labels you choose. Point out braces vs the square brackets of a list.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Lookup by Name</h2>
+          <pre><code class="language-python" data-trim>grades = {"Ana": "B", "John": "A+", "Sam": "C"}
+
+grades["John"]     # "A+"   <- ask by the key
+grades["Ana"]      # "B"</code></pre>
+          <p class="learner-action">Predict <code>grades["Sam"]</code> before you run it. Square brackets hold the key, and out comes its value.</p>
+          <aside class="notes">Same square-bracket syntax as a list, but the thing in the brackets is a key, not a position. Have them predict "C" then run. Note there is no searching — the dict jumps straight to the value.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Add and Update</h2>
+          <pre><code class="language-python" data-trim>grades = {"Ana": "B", "John": "A+"}
+
+grades["Sam"] = "C"     # NEW key -> adds an entry
+grades["Ana"] = "A"     # EXISTING key -> updates it
+
+print(grades)   # {"Ana": "A", "John": "A+", "Sam": "C"}</code></pre>
+          <p>Same line, two jobs. New key: it's added. Key already there: its value is replaced.</p>
+          <aside class="notes">One assignment statement both inserts and overwrites, depending on whether the key already exists. There is only ever one value per key — writing "Ana" again does not make a second Ana.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Gotcha: a Missing Key</h2>
+          <pre><code class="language-python" data-trim>grades = {"Ana": "B", "John": "A+"}
+
+grades["Bob"]           # KeyError!  "Bob" was never added
+
+"Bob" in grades         # False  <- safe way to check first
+grades.get("Bob")       # None   <- safe: no crash if missing</code></pre>
+          <p class="insight">Asking for a key that isn't there <strong>crashes</strong> with a <code>KeyError</code>. Use <code>in</code> or <code>.get()</code> to stay safe.</p>
+          <aside class="notes">This is the classic beginner surprise. Plain bracket lookup on a missing key raises KeyError — it does not return None. Show the two safe patterns: the in test, and .get which returns None instead of crashing.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Looking Through a Dictionary</h2>
+          <pre><code class="language-python" data-trim>grades = {"Ana": "B", "John": "A+", "Sam": "C"}
+
+for name in grades:              # loops over the KEYS
+    print(name, "got", grades[name])
+
+grades.keys()      # the keys
+grades.values()    # the values</code></pre>
+          <p>Looping over a dict gives you its <strong>keys</strong>, one at a time — then use each key to fetch its value.</p>
+          <aside class="notes">A for-loop over a dict yields keys, not values — a common confusion. From each key you can reach its value with grades[name]. Mention .keys() and .values() as ways to ask for one side directly.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>List or Dictionary?</h2>
+          <div class="rule-board">
+            <div><strong>Use a list</strong><p>order matters; you want item 1, 2, 3&hellip; a plain sequence</p></div>
+            <div><strong>Use a dict</strong><p>you look things up by a label — name&rarr;grade, word&rarr;count</p></div>
+          </div>
+          <p>Storing each student's grade and finding it by name? That's a dictionary — the key <em>is</em> the name, no index juggling.</p>
+          <aside class="notes">Give them the decision rule. Lists are for ordered sequences you walk through. Dicts are for "given this label, what's the value?" This is exactly the parallel-lists problem from slide 2, solved.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Example: Count the Words</h2>
+          <pre><code class="language-python" data-trim>text = "red blue red red blue"
+counts = {}                       # start empty
+
+for word in text.split():         # ["red","blue","red","red","blue"]
+    if word in counts:
+        counts[word] = counts[word] + 1    # seen before: add 1
+    else:
+        counts[word] = 1                   # first time: start at 1
+
+print(counts)   # {"red": 3, "blue": 2}</code></pre>
+          <p class="learner-action">Trace it word by word. The dict is a tally sheet: key = word, value = how many times.</p>
+          <aside class="notes">The signature dictionary example. Walk through it: red not in counts, set 1; blue set 1; red already there, becomes 2; and so on. This pattern — build a count keyed by the thing you're counting — comes up everywhere.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>A New Idea: a Function That Calls Itself</h2>
+          <pre><code class="language-python" data-trim>def countdown(n):
+    if n == 0:              # BASE CASE: small enough to answer now
+        print("Liftoff!")
+    else:
+        print(n)
+        countdown(n - 1)    # RECURSIVE CASE: call itself on a smaller n
+
+countdown(3)   # 3  2  1  Liftoff!</code></pre>
+          <p class="insight">Every recursion needs a <strong>base case</strong> (when to stop) and a <strong>recursive case</strong> that shrinks toward it.</p>
+          <aside class="notes">Introduce recursion gently. A function is allowed to call itself. Two must-haves: a base case that stops, and a recursive case on a smaller input. Drop the base case and it never stops — like two mirrors facing each other.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Tiny Example: Factorial</h2>
+          <pre><code class="language-python" data-trim>def fact(n):
+    if n == 1:                 # base case
+        return 1
+    return n * fact(n - 1)     # recursive case: n! = n * (n-1)!
+
+fact(4)  # 4 * fact(3)
+         # 4 * (3 * fact(2))
+         # 4 * (3 * (2 * 1))  = 24</code></pre>
+          <p>It shrinks 4&rarr;3&rarr;2&rarr;1, hits the base case, then multiplies the answers back up.</p>
+          <aside class="notes">Factorial mirrors the math: n! = n times (n-1)!. Trace the unwinding down to fact(1)=1, then the results gather back up to 24. Keep it light — no call-tree diagrams, just the chain.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">You run <code>grades["Bob"]</code> but <code>"Bob"</code> was never added. What happens?</p>
+            <button>It returns None</button>
+            <button>It returns False</button>
+            <button>It raises a KeyError (crash)</button>
+            <button>It quietly adds "Bob" with an empty value</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Plain bracket lookup on a missing key raises KeyError — it does not return None or add anything. Use "in" to check first, or .get() to get None safely instead of a crash.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A dictionary maps <strong>keys to values</strong> — look up by name, not position.</li>
+            <li>Add/update with <code>d[key] = value</code>; a missing key raises <code>KeyError</code>.</li>
+            <li>Loop a dict to get its keys; word-count is the classic use.</li>
+            <li>Recursion = a base case to stop + a recursive case that shrinks the input.</li>
+          </ul>
+          <p>Next: <strong>testing &amp; debugging</strong> — comparing what you expected with what actually happened.</p>
+          <aside class="notes">Bridge to Unit 7. Point students at the Unit 6 exercises: build and read dictionaries, a word-count, and a first tiny recursive function.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

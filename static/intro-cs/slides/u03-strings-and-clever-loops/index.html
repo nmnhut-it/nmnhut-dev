@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 3 — Strings &amp; Clever Loops</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 3 &middot; High school CS in Python</p>
+          <h1>Strings &amp; Clever Loops</h1>
+          <p class="lede">Text is a row of symbols the machine can hold and check — one character at a time. Then a smarter way to search: halve the range. Based on MIT 6.0001, Lecture 3.</p>
+          <aside class="notes">Unit 2 gave us choices and loops. Unit 3 turns loops loose on text, then on searching. Keep the thread visible: to a computer, text is just symbols in order — it checks symbols, never meaning.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Text Is a Sequence of Symbols</h2>
+          <div class="flow-row" aria-label="how the machine sees a word">
+            <span>You see<br><small>the word "cat"</small></span>
+            <span>The machine sees<br><small>'c', 'a', 't' — in that order</small></span>
+          </div>
+          <p class="insight">The computer checks <strong>symbols</strong>, not meaning. "cat" is just three characters in a row — it never knows it's an animal.</p>
+          <aside class="notes">Representation thread for the whole unit. A string is symbols in order: letters, digits, spaces, punctuation. The machine compares characters; it has no idea what the word means. That's why we can loop over it like a list of boxes.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>How Long Is It? <code>len()</code></h2>
+          <pre><code class="language-python" data-trim>word = "cat"
+len(word)     # 3   <- counts the characters
+len("hi you") # 6   <- the space counts too!
+len("")       # 0   <- empty string, nothing inside</code></pre>
+          <p>A string lives inside quotation marks. <code>len</code> is a ready-made <strong>function</strong> that counts every character — spaces and punctuation included.</p>
+          <aside class="notes">len is our first tool on strings. Stress: spaces are characters too, so "hi you" is 6. The empty string "" has length 0. len(word) is an expression, so it has a value you can print or store.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Reach One Character — Indexing</h2>
+          <pre><code class="language-python" data-trim>s = "PYTHON"
+s[0]   # 'P'   <- counting starts at ZERO, not one
+s[1]   # 'Y'
+s[-1]  # 'N'   <- negative counts from the end
+s[-2]  # 'O'
+s[99]  # IndexError: string index out of range</code></pre>
+          <p class="learner-action">Predict <code>s[2]</code> before you run it. Remember: the first character is position <strong>0</strong>, and <code>-1</code> is the last one.</p>
+          <aside class="notes">Zero-based indexing trips everyone at first. s[0] is 'P', so s[2] is 'T'. Negative indices count back from the end; s[-1] is the last character. Going past the end doesn't crash the world — Python just raises an IndexError and names the line.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Grab a Piece — Slicing <code>s[a:b]</code></h2>
+          <pre><code class="language-python" data-trim>s = "abcdefgh"   # index:  0 1 2 3 4 5 6 7
+s[2:5]   # 'cde'   <- from 2 up to (not including) 5
+s[:3]    # 'abc'   <- leave start blank = from 0
+s[5:]    # 'fgh'   <- leave stop blank = to the end
+s[:]     # 'abcdefgh'  <- the whole string</code></pre>
+          <p><code>s[a:b]</code> gives you the characters from <code>a</code> up to <strong>but not including</strong> <code>b</code>. Leave a number out and Python fills in a sensible default.</p>
+          <aside class="notes">The classic gotcha: the stop is exclusive. s[2:5] is c,d,e — not f. Blank start means 0; blank stop means the end. When unsure, type it in the interpreter and look. This is the same start/stop idea as range from Unit 2.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Glue Strings Together — <code>+</code></h2>
+          <pre><code class="language-python" data-trim>first = "Ada"
+last  = "Lovelace"
+name = first + " " + last   # 'Ada Lovelace'
+print(name)
+
+print("ha" * 3)             # 'hahaha'  <- repeat with *</code></pre>
+          <p>The <code>+</code> sign <strong>joins</strong> two strings into a new one. (Don't forget the space in the middle!) And <code>*</code> repeats a string.</p>
+          <aside class="notes">Concatenation with +. Common beginner miss: forgetting the " " so you get 'AdaLovelace'. * repeats. Note + on strings joins, while + on numbers adds — same symbol, the type decides what happens.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Walk Through Each Character</h2>
+          <pre><code class="language-python" data-trim>s = "banana"
+count = 0
+for char in s:          # char becomes 'b', then 'a', then 'n', ...
+    if char == "a":
+        count = count + 1
+print(count)            # 3   <- three a's</code></pre>
+          <p class="learner-action">Trace it: what is <code>char</code> on each pass, and what is <code>count</code> at the end?</p>
+          <aside class="notes">A for loop walks over any sequence, including a string. char is bound to each character in turn — no s[index] bookkeeping needed. This "for char in s" reads like English. Trace it out loud: char = b,a,n,a,n,a; count ticks up on each a to 3.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Strings Can't Be Edited — Immutable</h2>
+          <pre><code class="language-python" data-trim>s = "hello"
+s[0] = "y"          # ERROR -- can't change a character in place
+s = "y" + s[1:]     # OK -- builds a NEW string "yello"
+print(s)            # yello</code></pre>
+          <p>You can never edit a string in place. To "change" it, you build a <strong>brand-new</strong> string and give it the same name. The old "hello" is simply left behind.</p>
+          <aside class="notes">Immutability, gently. The object is frozen; s[0] = "y" fails. The fix rebuilds: "y" + s[1:] makes a fresh "yello" and rebinds s. Nothing edited the original. This matters again for lists in Unit 5, which CAN be edited.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>A Slow Way to Search: Guess &amp; Check</h2>
+          <pre><code class="language-python" data-trim># Is 8 a perfect cube? Try 0, 1, 2, ... in order.
+cube = 8
+guess = 0
+while guess ** 3 &lt; cube:
+    guess = guess + 1          # crawl upward one at a time
+print(guess)                   # 2   <- because 2*2*2 = 8</code></pre>
+          <p>Try every candidate in order until one fits. Simple and correct — but if the answer is big, you crawl through a <strong>lot</strong> of numbers.</p>
+          <aside class="notes">Guess-and-check = try every value in order. Fine for small numbers; for a huge target it's slow because it steps one at a time. That slowness sets up why we want something cleverer: bisection.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>A Clever Way: Halve the Range</h2>
+          <div class="two-up">
+            <div class="teacher-question">I'm thinking of a number from 1 to 100. Guess, and I'll say "higher" or "lower".</div>
+            <div class="learner-action">50? higher &rarr; 75? lower &rarr; 62? higher &rarr; 68? ... found in about 7 guesses, not 100.</div>
+          </div>
+          <p class="insight">Guess the <strong>middle</strong>. Each answer throws away <strong>half</strong> the numbers still left. That's <em>bisection</em> — cutting the range in two every time.</p>
+          <aside class="notes">The guessing game everyone knows. Always guess the middle; each "higher/lower" halves what's left. 100 numbers falls to 1 in about 7 halvings. Contrast with guess-and-check crawling 1,2,3,... The bigger the range, the bigger the win.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Bisection in Code</h2>
+          <pre><code class="language-python" data-trim>target = 68
+low = 1
+high = 100
+guess = (low + high) // 2
+while guess != target:
+    if guess &lt; target:
+        low = guess + 1        # too low: raise the floor
+    else:
+        high = guess - 1       # too high: lower the ceiling
+    guess = (low + high) // 2  # new middle
+print("found", guess)</code></pre>
+          <p class="learner-action">Keep a <code>low</code>/<code>high</code> bracket, test the middle, drop the half that can't hold the answer, repeat.</p>
+          <aside class="notes">Same idea as the game, in code. low and high bracket the answer; the midpoint is tested; we move whichever end can't contain the target. Don't sweat the math — the point is: halving beats crawling. This mirrors the L3 bisection square-root exercise.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="1">
+            <p class="quiz-question">With <code>s = "abcdefgh"</code>, what is <code>s[3:6]</code>?</p>
+            <button>"defg"</button>
+            <button>"def"</button>
+            <button>"cde"</button>
+            <button>"cdef"</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">The trap is the exclusive stop. s[3:6] takes indices 3, 4, 5 — d, e, f — and stops before 6, so no g. From the L3 quiz.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A string is a sequence of symbols: <code>len(s)</code>, index <code>s[i]</code> (from 0), slice <code>s[a:b]</code>, join with <code>+</code>, loop with <code>for char in s</code>.</li>
+            <li>Strings are immutable — you build a new one, you never edit in place.</li>
+            <li>Guess-and-check crawls; bisection <strong>halves the range</strong> and finds the answer far faster.</li>
+          </ul>
+          <p>Next: <strong>functions</strong> — naming a rule once so you can reuse it.</p>
+          <aside class="notes">Bridge to Unit 4. Point students at the Unit 3 exercises: counting characters, reversing a string, counting vowels, checking a palindrome. Keep reminding them: the machine checks symbols, not meaning.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

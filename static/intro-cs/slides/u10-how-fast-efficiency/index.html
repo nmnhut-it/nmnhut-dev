@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 10 — How Fast? (Efficiency)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 10 &middot; High school CS in Python</p>
+          <h1>How Fast?</h1>
+          <p class="lede">Two programs can give the same answer — but one finishes in a blink and the other takes all day. We measure the work by <strong>counting steps</strong>, not seconds. Based on MIT 6.0001, Lecture 10.</p>
+          <aside class="notes">Unit 10 is our first look at efficiency. The representation idea for today: we represent "how much work" as a step count that grows with the input size — not a stopwatch reading that depends on your computer.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Same Answer, Different Speed</h2>
+          <p>Imagine two ways to find a name in a class list of size <code>n</code>:</p>
+          <div class="rule-board">
+            <div><strong>Recipe A</strong><p>check every name, one by one</p></div>
+            <div><strong>Recipe B</strong><p>a clever shortcut that skips most of them</p></div>
+          </div>
+          <p class="insight">Both find the name. The question isn't <em>"is it correct?"</em> — it's <em>"how much work did it do?"</em></p>
+          <aside class="notes">Correctness is not the whole story. Two correct algorithms can differ wildly in work. Ask the class: for a list of 30 names it won't matter — but for 30 million? That's when the choice of recipe decides whether it finishes at all.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Why a Stopwatch Lies</h2>
+          <pre><code class="language-python" data-trim>import time
+start = time.time()
+find_name(class_list, "Mai")   # run the recipe
+print(time.time() - start)     # how many seconds?</code></pre>
+          <ul>
+            <li>Run it on a fast gaming PC &rarr; small number.</li>
+            <li>Run the <em>same code</em> on an old phone &rarr; bigger number.</li>
+            <li>Other apps open? The number changes again.</li>
+          </ul>
+          <p class="insight">Seconds measure your <strong>computer</strong>, not your <strong>recipe</strong>. We need something fairer.</p>
+          <aside class="notes">Timing is real and sometimes useful, but it confounds the algorithm with the hardware and the moment. The same program times differently on different machines, so seconds can't tell us which recipe is smarter. We want a machine-independent measure.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Count the Steps, Not the Seconds</h2>
+          <p>Instead of a stopwatch, count the little actions the recipe does: each compare, each add, each store is <strong>one step</strong>.</p>
+          <div class="flow-row" aria-label="fair measure">
+            <span>Seconds<br><small>depends on the computer</small></span>
+            <span>Steps<br><small>same on every computer</small></span>
+          </div>
+          <p>A step count is the same whether you run it on a supercomputer or a calculator. That's the fair measure.</p>
+          <aside class="notes">This is the representation move: "work" becomes a count of primitive operations. We pretend each step costs the same and just count how many happen. It's an estimate, but a machine-independent one — the whole class can agree on it.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Let's Count One</h2>
+          <pre><code class="language-python" data-trim>def total(n):
+    result = 0            # 1 step
+    for i in range(n):    # the loop body runs n times...
+        result = result + i   # ...doing 1 step each time
+    return result         # 1 step
+# steps = 1 + n + 1  =  n + 2</code></pre>
+          <p>The loop runs <code>n</code> times, so the count depends on <code>n</code>. Bigger list &rarr; more steps.</p>
+          <p class="learner-action">If <code>n</code> is 100, how many steps? If <code>n</code> is 1000?</p>
+          <aside class="notes">Walk it live: setup is 1, the loop body happens n times, the return is 1, giving n + 2. The key realization is that the count is a formula in n — it grows as the input grows. That growth is the thing we really care about.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Class 1 — Constant (always the same)</h2>
+          <pre><code class="language-python" data-trim>def first_item(seats):
+    return seats[0]   # grab position 0 — always 1 step</code></pre>
+          <p>Whether the list has 10 items or 10 million, this does the <strong>same tiny amount of work</strong>. No loop, no growth.</p>
+          <p>We call this <strong>constant</strong> time, written <strong>O(1)</strong> — "order 1".</p>
+          <aside class="notes">Constant time is the dream: the work does not depend on n at all. Looking up one position in a list is O(1). The "1" doesn't mean literally one step — it means a fixed number that never grows with the input.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Class 2 — Linear (one loop)</h2>
+          <pre><code class="language-python" data-trim>def contains(seats, wanted):
+    for person in seats:      # loop over all n people
+        if person == wanted:  # 1 compare each time
+            return True
+    return False</code></pre>
+          <p>One loop over <code>n</code> things &rarr; about <code>n</code> steps. Double the list, double the work.</p>
+          <p>We call this <strong>linear</strong> time, written <strong>O(n)</strong>.</p>
+          <aside class="notes">A single pass over the input is linear: n items, one unit of work each, so the step count grows in step with n. "Recipe A" from slide 2 lives here. Doubling the input doubles the work — a straight line.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Class 3 — Quadratic (a loop inside a loop)</h2>
+          <pre><code class="language-python" data-trim>def any_duplicate(seats):
+    for a in seats:           # n times...
+        for b in seats:       # ...n times each  ->  n x n
+            if a is not b and a == b:
+                return True
+    return False</code></pre>
+          <p>For each of <code>n</code> people, you scan all <code>n</code> again &rarr; <code>n &times; n</code> steps.</p>
+          <p>We call this <strong>quadratic</strong> time, written <strong>O(n^2)</strong>. This one gets scary fast.</p>
+          <aside class="notes">A nested loop multiplies: the outer runs n times, and each outer pass runs the inner n times, giving n times n. This is where growth turns painful — the next slide's table makes it vivid. Nested loops are the classic sign of quadratic work.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Watch It Grow</h2>
+          <div class="table-card">
+            <span><strong>n</strong> &nbsp;&nbsp; O(1) &nbsp;&nbsp; O(n) &nbsp;&nbsp; O(n^2)</span>
+            <span>10 &nbsp;&nbsp; 1 &nbsp;&nbsp; 10 &nbsp;&nbsp; 100</span>
+            <span>100 &nbsp;&nbsp; 1 &nbsp;&nbsp; 100 &nbsp;&nbsp; 10,000</span>
+            <span>1,000 &nbsp;&nbsp; 1 &nbsp;&nbsp; 1,000 &nbsp;&nbsp; 1,000,000</span>
+            <span>1,000,000 &nbsp;&nbsp; 1 &nbsp;&nbsp; 1,000,000 &nbsp;&nbsp; 1,000,000,000,000</span>
+          </div>
+          <p class="insight">Constant stays flat. Linear keeps up. Quadratic explodes — a trillion steps for a million-item list.</p>
+          <aside class="notes">Let the numbers land. At a million items, O(1) is still one step, O(n) is a million (fine), and O(n^2) is a trillion (hopeless in real time). The shape of the growth — not the exact count — is what decides whether a program is usable.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Big-O: Shorthand for "How It Grows"</h2>
+          <p>We had <code>n + 2</code> steps for the loop. As <code>n</code> gets huge, the <code>+ 2</code> stops mattering — <code>1,000,002</code> is basically a million.</p>
+          <div class="table-card">
+            <span><code>n + 2</code> &rarr; <strong>O(n)</strong> &nbsp; drop the small <code>+ 2</code></span>
+            <span><code>5 &times; n</code> &rarr; <strong>O(n)</strong> &nbsp; drop the multiplier</span>
+            <span><code>n&times;n + 3&times;n + 9</code> &rarr; <strong>O(n^2)</strong> &nbsp; keep the biggest part</span>
+          </div>
+          <p>Big-O keeps only the <strong>fastest-growing part</strong> and throws away constants. It names the <em>shape</em>, not the exact count.</p>
+          <aside class="notes">Big-O is a deliberate simplification: for large n only the dominant term matters, so we drop additive and multiplicative constants. n + 2, 3n, and 5n + 100 are all O(n) — same shape. Students should read O(n^2) as "grows like n squared," not a precise step count.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>There's More (Coming Up)</h2>
+          <div class="rule-board">
+            <div><strong>Even better than linear</strong><p>clever shortcuts that skip most of the work — Recipe B</p></div>
+            <div><strong>Even worse than quadratic</strong><p>recipes where the work <em>doubles</em> for each new item</p></div>
+          </div>
+          <p>Those extra classes — <code>O(log n)</code> and <code>O(2^n)</code> — are the star of <strong>Unit 11</strong>. Today: constant, linear, quadratic.</p>
+          <aside class="notes">Just a tease so the three classes today feel like part of a bigger ladder. Logarithmic (bisection-style shortcuts) and exponential (work doubling each step) get their own treatment in Unit 11. Don't define them formally here.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">A loop <em>inside</em> a loop, each running <code>n</code> times. How does the number of steps grow?</p>
+            <button>1 step, no matter how big n is — O(1)</button>
+            <button>about n steps — O(n)</button>
+            <button>about n &times; n steps — O(n^2)</button>
+            <button>it depends which computer you run it on</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Answer: O(n^2). The outer loop runs n times and each pass runs the inner loop n times, so n times n. The last option is the trap — step counts don't depend on the machine; that was the whole point of counting steps instead of seconds.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>Seconds measure your computer; <strong>counting steps</strong> measures the recipe fairly.</li>
+            <li>How the step count grows with <code>n</code> gives the class: <strong>O(1)</strong> constant, <strong>O(n)</strong> linear, <strong>O(n^2)</strong> quadratic.</li>
+            <li>One loop is linear; a loop inside a loop is quadratic and explodes.</li>
+            <li>Big-O keeps only the fastest-growing part — the shape, not the exact count.</li>
+          </ul>
+          <p>Next: <strong>Unit 11</strong> — the even-faster and even-slower classes, <code>O(log n)</code> and <code>O(2^n)</code>.</p>
+          <aside class="notes">Bridge to Unit 11. The takeaway: choose the recipe by how it grows, not by how it times on your laptop. Reinforce that nested loops are the everyday warning sign of quadratic cost.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

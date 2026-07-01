@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 5 — Lists &amp; Tuples</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 5 &middot; High school CS in Python</p>
+          <h1>Lists &amp; Tuples</h1>
+          <p class="lede">One name for a whole collection of things — data you can index, loop over, and change. Based on MIT 6.0001, Lecture 5.</p>
+          <aside class="notes">So far a variable held one value. A list holds many, in order. This unit is about collections — and one sneaky bug (aliasing) that trips up almost everyone the first time.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>One Name, Many Values</h2>
+          <pre><code class="language-python" data-trim>scores = [88, 72, 95, 60]
+print(scores)      # [88, 72, 95, 60]</code></pre>
+          <p>A <strong>list</strong> is an <strong>ordered collection</strong> — many values kept in a row, under one name, in square brackets <code>[ ]</code>.</p>
+          <p class="insight">Instead of <code>s1</code>, <code>s2</code>, <code>s3</code>, <code>s4</code>, you keep them all in one place: <code>scores</code>.</p>
+          <aside class="notes">The representation move: a bunch of related values is data too. "Ordered" means position matters — first, second, third. A list can hold ints, strings, anything, even mixed.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Reach In by Position</h2>
+          <pre><code class="language-python" data-trim>pets = ["cat", "dog", "fish"]
+pets[0]        # "cat"   <- counting starts at ZERO
+pets[2]        # "fish"
+pets[-1]       # "fish"  <- -1 means "last"
+len(pets)      # 3       <- how many items</code></pre>
+          <p class="learner-action">Predict <code>pets[1]</code> before you run it. Each item has an <strong>index</strong> — its position, counting from 0.</p>
+          <aside class="notes">Zero-based indexing is the classic first surprise. Position 0 is the first item, so the last index is len - 1. Negative indexes count from the back. len tells you the size.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Loop Over Every Item</h2>
+          <pre><code class="language-python" data-trim>scores = [88, 72, 95]
+total = 0
+for s in scores:      # s becomes each item in turn
+    total = total + s
+print(total)          # 255</code></pre>
+          <p>A <code>for</code> loop walks through the list one item at a time — no counting, no index needed.</p>
+          <aside class="notes">This is the payoff of a collection: one loop handles four items or four thousand. Trace it: s is 88, then 72, then 95; total grows each pass. Connect to the loops from Unit 2.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Growing a List: append</h2>
+          <pre><code class="language-python" data-trim>guests = ["Ana", "Ben"]
+guests.append("Cy")    # adds to the END, in place
+print(guests)          # ["Ana", "Ben", "Cy"]
+len(guests)            # 3</code></pre>
+          <p><code>.append(x)</code> changes the list you already have — it does <strong>not</strong> make a new one. Lists can grow and shrink; this is called being <strong>mutable</strong>.</p>
+          <aside class="notes">Mutable = changeable in place. append adds one item at the end. Note there is no new list here — same list, now longer. This "changes in place" idea matters a lot in three slides.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Sorting: Two Ways</h2>
+          <pre><code class="language-python" data-trim>nums = [3, 1, 2]
+
+nums.sort()            # CHANGES nums -> [1, 2, 3], gives back None
+new = sorted(nums)     # RETURNS a new sorted list
+
+# TRAP:
+nums = nums.sort()     # now nums is None!  sort() returns nothing</code></pre>
+          <p class="insight"><code>.sort()</code> reorders the list in place. <code>sorted(list)</code> hands you a brand-new sorted list and leaves the original alone.</p>
+          <aside class="notes">Number-one beginner bug: writing L = L.sort() and getting None. sort mutates and returns None; sorted returns the new list. Pick sorted when you want to keep the original order too.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Tuples: Locked Lists</h2>
+          <pre><code class="language-python" data-trim>point = (4, 7)      # round brackets = a TUPLE
+point[0]            # 4     <- indexing works like a list
+point[0] = 9        # TypeError -- tuples can't be changed</code></pre>
+          <p>A <strong>tuple</strong> is an ordered collection too, but <strong>fixed</strong> — once made, it can't change. Use it for things that belong together and shouldn't move, like an <code>(x, y)</code> point.</p>
+          <aside class="notes">Immutable = cannot be changed. Same indexing and len as a list, but no append, no item assignment. Good for fixed pairs. A one-item tuple needs a comma: (5,), not (5).</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Unpacking &amp; Returning Two Values</h2>
+          <pre><code class="language-python" data-trim>x, y = (4, 7)       # unpack: x = 4, y = 7
+a, b = b, a         # swap two names in ONE line!
+
+def min_max(nums):
+    return min(nums), max(nums)   # packs a tuple
+
+low, high = min_max([5, 2, 9])    # low = 2, high = 9</code></pre>
+          <p>A function returns just one thing — but that one thing can be a tuple, so you get <strong>two values back at once</strong>.</p>
+          <aside class="notes">Unpacking spreads a tuple across names. The swap works because the right side is built first. Returning min, max is the everyday reason tuples exist. Caller unpacks into low, high.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>The Empty-List Edge Case</h2>
+          <pre><code class="language-python" data-trim>bag = []            # a valid, empty list
+len(bag)            # 0
+bag[0]              # IndexError -- nothing at position 0!
+
+for item in bag:    # loop body simply never runs
+    print(item)</code></pre>
+          <p class="learner-action">Always ask: <em>what if the list is empty?</em> Indexing it crashes, but looping over it is safe — it just does nothing.</p>
+          <aside class="notes">Empty is a real, common case (a search that finds nothing, input not given yet). len is 0, any index is an error, and a for loop runs zero times. Checking for empty is a habit that prevents crashes.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Aliasing: Two Names, One List</h2>
+          <pre><code class="language-python" data-trim>a = ["red", "green"]
+b = a               # NOT a copy -- b is another name for a's list
+b.append("blue")
+
+print(a)   # ["red", "green", "blue"]   <- a changed too!
+print(b)   # ["red", "green", "blue"]</code></pre>
+          <p class="insight"><code>b = a</code> does <strong>not</strong> copy the list. Both names point at the <em>same</em> list, so changing one shows up in the other.</p>
+          <aside class="notes">The centerpiece bug. Assignment copies the reference, not the contents — like two nicknames for one person. This surprises everyone once. Draw it: two arrows, one box.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Cloning: Make a Real Copy</h2>
+          <pre><code class="language-python" data-trim>a = ["red", "green"]
+b = a[:]            # CLONE -- [:] builds a brand-new list
+# b = list(a)       # same idea, another way
+b.append("blue")
+
+print(a)   # ["red", "green"]           <- untouched!
+print(b)   # ["red", "green", "blue"]</code></pre>
+          <p>Want a separate copy? <strong>Clone</strong> it with <code>a[:]</code> or <code>list(a)</code>. Now they are two different lists, and changing one leaves the other alone.</p>
+          <aside class="notes">Compare directly with the previous slide: only the b = a line changed, to b = a[:]. Now there are two boxes, two arrows. This is the fix for the aliasing surprise.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Gotcha: Passing a List to a Function</h2>
+          <pre><code class="language-python" data-trim>def add_zero(items):
+    items.append(0)     # changes the CALLER's list!
+
+my_list = [1, 2, 3]
+add_zero(my_list)
+print(my_list)          # [1, 2, 3, 0]  <- surprise
+
+def add_zero_safe(items):
+    items = items[:]    # work on a clone
+    items.append(0)
+    return items</code></pre>
+          <p>A function's parameter is an <strong>alias</strong> of the list you passed in. Mutate it and you mutate the original — unless you clone first.</p>
+          <aside class="notes">Same aliasing rule, now across a function call. The parameter and the argument share one list. Clone at the top if the function shouldn't disturb the caller's data. Very common real bug.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="1">
+            <p class="quiz-question">After <code>warm = ['red', 'yellow', 'orange']</code>; <code>hot = warm</code>; <code>hot.append('pink')</code>, what are <code>warm</code> and <code>hot</code>?</p>
+            <button>warm has 3 items, hot has 4</button>
+            <button>both are ['red', 'yellow', 'orange', 'pink']</button>
+            <button>warm has 4 items, hot has 3</button>
+            <button>both are ['red', 'yellow', 'orange']</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Answer: index 1. hot = warm aliases — one list, changed through hot and seen through warm. The trap is thinking assignment copies the list. To copy, use warm[:].</aside>
+        </section>
+
+        <section data-narration-id="s14">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A <strong>list</strong> <code>[ ]</code> is an ordered collection: index it, <code>len</code> it, loop over it, <code>append</code> to it.</li>
+            <li><code>.sort()</code> changes in place (returns <code>None</code>); <code>sorted()</code> gives a new list.</li>
+            <li>A <strong>tuple</strong> <code>( )</code> is fixed — great for pairs and returning two values.</li>
+            <li><code>b = a</code> shares one list (aliasing); <code>b = a[:]</code> makes a real copy — so does passing a list to a function.</li>
+          </ul>
+          <p>Next: <strong>dictionaries</strong> — storing data as key → value instead of by position.</p>
+          <aside class="notes">Bridge to Unit 6. Lists index by position; dictionaries will index by a key you choose. Point students at the Unit 5 exercises on lists, tuples, and cloning.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 2 — Choices &amp; Repetition</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 2 &middot; High school CS in Python</p>
+          <h1>Choices &amp; Repetition</h1>
+          <p class="lede">Teach a program to <strong>decide</strong> and to <strong>repeat</strong>. Two small ideas that turn straight-line code into anything. Based on MIT 6.0001, Lecture 2.</p>
+          <aside class="notes">Unit 1 ran top to bottom, one line at a time. Today the program gets to pick a path and loop — the real start of programming.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>So Far, Code Just Marched</h2>
+          <div class="flow-row" aria-label="two new powers">
+            <span>Choose<br><small>run this block, or that one</small></span>
+            <span>Repeat<br><small>do this block again and again</small></span>
+          </div>
+          <p class="insight">Until now your code ran straight down, every line, once. Today it can pick a path and loop.</p>
+          <aside class="notes">Frame the whole unit: branching = choose, iteration = repeat. Everything else is detail. Keep it concrete.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Booleans: Yes/No Data</h2>
+          <pre><code class="language-python" data-trim>age = 15
+age &gt;= 13     # True
+age == 18     # False   &lt;- two equals means "is it equal?"
+age != 18     # True    &lt;- not equal</code></pre>
+          <p>A comparison is a question. Its answer is a <strong>bool</strong>: just <code>True</code> or <code>False</code> — the simplest data of all.</p>
+          <aside class="notes">Represent thread: a bool is a yes/no fact stored as data. Stress == compares, = stores. Predict each line, then run.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Combining Tests: and / or / not</h2>
+          <pre><code class="language-python" data-trim>sunny = True
+warm  = False
+
+sunny and warm    # False  <- needs BOTH true
+sunny or warm     # True   <- needs EITHER true
+not sunny         # False  <- flips it</code></pre>
+          <p><code>and</code> is picky (both), <code>or</code> is easy (either), <code>not</code> flips. Each still gives back a <strong>bool</strong>.</p>
+          <aside class="notes">Read them as English. Predict the three results before revealing. These build the compound conditions branches will use.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>if / else: One Decision</h2>
+          <pre><code class="language-python" data-trim>temp = 30
+if temp &gt; 25:
+    print("wear shorts")     # runs only if True
+else:
+    print("bring a jacket")  # runs only if False
+print("let's go")           # runs either way</code></pre>
+          <p class="insight">The <strong>indentation</strong> (4 spaces) is how Python knows which lines belong to the choice.</p>
+          <aside class="notes">Predict output for temp = 30, then change to 10 and re-predict. Exactly one branch runs; the un-indented line always runs. Indentation is not decoration — it is the grammar.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>if / elif / else: First True Wins</h2>
+          <pre><code class="language-python" data-trim>score = 82
+if score &gt;= 90:
+    print("A")
+elif score &gt;= 80:
+    print("B")     # <- first True, so this runs
+elif score &gt;= 70:
+    print("C")
+else:
+    print("try again")</code></pre>
+          <p class="insight">Python checks top to bottom and takes the <strong>first</strong> true branch — then <strong>skips the rest</strong>, even if a later one is also true.</p>
+          <aside class="notes">elif = "else if". Trace score = 82: 90 fails, 80 passes, prints B, stops. Order matters. Ask what prints for score = 95.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>The while Loop (and the one that never stops)</h2>
+          <pre><code class="language-python" data-trim>n = 1               # 1. START value
+while n &lt;= 3:       # 2. CONDITION (a bool)
+    print(n)        #    prints 1, then 2, then 3
+    n = n + 1       # 3. UPDATE  <- forget this = forever!</code></pre>
+          <p class="insight">A counting <code>while</code> needs a <strong>start</strong> and an <strong>update</strong>. Drop the update and the condition stays true — an infinite loop (press Ctrl-C to stop).</p>
+          <aside class="notes">The loop keeps state: n changes each pass, and that changing value ends the loop. Delete n = n + 1 live to show the runaway, then Ctrl-C.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>The for Loop + range()</h2>
+          <pre><code class="language-python" data-trim>for n in range(3):        # 0, 1, 2   (stops BEFORE 3)
+    print(n)
+
+range(2, 6)               # 2, 3, 4, 5
+range(0, 10, 2)           # 0, 2, 4, 6, 8   (step by 2)</code></pre>
+          <p>A <code>for</code> loop counts <strong>for you</strong> — no start or update to forget. <code>range(start, stop, step)</code> stops just before <code>stop</code>.</p>
+          <aside class="notes">range(3) is 0,1,2 — the off-by-one to internalise. Predict range(2,6) and range(0,10,2) before running. for = known count; while = unknown count.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Early Exit: break &amp; continue</h2>
+          <pre><code class="language-python" data-trim>for n in range(10):
+    if n == 5:
+        break        # leave the loop right now -> stops at 4
+    print(n)         # 0, 1, 2, 3, 4
+
+for n in range(5):
+    if n % 2 == 0:
+        continue     # skip THIS pass, keep going
+    print(n)         # 1, 3</code></pre>
+          <p><code>break</code> quits the loop; <code>continue</code> skips to the next round.</p>
+          <aside class="notes">Trace both. break = done with the loop; continue = done with this pass only. n % 2 == 0 tests even. Predict the printed numbers first.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Worked Example: Add 1 to n</h2>
+          <pre><code class="language-python" data-trim>n = 5
+total = 0                    # running sum starts empty
+for k in range(1, n + 1):    # k = 1, 2, 3, 4, 5
+    total = total + k        # keep adding into total
+print(total)                 # 15</code></pre>
+          <p class="learner-action">Trace it: after each pass, what is <code>k</code>, and what is <code>total</code>? The loop <strong>keeps state</strong> that changes.</p>
+          <aside class="notes">Fill a table: pass, k, total (1/1, 2/3, 3/6, 4/10, 5/15). range(1, n+1) reaches n because stop is excluded. This is the sum_1_to_n exercise.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">Which expression is <code>True</code>?</p>
+            <button>not (3 &gt; 2)</button>
+            <button>(5 == 5) and (1 &gt; 9)</button>
+            <button>(5 == 5) or (1 &gt; 9)</button>
+            <button>"a" &gt; "b"</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">C is True or False, which is True. A is not True = False; B is True and False = False; D is False. Read each aloud in English.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A <strong>bool</strong> is yes/no data; comparisons and <code>and/or/not</code> produce it.</li>
+            <li><strong>Choose</strong> with <code>if / elif / else</code> — the first true branch wins, marked by indentation.</li>
+            <li><strong>Repeat</strong> with <code>while</code> (needs start + update) and <code>for</code> (uses <code>range</code>); <code>break</code>/<code>continue</code> steer the loop.</li>
+          </ul>
+          <p>Next: <strong>strings &amp; clever loops</strong> — walking through text one symbol at a time.</p>
+          <aside class="notes">Bridge to Unit 3. Point students to the Unit 2 exercises: odd_or_even, is_triangle, count-down, sum_1_to_n.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

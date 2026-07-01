@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 8 — Objects (OOP)</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 8 &middot; High school CS in Python</p>
+          <h1>Objects (OOP)</h1>
+          <p class="lede">An object bundles data and behavior into one thing. We'll design our own kind of thing — a Dog — and give it its own data and its own actions. Based on MIT 6.0001, Lecture 8.</p>
+          <aside class="notes">First taste of object-oriented programming. Keep it concrete: we build ONE small class (Dog) across the whole deck, so every idea lands on something they can picture.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>What Is an Object?</h2>
+          <div class="flow-row" aria-label="what an object holds">
+            <span>Data<br><small>what it knows: name, age</small></span>
+            <span>Behavior<br><small>what it can do: have a birthday</small></span>
+          </div>
+          <p class="insight">An object is <strong>one thing</strong> that carries its own data <em>and</em> the actions that go with it — packed together.</p>
+          <aside class="notes">Big idea for the whole unit: data + behavior in one bundle. A real dog "knows" its name and age and can do things. That pairing is what an object captures.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>You've Used Objects All Along</h2>
+          <pre><code class="language-python" data-trim>name = "Rex"
+name.upper()       # "REX"   <- text has actions built in
+
+pets = ["Rex", "Ada"]
+pets.append("Momo")  # a list has actions too</code></pre>
+          <p>A string holds data (letters) plus actions (<code>.upper()</code>). A list holds data plus actions (<code>.append()</code>). Now <strong>you</strong> get to invent your own kind of thing.</p>
+          <aside class="notes">Ground the abstraction in what they already know. Every value they've met is an object: data plus dot-notation actions. We're about to build one from scratch.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Class vs. Instance</h2>
+          <div class="rule-board">
+            <div><strong>Class</strong><p>the blueprint — describes what every dog has and can do</p></div>
+            <div><strong>Instance</strong><p>one real dog built from the blueprint</p></div>
+            <div><strong>Many from one</strong><p>one blueprint, as many dogs as you like</p></div>
+          </div>
+          <p><code>class Dog</code> is the blueprint; <code>rex = Dog("Rex", 3)</code> is <strong>one</strong> dog with its own name and age.</p>
+          <aside class="notes">Analogy: a cookie cutter (class) vs the cookies (instances). Writing the class = design the shape once. Making instances = stamp out as many as you want.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Defining a Class</h2>
+          <pre><code class="language-python" data-trim>class Dog:
+    """A pet dog with a name and an age."""
+    # The blueprint starts here.
+    # Inside we'll say what data each dog holds
+    # and what actions it can do.</code></pre>
+          <p>The <code>class</code> keyword names a brand-new kind of thing. By convention the name starts with a capital letter: <code>Dog</code>.</p>
+          <aside class="notes">Keep it minimal here — an empty-ish blueprint. Capitalized class names are the Python convention. Next slide we fill in the data.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2><code>__init__</code> and <code>self</code></h2>
+          <pre><code class="language-python" data-trim>class Dog:
+    def __init__(self, name, age):
+        self.name = name    # this dog's own name
+        self.age = age      # this dog's own age</code></pre>
+          <p><code>__init__</code> runs <strong>automatically</strong> when you make a new dog. <code>self</code> means "this particular dog," so <code>self.name</code> is <em>this</em> dog's name.</p>
+          <aside class="notes">Two double-underscores each side of init. self is a stand-in for whichever dog is being built. self.name = name stores the value onto that specific object. Don't over-explain — they'll see it work next slide.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Making Real Dogs</h2>
+          <pre><code class="language-python" data-trim>rex = Dog("Rex", 3)     # __init__ runs: self.name="Rex", self.age=3
+ada = Dog("Ada", 7)     # a second, separate dog
+
+print(rex.name)   # Rex   <- dot reads this dog's data
+print(ada.age)    # 7</code></pre>
+          <p class="insight">You pass two values, but <code>__init__</code> lists three — Python fills <code>self</code> for you with the new dog.</p>
+          <aside class="notes">Each call makes a distinct object with its own name and age. rex and ada don't share data. Dot notation (rex.name) reads an attribute, exactly like they've done with library values.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Each Instance Has Its Own Data</h2>
+          <pre><code class="language-python" data-trim>rex = Dog("Rex", 3)
+ada = Dog("Ada", 7)
+
+rex.age = 4        # only changes Rex
+print(rex.age)     # 4
+print(ada.age)     # 7   <- Ada is untouched</code></pre>
+          <p>Changing one dog's data leaves the others alone. Each instance keeps its <strong>own</strong> copy of <code>name</code> and <code>age</code>.</p>
+          <aside class="notes">This kills the common beginner fear that all dogs "share" a variable. The blueprint is shared; the data is per-instance. Good moment to have them predict both prints.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>A Method: <code>birthday()</code></h2>
+          <pre><code class="language-python" data-trim>class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+
+    def birthday(self):
+        self.age = self.age + 1    # this dog gets one year older</code></pre>
+          <p>A <strong>method</strong> is an action that belongs to the class. It takes <code>self</code>, so it can read and change <em>this</em> dog's data.</p>
+          <aside class="notes">A method is just a function that lives inside the class and gets self. birthday changes the dog's own age. Note there's no return — it mutates the object.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Calling a Method</h2>
+          <pre><code class="language-python" data-trim>rex = Dog("Rex", 3)
+print(rex.age)    # 3
+
+rex.birthday()    # runs birthday with self = rex
+print(rex.age)    # 4</code></pre>
+          <p class="insight"><code>rex.birthday()</code> — the dog on the left of the dot becomes <code>self</code> inside the method. That's why it changes <em>Rex's</em> age.</p>
+          <aside class="notes">Same dot notation as .append(). No argument passed, but self is filled with rex. Have them trace: age goes 3 then 4. Call it twice and it's 5.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2><code>__str__</code>: a Nice Printout</h2>
+          <pre><code class="language-python" data-trim>class Dog:
+    # ... __init__, birthday as before ...
+    def __str__(self):
+        return self.name + " (age " + str(self.age) + ")"
+
+print(rex)   # Rex (age 4)
+# without __str__ you'd see: &lt;__main__.Dog object at 0x...&gt;</code></pre>
+          <p>Define <code>__str__</code> to choose what <code>print</code> shows. It must <strong>return a string</strong>. Without it, you get an ugly type-and-address default.</p>
+          <aside class="notes">__str__ is another double-underscore method Python calls on print. Great for debugging — you see real values, not a memory address. Must return a str, hence str(self.age).</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Put It Together</h2>
+          <pre><code class="language-python" data-trim>class Dog:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+    def birthday(self):
+        self.age = self.age + 1
+    def __str__(self):
+        return self.name + " (age " + str(self.age) + ")"
+
+rex = Dog("Rex", 3)
+rex.birthday()
+print(rex)        # Rex (age 4)</code></pre>
+          <p class="learner-action">Trace it: what is <code>rex.age</code> after <code>birthday()</code>, and what does the last line print?</p>
+          <aside class="notes">The whole class on one slide: data (init), behavior (birthday), printout (str). This is the shape of every class they'll write. Have them run it and then add a second dog.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="1">
+            <p class="quiz-question">A dog is made with <code>d = Dog("Momo", 3)</code>, then <code>d.birthday()</code> runs (which does <code>self.age = self.age + 1</code>). What does <code>d.age</code> return now?</p>
+            <button>3</button>
+            <button>4</button>
+            <button>7</button>
+            <button>an error</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Mirrors the L8 quiz Q10 (setter mutates the instance). birthday runs self.age = self.age + 1, so 3 becomes 4. The method changed this dog's own data attribute.</aside>
+        </section>
+
+        <section data-narration-id="s14">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>An object bundles <strong>data</strong> and <strong>behavior</strong> into one thing.</li>
+            <li>A <strong>class</strong> is the blueprint; each <strong>instance</strong> has its own data. <code>__init__</code> and <code>self</code> build them.</li>
+            <li>Methods add actions; <code>__str__</code> makes a nice printout.</li>
+          </ul>
+          <p>Next: <strong>classes &amp; inheritance</strong> — building new kinds of thing on top of ones you already made.</p>
+          <aside class="notes">Bridge to Unit 9 (inheritance). Point students at the Unit 8 exercises: give Dog a bark() method, add a second class, print with __str__.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

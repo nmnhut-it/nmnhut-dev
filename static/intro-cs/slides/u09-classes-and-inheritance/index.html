@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 9 — Classes &amp; Inheritance</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 9 &middot; High school CS in Python</p>
+          <h1>Classes &amp; Inheritance</h1>
+          <p class="lede">Building families of related types: a child class that keeps everything its parent has, then adds or changes a little. Based on MIT 6.0001, Lecture 9.</p>
+          <aside class="notes">Unit 8 built a single class (data + behavior). Unit 9 connects classes into families so related types share structure instead of repeating it.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Recap: A Class Bundles Two Things</h2>
+          <div class="rule-board">
+            <div><strong>Data</strong><p>what the object <em>is</em> — a name, an age</p></div>
+            <div><strong>Behavior</strong><p>what the object can <em>do</em> — methods like <code>speak()</code></p></div>
+          </div>
+          <p>Every object built from a class has the <strong>same structure</strong>, but its own values.</p>
+          <aside class="notes">Quick callback to Unit 8. A class is a blueprint; each instance fills in its own data. Today: what if two classes are almost the same?</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>Cats and Dogs Are Both Animals</h2>
+          <div class="flow-row" aria-label="animal family">
+            <span>Animal<br><small>has a name; can speak</small></span>
+            <span>Cat<br><small>is an Animal + says "Meow"</small></span>
+            <span>Dog<br><small>is an Animal + says "Woof"</small></span>
+          </div>
+          <p class="insight">A Cat <em>is an</em> Animal. Writing the name code twice would be repeating yourself. <strong>Inheritance</strong> lets a Cat reuse the Animal parts for free.</p>
+          <aside class="notes">Motivate inheritance from real categories. The rule: keep everything the parent has, then add or specialize. Don't-repeat-yourself is the payoff.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>The Parent Class: Animal</h2>
+          <pre><code class="language-python" data-trim>class Animal:
+    def __init__(self, name):
+        self.name = name              # store the animal's name
+
+    def get_name(self):
+        return self.name
+
+    def speak(self):
+        return "Some generic sound"</code></pre>
+          <p>An ordinary class: it stores a <code>name</code> and knows how to <code>speak</code>.</p>
+          <aside class="notes">Keep the base small. self is whichever object we called the method on. speak returns a generic sound for now — children will change it.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>A Child Class Inherits Everything</h2>
+          <pre><code class="language-python" data-trim>class Cat(Animal):          # Cat's parent is Animal
+    pass                    # nothing new yet
+
+tom = Cat("Tom")
+print(tom.get_name())       # Tom   <- inherited, for free
+print(tom.speak())          # Some generic sound</code></pre>
+          <p>The name in parentheses — <code>Animal</code> — is the <strong>parent</strong>. <code>Cat</code> gets its data and methods without repeating them.</p>
+          <aside class="notes">class Cat(Animal) means "Cat is an Animal, plus more." Even with an empty body, Cat already has __init__, get_name, and speak from Animal.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Overriding: Change One Method</h2>
+          <pre><code class="language-python" data-trim>class Cat(Animal):
+    def speak(self):            # OVERRIDE the parent's speak
+        return "Meow"
+
+class Dog(Animal):
+    def speak(self):
+        return "Woof"
+
+Cat("Tom").speak()             # "Meow"
+Dog("Rex").speak()             # "Woof"
+Cat("Tom").get_name()          # "Tom"  <- still inherited</code></pre>
+          <p>Redefining a method the parent already has is called <strong>overriding</strong>.</p>
+          <aside class="notes">Each child redefines speak but keeps the inherited get_name. Overriding replaces just that one method; everything else stays inherited.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>What a Child Class Can Do</h2>
+          <div class="rule-board">
+            <div><strong>Inherit</strong><p>get all the parent's data and methods free</p></div>
+            <div><strong>Add</strong><p>give itself brand-new data or methods</p></div>
+            <div><strong>Override</strong><p>redefine a method to change its behavior</p></div>
+          </div>
+          <p>Whatever an <code>Animal</code> can do, a <code>Cat</code> can do — plus more.</p>
+          <aside class="notes">Three powers of a subclass. This is the whole contract of class Child(Parent): reuse, extend, specialize.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Adding Data With super().__init__</h2>
+          <pre><code class="language-python" data-trim>class Cat(Animal):
+    def __init__(self, name):
+        super().__init__(name)      # run Animal's setup first
+        self.lives = 9              # then add Cat's own data
+
+    def speak(self):
+        return "Meow"
+
+felix = Cat("Felix")
+print(felix.get_name())            # Felix   <- from Animal
+print(felix.lives)                 # 9       <- new in Cat</code></pre>
+          <p><code>super()</code> means "the parent." <code>super().__init__(name)</code> runs <code>Animal</code>'s setup, then Cat adds <code>lives</code>.</p>
+          <aside class="notes">super().__init__(name) is the same as Animal.__init__(self, name): it stores self.name. Then Cat layers on lives. Order matters — call the parent first.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Why Call the Parent?</h2>
+          <div class="two-up">
+            <div class="teacher-question">Re-typing <code>self.name = name</code> inside every child class copies the same code again and again.</div>
+            <div class="learner-action"><code>super().__init__(name)</code> reuses it once. Fix or improve <code>Animal</code> later and every child gets the fix automatically.</div>
+          </div>
+          <p>This is the payoff of inheritance: <strong>don't repeat yourself</strong>. One place holds the shared setup.</p>
+          <aside class="notes">D.R.Y. in plain words. Shared structure lives in the parent; children trust it. One source of truth is easier to change safely.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Asking "Is It An Animal?"</h2>
+          <pre><code class="language-python" data-trim>felix = Cat("Felix")
+
+isinstance(felix, Cat)       # True
+isinstance(felix, Animal)    # True   <- a Cat IS an Animal
+isinstance(felix, Dog)       # False  <- Felix is not a Dog</code></pre>
+          <p><code>isinstance(obj, Class)</code> checks whether an object counts as that type — <strong>true for the whole family chain</strong>, not just the exact class.</p>
+          <aside class="notes">isinstance is the "is-a" test. Because Cat inherits from Animal, felix passes both checks. Handy for writing code that works on any Animal.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Polymorphism: Same Call, Different Result</h2>
+          <pre><code class="language-python" data-trim>zoo = [Cat("Tom"), Dog("Rex"), Cat("Felix")]
+
+for animal in zoo:
+    print(animal.speak())    # Meow / Woof / Meow</code></pre>
+          <p class="insight">The loop never asks "cat or dog?" Each object runs its <strong>own</strong> <code>speak</code>. One method name, type-appropriate behavior — that's <strong>polymorphism</strong>.</p>
+          <aside class="notes">Polymorphism = one interface, right behavior per type. Python looks up speak on each object's real class. This lets you write general code over a mixed list.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="1">
+            <p class="quiz-question">Both <code>Animal</code> and <code>Cat</code> define <code>speak</code>. Which one runs for <code>Cat("Tom").speak()</code>?</p>
+            <button>Animal.speak (the parent)</button>
+            <button>Cat.speak (the child)</button>
+            <button>both, parent then child</button>
+            <button>an error — it is defined twice</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Python looks in the object's own class first and stops at the first match. Cat.speak wins; the parent's version is not run. The deepest override always wins.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li><code>class Child(Parent)</code> inherits all the parent's data and methods; it can add new ones or override them.</li>
+            <li><code>super().__init__(...)</code> reuses the parent's setup — don't repeat yourself.</li>
+            <li><code>isinstance</code> answers "is-a" for the whole family; polymorphism lets the same call do the right thing per type.</li>
+          </ul>
+          <p>Inheritance is <strong>shared structure across related types</strong> — the representation idea of this unit.</p>
+          <aside class="notes">Bridge onward. The two ideas most worth keeping: super() for shared setup, and polymorphism over a mixed list. Try building Animal -&gt; Cat/Dog yourself.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

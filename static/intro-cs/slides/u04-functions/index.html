@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 4 — Functions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 4 &middot; High school CS in Python</p>
+          <h1>Functions</h1>
+          <p class="lede">Give a useful chunk of code a name, then reuse it as many times as you like. A function is a rule: data in &rarr; value out. Based on MIT 6.0001, Lecture 4.</p>
+          <aside class="notes">Units 1-3 wrote code line by line. Today we bundle a rule under a name so we can reuse it. Representation thread: a function names and reuses a rule.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>Why Bother With Functions?</h2>
+          <p>Say you check "is this number even?" in three different places. Copy-paste it three times, and every fix means fixing it three times.</p>
+          <div class="rule-board">
+            <div><strong>The pain</strong><p>The same code, copied everywhere.</p></div>
+            <div><strong>The fix</strong><p>Write it once, give it a name, reuse it.</p></div>
+            <div><strong>The bonus</strong><p>Fix one place, fixed everywhere.</p></div>
+          </div>
+          <p class="insight">A good program is measured by what it <em>does</em>, not how many lines it is.</p>
+          <aside class="notes">Motivation is reuse and maintainability. This is decomposition, gently: break a job into named pieces. Do not use the word "abstraction" as jargon yet.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>A Function Is a Black Box</h2>
+          <div class="flow-row" aria-label="a function as a box">
+            <span>Data goes in<br><small>a number</small></span>
+            <span>The rule runs<br><small>hidden inside</small></span>
+            <span>A value comes out<br><small>the answer</small></span>
+          </div>
+          <p>You use a microwave without knowing its wiring: press a button, food gets hot. A function is the same — you feed it input and take the output, without re-reading how it works inside.</p>
+          <aside class="notes">The projector analogy from L4, gentled to a microwave. Black box = you trust the input/output, you do not peek inside. This is the representation lens: data in, value out.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Your First Function</h2>
+          <pre><code class="language-python" data-trim>def greet():
+    print("Hello!")
+    print("Welcome to Python.")
+
+greet()      # runs the two lines -> Hello! / Welcome to Python.</code></pre>
+          <p><code>def</code> means "a definition follows." The <strong>indented</strong> lines belong to the function. Nothing happens until you <strong>call</strong> it by writing its name with <code>()</code>.</p>
+          <aside class="notes">Defining is not running. Point out: def line, colon, indented body. The call greet() is what actually runs the body. Have them predict then run.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Give It an Input</h2>
+          <pre><code class="language-python" data-trim>def greet(name):        # name is a parameter -- an input slot
+    print("Hello,", name)
+
+greet("Mai")            # name becomes "Mai"  -> Hello, Mai
+greet("Tan")            # name becomes "Tan"  -> Hello, Tan</code></pre>
+          <p>The name in the <code>def</code> line is a <strong>parameter</strong> — an empty slot. The value you pass in the call fills it. Same function, different input, different result.</p>
+          <aside class="notes">Parameter = the slot in the def line. Argument = the actual value passed at the call. Keep it intuitive: the slot gets filled at call time. Reuse with different inputs is the whole point.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>return: Hand a Value Back</h2>
+          <pre><code class="language-python" data-trim>def double(n):
+    return n * 2         # hands the value back to whoever called
+
+result = double(5)       # result is 10
+print(result + 1)        # 11  -- we can keep computing with it</code></pre>
+          <p><code>return</code> ships one value out of the box. The call <code>double(5)</code> is <strong>replaced by</strong> its answer, <code>10</code> — so you can store it, print it, or do more math with it.</p>
+          <aside class="notes">Return is the most important line. The call expression becomes the returned value. Contrast with print on the next slide.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>return vs print — the None Trap</h2>
+          <pre><code class="language-python" data-trim>def double_return(n):
+    return n * 2         # hands 10 back
+
+def double_print(n):
+    print(n * 2)         # only SHOWS 10, hands nothing back
+
+a = double_return(5)     # a is 10
+b = double_print(5)      # prints 10, but b is None !</code></pre>
+          <p class="insight"><code>print</code> shows a value on screen. <code>return</code> gives it back so you can reuse it. Forget <code>return</code> and you get <code>None</code> — Python's word for "no value."</p>
+          <aside class="notes">The classic gotcha. If you see None leak out, you printed inside instead of returning. print is for humans to read; return is for the rest of your program to use.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>A Real One: is_even</h2>
+          <pre><code class="language-python" data-trim>def is_even(number):
+    """Input: a whole number. Returns True if it is even."""
+    return number % 2 == 0
+
+print(is_even(4))    # True
+print(is_even(7))    # False</code></pre>
+          <p>The text in <code>"""triple quotes"""</code> is a <strong>docstring</strong> — a short note saying what goes in and what comes out. Anyone can now use <code>is_even</code> without reading how it works.</p>
+          <aside class="notes">Recall % from Unit 1. The docstring is the label on the box: inputs and output. A user trusts the docstring; they do not re-derive the body. Keep it one gentle sentence.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Names Inside Stay Inside</h2>
+          <pre><code class="language-python" data-trim>def add_tax(price):
+    tax = price * 0.1      # tax is LOCAL -- lives only inside
+    return price + tax
+
+total = add_tax(100)       # 110
+print(tax)                 # ERROR -- tax does not exist out here</code></pre>
+          <p>A name created inside a function is <strong>local</strong>: it exists only while the function runs, then disappears. That's a feature — the outside world can't get tangled up in a function's private names.</p>
+          <aside class="notes">Scope kept intuitive: local names are private and temporary. Do not draw stack frames for 15-year-olds. The takeaway: what happens in the function stays in the function, except the returned value.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>Predict, Then Run</h2>
+          <pre><code class="language-python" data-trim>def area_of_square(side):
+    return side * side
+
+small = area_of_square(3)      # ?
+big   = area_of_square(10)     # ?
+print(small, big)</code></pre>
+          <p class="learner-action">Trace it: what does <code>side</code> become each call? What are <code>small</code> and <code>big</code>? Predict first, then run to check.</p>
+          <aside class="notes">Two calls, two separate runs, side is 3 then 10. Answer: 9 and 100. This cements: one function, reused with different inputs, each call independent.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Bonus: A Function Can Take a Function</h2>
+          <pre><code class="language-python" data-trim>def do_twice(action):     # action is itself a function!
+    action()
+    action()
+
+def wave():
+    print("wave")
+
+do_twice(wave)            # wave / wave</code></pre>
+          <p>In Python a function is just another value, so you can hand one to another function. You'll use this later — for now, just enjoy that it works.</p>
+          <aside class="notes">Optional/light higher-order, exactly one gentle example. No closures, no lambdas for 15-year-olds. Skip if short on time.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="0">
+            <p class="quiz-question">What does this print?<br><code>def f(x): x = x + 1; return x</code> &mdash; then <code>x = 3; z = f(x); print(x)</code></p>
+            <button>3</button>
+            <button>4</button>
+            <button>None</button>
+            <button>Error</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Inside f, x = x + 1 changes only f's private local x to 4. That local vanishes when f returns, so the outside x is still 3. z is 4, but we printed x. This is the local-names idea in action.</aside>
+        </section>
+
+        <section data-narration-id="s13">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A function names a rule so you can reuse it: <strong>data in &rarr; value out</strong>.</li>
+            <li><code>def</code> defines it; calling it with <code>()</code> runs it.</li>
+            <li><code>return</code> hands a value back; <code>print</code> only shows it — forget <code>return</code> and you leak <code>None</code>.</li>
+            <li>Names created inside a function are <strong>local</strong> and private.</li>
+          </ul>
+          <p>Next: <strong>lists and tuples</strong> — storing whole collections of data, not just one value.</p>
+          <aside class="notes">Bridge to Unit 5. Point students at the Unit 4 exercises: write is_even, area functions, and one that returns instead of prints. Reinforce return vs print.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

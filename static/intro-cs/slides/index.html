@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intro to CS in Python (High School) — Slide Decks</title>
+    <style>
+      :root{--ink:#202124;--muted:#667085;--line:#d9dee8;--teal:#0f766e;--teal-soft:#e6f4f1;--amber:#b7791f;--coral:#c2410c;}
+      *{box-sizing:border-box}
+      body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+      .wrap{max-width:1000px;margin:0 auto;padding:40px 24px 64px}
+      .eyebrow{color:var(--teal);font-weight:800;text-transform:uppercase;letter-spacing:.02em;font-size:.8rem;margin:0 0 6px}
+      h1{font-size:2rem;margin:0 0 10px}
+      .lede{color:var(--muted);max-width:70ch;margin:0 0 8px}
+      .quote{border-left:4px solid var(--teal);background:var(--teal-soft);padding:10px 16px;border-radius:6px;margin:18px 0 28px;color:#0b5b54;font-weight:600}
+      h2{font-size:1.15rem;margin:34px 0 14px;border-bottom:2px solid var(--line);padding-bottom:6px}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+      a.card{display:block;border:2px solid var(--line);border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;transition:border-color .15s,box-shadow .15s}
+      a.card:hover{border-color:var(--teal);box-shadow:0 6px 18px rgba(15,118,110,.10)}
+      a.card .u{color:var(--teal);font-weight:800;font-size:.78rem;text-transform:uppercase}
+      a.card .t{font-weight:800;margin:3px 0 4px}
+      a.card .d{color:var(--muted);font-size:.86rem}
+      a.card.hook{border-color:var(--amber)}
+      a.card.hook .u{color:var(--amber)}
+      .enr{border:2px dashed var(--coral);border-radius:10px;padding:16px 18px;background:#fff7f3}
+      .enr a{color:var(--coral);font-weight:700}
+      .foot{color:var(--muted);font-size:.82rem;margin-top:36px}
+      code{background:#f3f4f6;padding:1px 5px;border-radius:4px}
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <p class="eyebrow">Instructor slide decks</p>
+      <h1>Introduction to Computer Science in Python</h1>
+      <p class="lede">A high-school course (≈15 years old) with the MIT 6.0001 lectures as the backbone, adapted down. Python from Unit 1; representation-first as the hook.</p>
+      <div class="quote">A machine perceives the world as data — differently from you. You turn a problem into data the machine can hold, then write exact rules over it.</div>
+
+      <h2>The course · Unit 0 + 12 units</h2>
+      <div class="grid">
+        <a class="card hook" href="u00-how-computers-see/"><div class="u">Unit 0 · Hook</div><div class="t">How Computers See</div><div class="d">A picture becomes a grid of 0s and 1s; the perception gap.</div></a>
+        <a class="card" href="u01-what-is-computation/"><div class="u">Unit 1 · L1</div><div class="t">What Is Computation? + First Python</div><div class="d">Numbers, types, variables, <code>print</code>.</div></a>
+        <a class="card" href="u02-choices-and-repetition/"><div class="u">Unit 2 · L2</div><div class="t">Choices &amp; Repetition</div><div class="d"><code>if/elif/else</code>, <code>while</code>, <code>for</code>.</div></a>
+        <a class="card" href="u03-strings-and-clever-loops/"><div class="u">Unit 3 · L3</div><div class="t">Strings &amp; Clever Loops</div><div class="d">Text as symbols; indexing, slicing, bisection.</div></a>
+        <a class="card" href="u04-functions/"><div class="u">Unit 4 · L4</div><div class="t">Functions</div><div class="d"><code>def</code>, parameters, <code>return</code>, scope.</div></a>
+        <a class="card" href="u05-lists-and-tuples/"><div class="u">Unit 5 · L5</div><div class="t">Lists &amp; Tuples</div><div class="d">Ordered collections; aliasing vs cloning.</div></a>
+        <a class="card" href="u06-dictionaries/"><div class="u">Unit 6 · L6</div><div class="t">Dictionaries (+ gentle recursion)</div><div class="d">Key → value maps; a first recursion.</div></a>
+        <a class="card" href="u07-testing-and-debugging/"><div class="u">Unit 7 · L7</div><div class="t">Testing &amp; Debugging</div><div class="d">Expected vs actual; tracebacks; <code>try/except</code>.</div></a>
+        <a class="card" href="u08-objects/"><div class="u">Unit 8 · L8</div><div class="t">Objects (OOP)</div><div class="d">Data + behavior in a class.</div></a>
+        <a class="card" href="u09-classes-and-inheritance/"><div class="u">Unit 9 · L9</div><div class="t">Classes &amp; Inheritance</div><div class="d">Shared structure; overriding; <code>super()</code>.</div></a>
+        <a class="card" href="u10-how-fast-efficiency/"><div class="u">Unit 10 · L10</div><div class="t">How Fast? (efficiency)</div><div class="d">Counting steps; intro Big-O.</div></a>
+        <a class="card" href="u11-efficiency-deeper/"><div class="u">Unit 11 · L11</div><div class="t">Efficiency, Deeper</div><div class="d">Log / linear / exponential; binary search.</div></a>
+        <a class="card" href="u12-searching-and-sorting/"><div class="u">Unit 12 · L12</div><div class="t">Searching &amp; Sorting</div><div class="d">Sorted order unlocks fast search.</div></a>
+      </div>
+
+      <p class="foot">Each unit deck has a spoken narration script (<code>teacher-script.md</code>) alongside it, keyed by slide id. Open any unit above to present it (needs internet for the Reveal.js CDN; press <code>S</code> for speaker notes). Pedagogy and build rules live in <code>CLAUDE.md</code>.</p>
+    </div>
+  </body>
+</html>

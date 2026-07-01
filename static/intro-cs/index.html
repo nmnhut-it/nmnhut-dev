@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Intro to Computer Science in Python (High School)</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Course home</p>
+        <h1>Intro to Computer Science in Python</h1>
+      </div>
+      <div class="topbar-tools">
+        <a class="secondary-link" href="slides/">Open decks</a>
+        <div class="progress-block" aria-label="Course progress">
+          <span id="progressText">0 of 13 units complete</span>
+          <div class="progress-track">
+            <div id="progressFill" class="progress-fill"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <main class="content">
+        <section class="intro-band">
+          <div class="intro-copy">
+            <p class="eyebrow">The idea</p>
+            <h2>A machine sees data, not meaning.</h2>
+            <p>
+              You see a triangle instantly; a camera hands the machine a grid of 0s and 1s. This course
+              is about that gap: choose how to represent a problem as data, then write exact Python rules
+              over it. Use this page to walk the units, build a plan, take checks, and read the code.
+            </p>
+          </div>
+          <div class="model-map" aria-label="The Modeling Loop">
+            <div class="map-node active">Picture it</div>
+            <div class="map-line"></div>
+            <div class="map-node">Represent</div>
+            <div class="map-line"></div>
+            <div class="map-node">Rule</div>
+            <div class="map-line"></div>
+            <div class="map-node">Run &amp; predict</div>
+            <div class="map-line"></div>
+            <div class="map-node">Break &amp; refine</div>
+          </div>
+        </section>
+
+        <section class="program-band" aria-labelledby="programModelTitle">
+          <div>
+            <p class="eyebrow">The recurring question</p>
+            <h2 id="programModelTitle">How is this stored as data?</h2>
+            <p>
+              Every unit answers it a new way. Python is the core from Unit 1; the representation lens
+              is the on-ramp (Unit 0) and a thread through the whole course.
+            </p>
+          </div>
+          <div class="program-flow" aria-label="Kinds of representation">
+            <span>A number</span>
+            <span>A grid of 0s and 1s</span>
+            <span>A list or a key&rarr;value map</span>
+          </div>
+        </section>
+
+        <nav class="module-strip" aria-label="Course units">
+          <div>
+            <p class="eyebrow">Course path</p>
+            <h2>Unit 0 plus twelve units (MIT 6.0001 backbone)</h2>
+          </div>
+          <div id="moduleNav" class="module-nav"></div>
+        </nav>
+
+        <section class="panel module-panel" aria-labelledby="moduleTitle">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow" id="moduleNumber">Unit 0</p>
+              <h2 id="moduleTitle"></h2>
+            </div>
+            <div class="button-row">
+              <a id="moduleDeck" class="secondary-link" href="slides/" target="_blank" rel="noopener">Open deck</a>
+              <button id="completeModule" class="secondary-button" type="button">Mark Complete</button>
+            </div>
+          </div>
+          <div class="module-grid">
+            <div>
+              <h3>Focus</h3>
+              <p id="moduleMindset"></p>
+            </div>
+            <div>
+              <h3>Try This</h3>
+              <ul id="moduleIdeas"></ul>
+            </div>
+            <div>
+              <h3>Python Bridge</h3>
+              <p id="moduleCoding"></p>
+            </div>
+            <div>
+              <h3>Evidence</h3>
+              <p id="moduleDeliverable"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="tool-band">
+          <section class="panel" aria-labelledby="modelingTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Studio</p>
+                <h2 id="modelingTitle">Plan with the Modeling Loop</h2>
+              </div>
+              <button id="buildModel" class="primary-button" type="button">Build Plan</button>
+            </div>
+            <div class="canvas-grid">
+              <label>
+                Real-world problem
+                <textarea id="problemInput" rows="3" placeholder="Example: Help students choose which topic to review tonight."></textarea>
+              </label>
+              <label>
+                Information in
+                <textarea id="inputsInput" rows="3" placeholder="Example: one number, image bytes, color sensor value"></textarea>
+              </label>
+              <label>
+                Answer out or change
+                <textarea id="outputsInput" rows="3" placeholder="Example: even or odd, triangle or not, repeated sticker found"></textarea>
+              </label>
+              <label>
+                Exact rule
+                <textarea id="rulesInput" rows="3" placeholder="Example: if the remainder after dividing by 2 is 0, say even"></textarea>
+              </label>
+              <label>
+                Examples to try
+                <textarea id="examplesInput" rows="3" placeholder="Example: 8 -> even; 9 -> odd"></textarea>
+              </label>
+              <div class="model-output" aria-live="polite">
+                <h3>Machine Plan</h3>
+                <pre id="modelOutput">Fill the canvas and build a machine plan.</pre>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="quizTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Check</p>
+                <h2 id="quizTitle">Interactive Quiz</h2>
+              </div>
+              <span id="quizScore" class="score-pill">0 correct</span>
+            </div>
+            <div id="quizList" class="quiz-list"></div>
+          </section>
+        </section>
+
+        <section class="panel coding-panel" aria-labelledby="codingTitle">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Python bridge</p>
+              <h2 id="codingTitle">Read the Python</h2>
+              <p class="panel-note">Four small functions the course keeps coming back to. They're auto-checked by <code>course/exercises/python/run_checks.py</code> — read each line, then implement it yourself.</p>
+            </div>
+            <div class="button-row">
+              <button id="resetCode" class="secondary-button" type="button">Reset</button>
+              <button id="runCode" class="primary-button" type="button">Explain</button>
+            </div>
+          </div>
+
+          <div class="coding-layout">
+            <aside class="exercise-list" aria-label="Python bridge exercises">
+              <label>
+                Python bridge
+                <select id="exerciseSelect"></select>
+              </label>
+              <p id="exercisePrompt"></p>
+              <div id="exerciseTests" class="test-list"></div>
+            </aside>
+            <div class="editor-area">
+              <label>
+                Python shape
+                <textarea id="codeEditor" spellcheck="false" readonly></textarea>
+              </label>
+              <label>
+                Examples
+                <textarea id="codeInput" rows="5" spellcheck="false" readonly></textarea>
+              </label>
+            </div>
+            <div class="output-area">
+              <h3>How To Read It</h3>
+              <pre id="codeOutput">Choose a bridge and press Explain.</pre>
+              <h3>Example Checks</h3>
+              <div id="testOutput" class="test-output"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel project-panel" aria-labelledby="projectTitle">
+          <div>
+            <p class="eyebrow">Capstone</p>
+              <h2 id="projectTitle">Final Project Brief</h2>
+            <p>
+              Build a small Python program that solves a real problem for a specific user. Your demo must show
+              the problem, how the input is represented as data, the code, a normal example, an edge case,
+              a test, and one improvement you made after feedback.
+            </p>
+          </div>
+          <div class="rubric-grid">
+            <div>
+              <h3>Representation</h3>
+              <p>Shows how the input is stored as data the machine can use.</p>
+            </div>
+            <div>
+              <h3>Code</h3>
+              <p>Working Python with a clear rule anyone can follow.</p>
+            </div>
+            <div>
+              <h3>Examples</h3>
+              <p>One normal example and one edge case, plus a test.</p>
+            </div>
+            <div>
+              <h3>Improvement</h3>
+              <p>Explains one bug or weakness and the change that fixed it.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 0 — How Computers See</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 0 &middot; High school CS in Python</p>
+          <h1>How Computers See</h1>
+          <p class="lede">A machine perceives the world as data &mdash; differently from you. Before any code, let's meet that gap. It's the hook for the whole course.</p>
+          <aside class="notes">This is the on-ramp. No Python yet. Goal: make students feel that the machine gets handed data, not meaning. Everything later is turning a problem into data, then writing exact rules over it.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>You Just Knew</h2>
+          <div class="shape-scene">
+            <div class="triangle-shape" aria-hidden="true"></div>
+            <div class="program-model">
+              <span>A picture</span>
+              <span>? ? ?</span>
+              <span>"triangle" or "rectangle"</span>
+            </div>
+          </div>
+          <p class="teacher-question">You knew the answer instantly &mdash; without doing any "work." But what does a machine actually get handed?</p>
+          <aside class="notes">Show the shape; everyone reads "triangle" in a fraction of a second. Ask how they knew. They can't really explain it — they just saw it. That effortless seeing is exactly what the machine cannot do. The empty middle box is what this whole unit is about.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>The Machine Gets No "Triangle"</h2>
+          <p>A machine has no eyes and no idea of "shape." A camera hands it something much plainer: a grid of tiny light readings.</p>
+          <div class="flow-row" aria-label="how a picture reaches the machine">
+            <span>Light bounces off the shape</span>
+            <span>The camera splits it into tiny squares</span>
+            <span>Each square reports 1 (shape) or 0 (background)</span>
+          </div>
+          <p class="insight">"See" is the wrong word. The machine <em>measures</em>.</p>
+          <aside class="notes">Draw the pipeline: light to camera to a grid of numbers. The key reframe — the machine never receives the word "triangle," it receives measurements. One number per tiny square. That grid is the machine's entire world.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>A Picture Is a Grid of 0s and 1s</h2>
+          <div class="shape-scene">
+            <div class="triangle-shape" aria-hidden="true"></div>
+            <div class="bit-grid" aria-label="binary image of a triangle">
+              <span class="on">1</span><span>0</span><span>0</span><span>0</span><span>0</span>
+              <span class="on">1</span><span class="on">1</span><span>0</span><span>0</span><span>0</span>
+              <span class="on">1</span><span class="on">1</span><span class="on">1</span><span>0</span><span>0</span>
+              <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span>0</span>
+              <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span>
+            </div>
+          </div>
+          <p class="learner-action">Read it row by row. Where is the "triangle"? It isn't labelled anywhere &mdash; it's just 1 = shape, 0 = background.</p>
+          <aside class="notes">Same triangle, now as the machine holds it: a matrix of bits. Have them trace the filled cells. Point out the slanted edge is already turning into a staircase of 1s — plant that seed for later. This grid is the real input for the rest of the unit.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>Our Job: Turn Seeing Into a Rule</h2>
+          <div class="program-model">
+            <span>Grid of 0s and 1s</span>
+            <span>An exact rule</span>
+            <span>"triangle" or "rectangle"</span>
+          </div>
+          <p>Only two answers are allowed, so we lean on the one thing that tells the shapes apart:</p>
+          <div class="rule-board">
+            <div><strong>Triangle</strong><p>3 corners</p></div>
+            <div><strong>Rectangle</strong><p>4 corners</p></div>
+            <div><strong>Plan</strong><p>find every corner, then count</p></div>
+          </div>
+          <aside class="notes">Name the human strategy before encoding it: triangles have 3 corners, rectangles 4. If we can count corners, we can decide. But "count the corners" is still a human phrase — next we have to make "corner" checkable on a grid of numbers.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>What Is a Corner, to the Machine?</h2>
+          <p>A person just points. The machine can only look at one cell and its neighbours. So we spell it out:</p>
+          <div class="insight">A corner is a filled cell (1) with empty space (0) on two sides that meet at a right angle &mdash; an L-shape of emptiness.</div>
+          <div class="bit-grid" style="grid-template-columns: repeat(3, 46px);" aria-label="a single corner cell">
+            <span>0</span><span>0</span><span>0</span>
+            <span>0</span><span class="on corner">1</span><span class="on">1</span>
+            <span>0</span><span class="on">1</span><span class="on">1</span>
+          </div>
+          <p class="learner-action">Above is empty and left is empty &mdash; two perpendicular sides. That makes the red cell a corner.</p>
+          <aside class="notes">Turn the fuzzy word "corner" into a local, checkable rule: filled cell with empty on two perpendicular sides. Have them point at the two empty directions. This is the first real taste of "turn a human judgment into an exact rule over data."</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>Run the Rule: Rectangle</h2>
+          <div class="bit-grid" aria-label="binary image of a rectangle with corners marked">
+            <span class="on corner">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on corner">1</span>
+            <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span>
+            <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span>
+            <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span>
+            <span class="on corner">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on corner">1</span>
+          </div>
+          <div class="big-rule">4 corners &rarr; rectangle</div>
+          <p class="learner-action">A cell in the middle of an edge is empty on only one side, so it fails the rule. Only the 4 true corners pass. It works!</p>
+          <aside class="notes">A real win — the encoded rule succeeds. Ask why an edge-middle cell doesn't count (empty on one side, not two perpendicular). Exactly 4 corners means rectangle. Let them enjoy it, because the next shape breaks it.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Same Rule, Now the Triangle</h2>
+          <div class="bit-grid" aria-label="binary image of a triangle with corners marked">
+            <span class="on corner">1</span><span>0</span><span>0</span><span>0</span><span>0</span>
+            <span class="on">1</span><span class="on corner stair">1</span><span>0</span><span>0</span><span>0</span>
+            <span class="on">1</span><span class="on">1</span><span class="on corner stair">1</span><span>0</span><span>0</span>
+            <span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on corner stair">1</span><span>0</span>
+            <span class="on corner">1</span><span class="on">1</span><span class="on">1</span><span class="on">1</span><span class="on corner">1</span>
+          </div>
+          <div class="big-rule">6 corners &rarr; not sure?!</div>
+          <p class="bit-legend"><span><b style="color:var(--coral)">Red</b> = the 3 real corners</span><span><b style="color:var(--amber)">Amber</b> = stair-step corners the rule also found</span></p>
+          <aside class="notes">The exact same, honest rule now counts 6. The slanted edge is a staircase of 1s, and every step really does have empty space on two perpendicular sides — so each step passes the corner test. The rule isn't buggy; the machine simply doesn't see a smooth line.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">Why did the machine count <strong>6</strong> corners on the triangle?</p>
+            <button>The rule has a bug and needs fixing</button>
+            <button>The camera took a blurry picture</button>
+            <button>The slanted edge is a staircase, and every step passes the corner test</button>
+            <button>Triangles really do have 6 corners</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Answer: the third. The rule ran honestly. To the machine a slope is a staircase of bits, and each stair-step is a filled cell with empty space on two perpendicular sides — a corner by our own definition. The model was too simple, not the machine.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>That Gap Is the Whole Point</h2>
+          <div class="insight">You see a smooth slanted line. The machine sees stairs &mdash; and every stair-step looks like a little corner. Same picture, different perception.</div>
+          <div class="rule-board">
+            <div><strong>Human</strong><p>"obviously 3 corners"</p></div>
+            <div><strong>Machine</strong><p>a grid where a slope is a staircase</p></div>
+            <div><strong>Our job</strong><p>write a rule that survives the machine's view</p></div>
+          </div>
+          <p>The machine doesn't see what you see. Closing that gap &mdash; turning what you notice into rules a machine can run &mdash; is what this whole course is about.</p>
+          <aside class="notes">Land the thesis. The wrong count is nobody's fault: the rule was honest, our model was too simple, and the machine perceives differently. The fix is a smarter model, not a smarter machine. Real computer vision spends its life closing exactly this gap.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>The Modeling Loop</h2>
+          <div class="rule-board">
+            <div><strong>Represent</strong><p>hold the input as data (a grid of 0/1)</p></div>
+            <div><strong>Rule</strong><p>exact steps from data to answer (count corners)</p></div>
+            <div><strong>Break &amp; refine</strong><p>find the edge case (the staircase), fix the model</p></div>
+          </div>
+          <p>We just did all three. You'll run this same loop on numbers, text, lists, and maps &mdash; all year.</p>
+          <aside class="notes">Name the moves once, don't chant them: represent the input as data, write an exact rule, then break it on an edge case and refine. This unit ran the loop with an image; every future unit reruns it with a new kind of data.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>A machine is handed <strong>data</strong> (a grid of numbers), never meaning.</li>
+            <li>To make it decide, you turn what you notice into an <strong>exact rule</strong>.</li>
+            <li>Rules meet edge cases &mdash; you break them and refine.</li>
+          </ul>
+          <p>Next: <strong>Unit 1</strong> &mdash; we stop pointing at grids and start writing the rules ourselves, in real Python.</p>
+          <aside class="notes">Bridge to Unit 1. No code today on purpose — this unit builds the instinct. From next unit on, the "exact rule" becomes actual Python you type and run.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

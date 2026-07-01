@@ -1,0 +1,367 @@
+{
+  "voice": "en-US-JennyNeural",
+  "rate": "-5%",
+  "source": "teacher-script.md",
+  "slides": [
+    {
+      "id": "001",
+      "title": "Title",
+      "src": "tts/audio/slide-001.mp3",
+      "text": "Today we will learn one big idea. People can notice patterns quickly. A machine cannot use that feeling. A machine needs an exact rule it can follow."
+    },
+    {
+      "id": "002",
+      "title": "One Shape For Every Program",
+      "src": "tts/audio/slide-002.mp3",
+      "text": "Every program in this course has the same shape. Information goes in. Exact rules happen in the middle. Then an answer comes out, or something changes."
+    },
+    {
+      "id": "003",
+      "title": "Model A Problem",
+      "src": "tts/audio/slide-003.mp3",
+      "text": "Computer science starts by modeling a problem. We decide what information goes in, what exact rule happens, and what answer comes out."
+    },
+    {
+      "id": "004",
+      "title": "People And Machines Work Differently",
+      "src": "tts/audio/slide-004.mp3",
+      "text": "People can recognize patterns from experience. A machine only gets encoded information and follows the exact rule we give it."
+    },
+    {
+      "id": "005",
+      "title": "Odd Or Even",
+      "src": "tts/audio/slide-005.mp3",
+      "text": "For odd or even, the input is one number and the output is odd or even. The missing part is the process the machine can follow."
+    },
+    {
+      "id": "006",
+      "title": "Teach Divisibility",
+      "src": "tts/audio/slide-006.mp3",
+      "text": "Even means divisible by two. For the machine, divisible by two becomes this equivalent check: the remainder after dividing by two is zero."
+    },
+    {
+      "id": "007",
+      "title": "Run The Machine Rule",
+      "src": "tts/audio/slide-007.mp3",
+      "text": "Now run the rule. The number goes in. The machine checks the remainder after dividing by two. If the remainder is zero, the answer is even. Otherwise the answer is odd."
+    },
+    {
+      "id": "008",
+      "title": "Now Model Other Problems",
+      "src": "tts/audio/slide-008.mp3",
+      "text": "Now try the same thinking on other problems. Name the input and output. Then ask what a human notices that the machine may not receive."
+    },
+    {
+      "id": "009",
+      "title": "Check",
+      "src": "tts/audio/slide-009.mp3",
+      "text": "Choose the rule the machine can use for even. The correct rule is the remainder check: if the remainder after dividing by two is zero, say even."
+    },
+    {
+      "id": "010",
+      "title": "Module 2 Opening",
+      "src": "tts/audio/slide-010.mp3",
+      "text": "A computer only works with the information it is given. If the machine is touching one card, it uses that card, not a hidden guess."
+    },
+    {
+      "id": "011",
+      "title": "Five Tiny Actions",
+      "src": "tts/audio/slide-011.mp3",
+      "text": "In this course, our tiny machine can do five things. It can look, check, change, move, and stop. Bigger programs are built from these small actions."
+    },
+    {
+      "id": "012",
+      "title": "Wrong Rule, Right Following",
+      "src": "tts/audio/slide-012.mp3",
+      "text": "The machine may follow a wrong rule perfectly. If the rule says every red thing goes in the red bin, a red car goes there too, even if that was not the goal."
+    },
+    {
+      "id": "013",
+      "title": "Module 2 Program Model",
+      "src": "tts/audio/slide-013.mp3",
+      "text": "For the card machine, the information in is the visible card. The rules are look, check, change, move, and stop. The answer or change is the bin, clap, or changed card."
+    },
+    {
+      "id": "014",
+      "title": "Module 2 Python Bridge",
+      "src": "tts/audio/slide-014.mp3",
+      "text": "This is the smallest Python shape. The function has a name. The card is information in. Return gives the answer out."
+    },
+    {
+      "id": "015",
+      "title": "Module 2 Quick Check",
+      "src": "tts/audio/slide-015.mp3",
+      "text": "Which tiny action means going to the next card? Think about the finger moving along the row."
+    },
+    {
+      "id": "016",
+      "title": "Module 2 Exercise",
+      "src": "tts/audio/slide-016.mp3",
+      "text": "Now be the tiny machine. The example says look at one card, clap for apple, move, and stop after the last card. Your rule should also say exactly when to move and stop."
+    },
+    {
+      "id": "017",
+      "title": "Module 3 Opening",
+      "src": "tts/audio/slide-017.mp3",
+      "text": "Now we name the whole shape. A program takes information in, follows exact rules, and gives an answer or makes a change."
+    },
+    {
+      "id": "018",
+      "title": "Classroom Helper",
+      "src": "tts/audio/slide-018.mp3",
+      "text": "A classroom helper needs clear information. For a review helper, topic names and scores are useful. Vague feelings are harder for the machine to check."
+    },
+    {
+      "id": "019",
+      "title": "Rule In The Middle",
+      "src": "tts/audio/slide-019.mp3",
+      "text": "The rule in the middle is simple. Choose the topic with the lowest score. The answer must come from the rule, not from a guess."
+    },
+    {
+      "id": "020",
+      "title": "Module 3 Program Model",
+      "src": "tts/audio/slide-020.mp3",
+      "text": "Here is the review helper as a program. Topic scores go in. The exact rule chooses the lowest score. The topic name comes out."
+    },
+    {
+      "id": "021",
+      "title": "Module 3 Python Bridge",
+      "src": "tts/audio/slide-021.mp3",
+      "text": "In Python, information goes into the function. The rule happens inside. Return sends the answer back out."
+    },
+    {
+      "id": "022",
+      "title": "Module 3 Quick Check",
+      "src": "tts/audio/slide-022.mp3",
+      "text": "Choose the answer that shows the whole program model. Look for information in, exact rules, and answer or change out."
+    },
+    {
+      "id": "023",
+      "title": "Module 3 Exercise",
+      "src": "tts/audio/slide-023.mp3",
+      "text": "Build your own helper. The example helper chooses a review topic from topic scores. Your helper needs a problem, cards that go in, a rule in the middle, and an answer that comes out."
+    },
+    {
+      "id": "024",
+      "title": "Module 4 Opening",
+      "src": "tts/audio/slide-024.mp3",
+      "text": "The machine does not receive meaning directly. A real thing becomes a source, then bits and bytes, then an interpretation, then a representation and features a program can check."
+    },
+    {
+      "id": "025",
+      "title": "Triangle Example",
+      "src": "tts/audio/slide-025.mp3",
+      "text": "A person may see a triangle. A program may receive image bytes, interpret them as an image, represent the image as pixels or lines, then check features like corners and closed edges."
+    },
+    {
+      "id": "026",
+      "title": "Traffic Light Example",
+      "src": "tts/audio/slide-026.mp3",
+      "text": "A traffic-light program may receive bytes from a camera, sensor, or API. Those bytes become a color or state value. But light color alone may miss other important context."
+    },
+    {
+      "id": "027",
+      "title": "Smiley Example",
+      "src": "tts/audio/slide-027.mp3",
+      "text": "A smiley-face program does not receive happiness. It receives encoded image data. A program can represent that as pixels and features such as dark spots, curves, and a mouth-like shape."
+    },
+    {
+      "id": "028",
+      "title": "Feature Rule",
+      "src": "tts/audio/slide-028.mp3",
+      "text": "After the representation is chosen, a simple rule can check features. In this simplified triangle rule, three corners and a closed boundary means triangle."
+    },
+    {
+      "id": "029",
+      "title": "Triangle Python Bridge",
+      "src": "tts/audio/slide-029.mp3",
+      "text": "This function does not receive the full picture. It receives selected features: corners and whether the edges close. Both checks must pass."
+    },
+    {
+      "id": "030",
+      "title": "Module 4 Quick Check",
+      "src": "tts/audio/slide-030.mp3",
+      "text": "Does a machine directly receive the meaning this is a smiley face? No. It receives encoded data that a program must interpret and represent."
+    },
+    {
+      "id": "031",
+      "title": "Module 4 Exercise",
+      "src": "tts/audio/slide-031.mp3",
+      "text": "Now build the chain yourself. Choose a shape, smiley face, message, or traffic light. Name the source, bytes, representation, features, and answer out."
+    },
+    {
+      "id": "032",
+      "title": "Module 5 Opening",
+      "src": "tts/audio/slide-032.mp3",
+      "text": "Decision rules need exact boundaries. If the rule says twenty or more, the number twenty goes on the yes path."
+    },
+    {
+      "id": "032",
+      "title": "Boundary Words",
+      "src": "tts/audio/slide-032.mp3",
+      "text": "Small words change the path. Under twenty does not include twenty. Twenty or less does include twenty. More than twenty does not include twenty. Twenty or more does."
+    },
+    {
+      "id": "033",
+      "title": "Two Checks",
+      "src": "tts/audio/slide-033.mp3",
+      "text": "Some decisions need more than one check. A triangle needs three corners and closed edges. If one check fails, the answer is not triangle."
+    },
+    {
+      "id": "034",
+      "title": "Module 5 Program Model",
+      "src": "tts/audio/slide-034.mp3",
+      "text": "For a decision, one card comes in. The exact rule checks a boundary or a clue. The answer is the yes path or the no path."
+    },
+    {
+      "id": "035",
+      "title": "Decision Python Bridge",
+      "src": "tts/audio/slide-035.mp3",
+      "text": "In Python, if means check this yes or no rule. Greater than or equal means seventy or more. Return gives the path answer."
+    },
+    {
+      "id": "036",
+      "title": "Module 5 Quick Check",
+      "src": "tts/audio/slide-036.mp3",
+      "text": "The rule says at least five. Does five pass? Use the boundary word, not a guess."
+    },
+    {
+      "id": "037",
+      "title": "Module 5 Exercise",
+      "src": "tts/audio/slide-037.mp3",
+      "text": "Make a yes or no gate. The example uses the rule twenty or more. Your gate needs a yes rule, a no path, and an edge card that proves the boundary."
+    },
+    {
+      "id": "038",
+      "title": "Module 6 Opening",
+      "src": "tts/audio/slide-038.mp3",
+      "text": "A repeat means using the same rule for each item. First, predict whether any card appears more than once."
+    },
+    {
+      "id": "039",
+      "title": "Seen Pile",
+      "src": "tts/audio/slide-039.mp3",
+      "text": "The seen pile remembers cards we already checked. Before adding the next card, the machine asks, have I seen this before?"
+    },
+    {
+      "id": "040",
+      "title": "Stop Rules",
+      "src": "tts/audio/slide-040.mp3",
+      "text": "The repeat rule has two ways to stop. If the card is already seen, stop and say true. If the row ends, stop and say false."
+    },
+    {
+      "id": "041",
+      "title": "Module 6 Program Model",
+      "src": "tts/audio/slide-041.mp3",
+      "text": "For the repeat finder, the item row goes in. The rule checks each item and updates the seen pile. The answer out is true or false."
+    },
+    {
+      "id": "042",
+      "title": "Repeat Python Bridge",
+      "src": "tts/audio/slide-042.mp3",
+      "text": "This function makes an empty seen pile. For each item, it checks if the item is already seen. If yes, it returns true. If the row ends, it returns false."
+    },
+    {
+      "id": "043",
+      "title": "Module 6 Quick Check",
+      "src": "tts/audio/slide-043.mp3",
+      "text": "The row is cat, dog, bird. No item appears twice. What should the repeat rule answer?"
+    },
+    {
+      "id": "044",
+      "title": "Module 6 Exercise",
+      "src": "tts/audio/slide-044.mp3",
+      "text": "Trace the seen pile. The example stops at the second star because star is already in the seen pile. Your trace must show what is seen before each card and why the rule stops."
+    },
+    {
+      "id": "045",
+      "title": "Module 7 Opening",
+      "src": "tts/audio/slide-045.mp3",
+      "text": "Now we write the rule in Python. The parameter is information in. The if line is a check. The return line is the answer out."
+    },
+    {
+      "id": "046",
+      "title": "Read Before Run",
+      "src": "tts/audio/slide-046.mp3",
+      "text": "Before running code, predict the answer. If the number is nine, the remainder after dividing by two is one, so the function should return odd."
+    },
+    {
+      "id": "047",
+      "title": "Four Small Rules",
+      "src": "tts/audio/slide-047.mp3",
+      "text": "These four functions come from activities we already acted out: odd and even, triangle check, repeat finder, and review-topic helper."
+    },
+    {
+      "id": "048",
+      "title": "Module 7 Program Model",
+      "src": "tts/audio/slide-048.mp3",
+      "text": "In Python, parameters are the information in. The indented lines are the exact rules. Return values are the answers out."
+    },
+    {
+      "id": "049",
+      "title": "Run Checks",
+      "src": "tts/audio/slide-049.mp3",
+      "text": "Checks are examples with expected answers. Before running a check, predict what should happen. Then use the result as evidence."
+    },
+    {
+      "id": "050",
+      "title": "Module 7 Quick Check",
+      "src": "tts/audio/slide-050.mp3",
+      "text": "Which line gives the answer out? Look for the line that sends a value back from the function."
+    },
+    {
+      "id": "051",
+      "title": "Module 7 Exercise",
+      "src": "tts/audio/slide-051.mp3",
+      "text": "Explain one function like a rule card. The example function is odd_or_even. For your function, point to the information in, point to the rule line, and point to the return line."
+    },
+    {
+      "id": "052",
+      "title": "Module 8 Opening",
+      "src": "tts/audio/slide-052.mp3",
+      "text": "A strong beginner project is small and checked. It shows a clear rule, a normal example, a tricky example, and one improvement."
+    },
+    {
+      "id": "053",
+      "title": "Review Topic Helper",
+      "src": "tts/audio/slide-053.mp3",
+      "text": "The review helper chooses the topic with the lowest score. Here, graphs has the lowest score, so graphs is the answer."
+    },
+    {
+      "id": "054",
+      "title": "Tricky Case",
+      "src": "tts/audio/slide-054.mp3",
+      "text": "What if there are no score cards? The helper should not guess. It should give a safe answer: no scores, add review data."
+    },
+    {
+      "id": "055",
+      "title": "Module 8 Program Model",
+      "src": "tts/audio/slide-055.mp3",
+      "text": "For the review helper, topic scores go in. The exact rule finds the lowest score. The answer out is a topic or a safe message."
+    },
+    {
+      "id": "056",
+      "title": "Review Topic Python Bridge",
+      "src": "tts/audio/slide-056.mp3",
+      "text": "The first check handles the empty case. Then the function keeps the best topic seen so far and updates it when it finds a lower score."
+    },
+    {
+      "id": "057",
+      "title": "Module 8 Quick Check",
+      "src": "tts/audio/slide-057.mp3",
+      "text": "Use the rule. Fractions is eighty, graphs is sixty-two, and vocabulary is seventy-four. Which score is lowest?"
+    },
+    {
+      "id": "058",
+      "title": "Module 8 Exercise",
+      "src": "tts/audio/slide-058.mp3",
+      "text": "Prepare a two-minute demo. Show the problem, the rule, one normal case, one tricky case, and one thing you improved after trying it."
+    },
+    {
+      "id": "059",
+      "title": "Wrap",
+      "src": "tts/audio/slide-059.mp3",
+      "text": "You can now explain a program without guessing. Say what information goes in, what exact rule is followed, and what answer or change comes out."
+    }
+  ]
+}

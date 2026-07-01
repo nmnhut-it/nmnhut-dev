@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Unit 7 — Testing &amp; Debugging</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/theme/white.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/monokai.css">
+    <link rel="stylesheet" href="../shared/deck.css">
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+
+        <section class="title-slide" data-narration-id="s01">
+          <p class="eyebrow">Unit 7 &middot; High school CS in Python</p>
+          <h1>Testing &amp; Debugging</h1>
+          <p class="lede">How to find out if your program is right, and how to hunt down why it is wrong. Based on MIT 6.0001, Lecture 7.</p>
+          <aside class="notes">By now students can write real programs with functions, lists, and dictionaries. The new skill this unit: proving your code works, and fixing it when it doesn't.</aside>
+        </section>
+
+        <section data-narration-id="s02">
+          <h2>"It runs" is not "it works"</h2>
+          <p>Your code runs with no red errors. Does that mean it's correct? Not even close.</p>
+          <p class="insight">Testing = compare <strong>expected</strong> (what you say should happen) with <strong>actual</strong> (what the program really does).</p>
+          <aside class="notes">Representation thread: a test turns "is my code right?" into data — two values you can line up and compare. Same move as always: turn a fuzzy question into something exact.</aside>
+        </section>
+
+        <section data-narration-id="s03">
+          <h2>What a Test Really Is</h2>
+          <div class="flow-row" aria-label="the testing loop">
+            <span>Pick an input</span>
+            <span>Say the expected answer</span>
+            <span>Run it</span>
+            <span>Compare</span>
+          </div>
+          <pre><code class="language-python" data-trim>print(double(5))    # I EXPECT 10
+# if it prints 10  -> pass
+# if it prints 7   -> a bug! start debugging</code></pre>
+          <aside class="notes">Decide the expected answer BEFORE you run — otherwise you'll just believe whatever the screen shows. Match = move on; mismatch = you found a bug.</aside>
+        </section>
+
+        <section data-narration-id="s04">
+          <h2>Three Kinds of Test Cases</h2>
+          <div class="rule-board">
+            <div><strong>Normal</strong><p>the everyday case<br><code>average([2, 4, 6])</code></p></div>
+            <div><strong>Boundary</strong><p>the smallest / extreme case<br><code>average([5])</code></p></div>
+            <div><strong>Edge</strong><p>the weird, empty, or tricky case<br><code>average([])</code></p></div>
+          </div>
+          <p>Bugs love the corners. Always ask: <em>what's the emptiest, biggest, or strangest input?</em></p>
+          <aside class="notes">The empty list is the classic edge case: dividing by len([]) is dividing by zero. Testing only "normal" inputs is how bugs slip through to real users.</aside>
+        </section>
+
+        <section data-narration-id="s05">
+          <h2>A Buggy Discount Calculator</h2>
+          <pre><code class="language-python" data-trim>def final_price(price, discount):
+    # discount is a percent, like 20 for 20% off
+    return price - discount          # BUG?
+
+print(final_price(100, 20))   # EXPECT 80 ... actual: 80  ?</code></pre>
+          <p class="learner-action">It prints 80 — looks right! Now try <code>final_price(50, 20)</code>. Expected 40. What does it actually give?</p>
+          <aside class="notes">final_price(50, 20) gives 30, not 40. The normal-looking test (100, 20) passed by luck. A second test exposes the real bug: it subtracts the percent as if it were dollars.</aside>
+        </section>
+
+        <section data-narration-id="s06">
+          <h2>Step 1 of Debugging: Read the Error</h2>
+          <pre><code class="language-python" data-trim>scores = [90, 85, 70]
+print(scores[3])
+
+# Traceback (most recent call last):
+#   File "grades.py", line 2, in &lt;module&gt;
+#     print(scores[3])
+# IndexError: list index out of range</code></pre>
+          <p>The <strong>traceback</strong> tells you the <em>file</em>, the <em>line</em>, and the <em>kind</em> of error. Read it bottom-up.</p>
+          <aside class="notes">Beginners panic at red text and ignore it. The last line is the actual error type and message; the line above points at the exact code. It's a free clue, not a scolding.</aside>
+        </section>
+
+        <section data-narration-id="s07">
+          <h2>A Few Errors You'll Meet</h2>
+          <div class="table-card">
+            <span><strong>IndexError</strong> — list spot doesn't exist: <code>[1,2,3][5]</code></span>
+            <span><strong>KeyError</strong> — missing dictionary key</span>
+            <span><strong>TypeError</strong> — wrong type: <code>"a" + 5</code></span>
+            <span><strong>ValueError</strong> — right type, bad value: <code>int("twelve")</code></span>
+            <span><strong>ZeroDivisionError</strong> — dividing by zero</span>
+          </div>
+          <p>The tricky one has <em>no</em> error at all: a <strong>logic bug</strong> — it runs fine but gives the wrong answer.</p>
+          <aside class="notes">Don't memorize a giant list. Recognize these five. Logic bugs (like the discount one) get no message, so testing is the only way to catch them.</aside>
+        </section>
+
+        <section data-narration-id="s08">
+          <h2>Step 2: Shrink It and Print</h2>
+          <div class="flow-row" aria-label="how to localize a bug">
+            <span>Smallest example<br><small>that still breaks</small></span>
+            <span>Check the middle<br><small>print a value halfway</small></span>
+            <span>Pick a half<br><small>bug is where values go wrong</small></span>
+          </div>
+          <pre><code class="language-python" data-trim>total = 0
+for s in scores:
+    total = total + s
+    print("so far:", total)   # peek at the value each step</code></pre>
+          <aside class="notes">Bisection: check a value in the middle. Right there? Bug is later. Wrong? Bug is earlier. print() is your flashlight — it shows what the machine actually holds, not what you assume.</aside>
+        </section>
+
+        <section data-narration-id="s09">
+          <h2>try / except: Catch a Crash</h2>
+          <pre><code class="language-python" data-trim>try:
+    n = int(input("How many people? "))
+    print("Slices each:", 8 / n)
+except ZeroDivisionError:
+    print("Can't split a pizza among 0 people!")
+except ValueError:
+    print("Please type a whole number.")</code></pre>
+          <p>Risky lines go in <code>try</code>. If they blow up, Python jumps to <code>except</code> instead of crashing.</p>
+          <aside class="notes">A user typing "zero" or "banana" would crash a bare program. try/except turns a scary traceback into a friendly message. List specific errors so each gets its own reply.</aside>
+        </section>
+
+        <section data-narration-id="s10">
+          <h2>assert: A Sanity Check</h2>
+          <pre><code class="language-python" data-trim>def average(scores):
+    assert len(scores) != 0, "no scores given!"
+    return sum(scores) / len(scores)</code></pre>
+          <p>An <code>assert</code> says "this had better be true." If it's false, the program <strong>stops right there</strong> with a clear message — before a bad value spreads.</p>
+          <p class="insight">Use <code>try/except</code> for messy <em>outside</em> data; use <code>assert</code> to guard your <em>own</em> assumptions.</p>
+          <aside class="notes">assert stops trouble at the door. Without it, average([]) would divide by zero deep inside; with it, you get "no scores given!" pointing right at the cause.</aside>
+        </section>
+
+        <section data-narration-id="s11">
+          <h2>Quick Check</h2>
+          <div class="quiz" data-answer="2">
+            <p class="quiz-question">Which error does Python raise for <code>[1, 2, 3][5]</code>?</p>
+            <button>KeyError</button>
+            <button>ValueError</button>
+            <button>IndexError</button>
+            <button>TypeError</button>
+            <p class="quiz-feedback" aria-live="polite"></p>
+          </div>
+          <aside class="notes">Answer: IndexError — asking for spot 5 in a 3-item list. KeyError is the dictionary version (a missing key). The list has spots 0, 1, 2 only.</aside>
+        </section>
+
+        <section data-narration-id="s12">
+          <h2>Recap &amp; Next</h2>
+          <ul>
+            <li>Testing = compare <strong>expected</strong> vs <strong>actual</strong>; try normal, boundary, and edge cases.</li>
+            <li>Debug like a detective: read the traceback, shrink the example, print to see values.</li>
+            <li>Use <code>try/except</code> to catch crashes; use <code>assert</code> to guard your assumptions.</li>
+          </ul>
+          <p>Next: <strong>objects</strong> — bundling data and behavior together. First, fix the discount calculator in the Unit 7 exercises.</p>
+          <aside class="notes">Bridge to Unit 8 (Objects). Point students at the Unit 7 exercises: write test cases, then find and fix the discount bug.</aside>
+        </section>
+
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/dist/reveal.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/notes/notes.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.2.1/plugin/highlight/highlight.js"></script>
+    <script src="../shared/deck.js"></script>
+  </body>
+</html>

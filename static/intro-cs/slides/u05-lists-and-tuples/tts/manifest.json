@@ -1,0 +1,63 @@
+{
+  "voice": "en-US-JennyNeural",
+  "rate": "-5%",
+  "source": "teacher-script.md",
+  "slides": [
+    {
+      "id": "s01",
+      "src": "tts/audio/s01.mp3"
+    },
+    {
+      "id": "s02",
+      "src": "tts/audio/s02.mp3"
+    },
+    {
+      "id": "s03",
+      "src": "tts/audio/s03.mp3"
+    },
+    {
+      "id": "s04",
+      "src": "tts/audio/s04.mp3"
+    },
+    {
+      "id": "s05",
+      "src": "tts/audio/s05.mp3"
+    },
+    {
+      "id": "s06",
+      "src": "tts/audio/s06.mp3"
+    },
+    {
+      "id": "s07",
+      "src": "tts/audio/s07.mp3"
+    },
+    {
+      "id": "s08",
+      "src": "tts/audio/s08.mp3"
+    },
+    {
+      "id": "s09",
+      "src": "tts/audio/s09.mp3"
+    },
+    {
+      "id": "s10",
+      "src": "tts/audio/s10.mp3"
+    },
+    {
+      "id": "s11",
+      "src": "tts/audio/s11.mp3"
+    },
+    {
+      "id": "s12",
+      "src": "tts/audio/s12.mp3"
+    },
+    {
+      "id": "s13",
+      "src": "tts/audio/s13.mp3"
+    },
+    {
+      "id": "s14",
+      "src": "tts/audio/s14.mp3"
+    }
+  ]
+}
