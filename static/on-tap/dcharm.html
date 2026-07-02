@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dCharm — Tập đóng bằng danh sách khác biệt</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./study.css">
+  <script defer src="./study.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <nav class="study-nav sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 flex items-center gap-1 overflow-x-auto py-2 text-sm font-medium whitespace-nowrap">
+      <a href="./index.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">🏠 Trang chủ</a>
+      <a href="./nen-tang.html" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Nền tảng</a>
+      <span class="text-slate-300">|</span>
+      <a href="./charm.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Charm</a>
+      <a href="./genmax.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">GenMax</a>
+      <a href="./declat.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dEclat</a>
+      <a href="./dcharm.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dCharm</a>
+      <a href="./dgenmax.html"  class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dGenMax</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-6 py-10">
+    <header class="mb-8">
+      <p class="text-rose-600 font-semibold text-sm uppercase tracking-wide">Bài 4 · Danh sách khác biệt và tập đóng</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">dCharm — tập đóng bằng danh sách khác biệt</h1>
+      <p class="text-slate-600 mt-3 text-lg">dCharm chính là Charm, chỉ thay danh sách giao dịch bằng danh sách khác biệt. Nó vẫn dùng đúng bốn tình huống và vẫn cho ra bảy tập đóng như nhau; điểm khác duy nhất là cách nhận ra mỗi tình huống: thay vì so trực tiếp hai danh sách, ta nhìn xem danh sách khác biệt có rỗng hay không, rồi so độ phổ biến của hai bên.</p>
+      <button onclick="revealAll(true)" class="no-print mt-4 text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">Mở hết lời giải</button>
+    </header>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">1. Bốn tình huống nhìn qua danh sách khác biệt</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Khi ghép một cặp, ta vẫn tính danh sách khác biệt của tập ghép như đã học, rồi so độ phổ biến của hai bên. Bốn tình huống của Charm được nhận ra như sau:</p>
+      <div class="space-y-3">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-rose-700">Tình huống một — hai danh sách giống hệt nhau</div>
+          <p class="text-sm text-slate-600 mt-1">Nhận ra khi danh sách khác biệt rỗng và độ phổ biến hai bên bằng nhau. Khi đó gộp mặt hàng sau vào và bỏ nó khỏi danh sách.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-rose-700">Tình huống hai — danh sách của mặt hàng trước nằm gọn trong danh sách của mặt hàng sau</div>
+          <p class="text-sm text-slate-600 mt-1">Nhận ra khi danh sách khác biệt rỗng nhưng độ phổ biến của mặt hàng trước nhỏ hơn của mặt hàng sau. Khi đó gộp mặt hàng sau vào nhưng vẫn giữ nó lại.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-rose-700">Tình huống ba — danh sách của mặt hàng sau nằm gọn trong danh sách của mặt hàng trước</div>
+          <p class="text-sm text-slate-600 mt-1">Nhận ra khi danh sách khác biệt không rỗng nhưng độ phổ biến của tập ghép lại đúng bằng độ phổ biến của mặt hàng sau. Khi đó bỏ mặt hàng sau và mở một nhánh con mới.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-rose-700">Tình huống bốn — không bên nào chứa trọn bên nào</div>
+          <p class="text-sm text-slate-600 mt-1">Là trường hợp còn lại: danh sách khác biệt không rỗng, và độ phổ biến của tập ghép nhỏ hơn cả hai bên. Khi đó giữ cả hai và mở một nhánh con mới.</p>
+        </div>
+      </div>
+      <p class="text-sm text-slate-500 mt-3 leading-relaxed">Ở mức một, vì còn giữ danh sách giao dịch nên danh sách khác biệt của cặp hai mặt hàng chính là những giao dịch có ở mặt hàng đầu mà vắng ở mặt hàng sau. Quy tắc "nhánh con cũng được gộp thêm mặt hàng mới khi gặp tình huống một hoặc hai" vẫn giữ nguyên như bên Charm.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">2. Giải mẫu từng bước</h2>
+      <p class="text-slate-700 mb-5 leading-relaxed">Vẫn bảng dữ liệu quen thuộc, ngưỡng phổ biến bằng ba, thứ tự xét là A, D, T, W rồi C. Độ phổ biến: A bốn, D bốn, T bốn, W năm, C sáu.</p>
+
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Nhánh mặt hàng A</h3>
+      <div class="space-y-3">
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép A với D, rồi A với T.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dc-at">Xem lời giải</button>
+          <div class="reveal-body" id="dc-at"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Với AD: những giao dịch có A mà vắng D là 1 và 3, nên danh sách khác biệt gồm hai giao dịch; độ phổ biến bốn trừ hai còn hai, dưới ngưỡng nên loại. Với AT: chỉ giao dịch 4 có A mà vắng T, nên danh sách khác biệt gồm một giao dịch, độ phổ biến bốn trừ một còn ba. Danh sách khác biệt không rỗng, và độ phổ biến của tập ghép là ba lại khác với độ phổ biến của T (vốn là bốn), nên đây là tình huống bốn: ta mở nhánh con AT.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép A với W.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dc-aw">Xem lời giải</button>
+          <div class="reveal-body" id="dc-aw"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Mọi giao dịch có A thì đều có W, nên danh sách khác biệt rỗng. Độ phổ biến của A là bốn, nhỏ hơn độ phổ biến của W là năm, nên đây là tình huống hai. Ta gộp W vào A, tập đang xét thành AW; đồng thời nhánh con AT cũng gộp thêm W, trở thành ATW.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép AW với C.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dc-ac">Xem lời giải</button>
+          <div class="reveal-body" id="dc-ac"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Mọi giao dịch có AW thì đều có C, nên danh sách khác biệt rỗng. Độ phổ biến của AW là bốn, nhỏ hơn độ phổ biến của C là sáu, nên lại là tình huống hai. Ta gộp C vào, tập đang xét thành ACW độ phổ biến bốn; nhánh con ATW cũng gộp thêm C, thành ATWC. Khi đào sâu nhánh con, ta ghi nhận <strong>ACTW là tập đóng độ phổ biến ba</strong>, rồi ghi nhận <strong>ACW là tập đóng độ phổ biến bốn</strong>.
+          </div></div></div>
+        </div>
+      </div>
+
+      <h3 class="text-xl font-bold text-slate-800 mb-2 mt-8">Các nhánh D, T, W và C</h3>
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dc-rest" data-label-show="Mở phần các nhánh còn lại" data-label-hide="Ẩn">Mở phần các nhánh còn lại</button>
+        <div class="reveal-body" id="dc-rest"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          <strong>Nhánh D.</strong> Cặp DT có danh sách khác biệt gồm giao dịch 2 và 4, độ phổ biến hai nên loại. Cặp DW có danh sách khác biệt gồm giao dịch 6, độ phổ biến ba; vì khác biệt không rỗng mà độ phổ biến ba lại khác với độ phổ biến của W, nên là tình huống bốn, ta mở nhánh con DW. Cặp DC có danh sách khác biệt rỗng và độ phổ biến của D nhỏ hơn của C, là tình huống hai: gộp C để được CD, và nhánh con DW lớn lên thành DWC. Cuối nhánh, ta thu được <strong>CDW độ phổ biến ba</strong> và <strong>CD độ phổ biến bốn</strong>.<br><br>
+          <strong>Nhánh T.</strong> Cặp TW có danh sách khác biệt gồm giao dịch 6, độ phổ biến ba, là tình huống bốn, mở nhánh con TW. Cặp TC có danh sách khác biệt rỗng và độ phổ biến của T nhỏ hơn của C, là tình huống hai: gộp C để được CT, nhánh con TW lớn lên thành TWC. Tập TWC bị ACTW bao trùm nên không được ghi lại. Cuối nhánh, ta chỉ thu được <strong>CT độ phổ biến bốn</strong>.<br><br>
+          <strong>Nhánh W.</strong> Cặp WC có danh sách khác biệt rỗng và độ phổ biến của W nhỏ hơn của C, là tình huống hai: gộp C để được CW. Ta thu được <strong>CW độ phổ biến năm</strong>.<br><br>
+          <strong>Nhánh C.</strong> Không còn gì để ghép, ta ghi nhận <strong>C độ phổ biến sáu</strong>.
+        </div></div></div>
+      </div>
+
+      <div class="bg-rose-50 border border-rose-200 rounded-xl p-4 mt-5">
+        <div class="font-bold text-rose-800 mb-1">Kết quả: bảy tập đóng, giống hệt Charm</div>
+        <p class="text-rose-900 leading-relaxed">C độ phổ biến sáu; CW năm; ACW bốn; CD bốn; CT bốn; CDW ba; và ACTW ba.</p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">3. Bài tập tự luyện</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Dùng bảng P, ngưỡng phổ biến bằng hai. Năm giao dịch: giao dịch một có B, C, M; giao dịch hai có B, E; giao dịch ba có B, C, E, M; giao dịch bốn có C, E, O; giao dịch năm có B, C, E, M. Sau khi loại O, thứ tự xét là M, B, C, E.</p>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <p class="text-slate-700 font-medium">Bài một. Ghép M với B: danh sách khác biệt có rỗng không, và rơi vào tình huống nào?</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dcp1">Xem đáp án</button>
+        <div class="reveal-body" id="dcp1"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          M có ở các giao dịch 1, 3, 5; B có ở 1, 2, 3, 5. Mọi giao dịch có M thì đều có B, nên danh sách khác biệt rỗng. Độ phổ biến của M là ba, nhỏ hơn độ phổ biến của B là bốn, nên đây là tình huống hai: ta gộp B vào M, được tập MB.
+        </div></div></div>
+      </div>
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <p class="text-slate-700 font-medium">Bài hai. Chạy dCharm cho bảng P và liệt kê bảy tập đóng.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="dcp2">Xem đáp án</button>
+        <div class="reveal-body" id="dcp2"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Bảy tập đóng là: B độ phổ biến bốn; C bốn; E bốn; BE ba; CE ba; BCM ba; và BCEM hai. Kết quả này trùng đúng với Charm, vì danh sách khác biệt chỉ là cách tính khác chứ không đổi đáp số.
+        </div></div></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-slate-400 pt-6 border-t border-slate-200">
+      <a href="./dgenmax.html" class="text-indigo-600 font-medium">Học tiếp: dGenMax</a>
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GenMax — Tìm các tập tối đại</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./study.css">
+  <script defer src="./study.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <nav class="study-nav sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 flex items-center gap-1 overflow-x-auto py-2 text-sm font-medium whitespace-nowrap">
+      <a href="./index.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">🏠 Trang chủ</a>
+      <a href="./nen-tang.html" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Nền tảng</a>
+      <span class="text-slate-300">|</span>
+      <a href="./charm.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Charm</a>
+      <a href="./genmax.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">GenMax</a>
+      <a href="./declat.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dEclat</a>
+      <a href="./dcharm.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dCharm</a>
+      <a href="./dgenmax.html"  class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dGenMax</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-6 py-10">
+    <header class="mb-8">
+      <p class="text-emerald-600 font-semibold text-sm uppercase tracking-wide">Bài 2 · Tập tối đại</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">GenMax — tìm các tập tối đại</h1>
+      <p class="text-slate-600 mt-3 text-lg">GenMax đi tìm các tập tối đại, tức là những tập phổ biến lớn nhất, không thể mở rộng thêm mà vẫn phổ biến. Nó dò theo lối quay lui, và để khỏi làm việc thừa, nó luôn kiểm tra trước xem một nhánh có nằm gọn trong một tập tối đại đã tìm được hay chưa; nếu rồi thì cắt bỏ cả nhánh.</p>
+      <button onclick="revealAll(true)" class="no-print mt-4 text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">Mở hết lời giải</button>
+    </header>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">1. Ý tưởng chung</h2>
+      <p class="text-slate-700 mb-3 leading-relaxed">Một tập gọi là <strong>tối đại</strong> khi nó phổ biến nhưng mọi cách thêm một mặt hàng vào đều khiến nó không còn phổ biến nữa. Đây là cách lưu gọn nhất, tuy không giữ lại độ phổ biến của từng tập con.</p>
+      <p class="text-slate-700 mb-3 leading-relaxed">GenMax dò theo lối <strong>quay lui</strong>. Với một phần đầu đang xét, nó giữ một danh sách các mặt hàng có thể thêm vào mà vẫn phổ biến; ta tạm gọi đó là <strong>danh sách mở rộng</strong>. Nó chọn một mặt hàng trong danh sách, nối vào phần đầu để đi sâu hơn, rồi lại lập danh sách mở rộng mới cho phần đầu dài hơn đó.</p>
+      <p class="text-slate-700 leading-relaxed">Mẹo quan trọng để chạy nhanh, gọi là <strong>kiểm tra bao trùm</strong>: trước khi lao vào một nhánh, hãy thử ghép phần đầu hiện tại với toàn bộ các mặt hàng còn lại trong danh sách mở rộng. Nếu cái tập gộp đó đã nằm gọn trong một tập tối đại tìm được từ trước, thì chắc chắn nhánh này không cho ra tập tối đại nào mới, ta cắt bỏ luôn cho đỡ mất công.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">2. Hai quy tắc cần nhớ</h2>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5 mb-3">
+        <div class="font-bold text-emerald-700">Lập danh sách mở rộng</div>
+        <p class="text-sm text-slate-600 mt-1">Để biết một mặt hàng có còn ghép được với phần đầu hay không, ta lấy phần chung của danh sách giao dịch giữa hai bên rồi đếm. Nếu số đó còn đạt ngưỡng phổ biến thì mặt hàng đó được giữ trong danh sách mở rộng.</p>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div class="font-bold text-emerald-700">Cắt tỉa bằng kiểm tra bao trùm</div>
+        <p class="text-sm text-slate-600 mt-1">Nếu phần đầu, sau khi nối thêm tất cả các mặt hàng còn lại của danh sách mở rộng, lại là tập con của một tập tối đại đã có, thì bỏ cả nhánh. Còn khi một phần đầu đi sâu mà danh sách mở rộng cạn sạch, thì chính phần đầu đó là một tập tối đại mới, miễn là nó chưa bị tập nào bao trùm.</p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">3. Giải mẫu từng bước</h2>
+      <p class="text-slate-700 mb-5 leading-relaxed">Vẫn bảng dữ liệu quen thuộc, ngưỡng phổ biến bằng ba, thứ tự xét là A, D, T, W rồi C.</p>
+
+      <div class="space-y-3">
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Bước một — lập danh sách mở rộng cho phần đầu A.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="g-a">Xem lời giải</button>
+          <div class="reveal-body" id="g-a"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Ta thử ghép A với từng mặt hàng đứng sau. Ghép với D cho phần chung chỉ là giao dịch 4 và 5, độ phổ biến hai, không đạt ngưỡng nên loại. Ghép với T cho độ phổ biến ba, giữ lại. Ghép với W cho độ phổ biến bốn, giữ lại. Ghép với C cho độ phổ biến bốn, giữ lại. Vậy danh sách mở rộng của A gồm ba mặt hàng: T, W và C.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Bước hai — đi sâu theo AT, rồi ATW, rồi ATWC.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="g-at">Xem lời giải</button>
+          <div class="reveal-body" id="g-at"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Bắt đầu từ AT. Danh sách mở rộng của AT gồm W và C, vì cả ATW lẫn ATC đều còn độ phổ biến ba. Đi tiếp theo ATW, ta thấy còn thêm được C để thành ATWC với độ phổ biến ba. Đến ATWC thì không còn mặt hàng nào để thêm nữa, danh sách mở rộng cạn sạch, nên ATWC chính là một <strong>tập tối đại</strong>. Viết lại cho gọn theo thứ tự chữ cái, đó là ACTW, độ phổ biến ba.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Bước ba — quay lui và cắt tỉa các nhánh con của A.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="g-prune1">Xem lời giải</button>
+          <div class="reveal-body" id="g-prune1"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Bây giờ xét nốt các nhánh còn lại bắt nguồn từ A. Tập ATC nằm gọn trong ACTW nên bị cắt. Nhánh AW, khi gộp hết phần còn lại sẽ thành ACW, cũng nằm gọn trong ACTW nên bị cắt. Nhánh AC tương tự, là tập con của ACTW nên cũng bị cắt. Như vậy toàn bộ nhánh A đã xong, vì A, T, W, C đều đã nằm trong ACTW.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Bước bốn — nhánh D, rồi DW, rồi DWC.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="g-d">Xem lời giải</button>
+          <div class="reveal-body" id="g-d"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Danh sách mở rộng của D: ghép với T cho độ phổ biến hai nên loại; ghép với W cho độ phổ biến ba nên giữ; ghép với C cho độ phổ biến bốn nên giữ. Đi sâu theo DW, ta thấy còn thêm được C để thành DWC với độ phổ biến ba; đến đây danh sách mở rộng cạn, nên DWC là một <strong>tập tối đại</strong>, viết gọn là CDW, độ phổ biến ba. Còn nhánh DC thì nằm gọn trong CDW nên bị cắt.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Bước năm — các nhánh T, W, C đều bị cắt.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="g-rest">Xem lời giải</button>
+          <div class="reveal-body" id="g-rest"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Nhánh T, khi gộp hết phần còn lại, cho tập CTW, vốn là con của ACTW nên bị cắt. Nhánh W cho CW, cũng nằm trong ACTW nên bị cắt. Nhánh C chỉ là một mặt hàng, đương nhiên cũng là con của ACTW nên bị cắt. Không còn nhánh nào nữa.
+          </div></div></div>
+        </div>
+      </div>
+
+      <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mt-5">
+        <div class="font-bold text-emerald-800 mb-1">Kết quả: hai tập tối đại</div>
+        <p class="text-emerald-900 leading-relaxed">ACTW và CDW, cả hai cùng có độ phổ biến ba. Mọi tập phổ biến khác đều là con của một trong hai tập này.</p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">4. Bài tập tự luyện</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Dùng bảng P, ngưỡng phổ biến bằng hai. Năm giao dịch: giao dịch một có B, C, M; giao dịch hai có B, E; giao dịch ba có B, C, E, M; giao dịch bốn có C, E, O; giao dịch năm có B, C, E, M. Sau khi loại O, thứ tự xét là M, B, C, E.</p>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <p class="text-slate-700 font-medium">Bài một. Danh sách mở rộng của phần đầu B gồm những gì?</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="gp1">Xem đáp án</button>
+        <div class="reveal-body" id="gp1"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          B có mặt ở các giao dịch 1, 2, 3, 5. Ghép B với C cho phần chung là 1, 3, 5, độ phổ biến ba, giữ lại. Ghép B với E cho phần chung là 2, 3, 5, độ phổ biến ba, giữ lại. Vì B đứng sau M trong thứ tự, ta không ghép ngược lại với M ở nhánh này. Vậy danh sách mở rộng của B gồm C và E.
+        </div></div></div>
+      </div>
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <p class="text-slate-700 font-medium">Bài hai. Hãy tìm mọi tập tối đại của bảng P.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="gp2">Xem đáp án</button>
+        <div class="reveal-body" id="gp2"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Bắt đầu từ M. Danh sách mở rộng của M gồm B, C và E (ghép M với B được độ phổ biến ba, với C được ba, với E được hai). Đi sâu theo MB, danh sách mở rộng của nó gồm C và E; tiếp tục theo MBC rồi thêm E, ta được MBCE với độ phổ biến hai, và danh sách mở rộng cạn sạch. Vậy ta có một tập tối đại, viết gọn là BCEM, độ phổ biến hai. Mọi nhánh còn lại, như B, C, hay E, đều nằm gọn trong BCEM nên đều bị cắt. Kết luận: chỉ có một tập tối đại duy nhất là BCEM.
+        </div></div></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-slate-400 pt-6 border-t border-slate-200">
+      <a href="./declat.html" class="text-indigo-600 font-medium">Học tiếp: dEclat</a>
+    </footer>
+  </main>
+</body>
+</html>

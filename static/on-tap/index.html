@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn tập: Khai phá tập phổ biến theo chiều dọc</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="./study.css">
+  <script defer src="./study.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <!-- ===== Top nav (same on every page) ===== -->
+  <nav class="study-nav sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 flex items-center gap-1 overflow-x-auto py-2 text-sm font-medium whitespace-nowrap">
+      <a href="./index.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">🏠 Trang chủ</a>
+      <a href="./nen-tang.html" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Nền tảng</a>
+      <span class="text-slate-300">|</span>
+      <a href="./charm.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Charm</a>
+      <a href="./genmax.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">GenMax</a>
+      <a href="./declat.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dEclat</a>
+      <a href="./dcharm.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dCharm</a>
+      <a href="./dgenmax.html"  class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dGenMax</a>
+    </div>
+  </nav>
+
+  <main class="max-w-5xl mx-auto px-4 md:px-6 py-10">
+
+    <!-- ===== Hero ===== -->
+    <header class="mb-10">
+      <p class="text-indigo-600 font-semibold tracking-wide text-sm uppercase">Khai thác dữ liệu lớn · Ôn tập làm bài tay</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-2">5 thuật toán khai phá tập phổ biến theo chiều dọc</h1>
+      <p class="text-lg text-slate-600 mt-3 leading-relaxed">
+        Bộ tài liệu ôn tập cho bài tập <strong>chạy tay</strong> (không dùng code) gồm
+        <strong>Charm, GenMax, dEclat, dCharm, dGenMax</strong>. Mỗi trang đi theo một mạch quen thuộc:
+        trước hết là phần lý thuyết, rồi tới các quy tắc, sau đó là ví dụ giải <em>từng bước</em>, và
+        cuối cùng là phần bài tập tự luyện có sẵn đáp án để đối chiếu.
+      </p>
+      <div class="mt-4 inline-flex items-center gap-2 bg-amber-50 border border-amber-200 text-amber-800 px-4 py-2 rounded-lg text-sm">
+        📅 Hạn nộp: <strong>06-Jun-2026</strong> · Ôn từ 30-May-2026
+      </div>
+    </header>
+
+    <!-- ===== Shared dataset ===== -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Bộ dữ liệu dùng chung (Zaki ACTW)</h2>
+      <p class="text-slate-600 mb-5">Tất cả ví dụ trong bộ tài liệu này dùng đúng một bảng giao dịch, với ngưỡng phổ biến tối thiểu bằng ba (tức một nửa trong số sáu giao dịch). Học một bộ dữ liệu nhưng thấy rõ khác biệt giữa ba loại tập phổ biến, và giữa hai cách lưu là danh sách giao dịch với danh sách khác biệt.</p>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h3 class="font-semibold text-slate-700 mb-3">Bảng dạng ngang</h3>
+          <table class="tidset">
+            <thead><tr><th>Giao dịch</th><th>Các mặt hàng</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">1</td><td class="mono">A C T W</td></tr>
+              <tr><td class="mono">2</td><td class="mono">C D W</td></tr>
+              <tr><td class="mono">3</td><td class="mono">A C T W</td></tr>
+              <tr><td class="mono">4</td><td class="mono">A C D W</td></tr>
+              <tr><td class="mono">5</td><td class="mono">A C D T W</td></tr>
+              <tr><td class="mono">6</td><td class="mono">C D T</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+          <h3 class="font-semibold text-slate-700 mb-3">Bảng dạng dọc — mỗi mặt hàng có mặt ở đâu</h3>
+          <table class="tidset">
+            <thead><tr><th>Mặt hàng</th><th>Có mặt ở các giao dịch</th><th>Độ phổ biến</th></tr></thead>
+            <tbody>
+              <tr><td class="mono">A</td><td class="mono">1, 3, 4, 5</td><td>bốn</td></tr>
+              <tr><td class="mono">C</td><td class="mono">1, 2, 3, 4, 5, 6</td><td>sáu</td></tr>
+              <tr><td class="mono">D</td><td class="mono">2, 4, 5, 6</td><td>bốn</td></tr>
+              <tr><td class="mono">T</td><td class="mono">1, 3, 5, 6</td><td>bốn</td></tr>
+              <tr><td class="mono">W</td><td class="mono">1, 2, 3, 4, 5</td><td>năm</td></tr>
+            </tbody>
+          </table>
+          <p class="text-sm text-slate-500 mt-3">Độ phổ biến của một mặt hàng là số giao dịch có chứa nó. Cả năm mặt hàng đều có độ phổ biến từ bốn trở lên, đều vượt ngưỡng ba, nên đều phổ biến.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Comparison table ===== -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">5 thuật toán — phân biệt nhanh</h2>
+      <div class="overflow-x-auto bg-white rounded-xl border border-slate-200 shadow-sm">
+        <table class="tidset">
+          <thead>
+            <tr><th>Thuật toán</th><th>Tìm cái gì</th><th>Lưu dữ liệu kiểu nào</th><th>Dựa trên</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="font-semibold">Charm</td><td>Các tập <strong>đóng</strong></td><td>danh sách giao dịch</td><td>Eclat, thêm bốn tình huống</td></tr>
+            <tr><td class="font-semibold">GenMax</td><td>Các tập <strong>tối đại</strong></td><td>danh sách giao dịch</td><td>Quay lui, có cắt tỉa bao trùm</td></tr>
+            <tr><td class="font-semibold">dEclat</td><td><strong>Tất cả</strong> tập phổ biến</td><td><strong>danh sách khác biệt</strong></td><td>Eclat</td></tr>
+            <tr><td class="font-semibold">dCharm</td><td>Các tập <strong>đóng</strong></td><td><strong>danh sách khác biệt</strong></td><td>Charm</td></tr>
+            <tr><td class="font-semibold">dGenMax</td><td>Các tập <strong>tối đại</strong></td><td><strong>danh sách khác biệt</strong></td><td>GenMax</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-sm text-slate-500 mt-3">Ba bản có chữ d ở đầu cho ra cùng kết quả như bản gốc; chúng chỉ thay danh sách giao dịch bằng danh sách khác biệt để tính cho nhanh hơn.</p>
+    </section>
+
+    <!-- ===== Cards to each page ===== -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">Vào từng bài</h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        <a href="./nen-tang.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">🧱</div><h3 class="font-bold text-slate-800">Nền tảng</h3>
+          <p class="text-sm text-slate-600 mt-1">Bảng dạng dọc, danh sách giao dịch, danh sách khác biệt, và phân biệt ba loại tập phổ biến. Nên học trước tiên.</p>
+        </a>
+        <a href="./charm.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">🔒</div><h3 class="font-bold text-slate-800">Charm</h3>
+          <p class="text-sm text-slate-600 mt-1">Tìm các tập đóng nhờ bốn tình huống so sánh danh sách giao dịch.</p>
+        </a>
+        <a href="./genmax.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">⛰️</div><h3 class="font-bold text-slate-800">GenMax</h3>
+          <p class="text-sm text-slate-600 mt-1">Tìm các tập tối đại, có cắt tỉa bằng kiểm tra bao trùm.</p>
+        </a>
+        <a href="./declat.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">➖</div><h3 class="font-bold text-slate-800">dEclat</h3>
+          <p class="text-sm text-slate-600 mt-1">Tìm tất cả tập phổ biến bằng danh sách khác biệt.</p>
+        </a>
+        <a href="./dcharm.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">🔒➖</div><h3 class="font-bold text-slate-800">dCharm</h3>
+          <p class="text-sm text-slate-600 mt-1">Charm làm bằng danh sách khác biệt.</p>
+        </a>
+        <a href="./dgenmax.html" class="block bg-white rounded-xl border border-slate-200 shadow-sm p-5 hover:shadow-md hover:border-indigo-300 transition">
+          <div class="text-2xl mb-2">⛰️➖</div><h3 class="font-bold text-slate-800">dGenMax</h3>
+          <p class="text-sm text-slate-600 mt-1">GenMax làm bằng danh sách khác biệt.</p>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Study schedule ===== -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-slate-900 mb-4">Lịch ôn từ 30-May đến 06-Jun</h2>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm divide-y divide-slate-100">
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">30-May</span><span class="text-slate-700"><strong>Nền tảng</strong> — bảng dạng dọc, danh sách giao dịch, độ phổ biến, danh sách khác biệt, và phân biệt ba loại tập phổ biến. Nhớ kỹ cách tính danh sách khác biệt.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">31-May</span><span class="text-slate-700"><strong>Charm</strong> — bốn tình huống và cách nhận ra tập đóng. Tự giải lại ví dụ chính mà không nhìn đáp án.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">01-Jun</span><span class="text-slate-700"><strong>GenMax</strong> — lối dò quay lui và cách cắt tỉa bằng kiểm tra bao trùm.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">02-Jun</span><span class="text-slate-700"><strong>dEclat</strong> — chuyển từ danh sách giao dịch sang danh sách khác biệt, và cách tính độ phổ biến qua danh sách khác biệt.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">03-Jun</span><span class="text-slate-700"><strong>dCharm</strong> — bốn tình huống đó nhìn lại qua danh sách khác biệt.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">04-Jun</span><span class="text-slate-700"><strong>dGenMax</strong> — GenMax kết hợp với danh sách khác biệt.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-indigo-600 w-24 shrink-0">05-Jun</span><span class="text-slate-700"><strong>Tổng ôn</strong> — làm hết phần bài tập tự luyện của cả năm trang bằng tay, có bấm giờ.</span></div>
+        <div class="flex gap-4 p-4"><span class="font-mono text-emerald-600 w-24 shrink-0">06-Jun</span><span class="text-slate-700">🎯 Nộp bài.</span></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-slate-400 pt-6 border-t border-slate-200">
+      Tài liệu ôn tập nội bộ · Bộ dữ liệu &amp; kết quả theo các bài báo gốc của Zaki (CHARM, GenMax, dEclat).
+    </footer>
+  </main>
+</body>
+</html>

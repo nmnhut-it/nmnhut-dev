@@ -1,0 +1,498 @@
+{
+  "id": "nlp",
+  "subject": "Xử lý ngôn ngữ tự nhiên nâng cao - HP2-K35",
+  "exercises": [
+    {
+      "id": "e-001",
+      "topicId": "t-ambiguity",
+      "title": "Phân giải đại từ (pronoun resolution) trong tiếng Anh",
+      "difficulty": "medium",
+      "problem": "Cho hai câu sau (lấy từ slide NLP0):\n\n1. *Jack saw Sam at the party. **He** went back to the bar to get another drink.*\n2. *Jack saw Sam at the party. **He** clearly had drunk too much.*\n\nHãy xác định đại từ **He** trong mỗi câu trỏ đến ai (Jack hay Sam), và giải thích vì sao đây là một biểu hiện điển hình của **nhập nhằng (ambiguity)** mà NLP phải giải quyết.",
+      "hints": [
+        "Cả hai câu có cấu trúc bề mặt giống hệt nhau, chỉ khác mệnh đề sau.",
+        "Hãy thử suy luận theo nghĩa: ai là người 'quay lại quầy bar lấy thêm rượu', ai là người 'rõ ràng đã uống quá nhiều'?",
+        "Đại từ tiếng Anh 'He' không mang thông tin để biết là Jack hay Sam — phải dựa vào tri thức/ngữ cảnh."
+      ],
+      "solution": "**Bước 1 — Nhận diện vấn đề.** Hai câu có cùng câu dẫn *Jack saw Sam at the party* và cùng đại từ **He**. Về mặt cú pháp/hình thái, *He* (số ít, giống đực) hợp lệ để trỏ tới cả Jack lẫn Sam. Như vậy thông tin hình thái KHÔNG đủ để phân giải — đây là **nhập nhằng tham chiếu (anaphora / pronoun resolution)**.\n\n**Bước 2 — Phân giải bằng suy luận ngữ nghĩa.**\n- Câu 1: *He went back to the bar to get another drink* → người chủ động đi lấy thêm rượu hợp lý là chủ thể của hành động quan sát, tức **Jack** (Jack là người đang ở/đi tới quầy bar). Cách đọc tự nhiên: **He = Jack**.\n- Câu 2: *He clearly had drunk too much* → người 'đã uống quá nhiều' là lý do khiến anh ta bị Jack nhìn thấy/để ý; cách đọc tự nhiên: **He = Sam**.\n\n**Bước 3 — Vì sao khó.** Chỉ riêng văn phạm không quyết định được; phải dùng **tri thức thế giới** và **suy luận** (Reason 1 & 2 trong slide: ngôn ngữ nhập nhằng + cần suy luận vượt ngoài câu chữ). Cùng một khuôn mặt câu nhưng đại từ trỏ tới hai thực thể khác nhau tuỳ vào vị ngữ phía sau.\n\n**Kết luận.** Câu 1: *He = Jack*; câu 2: *He = Sam*. Đây là minh hoạ cho việc NLP cần mô-đun phân giải đồng tham chiếu (coreference resolution) chứ không thể chỉ dựa vào đối sánh hình thái.",
+      "tags": ["nhập-nhằng", "đại-từ", "coreference", "suy-luận"]
+    },
+    {
+      "id": "e-002",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng gắn kết giới ngữ (PP-attachment)",
+      "difficulty": "medium",
+      "problem": "Cho hai câu (slide NLP0 — Preposition Attachment):\n\n1. *I ate the bread **with pecans**.* (pecans = hạt hồ đào)\n2. *I ate the bread **with fingers**.*\n\nHãy chỉ ra giới ngữ *with …* trong mỗi câu bổ nghĩa cho thành phần nào (danh từ *bread* hay động từ *ate*), vẽ/ mô tả cấu trúc, và giải thích vì sao đây là nhập nhằng cú pháp.",
+      "hints": [
+        "Giới ngữ 'with X' có thể gắn vào danh từ (bread with X = bánh mì có X) hoặc vào động từ (ate ... with X = ăn bằng X).",
+        "Dùng tri thức thế giới: pecans là thứ ăn được/nguyên liệu, fingers là công cụ ăn.",
+        "Cùng khuôn 'ate the bread with N' nhưng N quyết định cách gắn kết."
+      ],
+      "solution": "**Bước 1 — Hai khả năng gắn kết.** Khuôn câu *ate the bread with N* có hai cây phân tích:\n- (A) *with N* gắn vào **NP** *the bread*: `ate [NP the bread [PP with N]]` → 'ăn ổ bánh mì **có/kèm** N'.\n- (B) *with N* gắn vào **VP** *ate*: `ate [NP the bread] [PP with N]` → 'ăn ổ bánh mì **bằng** N (phương tiện)'.\n\n**Bước 2 — Áp tri thức thế giới để chọn nghĩa.**\n- Câu 1 (*with pecans*): hồ đào là **nguyên liệu/thành phần** của bánh → gắn vào danh từ (A): *bread with pecans* = bánh mì có hạt hồ đào.\n- Câu 2 (*with fingers*): ngón tay là **công cụ** để ăn, không phải thành phần của bánh → gắn vào động từ (B): *ate … with fingers* = ăn bằng tay.\n\n**Bước 3 — Vì sao nhập nhằng.** Văn phạm cho phép CẢ HAI cây với cùng chuỗi từ; chỉ ngữ nghĩa/tri thức mới loại bớt. Máy không có tri thức 'pecans là đồ ăn / fingers là công cụ' sẽ không phân biệt được. Đây là nhập nhằng cú pháp (structural / attachment ambiguity) — một trong các lý do NLP khó.\n\n**Kết luận.** Câu 1: PP gắn vào danh từ; Câu 2: PP gắn vào động từ. Cùng một mẫu cú pháp, hai cách phân tích, phân giải nhờ ngữ nghĩa.",
+      "tags": ["nhập-nhằng", "pp-attachment", "cú-pháp", "tri-thức-thế-giới"]
+    },
+    {
+      "id": "e-003",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng ranh giới từ tiếng Việt: 'học sinh học sinh học'",
+      "difficulty": "medium",
+      "problem": "Tiếng Việt không phân tách từ bằng khoảng trắng. Cho chuỗi âm tiết:\n\n> **học sinh học sinh học**\n\nBiết câu này có nghĩa 'học sinh học môn sinh học' (pupils learn biology). Hãy: (a) liệt kê các cách tách từ (word segmentation) có thể có; (b) chỉ ra cách tách đúng; (c) giải thích vì sao hiện tượng này khiến *phân tích hình thái tiếng Việt* trở nên khó và vì sao tách từ là tiền đề (pre-requisite) cho các mô-đun sau.",
+      "hints": [
+        "5 âm tiết: học / sinh / học / sinh / học. 'học sinh', 'sinh học', 'học' đều là đơn vị từ vựng hợp lệ.",
+        "Hãy thử các phương án: [học sinh][học][sinh học], [học][sinh học][sinh][học]...",
+        "Slide NLP1: ranh giới từ tiếng Việt nhập nhằng (không phân định bằng dấu cách) → 'âm tiết' không trùng 'từ'."
+      ],
+      "solution": "**Bước 1 — Vì sao có nhập nhằng.** Tiếng Việt thuộc loại hình **đơn lập (isolating)**: ranh giới *âm tiết* (syllable) trùng ranh giới *hình vị* (morpheme = 'tiếng'), nhưng KHÔNG trùng ranh giới *từ* (word). 5 âm tiết `học | sinh | học | sinh | học` có thể ghép thành nhiều từ hợp lệ: `học sinh` (pupil), `sinh học` (biology), `học` (to learn), `sinh` (to be born/live)...\n\n**Bước 2 — Các cách tách từ có thể.**\n- (1) **[học sinh] [học] [sinh học]** = 'học sinh / học / sinh học' → *Học sinh học (môn) sinh học* ✅ (nghĩa đúng).\n- (2) [học] [sinh học] [sinh] [học] → vô nghĩa/ngữ pháp sai.\n- (3) [học sinh] [học sinh] [học] → 'học sinh học sinh học' nghĩa không thông.\n- (4) [học] [sinh] [học] [sinh] [học] → chuỗi 5 động từ/danh từ rời, vô nghĩa.\n\n**Bước 3 — Cách đúng.** Phương án (1): **học_sinh** (N) + **học** (V) + **sinh_học** (N). Ánh xạ S-V-O: *học sinh* (chủ ngữ) — *học* (động từ) — *sinh học* (tân ngữ).\n\n**Bước 4 — Hệ quả.** Vì một chuỗi âm tiết có nhiều cách gộp thành từ, máy phải chọn ranh giới từ trước (Word Segmentation). Nếu tách sai, mọi mô-đun sau (gán nhãn từ loại POS, kiểm lỗi chính tả, thống kê tần số từ, phân tích cú pháp) đều sai theo. Do đó tách từ là **bước tiền xử lý bắt buộc** cho NLP tiếng Việt (slide NLP1).\n\n**Kết luận.** Cách tách đúng: `[học sinh] [học] [sinh học]`. Nhập nhằng ranh giới từ là đặc trưng của ngôn ngữ đơn lập và là lý do tách từ phải đứng đầu pipeline.",
+      "tags": ["nhập-nhằng", "tách-từ", "tiếng-việt", "hình-thái"]
+    },
+    {
+      "id": "e-004",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng phân đoạn ngữ (chunking) văn bản Hán: Nam quốc sơn hà",
+      "difficulty": "hard",
+      "problem": "Văn bản Hán cổ không có dấu ngắt câu (punctuation). Cho chuỗi 7 chữ Hán đã phiên âm Hán-Việt:\n\n> **南 國 山 河 南 帝 居** → nam quốc sơn hà nam đế cư\n\nHãy: (a) chỉ ra ít nhất hai cách đặt dấu ngắt (nhịp) khác nhau; (b) dịch nghĩa từng cách; (c) giải thích vì sao việc thiếu dấu ngắt + thiếu chữ Hoa (cho tên riêng) gây nhập nhằng, và tri thức nào (NER, chunking) giúp chọn đúng.",
+      "hints": [
+        "Thử nhịp 4-3: 'Nam quốc sơn hà / nam đế cư'.",
+        "Thử tách khác làm 'Hà Nam' thành một địa danh (tên riêng).",
+        "Slide NLP0: vị trí dấu khác nhau → nghĩa dịch khác nhau; tên riêng trong chữ Hán không viết Hoa."
+      ],
+      "solution": "**Bước 1 — Vấn đề.** Bản gốc 南國山河南帝居 viết liền, không dấu, không phân biệt chữ Hoa. Người đọc phải tự **phân đoạn ngữ (chunking)** và tự nhận diện **tên riêng (NER)**.\n\n**Bước 2 — Hai cách ngắt nhịp.**\n- (A) Nhịp **4–3**: *Nam quốc sơn hà // nam đế cư* → 'Sông núi nước Nam, vua Nam ở' (cách hiểu chuẩn, trong bài thơ Nam quốc sơn hà).\n- (B) Tách khác: *Nam quốc sơn // Hà Nam đế cư* → 'Núi nước Nam, vua Hà Nam ở' — ở đây '河南/Hà Nam' bị hiểu thành **địa danh (tên riêng)**.\n\n**Bước 3 — Nguồn gốc nhập nhằng.**\n1. Thiếu dấu ngắt: cùng 7 chữ, đặt ranh giới ngữ ở vị trí khác nhau cho cây cú pháp/nghĩa khác nhau (giống PP-attachment nhưng ở mức chuỗi liền).\n2. Thiếu chữ Hoa: chữ Hán không viết hoa nên không biết '南/河南' là từ thường hay tên riêng; máy có thể nhầm 'Hà Nam' là LOC.\n\n**Bước 4 — Tri thức giải nhập nhằng.**\n- **Chunking + tri thức thi luật**: thơ thất ngôn thường ngắt 4-3 → ưu tiên (A).\n- **NER + tri thức lịch sử-địa lý**: biết bối cảnh khẳng định chủ quyền Đại Việt → '南' là 'nước Nam', không phải tỉnh 'Hà Nam' của TQ → loại (B).\n\n**Kết luận.** Cách đúng là (A) nhịp 4-3: *Nam quốc sơn hà, nam đế cư*. Bài toán đòi hỏi đồng thời phân đoạn ngữ và nhận diện tên riêng — minh hoạ vì sao xử lý Hán-Nôm cần thêm dấu ngắt và NER.",
+      "tags": ["nhập-nhằng", "hán-nôm", "chunking", "ner", "phân-đoạn-ngữ"]
+    },
+    {
+      "id": "e-005",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng nhịp 3-4 / 4-3: '汝等行看取敗虛'",
+      "difficulty": "hard",
+      "problem": "Cho câu Hán đã phiên âm: **nhữ đẳng hành khan thủ bại hư** (汝等行看取敗虛). GS. Nguyễn Tài Cẩn mất 19 năm để chỉnh lại nhịp ngắt. Hãy: (a) đưa ra hai cách ngắt nhịp khác nhau và nghĩa tương ứng; (b) phân tích vai trò của chữ đa nghĩa 'hành', 'khan'; (c) rút ra bài học cho bài toán phân đoạn/dịch nghĩa văn bản Hán.",
+      "hints": [
+        "Thử nhịp: 'nhữ đẳng hành / khan thủ bại hư' và 'nhữ đẳng hành khan / thủ bại hư'.",
+        "'hành' 行 có thể là đi/làm/sẽ...; 'khan/khán' 看 = xem/nhìn.",
+        "Slide NLP0: hai cách ngắt cho hai nghĩa rất khác nhau."
+      ],
+      "solution": "**Bước 1 — Chuỗi gốc.** 汝等行看取敗虛 = *nhữ đẳng hành khan thủ bại hư*. Không dấu ngắt → nhịp tự do.\n\n**Bước 2 — Hai cách ngắt (slide).**\n- (A) **nhữ đẳng hành // khan thủ bại hư** (nhịp 3–4) → 'Chúng bay sẽ bị đánh tơi bời' (here 'hành' gắn cụm trước, mang nghĩa 'sẽ/đi').\n- (B) **nhữ đẳng hành khan // thủ bại hư** (nhịp 4–3) → 'Mà chúng bay, xem ra, lại chịu bại ư' ('hành khan' = 'xem ra/rồi sẽ thấy').\n\n**Bước 3 — Vai trò chữ đa nghĩa.**\n- **行 hành**: đi / làm / sẽ / hàng / hạnh… Nghĩa của nó phụ thuộc nó được gộp vào cụm nào → nó vừa gây vừa chịu nhập nhằng phân đoạn.\n- **看 khan/khán**: xem / nhìn. Khi ghép 'hành khan' tạo quán ngữ 'xem ra', đổi hẳn sắc thái câu.\n\n**Bước 4 — Bài học.** (1) Phân đoạn ngữ (chunking) và chọn nghĩa từ (word sense) **tương tác lẫn nhau** — ngắt nhịp khác → nghĩa từ khác → nghĩa câu khác. (2) Với văn bản cổ, một chuyên gia còn mất 19 năm, nên bài toán dịch nghĩa Hán-Nôm cần kết hợp tri thức ngôn ngữ (từ vựng, thi luật) + ngoài ngôn ngữ (lịch sử) + LLM/KG, không thể tra từ điển 1-1.\n\n**Kết luận.** Hai nhịp 3-4 và 4-3 cho hai nghĩa hợp lý nhưng khác nhau; lựa chọn đúng dựa vào ngữ cảnh lịch sử và phong cách. Đây là ví dụ kinh điển về nhập nhằng phân đoạn trong tiếng Hán cổ.",
+      "tags": ["nhập-nhằng", "hán-nôm", "nhịp", "đa-nghĩa", "dịch-nghĩa"]
+    },
+    {
+      "id": "e-006",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng gắn kết giới ngữ trong câu tiếng Việt",
+      "difficulty": "medium",
+      "problem": "Cho câu tiếng Việt:\n\n> **Tôi thấy người đàn ông với chiếc ống nhòm.**\n\nHãy: (a) chỉ ra hai cách hiểu của câu; (b) với mỗi cách, cho biết giới ngữ *với chiếc ống nhòm* bổ nghĩa cho thành phần nào; (c) nêu một yếu tố ngữ cảnh giúp chọn nghĩa.",
+      "hints": [
+        "'với chiếc ống nhòm' có thể là công cụ của 'thấy' hoặc đặc tả 'người đàn ông'.",
+        "So sánh khuôn với câu tiếng Anh 'I saw the man with the telescope'.",
+        "Ai đang cầm ống nhòm: tôi hay người đàn ông?"
+      ],
+      "solution": "**Bước 1 — Hai cách hiểu.**\n- (A) *Với chiếc ống nhòm* gắn vào **động từ 'thấy'** (chỉ phương tiện): 'Tôi **dùng** ống nhòm để thấy người đàn ông.' Người cầm ống nhòm = tôi.\n- (B) *Với chiếc ống nhòm* gắn vào **danh ngữ 'người đàn ông'** (đặc tả): 'Tôi thấy người đàn ông **đang cầm** chiếc ống nhòm.' Người cầm ống nhòm = người đàn ông.\n\n**Bước 2 — Cấu trúc.**\n- (A): `thấy [NP người đàn ông] [PP với ống nhòm]` — PP là trạng ngữ của VP.\n- (B): `thấy [NP người đàn ông [PP với ống nhòm]]` — PP nằm trong NP.\n\nĐây chính là **nhập nhằng gắn kết giới ngữ (PP-attachment)** y như *I saw the man with the telescope* trong tiếng Anh — văn phạm cho cả hai cây.\n\n**Bước 3 — Yếu tố ngữ cảnh chọn nghĩa.**\n- Nếu câu trước nói 'Tôi đứng trên đài quan sát cầm ống nhòm' → chọn (A).\n- Nếu câu sau nói 'ông ấy đang ngắm chim' → chọn (B).\nTri thức/ngữ cảnh, không phải cú pháp, quyết định nghĩa.\n\n**Kết luận.** Câu nhập nhằng giữa hai cây phân tích; cần ngữ cảnh để phân giải. Hiện tượng này xuất hiện ở cả tiếng Việt lẫn tiếng Anh.",
+      "tags": ["nhập-nhằng", "pp-attachment", "tiếng-việt", "cú-pháp"]
+    },
+    {
+      "id": "e-007",
+      "topicId": "t-ambiguity",
+      "title": "Nhập nhằng từ vựng (đồng âm): 'Con ngựa đá con ngựa đá'",
+      "difficulty": "hard",
+      "problem": "Cho câu tiếng Việt nổi tiếng:\n\n> **Con ngựa đá con ngựa đá.**\n\nDựa vào hiện tượng *đồng âm dị nghĩa* (chữ ghi âm Quốc ngữ, slide NLP3), hãy: (a) chỉ ra các nghĩa khác nhau của 'đá'; (b) liệt kê các cách hiểu của cả câu; (c) giải thích vì sao đây vừa là nhập nhằng từ vựng (word sense) vừa là nhập nhằng từ loại (POS).",
+      "hints": [
+        "'đá' có thể là động từ (kick) hoặc danh từ/định ngữ (stone — ngựa đá = ngựa bằng đá).",
+        "Mỗi 'đá' trong câu có thể nhận một trong các nghĩa → tổ hợp nhiều cách hiểu.",
+        "POS của 'đá' thay đổi → vai trò ngữ pháp thay đổi."
+      ],
+      "solution": "**Bước 1 — Nghĩa của 'đá'.** Tiếng Việt ghi âm nên 'đá' đồng âm:\n- 'đá₁' = **động từ** 'kick' (hành động đá).\n- 'đá₂' = **danh từ/định ngữ** 'stone' (chất liệu) → 'ngựa đá' = con ngựa làm bằng đá (tượng).\n\n**Bước 2 — Các cách hiểu của câu.** Câu `Con ngựa đá con ngựa đá` có hai cụm 'ngựa đá', mỗi 'đá' nhận một nghĩa:\n- (A) [Con ngựa đá] (ngựa bằng đá) **đá** [con ngựa đá] (con ngựa bằng đá): 'Con ngựa bằng đá đá con ngựa bằng đá.' → 'đá' thứ 2 = kick, hai 'đá' còn lại = stone.\n- (B) [Con ngựa] **đá** [con ngựa đá]: 'Con ngựa (thật) đá con ngựa bằng đá.'\n- (C) Mở rộng kinh điển: *Con ngựa đá con ngựa đá, con ngựa đá không đá con ngựa* — chơi chữ dựa hoàn toàn vào sự lập lờ kick/stone.\n\n**Bước 3 — Hai tầng nhập nhằng.**\n1. **Từ vựng (word sense)**: cùng âm 'đá' nhưng nhiều nghĩa (đồng âm dị nghĩa) — giống ví dụ 'ba' (số 3 / ba mẹ / sóng), 'cơ' (cơ hàn/cơ sở/cơ khí) trong slide NLP3.\n2. **Từ loại (POS)**: 'đá' lúc là Verb (kick), lúc là Noun/định ngữ (stone). Gán nhãn từ loại khác nhau → cấu trúc câu khác nhau.\n\n**Bước 4 — Hệ quả NLP.** Máy phải khử nhập nhằng nghĩa từ (WSD) và gán nhãn từ loại đúng dựa vào ngữ cảnh; chữ Quốc ngữ ghi âm làm tăng mức đồng âm, nên cần mô hình ngôn ngữ/ngữ cảnh để chọn.\n\n**Kết luận.** 'đá' = kick (V) hoặc stone (N); câu có nhiều cách đọc do nhập nhằng từ vựng + từ loại — minh hoạ trực tiếp cho 'đồng âm, dị nghĩa' của chữ ghi âm.",
+      "tags": ["nhập-nhằng", "đồng-âm", "từ-loại", "wsd", "tiếng-việt"]
+    },
+    {
+      "id": "e-008",
+      "topicId": "t-natural-language",
+      "title": "Phân tích hình thái: tách hình vị của 'anticomputerizational'",
+      "difficulty": "medium",
+      "problem": "Tiếng Anh thuộc loại hình **biến hình/chắp dính phái sinh**. Cho từ (slide NLP1):\n\n> **anticomputerizational**\n\nHãy: (a) tách từ này thành các hình vị (morphemes); (b) gán nhãn từng hình vị (gốc / tiền tố / hậu tố) và chức năng; (c) cho biết hình vị nào là *tự do (free)*, hình vị nào *ràng buộc (bound)*; (d) giải thích vì sao 'ranh giới hình vị trong tiếng Anh là nhập nhằng'.",
+      "hints": [
+        "Gợi ý của slide: anti - compute - er - ize - ation - al.",
+        "Tiền tố đứng trước gốc, hậu tố đứng sau và thường đổi từ loại.",
+        "'compute' đứng riêng được không? còn '-ize', '-ation'?"
+      ],
+      "solution": "**Bước 1 — Tách hình vị.** `anti- + compute + -er + -ize + -ation + -al` (theo slide NLP1).\n\n**Bước 2 — Gán nhãn & chức năng.**\n| Hình vị | Loại | Chức năng |\n|---|---|---|\n| compute | **gốc (root)**, V | nghĩa lõi 'tính toán' |\n| -er | hậu tố phái sinh | V→N: computer (vật/người tính) |\n| -ize | hậu tố phái sinh | N→V: computerize (tin học hoá) |\n| -ation | hậu tố phái sinh | V→N: computerization |\n| -al | hậu tố phái sinh | N→Adj: computerizational |\n| anti- | **tiền tố** | nghĩa 'chống/phản' |\n\nThứ tự dựng từ: compute → computer → computerize → computerization → computerizational → anticomputerizational.\n\n**Bước 3 — Tự do vs ràng buộc.**\n- **Tự do (free)**: `compute` (đứng một mình thành từ). Theo slide NLP1, 'Word = free morpheme'.\n- **Ràng buộc (bound)**: `anti-, -er, -ize, -ation, -al` — không đứng độc lập, phải bám vào gốc.\n\n**Bước 4 — Vì sao ranh giới hình vị nhập nhằng.** Trong văn bản chạy, các hậu tố nối liền nhau không có dấu phân cách; ví dụ '-ization' có thể tách '-ize+-ation' hay '-ization'? Việc xác định ranh giới giữa các hình vị (morpheme boundary) là nhập nhằng — ngược với tiếng Việt nơi ranh giới hình vị rõ (mỗi 'tiếng') nhưng ranh giới TỪ lại nhập nhằng (slide NLP1: tiếng Anh 'morpheme boundary is ambiguous, word boundary is clear').\n\n**Kết luận.** anti-compute-er-ize-ation-al: 1 gốc tự do + 5 phụ tố ràng buộc; minh hoạ phương thức cấu tạo từ bằng phụ tố (affixation) của ngôn ngữ biến hình.",
+      "tags": ["hình-thái", "hình-vị", "tiếng-anh", "phụ-tố"]
+    },
+    {
+      "id": "e-009",
+      "topicId": "t-natural-language",
+      "title": "Phân loại loại hình ngôn ngữ qua dữ liệu hình thái",
+      "difficulty": "medium",
+      "problem": "Loại hình học hình thái chia ngôn ngữ thành 4 loại: **biến hình (flexional), đơn lập (isolating), chắp dính (agglutinative), đa tổng hợp (polysynthetic)**. Cho 4 mẫu dữ liệu:\n\n1. EN: *book / book-s*, *walk / walk-s / walk-ed / walk-ing*; *He sees me — I see him*.\n2. VI: *Tôi nhìn anh ấy / Anh ấy nhìn tôi*; *đang học / học rồi*.\n3. TR (Thổ): *ev / ev-ler / ev-i / ev-ler-i / ev-den / ev-ler-den*.\n4. JP: *tabe-sase-rare-ru*; *本を読みます / 読みました / 読みません*.\n\nHãy xếp mỗi mẫu vào đúng loại hình và giải thích bằng đặc trưng hình thái.",
+      "hints": [
+        "Biến hình: phụ tố hoà kết, đổi cả dạng từ (book→mice, see→sees).",
+        "Đơn lập: từ không biến đổi, nghĩa ngữ pháp nằm ngoài từ (trật tự + hư từ).",
+        "Chắp dính: phụ tố tách bạch, hình dạng giữ nguyên, ranh giới hình vị rõ.",
+        "Slide NLP1 có đủ 4 ví dụ này."
+      ],
+      "solution": "**Mẫu 1 — Tiếng Anh = BIẾN HÌNH (flexional/fusional).** Từ đổi dạng để biểu thị ngữ pháp: số (book→books), thì (walk→walked), ngôi (see→sees), cách (He→him, I→me). Nghĩa ngữ pháp **nằm trong từ**; một phụ tố thường gộp nhiều nét nghĩa (số+ngôi+thì) → 'hoà kết'.\n\n**Mẫu 2 — Tiếng Việt = ĐƠN LẬP (isolating).** Từ **không biến đổi**: 'Tôi/anh ấy/nhìn' giữ nguyên dù đổi vai chủ-tân; phân biệt 'I see him' vs 'He sees me' nhờ **trật tự từ**. Thì/thể biểu thị bằng **hư từ** ngoài từ: 'đang học' (tiếp diễn) / 'học rồi' (hoàn thành). Ranh giới âm tiết = hình vị.\n\n**Mẫu 3 — Tiếng Thổ = CHẮP DÍNH (agglutinative).** Gốc 'ev' (nhà) + các phụ tố tách bạch, mỗi phụ tố một nét nghĩa, hình dạng ổn định: -ler (số nhiều), -i (sở hữu), -den (cách). 'ev-ler-den' = ev+ler+den, ranh giới hình vị **luôn rõ** (khác biến hình hoà kết).\n\n**Mẫu 4 — Tiếng Nhật = CHẮP DÍNH.** 'tabe(ăn)-sase(sai khiến)-rare(bị động)-ru(nguyên dạng)': xâu chuỗi phụ tố, mỗi phụ tố một chức năng; phủ định/thì gắn thêm phụ tố (読みます/読みました/読みません) mà gốc 読み giữ nguyên.\n\n**Bảng tổng kết.**\n| Mẫu | Ngôn ngữ | Loại hình | Dấu hiệu |\n|---|---|---|---|\n| 1 | EN | Biến hình | đổi dạng từ, hoà kết, nghĩa NP trong từ |\n| 2 | VI | Đơn lập | từ bất biến, trật tự + hư từ |\n| 3 | TR | Chắp dính | phụ tố tách bạch, ranh giới rõ |\n| 4 | JP | Chắp dính | chuỗi phụ tố chức năng |\n\n**Kết luận.** Phân loại dựa vào *cách hình vị kết hợp*: hoà kết (biến hình) ≠ tách bạch (chắp dính) ≠ không phụ tố (đơn lập).",
+      "tags": ["loại-hình-học", "hình-thái", "đối-chiếu", "typology"]
+    },
+    {
+      "id": "e-010",
+      "topicId": "t-natural-language",
+      "title": "Phân tích chắp dính tiếng Thổ và đối chiếu tiếng Việt",
+      "difficulty": "medium",
+      "problem": "Cho dạng từ tiếng Thổ Nhĩ Kỳ: **ev-ler-den** (= 'từ những ngôi nhà' / from the houses). Hãy: (a) tách hình vị và chú giải (gloss) từng phần; (b) đối chiếu cách biểu đạt cùng ý này trong tiếng Việt và tiếng Anh; (c) chỉ ra khác biệt loại hình học giữa ba ngôn ngữ qua ví dụ này.",
+      "hints": [
+        "ev = nhà, -ler = số nhiều, -den = cách 'từ/khỏi' (ablative).",
+        "Tiếng Việt diễn đạt số nhiều và 'từ' bằng từ riêng rẽ.",
+        "Đếm số 'từ độc lập' cần dùng ở mỗi ngôn ngữ."
+      ],
+      "solution": "**Bước 1 — Tách hình vị tiếng Thổ.**\n`ev-ler-den` = **ev** (nhà / house) + **-ler** (số nhiều / PL) + **-den** (cách xuất phát / ABL = 'từ').\nGloss: house-PL-ABL = 'từ những ngôi nhà'.\n\nMỗi nét nghĩa (vật / số nhiều / 'từ') được mã hoá bằng **một hình vị riêng, tách bạch** → đặc trưng **chắp dính (agglutinative)**.\n\n**Bước 2 — Đối chiếu.**\n| | Diễn đạt | Số đơn vị |\n|---|---|---|\n| Thổ | ev-ler-den | 1 từ, 3 hình vị bám nhau |\n| Anh | from the houses | 3 từ: from + the + house**s** (số nhiều = phụ tố -s biến hình) |\n| Việt | từ những ngôi nhà | 4 tiếng/từ rời: 'từ' (giới từ) + 'những' (hư từ số nhiều) + 'ngôi' (loại từ) + 'nhà' |\n\n**Bước 3 — Khác biệt loại hình.**\n- **Thổ (chắp dính)**: dồn nhiều hình vị chức năng vào một từ, ranh giới hình vị rõ.\n- **Anh (biến hình)**: số nhiều thể hiện bằng biến đổi trong từ (-s), nhưng 'từ' phải dùng giới từ rời.\n- **Việt (đơn lập)**: 'nhà' bất biến; số nhiều và quan hệ 'từ' đều dùng **hư từ độc lập** ('những', 'từ'), thêm loại từ 'ngôi'.\n\n**Kết luận.** Cùng một nội dung 'from the houses', tiếng Thổ nén vào 1 từ 3 hình vị, tiếng Anh đổi dạng + giới từ, tiếng Việt dùng chuỗi hư từ rời — minh hoạ trực quan ba loại hình hình thái.",
+      "tags": ["loại-hình-học", "hình-thái", "chắp-dính", "đối-chiếu", "tiếng-việt"]
+    },
+    {
+      "id": "e-011",
+      "topicId": "t-natural-language",
+      "title": "Xác định trật tự từ (word order typology) đa ngữ",
+      "difficulty": "easy",
+      "problem": "Cho cùng một ý 'Tôi đọc một quyển sách' trong nhiều ngôn ngữ:\n\n1. EN: *I read a book*\n2. VI: *Tôi đọc một quyển sách*\n3. KO: *나는 책을 읽고* (na-neun chaek-eul ilg-go = Tôi / sách / đọc)\n4. JP: *私は本を読みます* (watashi-wa hon-wo yomimasu = Tôi / sách / đọc)\n\nHãy xác định trật tự **S-V-O** của mỗi câu và phân loại ngôn ngữ theo trật tự từ (SVO/SOV/...). Cho biết loại trật tự nào phổ biến nhất.",
+      "hints": [
+        "Đánh dấu S (chủ), V (động từ), O (tân) cho từng từ.",
+        "Tiếng Hàn/Nhật đặt động từ ở cuối.",
+        "Slide NLP1: SVO 32–42%, SOV 41–52%."
+      ],
+      "solution": "**Bước 1 — Đánh dấu thành phần.**\n- EN: *I(S) read(V) a book(O)* → **S-V-O**.\n- VI: *Tôi(S) đọc(V) một quyển sách(O)* → **S-V-O**.\n- KO: *나는(S 'tôi') 책을(O 'sách') 읽고(V 'đọc')* → **S-O-V**.\n- JP: *私は(S) 本を(O) 読みます(V)* → **S-O-V**.\n\n**Bước 2 — Phân loại.**\n| Ngôn ngữ | Trật tự | Nhóm |\n|---|---|---|\n| Anh | S V O | SVO |\n| Việt | S V O | SVO |\n| Hàn | S O V | SOV |\n| Nhật | S O V | SOV |\n\n**Bước 3 — Mức phổ biến (slide NLP1).** Hai trật tự áp đảo: **SVO ≈ 32–42%** (Anh, Việt, Trung, Pháp, Thái…) và **SOV ≈ 41–52%** (Nhật, Hàn, Mông Cổ, Thổ…). SOV thực ra là nhóm đông nhất; các trật tự còn lại (VSO, VOS, OVS, OSV) rất hiếm (mỗi loại 1–3%).\n\n**Kết luận.** Anh, Việt = SVO; Hàn, Nhật = SOV. Vị trí động từ (giữa câu vs cuối câu) là tiêu chí phân loại chính; SVO và SOV chiếm tuyệt đại đa số ngôn ngữ thế giới.",
+      "tags": ["trật-tự-từ", "cú-pháp", "typology", "đa-ngữ"]
+    },
+    {
+      "id": "e-012",
+      "topicId": "t-natural-language",
+      "title": "Âm tiết, tiếng (hình vị), từ: phân tích đơn vị ngôn ngữ tiếng Việt",
+      "difficulty": "medium",
+      "problem": "Cho câu tiếng Việt: **Tôi là một giáo viên mới.** Dựa vào hệ đơn vị ngôn ngữ (slide NLP1: âm tiết / hình vị-'tiếng' / từ / ngữ), hãy: (a) đếm số âm tiết; (b) tách thành các *từ* (word); (c) chỉ ra đâu là *từ đơn*, đâu là *từ ghép*; (d) giải thích khái niệm 'hình tiết' (morpho-syllable) và vì sao tiếng Việt cần tách từ.",
+      "hints": [
+        "Mỗi chữ rời = một âm tiết = một 'tiếng' (hình vị) trong tiếng Việt.",
+        "'giáo viên' là một từ ghép Hán-Việt (giáo + viên).",
+        "Slide: hình tiết = vỏ ngữ âm trùng khít âm tiết, đồng thời là hình vị."
+      ],
+      "solution": "**Bước 1 — Đếm âm tiết.** *Tôi / là / một / giáo / viên / mới* = **6 âm tiết** (mỗi chữ viết rời là 1 âm tiết = 1 'tiếng' = 1 hình vị).\n\n**Bước 2 — Tách từ.** Câu có **5 từ**: `Tôi | là | một | giáo_viên | mới`. (6 âm tiết nhưng chỉ 5 từ vì 'giáo viên' là 1 từ gồm 2 âm tiết.)\n\n**Bước 3 — Từ đơn vs từ ghép.**\n- Từ đơn (1 âm tiết): *Tôi, là, một, mới*.\n- Từ ghép (≥2 âm tiết): *giáo_viên* (Hán-Việt: 'giáo' = dạy + 'viên' = người) — hai hình vị ghép thành một đơn vị nghĩa.\n\n**Bước 4 — 'Hình tiết' (morpho-syllable).** Slide NLP1: tiếng Việt có đơn vị đặc biệt 'hình tiết' ('tiếng'/chữ), trong đó **vỏ ngữ âm (âm tiết) trùng khít với hình vị**. Tức ranh giới *âm tiết = hình vị*, nhưng **không trùng ranh giới từ**: một từ có thể gồm nhiều hình tiết ('giáo viên'). Vì khoảng trắng tách *âm tiết* chứ không tách *từ*, máy phải tách từ (Word Segmentation) trước khi gán từ loại, đếm tần số, kiểm chính tả… (xem bài 'học sinh học sinh học').\n\n**Kết luận.** 6 âm tiết → 5 từ; 'giáo viên' là từ ghép Hán-Việt 2 hình tiết. Sự lệch giữa ranh giới âm tiết và ranh giới từ chính là lý do tách từ là bắt buộc với tiếng Việt.",
+      "tags": ["đơn-vị-ngôn-ngữ", "hình-tiết", "tách-từ", "tiếng-việt", "hình-thái"]
+    },
+    {
+      "id": "e-013",
+      "topicId": "t-natural-language",
+      "title": "Ngữ nghĩa: ký hiệu / cái biểu đạt - cái được biểu đạt và đa nghĩa",
+      "difficulty": "medium",
+      "problem": "Saussure coi ngôn ngữ là hệ ký hiệu: phân biệt *cái biểu đạt (signifier)* và *cái được biểu đạt (signified)*; 'nghĩa của một từ phụ thuộc ngữ cảnh' (ví dụ bàn cờ). Hãy: (a) phân tích ví dụ 'đèn đỏ → dừng lại' theo cặp signifier/signified; (b) cho ví dụ một từ tiếng Việt đa nghĩa và chỉ ra nghĩa thay đổi theo ngữ cảnh; (c) giải thích vì sao điều này gây khó cho NLP.",
+      "hints": [
+        "Signifier = hình thức (âm/hình ảnh), signified = khái niệm.",
+        "Dùng từ như 'đi', 'ăn', 'cơ', 'ba' với nhiều ngữ cảnh.",
+        "Slide NLP1: 'NL giống bàn cờ — giá trị mỗi quân do hệ thống quy định'."
+      ],
+      "solution": "**Bước 1 — Ví dụ tín hiệu giao thông.** Trong hệ ký hiệu đèn giao thông: **signifier** = 'đèn đỏ' (hình ảnh/màu), **signified** = khái niệm 'phải dừng lại'. Quan hệ giữa chúng có tính **võ đoán** và do hệ thống quy ước (đèn xanh = đi). Bản thân màu đỏ không 'mang sẵn' nghĩa dừng; nghĩa do hệ thống gán.\n\n**Bước 2 — Từ tiếng Việt đa nghĩa.** Lấy 'đi':\n- 'Tôi **đi** học' → di chuyển (move).\n- 'Đồng hồ **đi** chậm' → vận hành.\n- 'Nước **đi** này hay' (cờ) → lượt/bước.\n- 'Cụ đã **đi** rồi' → uyển ngữ 'qua đời'.\nCùng signifier 'đi', signified thay đổi theo **ngữ cảnh** — đúng ẩn dụ bàn cờ: giá trị mỗi 'quân' (từ) do vị trí trong hệ thống/ngữ cảnh quy định. (Tương tự 'ba', 'cơ' trong slide NLP3.)\n\n**Bước 3 — Khó khăn cho NLP.** Vì một hình thức ánh xạ tới nhiều khái niệm, máy phải **khử nhập nhằng nghĩa từ (Word Sense Disambiguation)** dựa vào ngữ cảnh, không thể tra 1-1. Mô hình ngôn ngữ/biểu diễn ngữ cảnh (embedding, LLM) ra đời để xử lý chính điều này.\n\n**Kết luận.** Ngôn ngữ là hệ ký hiệu võ đoán; nghĩa của từ là quan hệ signifier–signified phụ thuộc ngữ cảnh, nên xử lý ngữ nghĩa tự động luôn phải tính tới ngữ cảnh.",
+      "tags": ["ngữ-nghĩa", "saussure", "đa-nghĩa", "wsd"]
+    },
+    {
+      "id": "e-014",
+      "topicId": "t-natural-language",
+      "title": "Đối chiếu cú pháp Anh–Việt: trật tự định ngữ và trạng ngữ",
+      "difficulty": "medium",
+      "problem": "Cho cặp dịch (slide NLP1):\n\n- EN: *A pretty new green dress*\n- VI: *một cái áo (dài) mới đẹp màu xanh*\n\nvà:\n\n- EN: *They went home quietly.*\n- VI: *Họ lặng lẽ về nhà* / *Họ về nhà một cách lặng lẽ.*\n\nHãy: (a) phân tích trật tự **danh từ trung tâm – định ngữ** trong danh ngữ tiếng Anh vs tiếng Việt (head-initial vs head-final); (b) phân tích vị trí trạng ngữ chỉ cách thức; (c) rút ra hệ quả cho dịch máy.",
+      "hints": [
+        "Tiếng Anh: tính từ đứng TRƯỚC danh từ; tiếng Việt: định ngữ đứng SAU.",
+        "Xác định 'head' (danh từ trung tâm) ở mỗi ngôn ngữ.",
+        "Trạng ngữ cách thức: tiếng Anh thường cuối câu; tiếng Việt linh hoạt."
+      ],
+      "solution": "**Bước 1 — Trật tự trong danh ngữ.**\n- EN *a pretty new green dress*: trung tâm **dress** đứng **CUỐI**, các định ngữ (pretty, new, green) đứng **TRƯỚC** → **head-final trong danh ngữ** (định ngữ đứng trước danh từ).\n- VI *một cái áo mới đẹp màu xanh*: trung tâm **áo** đứng **TRƯỚC**, định ngữ (mới, đẹp, màu xanh) đứng **SAU** → **head-initial** (danh từ đứng trước định ngữ).\n\nVậy trật tự định ngữ trong danh ngữ là **ngược chiều**: EN = [Adj* + N], VI = [N + Adj*].\n\n**Bước 2 — Trạng ngữ chỉ cách thức.**\n- EN *They went home quietly*: trạng ngữ cách thức 'quietly' ở **cuối** (theo trật tự Manner–Place–Time, slide).\n- VI: linh hoạt — 'Họ **lặng lẽ** về nhà' (trạng ngữ trước động từ) hoặc 'Họ về nhà **một cách lặng lẽ**' (sau). Tiếng Việt cho phép cả hai vị trí.\n\n**Bước 3 — Hệ quả dịch máy.** Khi dịch Anh→Việt phải **đảo trật tự định ngữ** (reordering) trong danh ngữ và chọn vị trí trạng ngữ phù hợp. Mô hình dịch không xử lý đảo trật tự sẽ cho 'một xinh mới xanh áo'. Đây là lý do dịch máy cần học khác biệt cú pháp head-initial/head-final giữa hai ngôn ngữ.\n\n**Kết luận.** Danh ngữ Anh: định ngữ trước trung tâm; Việt: định ngữ sau trung tâm. Trạng ngữ cách thức: Anh cố định cuối, Việt linh hoạt. Khác biệt trật tự là thách thức cốt lõi của dịch máy Anh–Việt.",
+      "tags": ["cú-pháp", "đối-chiếu", "trật-tự-từ", "dịch-máy"]
+    },
+    {
+      "id": "e-015",
+      "topicId": "t-natural-language",
+      "title": "Ngữ dụng & suy luận: 'my horse ate my homework'",
+      "difficulty": "medium",
+      "problem": "Cho câu (slide NLP0, Reason 2):\n\n> *I couldn't submit my homework because my horse ate it.*\n\nHãy liệt kê những điều câu này **hàm ý (implicature)** nhưng không nói trực tiếp, phân loại đâu là suy luận thuần logic, đâu là suy luận cần **tri thức thế giới (world knowledge)**, và giải thích vì sao đây là minh hoạ cho việc 'NLP cần suy luận vượt ngoài câu chữ'.",
+      "hints": [
+        "Câu nói thẳng: không nộp được bài vì ngựa ăn mất.",
+        "Hàm ý: người nói CÓ một con ngựa, ĐÃ làm bài.",
+        "Tri thức thế giới: ngựa ăn giấy chứ khó 'ăn' máy tính."
+      ],
+      "solution": "**Bước 1 — Các hàm ý (slide NLP0).**\n- **A.** Người nói **có một con ngựa** (vì 'my horse').\n- **B.** Người nói **đã làm bài tập** (vì 'ăn mất it' ⇒ bài đã tồn tại để bị ăn).\n- **C.** Bài tập được làm trên **vật mềm (giấy)** chứ không phải vật cứng (máy tính) — vì 'ngựa ăn giấy' hợp lý hơn 'ngựa ăn máy tính'.\n\n**Bước 2 — Phân loại suy luận.**\n- A và B: suy luận **ngữ dụng-logic** rút ra từ tiền giả định của câu ('my horse', 'ate it'). Chỉ cần hiểu cấu trúc + tiền giả định.\n- C: suy luận cần **tri thức thế giới** — phải biết 'ngựa là động vật ăn cỏ/giấy, không nhai được máy tính' mới suy được bài làm trên giấy. Đây là tri thức ngoài ngôn ngữ.\n\n**Bước 3 — Vì sao khó cho NLP.** Nghĩa đầy đủ của câu (hàm ý A, B, C) **không nằm trên bề mặt câu chữ**; muốn hiểu như con người, hệ thống phải (i) khai thác tiền giả định ngữ dụng và (ii) có kho tri thức thế giới để suy luận khả năng (likelihood). Đây chính là 'Reason 2' khiến NLP khó: cần reasoning beyond what is explicitly mentioned, và một phần reasoning cần world knowledge.\n\n**Kết luận.** Câu hàm ý: có ngựa (A), đã làm bài (B), bài trên giấy (C). A/B là suy luận ngữ dụng, C cần tri thức thế giới — minh hoạ vì sao NLP phải kết hợp suy luận và tri thức nền, không chỉ phân tích bề mặt.",
+      "tags": ["ngữ-dụng", "hàm-ý", "suy-luận", "tri-thức-thế-giới"]
+    },
+    {
+      "id": "e-016",
+      "topicId": "t-formal-language",
+      "title": "Chuỗi, phép nối và ngôn ngữ trên bảng chữ {0,1}",
+      "difficulty": "easy",
+      "problem": "Cho bảng chữ cái (alphabet) **Σ = {0, 1}**. Hãy: (a) định nghĩa và liệt kê Σ⁰, Σ¹, Σ², Σ³; (b) với chuỗi x = '001' và ký hiệu a = '0', tính chuỗi nối x·a và độ dài |x|, |x·a|; (c) cho biết vì sao b = '2' không tạo được chuỗi trên Σ; (d) định nghĩa ngôn ngữ L gồm các chuỗi có **số chữ 1 bằng số chữ 0**, liệt kê vài phần tử của L trong Σ⁴.",
+      "hints": [
+        "Σⁿ = tập các chuỗi độ dài n trên Σ. |Σⁿ| = 2ⁿ với |Σ|=2.",
+        "Phép nối (concatenation): |x·y| = |x| + |y|.",
+        "Ngôn ngữ là một tập con của Σ*."
+      ],
+      "solution": "**Bước 1 — Các tập luỹ thừa (slide NLP2).**\n- Σ⁰ = {ε} (chuỗi rỗng, độ dài 0) — 1 phần tử.\n- Σ¹ = {0, 1} — 2 phần tử.\n- Σ² = {00, 01, 10, 11} — 4 phần tử.\n- Σ³ = {000,001,010,011,100,101,110,111} — 8 phần tử.\n(Tổng quát |Σⁿ| = 2ⁿ.)\n\n**Bước 2 — Phép nối.** x = '001', a = '0' ⇒ x·a = '0010' (chuỗi mới trên Σ). Độ dài: |x| = 3, |x·a| = |x| + |a| = 3 + 1 = **4**.\n\n**Bước 3 — Vì sao '2' không hợp lệ.** b = '2' ∉ Σ vì Σ chỉ chứa hai ký hiệu 0 và 1. Do đó x·b = '0012' chứa ký hiệu '2' không thuộc Σ ⇒ KHÔNG phải chuỗi trên Σ. (Một chuỗi trên Σ chỉ được dùng ký hiệu trong Σ.)\n\n**Bước 4 — Ngôn ngữ L (số 1 = số 0).** L ⊆ Σ*. Trong Σ⁴ (các chuỗi độ dài 4 có đúng hai số 1 và hai số 0):\nL ∩ Σ⁴ = {0011, 0101, 0110, 1001, 1010, 1100} — 6 phần tử (= C(4,2)).\n(Lưu ý ε ∈ L vì 0 số 1 = 0 số 0; còn '01','10' thuộc L ∩ Σ².)\n\n**Kết luận.** Σ định nghĩa chuỗi; phép nối cộng độ dài; ký hiệu ngoài Σ làm chuỗi không hợp lệ; một **ngôn ngữ** = tập con của Σ* xác định bởi một 'nguyên lý' (ở đây: cân bằng số 0 và 1).",
+      "tags": ["ngôn-ngữ-hình-thức", "chuỗi", "phép-nối", "alphabet"]
+    },
+    {
+      "id": "e-017",
+      "topicId": "t-formal-language",
+      "title": "Đếm số chuỗi và độ lớn của ngôn ngữ",
+      "difficulty": "easy",
+      "problem": "Với bảng chữ **Σ = {0, 1}** (|Σ| = 2). Hãy tính: (a) |Σ⁸|, |Σ¹⁶|, |Σ³²|; (b) số tập con của Σ⁸ (tức số ngôn ngữ khác nhau chỉ gồm chuỗi độ dài 8); (c) giải thích tại sao slide kết luận 'số câu hợp lệ của ngôn ngữ tự nhiên là cực lớn, nên ta cần VĂN PHẠM thay vì liệt kê'.",
+      "hints": [
+        "|Σⁿ| = |Σ|ⁿ = 2ⁿ.",
+        "Số tập con của một tập có k phần tử là 2^k.",
+        "Slide NLP2: tiếng Việt ~40k từ, câu dài TB ~20 từ ⇒ ~40000^20 câu ứng viên."
+      ],
+      "solution": "**Bước 1 — |Σⁿ| = 2ⁿ.**\n- |Σ⁸| = 2⁸ = **256**.\n- |Σ¹⁶| = 2¹⁶ = **65 536**.\n- |Σ³²| = 2³² ≈ **4,29 tỉ** (4 294 967 296).\n(Slide còn nêu 2⁶⁴ ≈ 18 tỉ tỉ — 'núi thóc' lớn gấp ~12 000 lần kim tự tháp Khufu.)\n\n**Bước 2 — Số ngôn ngữ trên Σ⁸.** Một ngôn ngữ (chỉ gồm chuỗi độ dài 8) là **một tập con của Σ⁸**. Σ⁸ có 256 phần tử ⇒ số tập con = **2²⁵⁶** (một con số khổng lồ, vượt xa số nguyên tử trong vũ trụ quan sát được).\n\n**Bước 3 — Vì sao cần văn phạm.** Với ngôn ngữ tự nhiên: Σ(tiếng Việt) ~ 40 000 từ, câu trung bình ~ 20 từ ⇒ số chuỗi ứng viên ~ 40000²⁰. Vì 40000 > 2¹⁵ nên 40000²⁰ > (2¹⁵)²⁰ = 2³⁰⁰ ≈ 10⁹⁰. Số câu tiếng Việt khả dĩ ~10⁴⁰, tiếng Anh ~10⁵⁷⁰ — **không thể liệt kê** (kể cả số hạt cát ~10²¹, số sao ~7×10²²). Do đó không thể định nghĩa ngôn ngữ bằng cách đếm/liệt kê tập con; phải dùng **VĂN PHẠM (grammar)** — một bộ luật hữu hạn sinh ra tập (vô hạn) các câu đúng ngữ pháp.\n\n**Kết luận.** Số chuỗi tăng theo luỹ thừa (2ⁿ), số ngôn ngữ tăng theo 2^(2ⁿ); kích thước bùng nổ khiến liệt kê bất khả thi ⇒ văn phạm là công cụ hữu hạn để mô tả ngôn ngữ vô hạn.",
+      "tags": ["ngôn-ngữ-hình-thức", "đếm", "tổ-hợp", "văn-phạm"]
+    },
+    {
+      "id": "e-018",
+      "topicId": "t-formal-language",
+      "title": "Phân loại văn phạm theo phân cấp Chomsky",
+      "difficulty": "medium",
+      "problem": "Phân cấp Chomsky có 4 loại văn phạm (slide NLP2). Cho 4 tập luật sinh dưới đây (chữ HOA = ký hiệu không kết thúc, chữ thường = kết thúc, S = ký hiệu đầu). Hãy xác định mỗi văn phạm thuộc **loại mấy (Type 0/1/2/3)** và gọi tên loại, kèm lý do dựa vào dạng luật.\n\n- G1: S → aS | a\n- G2: S → aSb | ab\n- G3: aSb → aab ; S → SS | c\n- G4: AB → BA ; S → aA | b (với A, B là phi kết thúc bất kỳ)",
+      "hints": [
+        "Type 3 (RG): X→a hoặc X→aY (hoặc X→Yb), vế phải tối đa 1 phi kết thúc ở một đầu.",
+        "Type 2 (CFG): vế trái đúng 1 phi kết thúc.",
+        "Type 1 (CSG): dạng α₁Xα₂ → α₁βα₂, không rút ngắn.",
+        "Type 0 (UG): tự do, vế trái có thể nhiều ký hiệu."
+      ],
+      "solution": "**Tiêu chí (slide NLP2).**\n- Type 3 – Chính quy (RG): X → a hoặc X → aY (tuyến tính phải) / X → Yb (tuyến tính trái).\n- Type 2 – Phi ngữ cảnh (CFG): X → β, vế trái **đúng một** phi kết thúc.\n- Type 1 – Cảm ngữ cảnh (CSG): α₁ X α₂ → α₁ β α₂ (thay X trong ngữ cảnh, |vế trái| ≤ |vế phải|).\n- Type 0 – Không hạn chế (UG): vế trái là chuỗi bất kỳ chứa phi kết thúc.\n\n**G1: S → aS | a.** Vế trái 1 phi kết thúc; vế phải dạng 'a' hoặc 'aS' (kết thúc + tối đa 1 phi kết thúc bên phải) ⇒ **Type 3 — Văn phạm chính quy (RG)**. (Sinh ngôn ngữ a⁺.)\n\n**G2: S → aSb | ab.** Vế trái 1 phi kết thúc ⇒ là CFG. Vế phải 'aSb' có phi kết thúc kẹp giữa hai kết thúc ⇒ KHÔNG tuyến tính một đầu, không phải RG. ⇒ **Type 2 — Phi ngữ cảnh (CFG)**. (Sinh aⁿbⁿ — ngôn ngữ kinh điển không chính quy.)\n\n**G3: aSb → aab ; S → SS | c.** Luật 'aSb → aab' có **vế trái nhiều ký hiệu** (S nằm trong ngữ cảnh a…b), thay S bằng 'a' trong ngữ cảnh đó, không rút ngắn ⇒ dạng cảm ngữ cảnh. ⇒ **Type 1 — Cảm ngữ cảnh (CSG)** (luật S→SS|c bản thân là CFG, nhưng cả văn phạm bị nâng lên Type 1 vì có luật phụ thuộc ngữ cảnh).\n\n**G4: AB → BA ; S → aA | b.** Luật 'AB → BA' có vế trái 2 phi kết thúc và là phép **hoán vị** (vế phải không dài hơn nhưng đảo thứ tự, không theo khuôn α₁Xα₂→α₁βα₂) ⇒ vượt CSG ⇒ **Type 0 — Văn phạm không hạn chế (UG)**.\n\n**Bảng kết quả.**\n| VP | Loại | Tên |\n|---|---|---|\n| G1 | 3 | Chính quy (RG) |\n| G2 | 2 | Phi ngữ cảnh (CFG) |\n| G3 | 1 | Cảm ngữ cảnh (CSG) |\n| G4 | 0 | Không hạn chế (UG) |\n\n**Kết luận.** Loại văn phạm xác định bằng *hình dạng vế trái và vế phải của luật*: càng nhiều ràng buộc (Type 3) càng yếu, càng tự do (Type 0) càng mạnh.",
+      "tags": ["ngôn-ngữ-hình-thức", "chomsky", "phân-loại-văn-phạm", "cfg"]
+    },
+    {
+      "id": "e-019",
+      "topicId": "t-formal-language",
+      "title": "Viết văn phạm chính quy (RG) cho ngôn ngữ trên {0,1}",
+      "difficulty": "medium",
+      "problem": "Hãy xây dựng văn phạm **chính quy (Type 3)** sinh ngôn ngữ **L = {các chuỗi nhị phân kết thúc bằng '01'}** trên Σ = {0,1}. Yêu cầu: (a) viết tập luật sinh; (b) cho một dẫn xuất (derivation) sinh chuỗi '1101'; (c) giải thích vì sao văn phạm của bạn đúng loại Type 3.",
+      "hints": [
+        "Dùng luật tuyến tính phải: X → aY hoặc X → a.",
+        "Cho phép sinh tuỳ ý các ký hiệu rồi 'chốt' đuôi 01.",
+        "S → 0S | 1S | 0A; A → 1 ?"
+      ],
+      "solution": "**Bước 1 — Ý tưởng.** Chuỗi bất kỳ rồi kết thúc bằng '01'. Dùng văn phạm tuyến tính phải (right-linear): mỗi luật có dạng X → aY hoặc X → a.\n\n**Bước 2 — Tập luật sinh.** Σ = {0,1}, phi kết thúc {S, A}, ký hiệu đầu S:\n```\nS → 0S | 1S      (sinh tiền tố tuỳ ý)\nS → 0A           (bắt đầu phần đuôi '0…')\nA → 1            (chốt '01' ở cuối)\n```\nNgôn ngữ sinh ra: (0|1)* 0 1 = mọi chuỗi kết thúc '01'. (Ví dụ '01' sinh bởi S→0A→01.)\n\n**Bước 3 — Dẫn xuất chuỗi '1101'.**\nS ⇒ 1S (luật S→1S)\n⇒ 11S (S→1S)\n⇒ 110A (S→0A)\n⇒ 1101 (A→1).\nVậy S ⇒* 1101 ✅, và '1101' kết thúc bằng '01' ⇒ thuộc L.\n\n**Bước 4 — Vì sao là Type 3.** Mọi luật đều có dạng X → aY (như S→0S, S→1S, S→0A) hoặc X → a (như A→1): vế trái đúng một phi kết thúc, vế phải gồm một ký hiệu kết thúc và **tối đa một phi kết thúc nằm bên phải** ⇒ thoả định nghĩa văn phạm chính quy (RG, slide NLP2). RG tương đương automat hữu hạn (FSA).\n\n**Kết luận.** Văn phạm {S→0S|1S|0A, A→1} là RG sinh đúng L = chuỗi kết thúc '01'; dẫn xuất '1101' minh hoạ tính đúng đắn.",
+      "tags": ["ngôn-ngữ-hình-thức", "văn-phạm-chính-quy", "luật-sinh", "dẫn-xuất"]
+    },
+    {
+      "id": "e-020",
+      "topicId": "t-formal-language",
+      "title": "Dẫn xuất trái/phải và cây dẫn xuất cho CFG",
+      "difficulty": "medium",
+      "problem": "Cho văn phạm phi ngữ cảnh (CFG) với các luật (slide NLP2, ví dụ Costas Busch):\n\n```\n1. S → AB\n2. A → aaA\n3. A → ε\n4. B → Bb\n5. B → ε\n```\n\nHãy với chuỗi đích **w = aab**: (a) viết **dẫn xuất trái nhất (leftmost)**; (b) viết **dẫn xuất phải nhất (rightmost)**; (c) vẽ (mô tả) **cây dẫn xuất (parse tree)** và chỉ ra 'yield' của cây.",
+      "hints": [
+        "Leftmost: luôn thay biến trái nhất ở mỗi bước.",
+        "Cần A ⇒ aa (dùng A→aaA rồi A→ε) và B ⇒ b (B→Bb rồi B→ε).",
+        "Cây: gốc S có 2 con A và B; lá đọc trái→phải = aab."
+      ],
+      "solution": "**Bước 1 — Dẫn xuất trái nhất (leftmost).** Luôn khai triển biến trái nhất:\nS ⇒ AB (1)\n⇒ aaA B (2, khai triển A)\n⇒ aa B (3, A→ε)\n⇒ aa Bb (4, khai triển B)\n⇒ aa b (5, B→ε)\n= **aab** ✅. Thứ tự luật: 1,2,3,4,5.\n\n**Bước 2 — Dẫn xuất phải nhất (rightmost).** Luôn khai triển biến phải nhất:\nS ⇒ AB (1)\n⇒ A Bb (4, khai triển B trước vì nó phải nhất)\n⇒ A b (5, B→ε)\n⇒ aaA b (2, khai triển A)\n⇒ aa b (3, A→ε)\n= **aab** ✅. Thứ tự luật: 1,4,5,2,3.\n\nHai dẫn xuất khác **thứ tự** áp luật nhưng cùng cho một cây ⇒ văn phạm không nhập nhằng ở chuỗi này.\n\n**Bước 3 — Cây dẫn xuất (parse tree).**\n```\n          S\n         / \\\n        A   B\n       /|   |\\\n      a a A B b\n          |   |\n          ε   ε\n```\nGiải thích: S→AB; nhánh A: A→aaA→(A→ε) cho 'aa'; nhánh B: B→Bb→(B→ε) cho 'b'.\n**Yield** (đọc các lá từ trái sang phải, bỏ ε) = a a b = **aab**, đúng chuỗi đích.\n\n**Kết luận.** Cùng chuỗi aab có dẫn xuất trái (1,2,3,4,5) và dẫn xuất phải (1,4,5,2,3) khác thứ tự nhưng **chung một cây**; yield của cây = aab.",
+      "tags": ["ngôn-ngữ-hình-thức", "cfg", "dẫn-xuất", "cây-dẫn-xuất", "parse-tree"]
+    },
+    {
+      "id": "e-021",
+      "topicId": "t-formal-language",
+      "title": "Chứng minh văn phạm nhập nhằng: biểu thức số học",
+      "difficulty": "hard",
+      "problem": "Cho văn phạm biểu thức số học (slide NLP2):\n\n```\n⟨EXPR⟩ → ⟨EXPR⟩ + ⟨EXPR⟩ | ⟨EXPR⟩ . ⟨EXPR⟩ | ( ⟨EXPR⟩ ) | a\n```\n\n(dấu '.' là phép nhân). Với chuỗi **a + a . a**, hãy: (a) xây dựng **hai cây dẫn xuất khác nhau**; (b) chỉ ra giá trị/ngữ nghĩa khác nhau ứng với mỗi cây; (c) kết luận về tính nhập nhằng của văn phạm và liên hệ với nhập nhằng trong ngôn ngữ tự nhiên.",
+      "hints": [
+        "Cây 1: + ở gốc → a + (a.a).",
+        "Cây 2: . ở gốc → (a + a) . a.",
+        "Văn phạm không quy định ưu tiên phép toán nên cho cả hai."
+      ],
+      "solution": "**Bước 1 — Hai cây dẫn xuất cho 'a + a . a'.**\n\n*Cây 1 — phép '+' ở gốc:*\n```\n        EXPR\n       / | \\\n   EXPR  +  EXPR\n    |       / | \\\n    a   EXPR . EXPR\n         |      |\n         a      a\n```\nDẫn xuất: EXPR ⇒ EXPR + EXPR ⇒ a + EXPR ⇒ a + EXPR . EXPR ⇒ a + a . a. Nhóm: **a + (a . a)**.\n\n*Cây 2 — phép '.' ở gốc:*\n```\n        EXPR\n       / | \\\n   EXPR  .  EXPR\n   / | \\     |\nEXPR + EXPR  a\n  |     |\n  a     a\n```\nDẫn xuất: EXPR ⇒ EXPR . EXPR ⇒ EXPR + EXPR . EXPR ⇒ a + a . a. Nhóm: **(a + a) . a**.\n\n**Bước 2 — Ngữ nghĩa khác nhau.** Thay a = 2:\n- Cây 1: 2 + (2·2) = 2 + 4 = **6**.\n- Cây 2: (2 + 2)·2 = 4·2 = **8**.\nHai cây ⇒ hai giá trị ⇒ hai nghĩa.\n\n**Bước 3 — Kết luận.** Một câu (chuỗi) sinh được **nhiều hơn một cây dẫn xuất** ⇒ câu **nhập nhằng**; văn phạm chứa ít nhất một câu nhập nhằng ⇒ **văn phạm nhập nhằng (ambiguous grammar)** (định nghĩa slide). Nguyên nhân: văn phạm không mã hoá thứ tự ưu tiên (·' trước '+'). Cách sửa: tách tầng (EXPR → EXPR + TERM; TERM → TERM . FACTOR; FACTOR → (EXPR)|a) để khử nhập nhằng.\n\n**Liên hệ NL.** Giống hệt nhập nhằng cấu trúc trong ngôn ngữ tự nhiên (PP-attachment 'the old man sat on the chair…', 'I ate the bread with…'): cùng chuỗi từ, nhiều cây ⇒ nhiều nghĩa.\n\n**Kết luận.** 'a + a . a' có hai cây (a+(a·a) và (a+a)·a) cho 6 và 8 ⇒ văn phạm nhập nhằng.",
+      "tags": ["ngôn-ngữ-hình-thức", "nhập-nhằng", "cây-dẫn-xuất", "cfg", "biểu-thức"]
+    },
+    {
+      "id": "e-022",
+      "topicId": "t-formal-language",
+      "title": "Hai cây phân tích cho câu tiếng Anh (PP-attachment)",
+      "difficulty": "hard",
+      "problem": "Cho CFG (slide NLP2):\n```\nS  → NP VP\nNP → det noun | det adj noun | det noun PP\nVP → verb\nPP → prep NP | prep NP PP\n```\nvà câu đã gán từ loại: **The/det old/adj man/noun sat/verb on/prep the/det chair/noun in/prep the/det house/noun**.\n\nHãy: (a) chỉ ra hai cây dẫn xuất khác nhau (gợi ý: 'in the house' bổ nghĩa cho 'chair' hay cho 'sat/the chair'); (b) diễn giải nghĩa mỗi cây; (c) kết luận câu có nhập nhằng không và tại sao.",
+      "hints": [
+        "PP cuối 'in the house' có thể gắn vào NP 'the chair' (NP→det noun PP) hoặc gắn vào PP trước (PP→prep NP PP).",
+        "Cây 1: cái ghế ở trong nhà. Cây 2: hành động ngồi diễn ra trong nhà.",
+        "Slide NLP2 đưa Derivation tree #1 và #2 cho đúng câu này."
+      ],
+      "solution": "**Bước 1 — Hai cách gắn 'in the house'.** Câu chia: NP='the old man', VP='sat', rồi cụm 'on the chair in the house' chứa hai PP.\n\n*Cây 1 — PP lồng vào NP 'the chair' (NP → det noun PP):*\n```\nS → NP[the old man] VP[sat] ... \nPP1 = on NP[the chair PP2]\nPP2 = in NP[the house]\n```\nTức 'in the house' bổ nghĩa cho **the chair**: cái ghế **ở trong nhà**. ('on [the chair in the house]').\n\n*Cây 2 — hai PP nối tiếp (PP → prep NP PP):*\n```\nPP = on NP[the chair] PP[in NP[the house]]\n```\nTức 'in the house' bổ nghĩa cho cả cụm/hành động: **ngồi** (trên ghế) **ở trong nhà** — vị trí của việc ngồi.\n\n**Bước 2 — Nghĩa khác nhau.**\n- Cây 1: *Người đàn ông già ngồi trên [cái ghế (vốn ở) trong nhà]* — đặc tả ghế nào.\n- Cây 2: *Người đàn ông già ngồi trên ghế, [việc đó diễn ra] trong nhà* — đặc tả nơi ngồi.\n\n**Bước 3 — Kết luận.** Cùng chuỗi từ + cùng văn phạm sinh ra **hai cây dẫn xuất** ⇒ câu **nhập nhằng** (định nghĩa: câu có >1 parse tree). Văn phạm cho phép cả NP→det noun PP lẫn PP→prep NP PP, nên không quyết định được PP cuối gắn vào đâu — đây là **PP-attachment ambiguity**. Slide NLP2 minh hoạ chính bằng 'Derivation tree #1' và '#2' cho câu này.\n\n**Kết luận.** Câu nhập nhằng; cần ngữ nghĩa/ngữ cảnh (hoặc thông tin tần suất) để chọn cây — bài toán phân tích cú pháp thực tế phải xếp hạng các cây.",
+      "tags": ["ngôn-ngữ-hình-thức", "pp-attachment", "nhập-nhằng", "cfg", "parse-tree"]
+    },
+    {
+      "id": "e-023",
+      "topicId": "t-formal-language",
+      "title": "Văn phạm BNF: sinh và phân tích câu",
+      "difficulty": "medium",
+      "problem": "Cho văn phạm dạng **BNF** (slide NLP2):\n```\n⟨sentence⟩    = ⟨noun phrase⟩ ⟨verb phrase⟩\n⟨noun phrase⟩ = ⟨article⟩ [⟨adjective⟩] ⟨noun⟩\n⟨verb phrase⟩ = ⟨verb⟩ [⟨adverb⟩]\n⟨article⟩   = a | the\n⟨adjective⟩ = large | hungry\n⟨noun⟩      = rabbit | mathematician\n⟨verb⟩      = eats | hops\n⟨adverb⟩    = quickly | wildly\n```\n([] = tuỳ chọn, | = lựa chọn). Hãy: (a) cho biết câu *The hungry rabbit eats quickly* có sinh được không và phân tích nó; (b) sinh thêm 2 câu hợp lệ khác nhau; (c) câu *rabbit the eats* có hợp lệ không, vì sao.",
+      "hints": [
+        "[] nghĩa là thành phần có thể có hoặc không.",
+        "Phân tích = ánh xạ từng từ vào ký hiệu phi kết thúc.",
+        "Kiểm tra trật tự: article phải đứng trước noun."
+      ],
+      "solution": "**Bước 1 — Phân tích 'The hungry rabbit eats quickly'.** Áp luật:\n- ⟨article⟩ = the → 'The'\n- ⟨adjective⟩ = hungry → 'hungry' (thành phần tuỳ chọn, có dùng)\n- ⟨noun⟩ = rabbit → 'rabbit'\n⇒ ⟨noun phrase⟩ = the hungry rabbit ✅\n- ⟨verb⟩ = eats → 'eats'\n- ⟨adverb⟩ = quickly → 'quickly' (tuỳ chọn, có dùng)\n⇒ ⟨verb phrase⟩ = eats quickly ✅\n⇒ ⟨sentence⟩ = [the hungry rabbit][eats quickly] → **hợp lệ**, sinh được.\n\n**Bước 2 — Sinh 2 câu hợp lệ khác.**\n- 'A mathematician hops' (bỏ adjective và adverb tuỳ chọn): article=a, noun=mathematician, verb=hops. ✅\n- 'The large rabbit eats wildly': article=the, adj=large, noun=rabbit, verb=eats, adverb=wildly. ✅\n\n**Bước 3 — 'rabbit the eats'?** **KHÔNG hợp lệ.** ⟨noun phrase⟩ yêu cầu trật tự ⟨article⟩ (… ) ⟨noun⟩ — article phải đứng **trước** noun. Chuỗi 'rabbit the' đặt noun trước article, vi phạm luật; ngoài ra thiếu cấu trúc đúng cho verb phrase. Văn phạm BNF quy định trật tự, nên 'rabbit the eats' không sinh được.\n\n**Kết luận.** BNF (với [] tuỳ chọn, | lựa chọn) là một cách viết CFG: 'The hungry rabbit eats quickly' và nhiều câu khác hợp lệ; trật tự sai (article sau noun) thì không sinh được. BNF là công cụ chuẩn để đặc tả cú pháp ngôn ngữ (cả NL lẫn ngôn ngữ lập trình).",
+      "tags": ["ngôn-ngữ-hình-thức", "bnf", "cfg", "sinh-câu", "phân-tích"]
+    },
+    {
+      "id": "e-024",
+      "topicId": "t-formal-language",
+      "title": "Phân tích Earley: lập bảng cho câu tiếng Anh",
+      "difficulty": "hard",
+      "problem": "Cho CFG (slide NLP2, Earley):\n```\nS  → NP VP | NP VP PP\nNP → d NP3\nNP3 → a NP3 | n | n PP\nPP → p NP2\nNP2 → d NP3\nVP → v\n```\n(d=det, a=adj, n=noun, p=prep, v=verb). Câu: *The/d young/a student/n sat/v in/p the/d class/n*, tức w = a₁..a₇ = d a n v p d n.\n\nHãy: (a) lập bảng Earley I₀ và I₁ (các item dạng [luật với dấu •, vị trí]); (b) chỉ ra item chấp nhận (accepting item) ở bảng cuối I₇ chứng tỏ câu hợp lệ; (c) câu được phân tích theo nhánh nào của S.",
+      "hints": [
+        "I₀ chứa các item từ S với dấu • ở đầu vế phải, rồi đóng (closure) qua NP→•d NP3.",
+        "Đọc d (a₁) đẩy dấu • qua d: NP→d•NP3.",
+        "Item chấp nhận: [S → NP VP PP •, 0] ở I₇."
+      ],
+      "solution": "**Ký hiệu.** Item [A → α•β, i]: luật A→αβ đã khớp α, đang chờ β, bắt đầu từ vị trí i.\n\n**Bảng I₀ (trước khi đọc từ nào).** Khởi đầu từ S, đóng qua NP:\n```\n[S → • NP VP, 0]\n[S → • NP VP PP, 0]\n[NP → • d NP3, 0]      (closure vì sau • là NP)\n```\n(Chưa thể closure NP3 vì sau NP là 'd' kết thúc.)\n\n**Bảng I₁ (sau khi đọc a₁ = 'The'/d).** Scan 'd' đẩy dấu • trong [NP→•d NP3,0]:\n```\n[NP → d • NP3, 0]      (vừa khớp d)\n[NP3 → • a NP3, 1]     (closure: sau • là NP3)\n[NP3 → • n, 1]\n[NP3 → • n PP, 1]\n```\n(Khớp với slide: I₀ và I₁ đúng như trên.)\n\n*(Các bảng tiếp: I₂ đọc 'young'/a → [NP3→a•NP3,1]…; I₃ đọc 'student'/n → hoàn tất NP, sinh [S→NP•VP,0] và [S→NP•VP PP,0]; I₄ đọc 'sat'/v → [VP→v•,3], [S→NP VP•,0] (đánh dấu *), [S→NP VP•PP,0]; I₅ đọc 'in'/p; I₆ đọc 'the'/d; I₇ đọc 'class'/n → hoàn tất PP và NP2.)*\n\n**Bước (b) — Item chấp nhận ở I₇.** Bảng cuối I₇ chứa:\n```\n[S → NP VP PP •, 0]   (**)\n```\nCó một item dạng [S → … •, 0] **phủ trọn vẹn** từ vị trí 0 đến hết câu (vị trí 7) ⇒ câu **hợp lệ** (được S sinh ra). (Nếu ở I₄ chỉ có [S→NP VP•,0] thì đó là phân tích cho câu 5 từ; với đủ 7 từ, nhánh có PP mới khớp.)\n\n**Bước (c) — Nhánh phân tích.** Câu khớp nhánh **S → NP VP PP**:\n- NP = 'The young student' = d (a n) = d NP3, NP3 → a NP3 → a n.\n- VP = 'sat' = v.\n- PP = 'in the class' = p NP2 = p (d NP3) = p d n.\n\n**Kết luận.** I₀, I₁ như trên; item chấp nhận [S → NP VP PP •, 0] ở I₇ chứng tỏ câu đúng ngữ pháp, phân tích theo nhánh S→NP VP PP. Earley xây dựng tuần tự các bảng Iⱼ bằng ba thao tác predict/scan/complete để nhận biết và sau đó dựng cây.",
+      "tags": ["ngôn-ngữ-hình-thức", "earley", "phân-tích-cú-pháp", "cfg"]
+    },
+    {
+      "id": "e-025",
+      "topicId": "t-corpus",
+      "title": "Đếm token và type, tính tỉ lệ type/token",
+      "difficulty": "easy",
+      "problem": "Cho đoạn văn bản (đã tách từ):\n\n> **học sinh / học / sinh học / , / học sinh / chăm / học**\n\nHãy: (a) đếm số **token** (lượt từ) và số **type** (từ khác nhau); (b) tính **tỉ lệ type/token (TTR)**; (c) giải thích ý nghĩa của token vs type trong ngữ liệu học (corpus) và vì sao cần phân biệt khi thống kê tần số từ.",
+      "hints": [
+        "Token = mỗi lần xuất hiện; type = các từ phân biệt.",
+        "Dấu phẩy có tính là token hay không tuỳ quy ước — nêu rõ giả định.",
+        "TTR = số type / số token."
+      ],
+      "solution": "**Bước 1 — Liệt kê token (bỏ dấu phẩy, theo quy ước chỉ tính từ thực).** Dãy: `học sinh, học, sinh học, học sinh, chăm, học`.\n⇒ Số **token = 6** (6 lượt từ xuất hiện).\n\n**Bước 2 — Liệt kê type (từ khác nhau).**\n- 'học sinh' (xuất hiện 2 lần)\n- 'học' (xuất hiện 2 lần)\n- 'sinh học' (1)\n- 'chăm' (1)\nCác type phân biệt: {học sinh, học, sinh học, chăm} ⇒ **type = 4**.\n\n**Bước 3 — TTR.** TTR = type / token = 4 / 6 ≈ **0,67**.\n(Nếu tính cả dấu phẩy là 1 token thì token = 7, type = 5, TTR = 5/7 ≈ 0,71 — cần nêu rõ quy ước tách dấu câu.)\n\n**Bước 4 — Ý nghĩa.**\n- **Token**: tổng số lượt từ → đo *độ dài* văn bản, dùng cho tần số tuyệt đối.\n- **Type**: số từ vựng phân biệt → đo *độ phong phú từ vựng* (vocabulary size).\n- **TTR** cao ⇒ văn bản đa dạng từ vựng; thấp ⇒ lặp nhiều. TTR phụ thuộc độ dài (văn bản càng dài TTR càng giảm), nên khi so sánh phải chuẩn hoá độ dài.\nPhân biệt token/type là nền tảng cho thống kê corpus: tần số từ, luật Zipf, kích thước từ điển, n-gram.\n\n**Kết luận.** 6 token, 4 type, TTR ≈ 0,67. Token đo lượng, type đo loại; muốn thống kê tần số đúng phải tách từ trước và quy ước rõ xử lý dấu câu.",
+      "tags": ["ngữ-liệu", "token", "type", "ttr", "thống-kê"]
+    },
+    {
+      "id": "e-026",
+      "topicId": "t-corpus",
+      "title": "Trích xuất n-gram và đếm tần số",
+      "difficulty": "medium",
+      "problem": "Cho câu (đã tách từ, thêm ký hiệu đầu/cuối ⟨s⟩, ⟨/s⟩):\n\n> **⟨s⟩ tôi đi học tôi đi làm ⟨/s⟩**\n\nHãy: (a) liệt kê tất cả **bigram** (2-gram) và đếm tần số; (b) liệt kê **trigram** (3-gram); (c) ước lượng xác suất bigram P(làm | đi) và P(học | đi) theo công thức đếm tần số (MLE); (d) nêu một hạn chế của mô hình n-gram.",
+      "hints": [
+        "Bigram = cặp từ liên tiếp; có (số token + 1) cặp khi tính cả ⟨s⟩, ⟨/s⟩.",
+        "P(w₂|w₁) = count(w₁ w₂) / count(w₁).",
+        "'đi' xuất hiện 2 lần, theo sau là 'học' và 'làm'."
+      ],
+      "solution": "**Chuỗi token:** ⟨s⟩ tôi đi học tôi đi làm ⟨/s⟩ (8 vị trí).\n\n**Bước 1 — Bigram và tần số.**\n| Bigram | Đếm |\n|---|---|\n| (⟨s⟩, tôi) | 1 |\n| (tôi, đi) | 2 |\n| (đi, học) | 1 |\n| (học, tôi) | 1 |\n| (đi, làm) | 1 |\n| (làm, ⟨/s⟩) | 1 |\nTổng 7 lượt bigram, 6 bigram phân biệt. Chú ý (tôi, đi) xuất hiện **2 lần**.\n\n**Bước 2 — Trigram.**\n(⟨s⟩, tôi, đi), (tôi, đi, học), (đi, học, tôi), (học, tôi, đi), (tôi, đi, làm), (đi, làm, ⟨/s⟩) — 6 trigram.\n\n**Bước 3 — Xác suất bigram (MLE).** Đếm: count(đi) = 2; count(đi, học) = 1; count(đi, làm) = 1.\n- P(học | đi) = count(đi, học) / count(đi) = 1/2 = **0,5**.\n- P(làm | đi) = count(đi, làm) / count(đi) = 1/2 = **0,5**.\n(Hai khả năng nối tiếp 'đi' chia đều xác suất theo dữ liệu quan sát.)\n\n**Bước 4 — Hạn chế mô hình n-gram.**\n- **Thưa dữ liệu (data sparseness)**: n-gram chưa từng thấy trong corpus → xác suất 0; cần làm trơn (smoothing).\n- **Ngữ cảnh ngắn**: bigram chỉ nhớ 1 từ trước, không nắm phụ thuộc xa ('tôi … đi … làm').\n- Phụ thuộc mạnh vào kích thước/tính đại diện của corpus.\n\n**Kết luận.** Bigram nổi bật: (tôi, đi)=2; P(học|đi)=P(làm|đi)=0,5. Mô hình n-gram đơn giản, hiệu quả nhưng giới hạn bởi thưa dữ liệu và ngữ cảnh ngắn — lý do về sau dùng mô hình mạng nơ-ron/LLM.",
+      "tags": ["ngữ-liệu", "n-gram", "bigram", "xác-suất", "thống-kê"]
+    },
+    {
+      "id": "e-027",
+      "topicId": "t-corpus",
+      "title": "Khoảng cách soạn thảo tối thiểu (MED/Levenshtein): intention → execution",
+      "difficulty": "hard",
+      "problem": "Tính **Minimum Edit Distance (MED / Levenshtein)** giữa hai chuỗi (ví dụ kinh điển, slide NLP3 alignment):\n\n> **intention** → **execution**\n\nHãy: (a) cho biết kích thước bảng quy hoạch động (DP) cần dùng; (b) tính khoảng cách theo Levenshtein chuẩn (chèn/xoá/thay đều chi phí 1) và theo biến thể Levenshtein-thay-thế-bằng-2; (c) đưa ra một dãy phép biến đổi (alignment) tối ưu.",
+      "hints": [
+        "Bảng DP kích thước (m+1)×(n+1) với m=9, n=9.",
+        "Công thức: D[i,j] = min(D[i-1,j]+1, D[i,j-1]+1, D[i-1,j-1]+cost_sub).",
+        "Alignment kinh điển: xoá 'i', thay n→e, t→x, chèn 'u', thay n→c."
+      ],
+      "solution": "**Bước 1 — Kích thước bảng.** m = |intention| = 9, n = |execution| = 9 ⇒ bảng DP **(9+1)×(9+1) = 10×10**. D[i,j] = khoảng cách giữa i ký tự đầu của 'intention' và j ký tự đầu của 'execution'. Khởi tạo D[i,0]=i, D[0,j]=j.\n\n**Bước 2 — Công thức truy hồi.**\nD[i,j] = min của:\n- D[i−1,j] + 1 (xoá),\n- D[i,j−1] + 1 (chèn),\n- D[i−1,j−1] + (0 nếu kí tự bằng nhau, ngược lại cost_sub).\n\n**Bước 3 — Alignment tối ưu (kinh điển Jurafsky).**\n```\ni n t e n t i o n\n* e x e c u t i o n\n```\nDãy phép biến đổi:\n1. xoá 'i' (i → ∅)\n2. thay n → e\n3. thay t → x\n4. giữ e = e\n5. thay n → c\n6. thay t → u  (hoặc chèn 'u' + giữ — xem dưới)\n7. giữ i, o, n\nGọn lại: **1 xoá + 1 chèn + 3 thay thế + giữ các ký tự còn lại**.\n\n**Bước 4 — Giá trị khoảng cách.**\n- **Levenshtein chuẩn (thay = 1):** tổng = 1 (xoá) + 3 (thay) + 1 (chèn) = **5**.\n- **Biến thể thay = 2 (Jurafsky):** 1 (xoá) + 3×2 (thay) + 1 (chèn) = 1 + 6 + 1 = **8**.\n\n**Kết luận.** MED('intention','execution') = **5** với chi phí thay-thế 1 (Levenshtein chuẩn), hoặc **8** nếu tính thay-thế = 2 ops. Bảng DP 10×10; alignment tối ưu gồm 1 xoá, 3 thay, 1 chèn. MED là cốt lõi của bài toán dóng hàng (alignment) ký tự/từ trong corpus.",
+      "tags": ["ngữ-liệu", "med", "levenshtein", "quy-hoạch-động", "alignment"]
+    },
+    {
+      "id": "e-028",
+      "topicId": "t-corpus",
+      "title": "Levenshtein qua bảng DP: 'Saturday' → 'Sunday'",
+      "difficulty": "medium",
+      "problem": "Tính khoảng cách Levenshtein (chèn/xoá/thay = 1) giữa **Saturday** và **Sunday** bằng quy hoạch động. Hãy: (a) nêu kích thước bảng; (b) trình bày dãy phép biến đổi tối ưu; (c) cho kết quả khoảng cách; (d) chỉ ra cách truy vết (backtrace) để lấy alignment.",
+      "hints": [
+        "m = 8 (Saturday), n = 6 (Sunday).",
+        "Hai chuỗi chung tiền tố 'S' và hậu tố 'day'.",
+        "Cần bỏ 'a','t' và đổi 'r'→'n'."
+      ],
+      "solution": "**Bước 1 — Kích thước bảng.** m = |Saturday| = 8, n = |Sunday| = 6 ⇒ bảng DP **9×7**. Khởi tạo D[i,0]=i, D[0,j]=j.\n\n**Bước 2 — Quan sát cấu trúc.** Hai chuỗi:\n```\nS a t u r d a y\nS _ _ u n d a y\n```\nChung tiền tố 'S', chung khúc 'u', chung hậu tố 'day'. Khác ở khúc giữa: 'Sat...r' vs 'S...n'.\n\n**Bước 3 — Dãy phép biến đổi tối ưu.**\n1. giữ 'S' = 'S'\n2. xoá 'a'\n3. xoá 't'\n4. giữ 'u' = 'u'\n5. thay 'r' → 'n'\n6. giữ 'd','a','y'\n⇒ 2 xoá + 1 thay = **3 thao tác**.\n\n**Bước 4 — Kết quả.** Levenshtein('Saturday','Sunday') = **3**.\n\n**Bước 5 — Truy vết (backtrace).** Bắt đầu từ ô D[8,6], đi ngược về D[0,0] theo hướng cho giá trị nhỏ nhất:\n- đường chéo (i−1,j−1): khớp hoặc thay,\n- lên (i−1,j): xoá,\n- trái (i,j−1): chèn.\nGhi lại thao tác ở mỗi bước rồi đảo ngược → được alignment ở Bước 3.\n\n**Kết luận.** Khoảng cách = 3 (xoá 'a', xoá 't', thay 'r'→'n'); bảng DP 9×7; alignment lấy bằng truy vết ngược từ góc dưới-phải. Đây là dạng bài MED cơ bản dùng cho dóng hàng ký tự (character alignment) trong corpus.",
+      "tags": ["ngữ-liệu", "levenshtein", "med", "quy-hoạch-động", "backtrace"]
+    },
+    {
+      "id": "e-029",
+      "topicId": "t-corpus",
+      "title": "Dóng hàng từ (word alignment) trong ngữ liệu song ngữ",
+      "difficulty": "medium",
+      "problem": "Cho cặp câu song ngữ Anh–Việt (slide NLP3, ví dụ alignment #6):\n\n- EN: *I am a new teacher*\n- VI: *Tôi là một giáo viên mới*\n\nHãy: (a) lập **dóng hàng từ (word alignment)** giữa hai câu (cặp chỉ số i–j); (b) chỉ ra cặp từ thể hiện **đảo trật tự (reordering)**; (c) cho biết đây là ngữ liệu **song song (parallel)** hay **so sánh (comparable)**, và vai trò của dóng hàng trong dịch máy.",
+      "hints": [
+        "Đánh số: EN(1 I,2 am,3 a,4 new,5 teacher); VI(1 Tôi,2 là,3 một,4 giáo viên,5 mới).",
+        "'new'(4) ↔ 'mới'(5): định ngữ đổi vị trí.",
+        "Parallel = bản dịch trực tiếp, từng câu/từ tương ứng."
+      ],
+      "solution": "**Bước 1 — Đánh số từ.**\n- EN: I(1) am(2) a(3) new(4) teacher(5)\n- VI: Tôi(1) là(2) một(3) giáo_viên(4) mới(5)\n\n**Bước 2 — Dóng hàng từ (alignment).**\n| EN | ↔ | VI |\n|---|---|---|\n| I (1) | ↔ | Tôi (1) |\n| am (2) | ↔ | là (2) |\n| a (3) | ↔ | một (3) |\n| new (4) | ↔ | mới (5) |\n| teacher (5) | ↔ | giáo_viên (4) |\nCặp chỉ số: {1–1, 2–2, 3–3, 4–5, 5–4}.\n\n**Bước 3 — Đảo trật tự (reordering).** Cặp **new(4) ↔ mới(5)** và **teacher(5) ↔ giáo_viên(4)** giao nhau: trong tiếng Anh tính từ 'new' đứng **trước** danh từ 'teacher', còn tiếng Việt định ngữ 'mới' đứng **sau** 'giáo viên'. Đây là hiện tượng đảo trật tự định ngữ (head-initial vs head-final) — phải mã hoá trong mô hình dịch.\n\n**Bước 4 — Loại ngữ liệu & vai trò.** Đây là ngữ liệu **song song (parallel)**: hai câu là bản dịch trực tiếp của nhau, dóng hàng được tới mức **từ** (word alignment). (Khác 'comparable' — hai văn bản cùng chủ đề nhưng không phải bản dịch, chỉ dóng được ở mức nghĩa.) Dóng hàng từ là dữ liệu huấn luyện cốt lõi cho dịch máy thống kê (SMT) và để rút bảng dịch/đánh giá mô hình.\n\n**Kết luận.** Alignment {1-1,2-2,3-3,4-5,5-4}; cặp new↔mới, teacher↔giáo viên đảo trật tự; ngữ liệu song song dóng tới mức từ — nền tảng cho dịch máy.",
+      "tags": ["ngữ-liệu", "dóng-hàng", "word-alignment", "song-ngữ", "dịch-máy"]
+    },
+    {
+      "id": "e-030",
+      "topicId": "t-corpus",
+      "title": "Phân biệt ngữ liệu song song và so sánh; dóng hàng câu",
+      "difficulty": "medium",
+      "problem": "Cho ba câu cùng nói về một sự kiện (slide NLP3):\n\n1. EN: *Prime Minister Pham Minh Chinh arrived in Kuala Lumpur on May 25, 2025.*\n2. VI-a: *Thủ tướng Phạm Minh Chính đã đến Kuala Lumpur vào ngày 25/5/2025.*\n3. VI-b: *Người đứng đầu chính phủ VN đã đến thủ đô Malaysia vào ngày hôm qua.*\n\nHãy: (a) xác định cặp nào là **song song (parallel)**, cặp nào là **so sánh (comparable)**; (b) dóng hàng các thành phần tương ứng giữa (1) và (2); (c) giải thích vì sao (3) khó dóng hàng ở mức từ.",
+      "hints": [
+        "Parallel = dịch sát; comparable = cùng chủ đề, diễn đạt khác.",
+        "Đối chiếu 'Pham Minh Chinh' ↔ 'Thủ tướng…', 'Kuala Lumpur' ↔ 'thủ đô Malaysia'.",
+        "'ngày hôm qua' không tương ứng 1-1 với '25/5/2025'."
+      ],
+      "solution": "**Bước 1 — Phân loại cặp.**\n- (1)–(2): **song song (parallel)** — VI-a là bản dịch sát nghĩa, gần như từng cụm tương ứng từng cụm.\n- (1)–(3) và (2)–(3): **so sánh (comparable)** — VI-b nói cùng sự kiện nhưng diễn đạt **khác từ ngữ** (dùng mô tả vòng), không phải bản dịch trực tiếp.\n\n**Bước 2 — Dóng hàng (1)–(2).**\n| EN (1) | ↔ | VI-a (2) |\n|---|---|---|\n| Prime Minister | ↔ | Thủ tướng |\n| Pham Minh Chinh | ↔ | Phạm Minh Chính |\n| arrived in | ↔ | đã đến |\n| Kuala Lumpur | ↔ | Kuala Lumpur |\n| on May 25, 2025 | ↔ | vào ngày 25/5/2025 |\nDóng tới mức **cụm/từ** rõ ràng → ngữ liệu song song dùng huấn luyện dịch.\n\n**Bước 3 — Vì sao (3) khó dóng hàng mức từ.**\n- 'Pham Minh Chinh' ↔ 'Người đứng đầu chính phủ VN': dùng **cụm mô tả** thay tên riêng → không 1-1.\n- 'Kuala Lumpur' ↔ 'thủ đô Malaysia': dùng **tri thức** (KL là thủ đô Malaysia) mới khớp.\n- '25/5/2025' ↔ 'ngày hôm qua': cần **mốc thời gian phát ngôn** mới suy ra tương đương → không khớp bề mặt.\nDo đó (3) chỉ dóng được ở **mức nghĩa/câu (comparable)**, không dóng được mức từ.\n\n**Kết luận.** (1)–(2) song song (dóng mức từ); (3) so sánh (chỉ dóng mức nghĩa). Ngữ liệu song song quý cho dịch máy vì dóng hàng chi tiết; ngữ liệu so sánh cần suy luận/tri thức nền để khai thác.",
+      "tags": ["ngữ-liệu", "parallel", "comparable", "dóng-hàng", "alignment"]
+    },
+    {
+      "id": "e-031",
+      "topicId": "t-corpus",
+      "title": "Gán nhãn từ loại theo treebank (POS tagging)",
+      "difficulty": "medium",
+      "problem": "Ngữ liệu cây (treebank) gán nhãn từ loại cho từng từ, ví dụ PTB: *Pierre/NNP Vinken/NNP …old/JJ will/MD join/VB the/DT board/NN*. Hãy: (a) gán nhãn từ loại (POS) cho câu tiếng Việt **Bão số 10 đang gây mưa lớn** theo lối VTB (Nn=danh từ, An=số, R=phụ từ/chỉ thời, Vv=động từ, Aa=tính từ); (b) giải thích vì sao việc tách từ phải làm trước khi gán nhãn; (c) nêu công dụng của treebank.",
+      "hints": [
+        "Tách từ trước: 'Bão / số / 10 / đang / gây / mưa / lớn' (hoặc gộp 'mưa lớn'?).",
+        "VTB dùng nhãn như Nn, Vv, Aa, An, R (xem slide NLP3 sample VTB).",
+        "Treebank = corpus có chú giải cú pháp/POS, dùng huấn luyện parser."
+      ],
+      "solution": "**Bước 1 — Tách từ.** Câu: `Bão | số | 10 | đang | gây | mưa | lớn` (7 đơn vị; 'mưa lớn' có thể coi danh ngữ 'mưa' + định ngữ 'lớn').\n\n**Bước 2 — Gán nhãn POS (lối VTB).**\n| Từ | Nhãn | Giải thích |\n|---|---|---|\n| Bão | Nn | danh từ |\n| số | Nn | danh từ (loại/chỉ số thứ tự) |\n| 10 | An | số từ |\n| đang | R | phụ từ chỉ thời/thể (tiếp diễn) |\n| gây | Vv | động từ |\n| mưa | Nn | danh từ |\n| lớn | Aa | tính từ |\nChuỗi gán nhãn: `Bão/Nn số/Nn 10/An đang/R gây/Vv mưa/Nn lớn/Aa`.\n\n**Bước 3 — Vì sao tách từ trước.** Trong tiếng Việt một từ có thể gồm nhiều âm tiết ('mưa lớn', 'giáo viên'); nếu chưa tách từ, máy không biết gán nhãn cho 'âm tiết' hay 'từ', dễ gán sai (ví dụ 'số 10' nếu tách nhầm). POS tagging thao tác trên **đơn vị từ**, nên Word Segmentation là bước tiền đề (slide NLP1).\n\n**Bước 4 — Công dụng treebank.** Treebank (PTB, CTB, VTB) là corpus được chú giải POS + cấu trúc cú pháp (cây). Dùng để: (i) huấn luyện/đánh giá bộ gán nhãn từ loại và parser; (ii) thống kê ngôn ngữ; (iii) làm 'chuẩn vàng' (gold standard) so khớp. Đây là dạng corpus **có chú giải (annotated)** ở khía cạnh ngữ pháp.\n\n**Kết luận.** Câu gán: Bão/Nn số/Nn 10/An đang/R gây/Vv mưa/Nn lớn/Aa. Tách từ trước, gán nhãn sau; treebank cung cấp dữ liệu chuẩn để huấn luyện công cụ phân tích.",
+      "tags": ["ngữ-liệu", "treebank", "pos-tagging", "tách-từ", "vtb"]
+    },
+    {
+      "id": "e-032",
+      "topicId": "t-corpus",
+      "title": "Phiên chuyển tự (transliteration) và vì sao Hán-Nôm không 1-1",
+      "difficulty": "hard",
+      "problem": "Phiên chuyển tự (transliteration) phổ biến với chữ ghi âm (slide NLP3): Cyrillic *Путин*→*Putin*, Hy Lạp *γραφικ*→*graphic*. Nhưng chuyển chữ Hán/Nôm sang Quốc ngữ rất khó. Hãy: (a) giải thích vì sao chuyển tự giữa các hệ chữ ghi âm gần như 1-1; (b) dùng các ví dụ '味', '化', 'năm(年/歲/祀/載)' để chỉ ra hiện tượng làm chuyển tự Hán-Nôm KHÔNG 1-1; (c) gọi tên các hiện tượng (đồng âm/đa nghĩa/dị độc).",
+      "hints": [
+        "Chữ ghi âm: 1 ký tự ↔ 1 âm → ánh xạ gần 1-1.",
+        "Chữ Hán ghi ý: 1 chữ có nhiều âm đọc, nhiều nghĩa theo thời đại.",
+        "Slide: 味 → 'mùi'(âm HV cổ) hay 'vị'(đời Đường); 化 → hóa/góa/hoa/Huế."
+      ],
+      "solution": "**Bước 1 — Vì sao chữ ghi âm chuyển tự ~1-1.** Hệ chữ ghi âm (Latin, Hy Lạp, Cyrillic, Hangul, Kana…) mỗi ký tự biểu thị một âm; khi chuyển sang hệ ghi âm khác chỉ là **thay ký tự theo âm**, có tương ứng gần **1-1** giữa hai bảng chữ: Путин→Putin, γραφικ→graphic, にほん→ni-ho-n, ירושלים→Jerushalayim. Đơn giản, ít nhập nhằng.\n\n**Bước 2 — Vì sao Hán/Nôm KHÔNG 1-1.** Chữ Hán/Nôm **ghi ý** (logography), một chữ có thể đọc nhiều âm và mang nhiều nghĩa, biến đổi theo thời đại/vùng miền:\n- **味**: đọc 'mùi' (âm Hán-Việt cổ) hay 'vị' (từ đời Đường) — một chữ, hai âm tuỳ niên đại ⇒ **dị độc (heteronymy)**.\n- **化**: có thể chuyển thành 'hóa, góa, hoa, hóe, Huế' — một chữ ánh xạ tới nhiều âm Quốc ngữ ⇒ **một-nhiều**.\n- Khái niệm 'năm' (year) được ghi bằng nhiều chữ tuỳ triều đại: **年 niên** (nhà Chu), **歲 tuế** (nhà Hạ), **祀 tự** (nhà Thương), **載 tải** (nhà Đường/Ngô) ⇒ **nhiều-một** (nhiều chữ cùng nghĩa).\n\n**Bước 3 — Gọi tên hiện tượng.**\n- **Đồng âm (homonymy)**: nhiều chữ/nghĩa cùng một âm Quốc ngữ (ba, cổ, cơ…) → chuyển ngược âm→chữ rất nhập nhằng.\n- **Đa nghĩa (polysemy)**: một chữ nhiều nghĩa.\n- **Dị độc (heteronymy)**: một chữ nhiều cách đọc (味 = mùi/vị).\nVì các hiện tượng này, ánh xạ chữ↔âm là **nhiều-nhiều**, không 1-1; chuyển tự Hán-Nôm phải dựa ngữ cảnh, niên đại, tri thức (LLM/KG), không thể tra bảng cố định.\n\n**Kết luận.** Chữ ghi âm chuyển tự ~1-1 nhờ tương ứng ký tự–âm; chữ ghi ý Hán/Nôm gây ánh xạ nhiều-nhiều do đồng âm/đa nghĩa/dị độc, nên 'dịch âm' Hán-Nôm là bài toán khó cần ngữ cảnh và tri thức lịch sử.",
+      "tags": ["ngữ-liệu", "transliteration", "hán-nôm", "đồng-âm", "đa-nghĩa"]
+    },
+    {
+      "id": "e-033",
+      "topicId": "t-intro",
+      "title": "Thiết kế pipeline OCR và xử lý văn bản Hán-Nôm",
+      "difficulty": "hard",
+      "problem": "Thiết kế một **pipeline** đầy đủ để số hoá và khai thác một trang sách Hán-Nôm (ví dụ 'Đại Việt sử ký toàn thư') sao cho người dùng có thể **truy vấn bằng chữ Quốc ngữ** (theo các nhóm bài toán trong slide NLP0). Hãy: (a) liệt kê các bước xử lý theo thứ tự; (b) nêu đầu vào/đầu ra và thách thức của từng bước; (c) chỉ ra bước nào cần tri thức ngoài ngôn ngữ (KG/lịch sử).",
+      "hints": [
+        "Bắt đầu từ ảnh: phân vùng layout → bounding box cột/hàng → nhận diện ký tự.",
+        "Sau OCR: dịch âm (transliteration) → dịch nghĩa (meaning translation) → đánh chỉ mục/ truy vấn.",
+        "NER, ngắt câu, KG gia phả/niên đại nằm ở khâu dịch nghĩa."
+      ],
+      "solution": "**Pipeline xử lý văn bản Hán-Nôm (7 bước).**\n\n**B1. Phân tích bố cục (Layout analysis).** Vào: ảnh trang quét. Ra: các vùng (văn bản, chú thích, triện). Thách thức: bố cục dọc, lề không chuẩn.\n\n**B2. Nhận diện cột/hàng (Bounding box).** Vào: vùng văn bản. Ra: toạ độ từng box ký tự, sắp thứ tự **phải→trái, trên→dưới** (khác chữ Latin). Thách thức: sắp đúng thứ tự đọc cổ.\n\n**B3. Nhận diện ký tự (OCR Hán-Nôm tự).** Vào: ảnh từng ô. Ra: mã chữ Hán/Nôm. Thách thức: nhiều **biến thể tự dạng** (國/囯/国/囻), ảnh mờ/mất nét → phải 'đoán' bằng LLM/KG.\n\n**B4. Phân đoạn ngữ + ngắt câu (Chunking/Punctuation) + NER.** Vào: chuỗi chữ Hán liền. Ra: chuỗi có dấu ngắt, nhãn tên riêng. Thách thức: gốc Hán không có dấu, không có chữ Hoa → nhập nhằng nhịp (xem bài 'Nam quốc sơn hà') và tên riêng VN ≠ TQ (雄王=Hùng Vương ≠ 'vua khỏe'). **Cần tri thức ngoài ngôn ngữ (lịch sử/địa lý/NER).**\n\n**B5. Dịch âm (Transliteration).** Vào: chữ Hán/Nôm + ngắt câu. Ra: âm Hán-Việt / thuần Việt. Thách thức: ánh xạ nhiều-nhiều (味=mùi/vị), đồng âm/dị độc (xem bài transliteration).\n\n**B6. Dịch nghĩa (Meaning translation).** Vào: âm + ngữ cảnh. Ra: tiếng Việt hiện đại. Thách thức: từ Hán-Việt khó, thành ngữ/điển tích không dịch thẳng; **cần KG**: gia phả nhân vật, niên đại–triều đại–niên hiệu (Hồng Đức 14 → 1483, đời Lê Thánh Tông), địa danh đổi theo thời gian (Thăng Long→Đông Đô→…→Hà Nội). **Cần tri thức ngoài ngôn ngữ.**\n\n**B7. Đánh chỉ mục & Truy vấn (Indexing/Chatbot).** Vào: văn bản Quốc ngữ + nghĩa. Ra: hệ truy vấn cho phép hỏi bằng Quốc ngữ, trực quan hoá sử liệu.\n\n**Tóm tắt bước cần tri thức ngoài ngôn ngữ:** B4 (NER), B6 (KG lịch sử/địa lý/văn hoá) — đây là nơi LLM + Đồ thị tri thức (KG) đóng vai trò quyết định.\n\n**Kết luận.** Pipeline: Layout → Bounding box → OCR → Chunking+NER → Dịch âm → Dịch nghĩa → Truy vấn. Khâu hình ảnh (B1-B3) thiên về thị giác máy; khâu ngôn ngữ (B4-B7) cần tri thức lịch sử-văn hoá và KG, giải thích vì sao bài toán Hán-Nôm là 'đặc thù' khó.",
+      "tags": ["pipeline", "hán-nôm", "ocr", "ner", "knowledge-graph"]
+    },
+    {
+      "id": "e-034",
+      "topicId": "t-intro",
+      "title": "Thiết kế pipeline tiền xử lý NLP tiếng Việt cho công cụ kiểm lỗi chính tả",
+      "difficulty": "medium",
+      "problem": "Bạn cần xây một **công cụ kiểm lỗi chính tả + thống kê tần số từ** cho văn bản tiếng Việt thô. Dựa vào đặc trưng tiếng Việt (slide NLP1: ranh giới từ nhập nhằng, tách từ là tiền đề), hãy: (a) thiết kế các bước tiền xử lý theo thứ tự; (b) giải thích vì sao **tách từ (Word Segmentation)** phải đứng trước các mô-đun còn lại; (c) cho ví dụ một lỗi sẽ phát sinh nếu bỏ qua bước tách từ.",
+      "hints": [
+        "Các bước: chuẩn hoá → tách câu → tách từ → gán nhãn → kiểm lỗi/thống kê.",
+        "Slide NLP1: Word Segmentation là pre-requisite cho spelling checker, POS tagger, word frequency.",
+        "Ví dụ 'học sinh học sinh học' nếu không tách từ."
+      ],
+      "solution": "**Bước 1 — Pipeline tiền xử lý tiếng Việt.**\n1. **Chuẩn hoá văn bản (normalization):** thống nhất Unicode (tổ hợp dấu), chữ hoa/thường, bỏ ký tự rác.\n2. **Tách câu (sentence segmentation):** cắt theo dấu câu, xử lý ngoại lệ (vd 'T.P.', '25/5/2025').\n3. **Tách từ (word segmentation):** gộp âm tiết thành từ ('giáo viên', 'sinh học'). **Bước then chốt.**\n4. **Gán nhãn từ loại (POS tagging):** trên đơn vị từ đã tách.\n5. **Kiểm lỗi chính tả / thống kê tần số:** so từ với từ điển, đếm tần số **theo từ** (không theo âm tiết).\n\n**Bước 2 — Vì sao tách từ trước.** Tiếng Việt là ngôn ngữ **đơn lập**: khoảng trắng chỉ tách *âm tiết*, không tách *từ* (slide NLP1). Mọi mô-đun sau đều thao tác trên đơn vị **từ**: kiểm chính tả cần biết 'giáo viên' là một từ (đúng) chứ không phải hai từ 'giáo'+'viên' rời; thống kê tần số phải đếm từ. Nếu chưa xác định ranh giới từ, các bước sau không có đơn vị đúng để làm việc ⇒ tách từ là **tiền đề bắt buộc**.\n\n**Bước 3 — Ví dụ lỗi nếu bỏ tách từ.** Với 'học sinh học sinh học': nếu xử lý theo từng âm tiết, bộ kiểm lỗi có thể báo sai hoặc thống kê 'học'×3, 'sinh'×2 thay vì 'học sinh'×1, 'học'×1, 'sinh học'×1 → **sai hoàn toàn tần số**. Với 'giáo viên', kiểm lỗi có thể coi 'viên' là từ độc lập và gợi ý sửa nhầm. Tách từ sai → mọi kết quả sau sai theo (lỗi lan truyền).\n\n**Kết luận.** Pipeline: chuẩn hoá → tách câu → **tách từ** → POS → kiểm lỗi/thống kê. Tách từ đứng trước vì là đơn vị nền của ngôn ngữ đơn lập; bỏ qua nó gây sai lệch dây chuyền ở mọi mô-đun sau.",
+      "tags": ["pipeline", "tách-từ", "tiếng-việt", "tiền-xử-lý", "kiểm-lỗi"]
+    },
+    {
+      "id": "e-035",
+      "topicId": "t-intro",
+      "title": "Thiết kế quy trình xây dựng ngữ liệu (corpus) song ngữ cho dịch máy",
+      "difficulty": "hard",
+      "problem": "Bạn được giao xây **ngữ liệu song song Hán cổ ↔ tiếng Việt hiện đại** để huấn luyện mô hình dịch nghĩa (theo slide NLP3). Dựa vào tiêu chí corpus (representativeness, balance, sampling) và các mức dóng hàng, hãy thiết kế quy trình: (a) các bước thu thập–chú giải; (b) các mức dóng hàng cần làm; (c) các tiêu chí đảm bảo chất lượng corpus và rủi ro nếu vi phạm.",
+      "hints": [
+        "Định nghĩa corpus (Sinclair/McEnery): mẫu được chọn theo tiêu chí ngôn ngữ học rõ ràng.",
+        "Mức dóng hàng: văn bản → đoạn → câu → ngữ → từ (slide NLP3).",
+        "Tiêu chí: tính đại diện, cân bằng thể loại/niên đại/vùng miền; chú giải NER, niên đại."
+      ],
+      "solution": "**Bước 1 — Thu thập (collection & sampling).** Chọn nguồn Hán cổ có bản dịch Việt (Đại Việt sử ký toàn thư, thơ Hán Nôm…). Lấy **mẫu (sampling)** theo tiêu chí ngôn ngữ học rõ ràng (Sinclair/McEnery): bao phủ nhiều **thể loại/lĩnh vực** (sử, thơ, y học), nhiều **niên đại** và **vùng miền** để corpus **đại diện (representative)** và **cân bằng (balanced)**.\n\n**Bước 2 — Số hoá & làm sạch.** OCR (nếu là ảnh), chuẩn hoá mã chữ Hán/Nôm, ngắt câu (thêm punctuation vốn không có ở bản gốc), lưu dạng **máy đọc được (machine-readable)**.\n\n**Bước 3 — Chú giải (annotation).** Gán nhãn ở nhiều khía cạnh/đơn vị: từ loại (POS), **NER** (nhân danh/địa danh/niên đại — vì tên riêng Hán không viết Hoa), niên đại–triều đại–niên hiệu, điển tích/thành ngữ. Đây là corpus **có chú giải (annotated)**.\n\n**Bước 4 — Dóng hàng đa mức (alignment).** Theo slide NLP3, dóng hàng song song theo các mức từ thô đến mịn:\n**văn bản → đoạn → câu → ngữ → từ**. Với cặp Hán-Việt còn cần dóng hàng **chuyển tự (transliteration)** và **dịch nghĩa**, vì không 1-1 (xem bài transliteration). Câu có thể dóng nhiều-nhiều (một câu Hán ↔ nhiều câu Việt).\n\n**Bước 5 — Kiểm soát chất lượng & tiêu chí.**\n- **Tính đại diện (representativeness):** mẫu phản ánh đúng tổng thể ngôn ngữ đích.\n- **Cân bằng (balance):** tỉ lệ thể loại/niên đại/vùng hợp lý.\n- **Nhất quán chú giải:** cùng tagset, kiểm tra liên-người-gán (inter-annotator agreement).\n\n**Rủi ro nếu vi phạm.** Corpus lệch (chỉ lấy thơ đời Đường) → mô hình dịch **thiên lệch (bias)**, dịch sai văn xuôi/sử; thiếu chú giải niên đại/NER → dịch nhầm tên riêng ('雄王' → 'vua khỏe'); dóng hàng sai → mô hình học cặp dịch sai. Chất lượng corpus quyết định chất lượng mô hình ('Data is the new oil').\n\n**Kết luận.** Quy trình: chọn mẫu đại diện/cân bằng → số hoá/làm sạch → chú giải (POS, NER, niên đại) → dóng hàng đa mức (văn bản…từ + chuyển tự + dịch nghĩa) → kiểm soát chất lượng. Tuân thủ tiêu chí representativeness/balance/sampling là điều kiện để mô hình dịch nghĩa Hán-Việt đạt chất lượng.",
+      "tags": ["pipeline", "xây-dựng-corpus", "song-ngữ", "dóng-hàng", "annotation"]
+    }
+  ]
+}

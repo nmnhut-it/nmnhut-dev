@@ -26,12 +26,14 @@ npx wrangler login
 Then build + ship:
 
 ```sh
-npm run deploy        # hugo --minify && wrangler pages deploy public --project-name=nmnhut-dev
+npm run deploy        # hugo --minify && wrangler pages deploy public --project-name=nmnhut-dev --branch=master --commit-dirty=true
 ```
 
-The first deploy creates the Cloudflare Pages project and prints the live
-`https://nmnhut-dev.pages.dev` URL. A custom domain can be attached later in the
-Cloudflare Pages dashboard (update `baseURL` in `hugo.toml` to match).
+The live site is `https://nmnhut.dev/` (custom domain). The Cloudflare Pages
+project's **production branch is `master`**, while this repo is on `main` — so
+`deploy` passes `--branch=master` explicitly to publish to production. Without
+it, a deploy lands in a Preview environment (`main.nmnhut-dev.pages.dev`) and
+the custom domain is *not* updated.
 
 ## Structure
 

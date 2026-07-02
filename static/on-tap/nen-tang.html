@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nền tảng — Cách đọc dữ liệu theo chiều dọc</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./study.css">
+  <script defer src="./study.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <nav class="study-nav sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 flex items-center gap-1 overflow-x-auto py-2 text-sm font-medium whitespace-nowrap">
+      <a href="./index.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">🏠 Trang chủ</a>
+      <a href="./nen-tang.html" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Nền tảng</a>
+      <span class="text-slate-300">|</span>
+      <a href="./charm.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Charm</a>
+      <a href="./genmax.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">GenMax</a>
+      <a href="./declat.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dEclat</a>
+      <a href="./dcharm.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dCharm</a>
+      <a href="./dgenmax.html"  class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dGenMax</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-6 py-10">
+    <header class="mb-8">
+      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-wide">Bài 0 · Học trước tiên</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">Nền tảng: đọc dữ liệu theo chiều dọc</h1>
+      <p class="text-slate-600 mt-3 text-lg">Trước khi học năm thuật toán, ta cần nắm năm ý: bảng giao dịch dạng dọc, danh sách giao dịch của một mặt hàng, độ phổ biến, danh sách khác biệt, và sự phân biệt giữa ba loại tập phổ biến. Tất cả đều rất đơn giản, chỉ là cách nhìn.</p>
+      <button onclick="revealAll(true)" class="no-print mt-4 text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">Mở hết lời giải</button>
+    </header>
+
+    <!-- 1 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">1. Bảng dạng ngang và bảng dạng dọc</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Bảng <strong>dạng ngang</strong> là cách ta quen nhìn: mỗi dòng là một giao dịch, liệt kê những mặt hàng được mua trong giao dịch đó. Bảng <strong>dạng dọc</strong> thì nhìn ngược lại: với mỗi mặt hàng, ta ghi ra nó xuất hiện trong những giao dịch nào. Cái danh sách giao dịch đó gọi là <strong>danh sách giao dịch</strong> của mặt hàng (tài liệu tiếng Anh gọi là tidset).</p>
+      <p class="text-slate-700 mb-4 leading-relaxed">Năm thuật toán chúng ta học đều làm việc trên bảng dạng dọc, vì khi đó việc tính độ phổ biến chỉ là đếm xem một danh sách có bao nhiêu giao dịch, còn việc mở rộng một tập chỉ là tìm phần chung của hai danh sách.</p>
+      <div class="grid md:grid-cols-2 gap-5">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <h3 class="font-semibold text-slate-700 mb-2">Dạng ngang</h3>
+          <table class="tidset"><thead><tr><th>Giao dịch</th><th>Các mặt hàng</th></tr></thead><tbody>
+            <tr><td class="mono">1</td><td class="mono">A C T W</td></tr>
+            <tr><td class="mono">2</td><td class="mono">C D W</td></tr>
+            <tr><td class="mono">3</td><td class="mono">A C T W</td></tr>
+            <tr><td class="mono">4</td><td class="mono">A C D W</td></tr>
+            <tr><td class="mono">5</td><td class="mono">A C D T W</td></tr>
+            <tr><td class="mono">6</td><td class="mono">C D T</td></tr>
+          </tbody></table>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <h3 class="font-semibold text-slate-700 mb-2">Dạng dọc</h3>
+          <table class="tidset"><thead><tr><th>Mặt hàng</th><th>Có mặt ở các giao dịch</th><th>Độ phổ biến</th></tr></thead><tbody>
+            <tr><td class="mono">A</td><td class="mono">1, 3, 4, 5</td><td>bốn</td></tr>
+            <tr><td class="mono">C</td><td class="mono">1, 2, 3, 4, 5, 6</td><td>sáu</td></tr>
+            <tr><td class="mono">D</td><td class="mono">2, 4, 5, 6</td><td>bốn</td></tr>
+            <tr><td class="mono">T</td><td class="mono">1, 3, 5, 6</td><td>bốn</td></tr>
+            <tr><td class="mono">W</td><td class="mono">1, 2, 3, 4, 5</td><td>năm</td></tr>
+          </tbody></table>
+          <p class="text-sm text-slate-500 mt-3">Ngưỡng phổ biến tối thiểu trong toàn bộ tài liệu là ba. Cả năm mặt hàng đều có mặt ở từ bốn giao dịch trở lên nên đều phổ biến.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">2. Độ phổ biến và phần chung của hai danh sách</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed"><strong>Độ phổ biến</strong> của một tập mặt hàng là số giao dịch có chứa đủ tất cả các mặt hàng trong tập đó. Để tìm danh sách giao dịch của một tập gồm hai mặt hàng, ta lấy <strong>phần chung</strong> của hai danh sách thành phần, tức là những giao dịch xuất hiện ở cả hai. Đếm phần chung đó được bao nhiêu thì đó chính là độ phổ biến.</p>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <p class="text-slate-700"><strong>Ví dụ:</strong> tính độ phổ biến của tập gồm C và W.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="f-cw">Xem lời giải</button>
+        <div class="reveal-body" id="f-cw"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Mặt hàng C có mặt ở các giao dịch 1, 2, 3, 4, 5 và 6. Mặt hàng W có mặt ở các giao dịch 1, 2, 3, 4 và 5. Những giao dịch nào có cả C lẫn W? Đó là 1, 2, 3, 4 và 5, vì giao dịch 6 chỉ có C chứ không có W. Như vậy tập CW có mặt ở năm giao dịch, nghĩa là độ phổ biến của nó bằng năm. Vì năm lớn hơn ngưỡng ba nên CW là một tập phổ biến.
+        </div></div></div>
+      </div>
+    </section>
+
+    <!-- 3 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">3. Eclat — gom nhóm theo phần đầu chung</h2>
+      <p class="text-slate-700 mb-3 leading-relaxed">Eclat là thuật toán gốc mà mọi thuật toán còn lại dựa vào. Ý tưởng của nó là: những tập có chung <strong>phần đầu</strong> (vài mặt hàng đứng trước giống nhau) được gom vào cùng một nhóm. Trong mỗi nhóm, ta lần lượt ghép từng cặp thành viên với nhau để tạo ra tập dài hơn, rồi lấy phần chung của hai danh sách giao dịch để biết độ phổ biến. Tập nào còn đủ phổ biến thì giữ lại và đào sâu tiếp; tập nào không đủ thì bỏ.</p>
+      <p class="text-slate-700 leading-relaxed">Nói cách khác, Eclat đi theo chiều sâu: cứ mở rộng dần một nhánh cho tới khi không còn mở rộng được nữa, rồi mới quay lại nhánh khác.</p>
+    </section>
+
+    <!-- 4 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">4. Danh sách khác biệt — ý tưởng của các bản "d"</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Khi danh sách giao dịch dài, lưu trọn cả danh sách rất tốn công. Người ta nghĩ ra cách lưu gọn hơn, gọi là <strong>danh sách khác biệt</strong> (tiếng Anh là diffset). Thay vì ghi lại toàn bộ giao dịch của một tập, ta chỉ ghi phần <em>chênh lệch</em> giữa tập đó và phần đầu của nó.</p>
+      <p class="text-slate-700 mb-4 leading-relaxed">Cụ thể, danh sách khác biệt của một tập là <strong>những giao dịch có trong phần đầu nhưng lại vắng mặt trong tập</strong>. Và có một điều rất tiện: độ phổ biến của tập bằng độ phổ biến của phần đầu trừ đi số giao dịch trong danh sách khác biệt đó. Nghĩa là khi danh sách khác biệt càng ngắn thì tập càng phổ biến.</p>
+      <p class="text-slate-700 mb-4 leading-relaxed">Khi ghép hai thành viên cùng nhóm để tạo tập dài hơn, ta cũng không cần dò lại danh sách giao dịch. Quy tắc là: <strong>lấy danh sách khác biệt của thành viên đứng sau, bỏ đi những giao dịch đã có trong danh sách khác biệt của thành viên đứng trước</strong>; phần còn lại chính là danh sách khác biệt của tập mới. Độ phổ biến của tập mới thì bằng độ phổ biến của thành viên đứng trước trừ đi số giao dịch vừa tìm được.</p>
+      <p class="text-slate-700 mb-4 leading-relaxed">Một mẹo thực hành: khi làm tay, ở mức một (từng mặt hàng riêng lẻ) ta vẫn giữ danh sách giao dịch bình thường; chỉ bắt đầu chuyển sang danh sách khác biệt từ mức hai (khi ghép hai mặt hàng) trở đi. Lúc đó phần đầu là một mặt hàng, nên danh sách khác biệt chính là những giao dịch có ở mặt hàng đầu mà không có ở mặt hàng sau.</p>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <p class="text-slate-700"><strong>Ví dụ ở mức hai:</strong> tìm danh sách khác biệt và độ phổ biến của tập AT, với phần đầu là A.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="d-at">Xem lời giải</button>
+        <div class="reveal-body" id="d-at"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          A có mặt ở các giao dịch 1, 3, 4 và 5. T có mặt ở các giao dịch 1, 3, 5 và 6. Danh sách khác biệt của AT là những giao dịch có A nhưng vắng T: trong số 1, 3, 4, 5 thì giao dịch 4 không có T, còn 1, 3, 5 đều có cả hai. Vậy danh sách khác biệt chỉ gồm một giao dịch là 4. Độ phổ biến của A vốn là bốn, trừ đi một giao dịch khác biệt, còn lại ba. Vì ba bằng đúng ngưỡng nên AT vẫn là tập phổ biến.
+        </div></div></div>
+      </div>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <p class="text-slate-700"><strong>Ví dụ ở mức ba:</strong> ghép AT với AW để được ATW, phần đầu vẫn là A.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="d-atw">Xem lời giải</button>
+        <div class="reveal-body" id="d-atw"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Trước hết, danh sách khác biệt của AW gồm những giao dịch có A mà vắng W: A ở các giao dịch 1, 3, 4, 5, mà cả bốn giao dịch này đều có W, nên danh sách khác biệt của AW rỗng, không có giao dịch nào. Danh sách khác biệt của AT thì gồm giao dịch 4 như đã tính. Bây giờ ghép hai thành viên: ta lấy danh sách khác biệt của thành viên sau là AW (đang rỗng) rồi bỏ đi những giao dịch đã có trong danh sách khác biệt của thành viên trước là AT. Vì AW vốn đã rỗng nên kết quả vẫn rỗng. Độ phổ biến của ATW bằng độ phổ biến của AT là ba, trừ đi không, vẫn là ba.
+        </div></div></div>
+      </div>
+      <p class="text-sm text-slate-500 mt-3">Nhận xét đáng nhớ: khi danh sách khác biệt rỗng, tập con và tập ghép có cùng độ phổ biến, nghĩa là chúng luôn xuất hiện cùng nhau. Đây chính là dấu hiệu cho biết tập con chưa phải là tập "đóng".</p>
+    </section>
+
+    <!-- 5 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">5. Ba loại tập phổ biến: tất cả, đóng, tối đại</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Cùng một bảng dữ liệu, ta có thể quan tâm tới ba mức độ khác nhau.</p>
+      <div class="grid md:grid-cols-3 gap-4 mb-4">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <h3 class="font-bold text-slate-800 mb-1">Tất cả tập phổ biến</h3>
+          <p class="text-sm text-slate-600">Mọi tập có độ phổ biến đạt ngưỡng. Đây là tập đông nhất, gồm cả những tập trùng lặp thông tin.</p>
+        </div>
+        <div class="bg-indigo-50 rounded-xl border border-indigo-200 shadow-sm p-4">
+          <h3 class="font-bold text-indigo-800 mb-1">Tập đóng — việc của Charm</h3>
+          <p class="text-sm text-indigo-900">Là tập phổ biến mà không có tập cha trực tiếp nào cùng độ phổ biến với nó. Lưu các tập đóng là đủ để suy ra độ phổ biến của mọi tập con, nên không mất thông tin.</p>
+        </div>
+        <div class="bg-emerald-50 rounded-xl border border-emerald-200 shadow-sm p-4">
+          <h3 class="font-bold text-emerald-800 mb-1">Tập tối đại — việc của GenMax</h3>
+          <p class="text-sm text-emerald-900">Là tập phổ biến mà mọi tập cha của nó đều không còn phổ biến. Đây là cách lưu gọn nhất, nhưng không giữ lại được độ phổ biến của từng tập con.</p>
+        </div>
+      </div>
+      <p class="text-slate-700 mb-3 leading-relaxed">Quan hệ giữa ba loại: mọi tập tối đại đều là tập đóng, và mọi tập đóng đều là tập phổ biến. Càng đi về phía tối đại thì danh sách càng ngắn nhưng càng ít thông tin. Với bảng dữ liệu của chúng ta, ngưỡng bằng ba, kết quả ba loại như sau:</p>
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="cm-ans" data-label-show="Xem đáp số ba loại" data-label-hide="Ẩn đáp số">Xem đáp số ba loại</button>
+        <div class="reveal-body" id="cm-ans"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Có tất cả mười chín tập phổ biến, gồm: năm tập một mặt hàng là A, C, D, T, W; tám tập hai mặt hàng là AC, AT, AW, CD, CT, CW, DW, TW; năm tập ba mặt hàng là ACT, ACW, ATW, CDW, CTW; và một tập bốn mặt hàng là ACTW.<br><br>
+          Trong số đó có bảy tập đóng: C với độ phổ biến sáu, CW với độ phổ biến năm, ACW với độ phổ biến bốn, CD với độ phổ biến bốn, CT với độ phổ biến bốn, CDW với độ phổ biến ba, và ACTW với độ phổ biến ba.<br><br>
+          Và chỉ có hai tập tối đại: ACTW và CDW, cả hai cùng có độ phổ biến ba.<br><br>
+          Một ví dụ để hiểu: mặt hàng A không phải là tập đóng, bởi vì AC, AW và ACW đều cùng có độ phổ biến bốn giống A; tập đại diện đóng cho cả nhóm này là ACW.
+        </div></div></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-slate-400 pt-6 border-t border-slate-200">
+      <a href="./charm.html" class="text-indigo-600 font-medium">Học tiếp: Charm</a>
+    </footer>
+  </main>
+</body>
+</html>

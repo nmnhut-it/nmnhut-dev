@@ -1,0 +1,1561 @@
+{
+  "id": "python-co-ban",
+  "subject": "Python cơ bản — tự học từ 0",
+  "exercises": [
+    {
+      "id": "basics-e-001",
+      "topicId": "t-basics",
+      "title": "Phép tính cơ bản với hai biến",
+      "difficulty": "easy",
+      "problem": "Gán `x = 10` và `y = 3`. In ra 3 dòng theo thứ tự:\n- Tổng `x + y`\n- Hiệu `x - y`\n- Tích `x * y`",
+      "starterCode": "x = 10\ny = 3\n# TODO: in tổng, hiệu, tích\n",
+      "expectedOutput": "13\n7\n30",
+      "hints": [
+        "Dùng print() cho mỗi phép tính trên một dòng riêng",
+        "Phép cộng: +, trừ: -, nhân: *"
+      ],
+      "solution": "```python\nx = 10\ny = 3\nprint(x + y)\nprint(x - y)\nprint(x * y)\n```"
+    },
+    {
+      "id": "basics-e-002",
+      "topicId": "t-basics",
+      "title": "Chia có dư",
+      "difficulty": "easy",
+      "problem": "Gán `a = 17` và `b = 5`. In ra 3 dòng:\n- Kết quả chia thực (`a / b`)\n- Phần nguyên của phép chia (`a // b`)\n- Số dư (`a % b`)",
+      "starterCode": "a = 17\nb = 5\n# TODO: in kết quả chia thực, phần nguyên, số dư\n",
+      "expectedOutput": "3.4\n3\n2",
+      "hints": [
+        "Chia thực dùng `/`, chia lấy phần nguyên dùng `//`, lấy số dư dùng `%`",
+        "17 / 5 = 3.4; 17 // 5 = 3 (bỏ phần dư); 17 % 5 = 2 (phần còn lại)"
+      ],
+      "solution": "```python\na = 17\nb = 5\nprint(a / b)\nprint(a // b)\nprint(a % b)\n```"
+    },
+    {
+      "id": "basics-e-003",
+      "topicId": "t-basics",
+      "title": "Kiểm tra và ép kiểu",
+      "difficulty": "easy",
+      "problem": "Gán `x = \"42\"` (kiểu str). In ra 3 dòng:\n- Kiểu dữ liệu của `x` (dùng `type()`)\n- Kiểu dữ liệu sau khi ép `x` sang `int` (lưu vào biến `y`)\n- Giá trị `y + 8`",
+      "starterCode": "x = \"42\"\n# TODO: in type(x)\n# TODO: ép x sang int, lưu vào y, in type(y)\n# TODO: in y + 8\n",
+      "expectedOutput": "<class 'str'>\n<class 'int'>\n50",
+      "hints": [
+        "Dùng `type(x)` để xem kiểu dữ liệu",
+        "Dùng `int(x)` để chuyển chuỗi sang số nguyên"
+      ],
+      "solution": "```python\nx = \"42\"\nprint(type(x))\ny = int(x)\nprint(type(y))\nprint(y + 8)\n```"
+    },
+    {
+      "id": "basics-e-004",
+      "topicId": "t-basics",
+      "title": "Lời chào bằng f-string",
+      "difficulty": "easy",
+      "problem": "Gán `name = \"Minh\"` và `age = 22`. In ra đúng 1 dòng:\n```\nTen: Minh, Tuoi: 22\n```\n(Dùng f-string, không nối chuỗi bằng `+`)",
+      "starterCode": "name = \"Minh\"\nage = 22\n# TODO: in bằng f-string\n",
+      "expectedOutput": "Ten: Minh, Tuoi: 22",
+      "hints": [
+        "f-string: `f\"...{biến}...\"`",
+        "Cú pháp: `f\"Ten: {name}, Tuoi: {age}\"`"
+      ],
+      "solution": "```python\nname = \"Minh\"\nage = 22\nprint(f\"Ten: {name}, Tuoi: {age}\")\n```"
+    },
+    {
+      "id": "basics-e-005",
+      "topicId": "t-basics",
+      "title": "Toán tử so sánh và logic",
+      "difficulty": "easy",
+      "problem": "Gán `x = 15`. In ra 3 dòng:\n- `x > 10` (True hay False?)\n- `x > 10 and x < 20` (True hay False?)\n- `x > 20 or x < 5` (True hay False?)",
+      "starterCode": "x = 15\n# TODO: in 3 biểu thức so sánh/logic\n",
+      "expectedOutput": "True\nTrue\nFalse",
+      "hints": [
+        "`and` yêu cầu CẢ HAI vế đều True",
+        "`or` chỉ cần MỘT vế True",
+        "15 không lớn hơn 20 VÀ không nhỏ hơn 5, nên `or` cho False"
+      ],
+      "solution": "```python\nx = 15\nprint(x > 10)\nprint(x > 10 and x < 20)\nprint(x > 20 or x < 5)\n```"
+    },
+    {
+      "id": "basics-e-006",
+      "topicId": "t-basics",
+      "title": "Lũy thừa và thứ tự tính",
+      "difficulty": "easy",
+      "problem": "In ra 3 dòng:\n- `2 ** 10`\n- `3 + 2 ** 3` (tính lũy thừa trước, cộng sau)\n- `(3 + 2) ** 3` (cộng trong ngoặc trước, rồi lũy thừa)",
+      "starterCode": "# TODO: in 3 biểu thức lũy thừa\n",
+      "expectedOutput": "1024\n11\n125",
+      "hints": [
+        "`**` có ưu tiên cao hơn `+`, `-`, `*`, `/`",
+        "`()` có ưu tiên cao nhất — tính trong ngoặc trước"
+      ],
+      "solution": "```python\nprint(2 ** 10)\nprint(3 + 2 ** 3)\nprint((3 + 2) ** 3)\n```"
+    },
+    {
+      "id": "basics-e-007",
+      "topicId": "t-basics",
+      "title": "Chuyển đổi float ↔ int",
+      "difficulty": "medium",
+      "problem": "Gán `pi = 3.14159`. In ra 3 dòng:\n- Phần nguyên của `pi` (dùng `int()`)\n- `pi` làm tròn 2 chữ số thập phân (dùng `round(pi, 2)`)\n- Phần nguyên của `pi` chuyển ngược sang float",
+      "starterCode": "pi = 3.14159\n# TODO: in int(pi)\n# TODO: in round(pi, 2)\n# TODO: in float của phần nguyên\n",
+      "expectedOutput": "3\n3.14\n3.0",
+      "hints": [
+        "`int(pi)` cắt phần thập phân, không làm tròn",
+        "`round(pi, 2)` làm tròn đến 2 chữ số thập phân",
+        "Dùng `float(int(pi))` để chuyển phần nguyên sang float"
+      ],
+      "solution": "```python\npi = 3.14159\nprint(int(pi))\nprint(round(pi, 2))\nprint(float(int(pi)))\n```"
+    },
+    {
+      "id": "basics-e-008",
+      "topicId": "t-basics",
+      "title": "Tính chỉ số BMI",
+      "difficulty": "medium",
+      "problem": "Gán `weight = 60` (kg) và `height = 1.7` (m).\nTính BMI theo công thức: `bmi = weight / (height ** 2)`\nIn ra BMI làm tròn 2 chữ số thập phân.\n\nKết quả in ra: `20.76`",
+      "starterCode": "weight = 60\nheight = 1.7\n# TODO: tính bmi\n# TODO: in bmi làm tròn 2 chữ số\n",
+      "expectedOutput": "20.76",
+      "hints": [
+        "Công thức: `bmi = weight / (height ** 2)`",
+        "Dùng `round(bmi, 2)` để làm tròn 2 chữ số thập phân"
+      ],
+      "solution": "```python\nweight = 60\nheight = 1.7\nbmi = weight / (height ** 2)\nprint(round(bmi, 2))\n```"
+    },
+    {
+      "id": "basics-e-009",
+      "topicId": "t-basics",
+      "title": "Đổi giây sang giờ-phút-giây",
+      "difficulty": "medium",
+      "problem": "Gán `total_sec = 3725`. Tính và in ra:\n```\n1h 2m 5s\n```\n**Gợi ý:** 3725 giây = 1 giờ × 3600 + 2 phút × 60 + 5 giây\nDùng `//` và `%` để tách ra, rồi dùng f-string.",
+      "starterCode": "total_sec = 3725\n# TODO: tính hours, minutes, seconds\n# TODO: in bằng f-string\n",
+      "expectedOutput": "1h 2m 5s",
+      "hints": [
+        "`hours = total_sec // 3600`",
+        "`remaining = total_sec % 3600` — số giây còn lại sau khi bỏ giờ",
+        "`minutes = remaining // 60`, `seconds = remaining % 60`"
+      ],
+      "solution": "```python\ntotal_sec = 3725\nhours = total_sec // 3600\nremaining = total_sec % 3600\nminutes = remaining // 60\nseconds = remaining % 60\nprint(f\"{hours}h {minutes}m {seconds}s\")\n```"
+    },
+    {
+      "id": "basics-e-010",
+      "topicId": "t-basics",
+      "title": "Tính tiền mua hàng",
+      "difficulty": "medium",
+      "problem": "Gán `price = 250000` và `qty = 3`. Tính tổng tiền và in ra đúng 3 dòng:\n```\nDon gia: 250000\nSo luong: 3\nThanh tien: 750000\n```",
+      "starterCode": "price = 250000\nqty = 3\n# TODO: tính total = price * qty\n# TODO: in 3 dòng bằng f-string\n",
+      "expectedOutput": "Don gia: 250000\nSo luong: 3\nThanh tien: 750000",
+      "hints": [
+        "Tổng tiền: `total = price * qty`",
+        "Dùng f-string để điền giá trị vào chuỗi"
+      ],
+      "solution": "```python\nprice = 250000\nqty = 3\ntotal = price * qty\nprint(f\"Don gia: {price}\")\nprint(f\"So luong: {qty}\")\nprint(f\"Thanh tien: {total}\")\n```"
+    },
+    {
+      "id": "basics-e-011",
+      "topicId": "t-basics",
+      "title": "Kết quả học tập",
+      "difficulty": "medium",
+      "problem": "Gán `score = 75`.\n- `passed = True` nếu `score >= 50`, ngược lại `False`\n- `good = True` nếu `score >= 70 AND score < 90`\n\nIn ra đúng 2 dòng:\n```\nDau: True\nKha: True\n```",
+      "starterCode": "score = 75\n# TODO: tính passed và good bằng biểu thức bool\n# TODO: in 2 dòng bằng f-string\n",
+      "expectedOutput": "Dau: True\nKha: True",
+      "hints": [
+        "Gán thẳng biểu thức so sánh vào biến: `passed = score >= 50`",
+        "Kết hợp `and`: `good = score >= 70 and score < 90`"
+      ],
+      "solution": "```python\nscore = 75\npassed = score >= 50\ngood = score >= 70 and score < 90\nprint(f\"Dau: {passed}\")\nprint(f\"Kha: {good}\")\n```"
+    },
+    {
+      "id": "basics-e-012",
+      "topicId": "t-basics",
+      "title": "Đổi độ C sang độ F",
+      "difficulty": "hard",
+      "problem": "Gán `celsius = 100`.\nÁp dụng công thức: `fahrenheit = celsius * 9 / 5 + 32`\n\nIn ra đúng 1 dòng:\n```\n100C = 212.0F\n```\nDùng f-string để ghép kết quả vào chuỗi.",
+      "starterCode": "celsius = 100\n# TODO: tính fahrenheit\n# TODO: in kết quả\n",
+      "expectedOutput": "100C = 212.0F",
+      "hints": [
+        "Công thức: `fahrenheit = celsius * 9 / 5 + 32`",
+        "Python 3 tự trả về float khi dùng `/`, nên 212.0 không cần `float()` thêm",
+        "f-string: `f\"{celsius}C = {fahrenheit}F\"`"
+      ],
+      "solution": "```python\ncelsius = 100\nfahrenheit = celsius * 9 / 5 + 32\nprint(f\"{celsius}C = {fahrenheit}F\")\n```"
+    },
+    {
+      "id": "str-e-001",
+      "topicId": "t-strings",
+      "title": "Đảo ngược chuỗi",
+      "difficulty": "easy",
+      "problem": "Viết chương trình đọc biến `s = 'Python'` và in ra chuỗi đảo ngược của nó.",
+      "starterCode": "s = 'Python'\n# Viết code ở đây\n",
+      "expectedOutput": "nohtyP",
+      "hints": [
+        "Dùng slicing với bước âm: s[::-1]",
+        "In kết quả bằng print()"
+      ],
+      "solution": "```python\ns = 'Python'\nprint(s[::-1])\n```"
+    },
+    {
+      "id": "str-e-002",
+      "topicId": "t-strings",
+      "title": "Đếm nguyên âm",
+      "difficulty": "easy",
+      "problem": "Đếm số lượng nguyên âm (a, e, i, o, u) trong chuỗi `s = 'hello world'`. In ra số đó.",
+      "starterCode": "s = 'hello world'\ncount = 0\n# Đếm các nguyên âm a,e,i,o,u\n# Viết code ở đây\nprint(count)\n",
+      "expectedOutput": "3",
+      "hints": [
+        "Dùng vòng lặp for duyệt từng ký tự",
+        "Kiểm tra ký tự có trong chuỗi 'aeiou' không bằng `in`",
+        "Tăng biến đếm mỗi khi tìm thấy nguyên âm"
+      ],
+      "solution": "```python\ns = 'hello world'\ncount = 0\nfor ch in s:\n    if ch in 'aeiou':\n        count += 1\nprint(count)\n```"
+    },
+    {
+      "id": "str-e-003",
+      "topicId": "t-strings",
+      "title": "Định dạng thông tin sinh viên",
+      "difficulty": "easy",
+      "problem": "Dùng f-string để in thông tin sinh viên theo đúng định dạng:\n- Tên: `name = 'Nguyễn An'`\n- Tuổi: `age = 22`\n- Điểm: `gpa = 3.8`\n\nKết quả mong muốn: `Sinh viên: Nguyễn An | Tuổi: 22 | GPA: 3.8`",
+      "starterCode": "name = 'Nguyễn An'\nage = 22\ngpa = 3.8\n# Dùng f-string để in thông tin\n",
+      "expectedOutput": "Sinh viên: Nguyễn An | Tuổi: 22 | GPA: 3.8",
+      "hints": [
+        "Cú pháp f-string: f'text {biến} text'",
+        "Dùng | làm ký tự ngăn cách giữa các phần"
+      ],
+      "solution": "```python\nname = 'Nguyễn An'\nage = 22\ngpa = 3.8\nprint(f'Sinh viên: {name} | Tuổi: {age} | GPA: {gpa}')\n```"
+    },
+    {
+      "id": "str-e-004",
+      "topicId": "t-strings",
+      "title": "Tách và nối từ",
+      "difficulty": "easy",
+      "problem": "Cho câu `s = 'học Python rất thú vị'`. Tách câu thành danh sách các từ, sau đó nối lại bằng dấu gạch dưới `_`. In kết quả.",
+      "starterCode": "s = 'học Python rất thú vị'\n# Bước 1: Tách câu thành list các từ\n# Bước 2: Nối lại bằng '_'\n",
+      "expectedOutput": "học_Python_rất_thú_vị",
+      "hints": [
+        "split() không tham số tách theo khoảng trắng",
+        "'_'.join(list) nối các phần tử bằng '_'"
+      ],
+      "solution": "```python\ns = 'học Python rất thú vị'\nwords = s.split()\nresult = '_'.join(words)\nprint(result)\n```"
+    },
+    {
+      "id": "str-e-005",
+      "topicId": "t-strings",
+      "title": "Kiểm tra palindrome",
+      "difficulty": "medium",
+      "problem": "Kiểm tra xem chuỗi `s = 'racecar'` có phải palindrome không (đọc xuôi ngược như nhau). In `'Palindrome'` nếu đúng, `'Không phải palindrome'` nếu sai.",
+      "starterCode": "s = 'racecar'\n# Viết code kiểm tra palindrome\n",
+      "expectedOutput": "Palindrome",
+      "hints": [
+        "So sánh chuỗi với bản đảo ngược của nó: s == s[::-1]",
+        "Dùng if-else để in kết quả"
+      ],
+      "solution": "```python\ns = 'racecar'\nif s == s[::-1]:\n    print('Palindrome')\nelse:\n    print('Không phải palindrome')\n```"
+    },
+    {
+      "id": "str-e-006",
+      "topicId": "t-strings",
+      "title": "Làm sạch và chuẩn hóa email",
+      "difficulty": "medium",
+      "problem": "Cho chuỗi `email = '  User@EXAMPLE.com  '`. Làm sạch email bằng cách:\n1. Bỏ khoảng trắng đầu/cuối\n2. Chuyển về chữ thường\n\nIn email sau khi xử lý.",
+      "starterCode": "email = '  User@EXAMPLE.com  '\n# Bước 1: Bỏ khoảng trắng\n# Bước 2: Chuyển về chữ thường\n",
+      "expectedOutput": "user@example.com",
+      "hints": [
+        "strip() loại bỏ khoảng trắng đầu/cuối",
+        "lower() chuyển về chữ thường",
+        "Có thể kết hợp: email.strip().lower()"
+      ],
+      "solution": "```python\nemail = '  User@EXAMPLE.com  '\nclean = email.strip().lower()\nprint(clean)\n```"
+    },
+    {
+      "id": "str-e-007",
+      "topicId": "t-strings",
+      "title": "Đếm từ trong câu",
+      "difficulty": "medium",
+      "problem": "Cho câu `s = 'Python là ngôn ngữ lập trình tuyệt vời'`. Đếm và in số lượng từ trong câu.",
+      "starterCode": "s = 'Python là ngôn ngữ lập trình tuyệt vời'\n# Đếm số từ\n",
+      "expectedOutput": "8",
+      "hints": [
+        "split() tách chuỗi thành list các từ",
+        "len() đếm số phần tử trong list"
+      ],
+      "solution": "```python\ns = 'Python là ngôn ngữ lập trình tuyệt vời'\nwords = s.split()\nprint(len(words))\n```"
+    },
+    {
+      "id": "str-e-008",
+      "topicId": "t-strings",
+      "title": "Thay thế ký tự và đếm",
+      "difficulty": "medium",
+      "problem": "Cho chuỗi `s = 'xin chào thế giới'`:\n1. Đếm số lần ký tự `'i'` xuất hiện (chú ý: 'giới' có 2 chữ 'i')\n2. Thay tất cả khoảng trắng bằng `-`\n\nIn ra 2 dòng kết quả.",
+      "starterCode": "s = 'xin chào thế giới'\n# Đếm ký tự 'i'\n# Thay khoảng trắng bằng '-'\n",
+      "expectedOutput": "3\nxin-chào-thế-giới",
+      "hints": [
+        "count('i') đếm số lần xuất hiện của 'i'",
+        "replace(' ', '-') thay khoảng trắng bằng gạch ngang"
+      ],
+      "solution": "```python\ns = 'xin chào thế giới'\nprint(s.count('i'))\nprint(s.replace(' ', '-'))\n```"
+    },
+    {
+      "id": "str-e-009",
+      "topicId": "t-strings",
+      "title": "Trích xuất phần mở rộng file",
+      "difficulty": "medium",
+      "problem": "Cho tên file `filename = 'report_2024.pdf'`. Trích xuất phần mở rộng (`.pdf`) và in ra. Dùng find() và slicing.",
+      "starterCode": "filename = 'report_2024.pdf'\n# Tìm vị trí dấu chấm\n# Lấy phần mở rộng từ vị trí đó\n",
+      "expectedOutput": ".pdf",
+      "hints": [
+        "Dùng find('.') để tìm vị trí dấu chấm",
+        "Dùng slicing từ vị trí đó đến cuối: s[pos:]"
+      ],
+      "solution": "```python\nfilename = 'report_2024.pdf'\ndot_pos = filename.find('.')\nprint(filename[dot_pos:])\n```"
+    },
+    {
+      "id": "str-e-010",
+      "topicId": "t-strings",
+      "title": "Ký tự thoát và đa dòng",
+      "difficulty": "medium",
+      "problem": "In ra đoạn văn bản sau (đúng 3 dòng, có tab thụt đầu dòng ở dòng 2 và 3):\n```\nDanh sách môn học:\n\tToán\n\tLý\n```",
+      "starterCode": "# Dùng ký tự thoát \\n và \\t\n# Viết một lệnh print duy nhất\n",
+      "expectedOutput": "Danh sách môn học:\n\tToán\n\tLý",
+      "hints": [
+        "\\n là xuống dòng mới",
+        "\\t là ký tự tab (thụt đầu dòng)",
+        "Kết hợp trong một chuỗi: 'Dòng 1\\n\\tDòng 2'"
+      ],
+      "solution": "```python\nprint('Danh sách môn học:\\n\\tToán\\n\\tLý')\n```"
+    },
+    {
+      "id": "str-e-011",
+      "topicId": "t-strings",
+      "title": "Thống kê chuỗi",
+      "difficulty": "hard",
+      "problem": "Cho câu `s = 'Hello World Python'`. In ra 3 dòng thống kê:\n1. Tổng số ký tự (kể cả khoảng trắng)\n2. Số từ\n3. Chuỗi viết hoa toàn bộ",
+      "starterCode": "s = 'Hello World Python'\n# Tính và in 3 thống kê\n",
+      "expectedOutput": "18\n3\nHELLO WORLD PYTHON",
+      "hints": [
+        "len(s) đếm tổng ký tự",
+        "len(s.split()) đếm số từ",
+        "s.upper() chuyển hoa"
+      ],
+      "solution": "```python\ns = 'Hello World Python'\nprint(len(s))\nprint(len(s.split()))\nprint(s.upper())\n```"
+    },
+    {
+      "id": "str-e-012",
+      "topicId": "t-strings",
+      "title": "Mã hóa Caesar đơn giản",
+      "difficulty": "hard",
+      "problem": "Cho chuỗi `s = 'abc'` và dịch chuyển `shift = 3`. Mã hóa Caesar: dịch mỗi ký tự thường về phía sau `shift` bước trong bảng chữ cái (a→d, b→e, c→f). In kết quả.",
+      "starterCode": "s = 'abc'\nshift = 3\nresult = ''\nfor ch in s:\n    # Tính ký tự mới: dịch chuyển trong a-z\n    new_ch = chr((ord(ch) - ord('a') + shift) % 26 + ord('a'))\n    result += new_ch\nprint(result)\n",
+      "expectedOutput": "def",
+      "hints": [
+        "ord(ch) chuyển ký tự sang số nguyên ASCII",
+        "chr(n) chuyển số nguyên trở lại ký tự",
+        "% 26 đảm bảo xoay vòng: z + 1 = a",
+        "ord('a') = 97, vì vậy trừ 97 để lấy vị trí 0-25 trong bảng chữ cái"
+      ],
+      "solution": "```python\ns = 'abc'\nshift = 3\nresult = ''\nfor ch in s:\n    new_ch = chr((ord(ch) - ord('a') + shift) % 26 + ord('a'))\n    result += new_ch\nprint(result)\n```"
+    },
+    {
+      "id": "list-e-001",
+      "topicId": "t-list",
+      "title": "Tạo list số chẵn từ 1-20",
+      "difficulty": "easy",
+      "problem": "Tạo một list chứa tất cả các số chẵn từ 1 đến 20 (bao gồm 20) và in ra list đó.",
+      "starterCode": "# Gợi ý: dùng range() với step=2 hoặc list comprehension\nevens = []\nprint(evens)",
+      "expectedOutput": "[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]",
+      "hints": [
+        "range(start, stop, step) cho phép chỉ định bước nhảy",
+        "range(2, 21, 2) tạo ra các số chẵn từ 2 đến 20",
+        "Có thể dùng list comprehension: [x for x in range(1, 21) if x % 2 == 0]"
+      ],
+      "solution": "```python\nevens = list(range(2, 21, 2))\nprint(evens)\n```"
+    },
+    {
+      "id": "list-e-002",
+      "topicId": "t-list",
+      "title": "Đảo ngược list không dùng reverse()",
+      "difficulty": "easy",
+      "problem": "Cho list a = [1, 2, 3, 4, 5]. Đảo ngược list này mà KHÔNG dùng phương thức reverse() hoặc reversed(). In ra list đảo ngược.",
+      "starterCode": "a = [1, 2, 3, 4, 5]\n# Không dùng a.reverse() hay reversed()\nresult = []\nprint(result)",
+      "expectedOutput": "[5, 4, 3, 2, 1]",
+      "hints": [
+        "Slicing a[::-1] đảo ngược list bằng step âm",
+        "Có thể dùng vòng lặp từ cuối về đầu",
+        "list(range(len(a)-1, -1, -1)) tạo dãy index từ cuối"
+      ],
+      "solution": "```python\na = [1, 2, 3, 4, 5]\nresult = a[::-1]\nprint(result)\n```"
+    },
+    {
+      "id": "list-e-003",
+      "topicId": "t-list",
+      "title": "Xóa phần tử trùng lặp giữ thứ tự",
+      "difficulty": "medium",
+      "problem": "Cho list a = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]. Xóa các phần tử trùng lặp nhưng GIỮ NGUYÊN thứ tự xuất hiện đầu tiên. In ra list kết quả.",
+      "starterCode": "a = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\n# Giữ thứ tự, loại bỏ trùng lặp\nresult = []\nprint(result)",
+      "expectedOutput": "[3, 1, 4, 5, 9, 2, 6]",
+      "hints": [
+        "Dùng set để theo dõi phần tử đã thấy",
+        "Duyệt qua từng phần tử, nếu chưa thấy thì thêm vào kết quả",
+        "dict.fromkeys() cũng có thể dùng vì dict Python 3.7+ giữ thứ tự"
+      ],
+      "solution": "```python\na = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nseen = set()\nresult = []\nfor x in a:\n    if x not in seen:\n        result.append(x)\n        seen.add(x)\nprint(result)\n```"
+    },
+    {
+      "id": "list-e-004",
+      "topicId": "t-list",
+      "title": "Flatten list lồng 2 cấp",
+      "difficulty": "medium",
+      "problem": "Cho nested = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]. Chuyển list lồng 2 cấp này thành list phẳng 1 cấp và in ra.",
+      "starterCode": "nested = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]\n# Flatten về 1 cấp\nflat = []\nprint(flat)",
+      "expectedOutput": "[1, 2, 3, 4, 5, 6, 7, 8, 9]",
+      "hints": [
+        "Dùng vòng lặp lồng nhau: for sublist in nested, for x in sublist",
+        "List comprehension: [x for sublist in nested for x in sublist]",
+        "sum(nested, []) cũng là cách ngắn gọn nhưng chậm hơn với list lớn"
+      ],
+      "solution": "```python\nnested = [[1, 2, 3], [4, 5], [6, 7, 8, 9]]\nflat = [x for sublist in nested for x in sublist]\nprint(flat)\n```"
+    },
+    {
+      "id": "list-e-005",
+      "topicId": "t-list",
+      "title": "Top 3 phần tử lớn nhất",
+      "difficulty": "easy",
+      "problem": "Cho a = [5, 2, 8, 1, 9, 3, 7, 4, 6]. Tìm và in ra 3 phần tử lớn nhất theo thứ tự giảm dần.",
+      "starterCode": "a = [5, 2, 8, 1, 9, 3, 7, 4, 6]\n# Tìm top 3 lớn nhất\ntop3 = []\nprint(top3)",
+      "expectedOutput": "[9, 8, 7]",
+      "hints": [
+        "sorted() với reverse=True sắp xếp giảm dần",
+        "Lấy 3 phần tử đầu bằng slice [:3]",
+        "Hoặc dùng heapq.nlargest(3, a)"
+      ],
+      "solution": "```python\na = [5, 2, 8, 1, 9, 3, 7, 4, 6]\ntop3 = sorted(a, reverse=True)[:3]\nprint(top3)\n```"
+    },
+    {
+      "id": "list-e-006",
+      "topicId": "t-list",
+      "title": "Rotate list k bước",
+      "difficulty": "medium",
+      "problem": "Cho a = [1, 2, 3, 4, 5] và k = 2. Rotate list sang phải k bước (phần tử cuối dịch chuyển ra đầu) và in kết quả.",
+      "starterCode": "a = [1, 2, 3, 4, 5]\nk = 2\n# Rotate phải k bước\nresult = []\nprint(result)",
+      "expectedOutput": "[4, 5, 1, 2, 3]",
+      "hints": [
+        "Rotate phải k bước: k phần tử cuối ra đầu, phần còn lại theo sau",
+        "a[-k:] + a[:-k] là cách dùng slicing",
+        "Dùng % len(a) để xử lý k lớn hơn độ dài list"
+      ],
+      "solution": "```python\na = [1, 2, 3, 4, 5]\nk = 2\nk = k % len(a)\nresult = a[-k:] + a[:-k]\nprint(result)\n```"
+    },
+    {
+      "id": "list-e-007",
+      "topicId": "t-list",
+      "title": "Merge 2 list đã sort",
+      "difficulty": "medium",
+      "problem": "Cho a = [1, 3, 5, 7, 9] và b = [2, 4, 6, 8, 10], cả hai đã được sắp xếp tăng dần. Merge 2 list thành 1 list đã sort mà không dùng sort()/sorted(). In kết quả.",
+      "starterCode": "a = [1, 3, 5, 7, 9]\nb = [2, 4, 6, 8, 10]\n# Merge không dùng sort\nresult = []\nprint(result)",
+      "expectedOutput": "[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]",
+      "hints": [
+        "Dùng 2 pointer i, j đi qua a và b",
+        "So sánh a[i] và b[j], thêm phần nhỏ hơn vào result rồi tăng pointer tương ứng",
+        "Sau khi hết một list, append phần còn lại của list kia"
+      ],
+      "solution": "```python\na = [1, 3, 5, 7, 9]\nb = [2, 4, 6, 8, 10]\nresult = []\ni, j = 0, 0\nwhile i < len(a) and j < len(b):\n    if a[i] <= b[j]:\n        result.append(a[i])\n        i += 1\n    else:\n        result.append(b[j])\n        j += 1\nresult.extend(a[i:])\nresult.extend(b[j:])\nprint(result)\n```"
+    },
+    {
+      "id": "list-e-008",
+      "topicId": "t-list",
+      "title": "Đếm tần số phần tử",
+      "difficulty": "easy",
+      "problem": "Cho a = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']. Đếm số lần xuất hiện của từng phần tử và in ra theo thứ tự giảm dần của tần số. Định dạng: 'apple: 3'",
+      "starterCode": "a = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']\n# Đếm tần số\nprint('apple: ...')\nprint('banana: ...')\nprint('cherry: ...')",
+      "expectedOutput": "apple: 3\nbanana: 2\ncherry: 1",
+      "hints": [
+        "Dùng dict để đếm hoặc list.count() cho từng phần tử",
+        "sorted() với key=lambda x: freq[x] để sắp xếp theo tần số",
+        "collections.Counter cũng là lựa chọn tốt"
+      ],
+      "solution": "```python\na = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']\nfreq = {}\nfor item in a:\n    freq[item] = freq.get(item, 0) + 1\nfor item in sorted(freq, key=lambda x: freq[x], reverse=True):\n    print(f'{item}: {freq[item]}')\n```"
+    },
+    {
+      "id": "list-e-009",
+      "topicId": "t-list",
+      "title": "Tìm index tất cả lần xuất hiện",
+      "difficulty": "medium",
+      "problem": "Cho a = [1, 3, 5, 3, 7, 3, 9] và target = 3. Tìm tất cả các index mà tại đó phần tử bằng target. In ra list các index.",
+      "starterCode": "a = [1, 3, 5, 3, 7, 3, 9]\ntarget = 3\n# Tìm tất cả index của target\nindexes = []\nprint(indexes)",
+      "expectedOutput": "[1, 3, 5]",
+      "hints": [
+        "Dùng enumerate() để lấy cả index lẫn giá trị",
+        "List comprehension: [i for i, x in enumerate(a) if x == target]",
+        "Hoặc dùng vòng lặp while với a.index() từ vị trí bắt đầu tìm"
+      ],
+      "solution": "```python\na = [1, 3, 5, 3, 7, 3, 9]\ntarget = 3\nindexes = [i for i, x in enumerate(a) if x == target]\nprint(indexes)\n```"
+    },
+    {
+      "id": "list-e-010",
+      "topicId": "t-list",
+      "title": "Demo: copy vs reference",
+      "difficulty": "medium",
+      "problem": "Viết code minh họa sự khác biệt giữa gán tham chiếu (=), shallow copy (.copy() hoặc [:]), và deep copy (copy.deepcopy()). Dùng list lồng nhau: original = [[1, 2], [3, 4]]. In kết quả trước và sau khi thay đổi.",
+      "starterCode": "import copy\noriginal = [[1, 2], [3, 4]]\n# Tạo 3 loại copy\nref_copy = original\nshallow = original.copy()\ndeep = copy.deepcopy(original)\n# Thay đổi phần tử lồng nhau\noriginal[0].append(99)\n# In kết quả\nprint('ref_copy:', ref_copy)\nprint('shallow:', shallow)\nprint('deep:', deep)",
+      "expectedOutput": "ref_copy: [[1, 2, 99], [3, 4]]\nshallow: [[1, 2, 99], [3, 4]]\ndeep: [[1, 2], [3, 4]]",
+      "hints": [
+        "= tạo tham chiếu — cùng object, thay đổi ảnh hưởng cả hai",
+        ".copy() tạo list mới nhưng phần tử bên trong vẫn là tham chiếu (shallow)",
+        "copy.deepcopy() tạo bản sao hoàn toàn độc lập kể cả phần tử lồng"
+      ],
+      "solution": "```python\nimport copy\noriginal = [[1, 2], [3, 4]]\nref_copy = original\nshallow = original.copy()\ndeep = copy.deepcopy(original)\noriginal[0].append(99)\nprint('ref_copy:', ref_copy)\nprint('shallow:', shallow)\nprint('deep:', deep)\n```"
+    },
+    {
+      "id": "list-e-011",
+      "topicId": "t-list",
+      "title": "Matrix transpose (list lồng)",
+      "difficulty": "hard",
+      "problem": "Cho matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]] (ma trận 3x3). Tính transpose (hoán vị hàng và cột) và in ra. Không dùng numpy.",
+      "starterCode": "matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\n# Transpose: hàng thành cột, cột thành hàng\ntransposed = []\nfor row in transposed:\n    print(row)",
+      "expectedOutput": "[1, 4, 7]\n[2, 5, 8]\n[3, 6, 9]",
+      "hints": [
+        "Phần tử tại transposed[i][j] = matrix[j][i]",
+        "zip(*matrix) giải nén matrix và zip theo cột — rất tiện",
+        "List comprehension: [[matrix[j][i] for j in range(len(matrix))] for i in range(len(matrix[0]))]"
+      ],
+      "solution": "```python\nmatrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\ntransposed = [list(row) for row in zip(*matrix)]\nfor row in transposed:\n    print(row)\n```"
+    },
+    {
+      "id": "list-e-012",
+      "topicId": "t-list",
+      "title": "Sliding window sum",
+      "difficulty": "hard",
+      "problem": "Cho a = [1, 3, 5, 7, 9, 11, 13] và window_size = 3. Tính tổng của từng cửa sổ liên tiếp có kích thước 3 và in ra list các tổng đó.",
+      "starterCode": "a = [1, 3, 5, 7, 9, 11, 13]\nwindow_size = 3\n# Tính sliding window sum\nresult = []\nprint(result)",
+      "expectedOutput": "[9, 15, 21, 27, 33]",
+      "hints": [
+        "Số lượng cửa sổ = len(a) - window_size + 1",
+        "Tổng cửa sổ thứ i = sum(a[i : i+window_size])",
+        "Tối ưu hơn: trừ phần tử ra khỏi cửa sổ cũ, thêm phần tử mới (O(n) thay vì O(n*k))"
+      ],
+      "solution": "```python\na = [1, 3, 5, 7, 9, 11, 13]\nwindow_size = 3\nresult = [sum(a[i:i+window_size]) for i in range(len(a) - window_size + 1)]\nprint(result)\n```"
+    },
+    {
+      "id": "dict-e-001",
+      "topicId": "t-tuple-set-dict",
+      "title": "Unpack tọa độ và tính khoảng cách",
+      "difficulty": "easy",
+      "starterCode": "coords = (3, 4)\n# Unpack coords thành x và y\n# Tính dist = sqrt(x^2 + y^2)\n# In dist\n",
+      "expectedOutput": "5.0",
+      "solution": "```python\ncoords = (3, 4)\nx, y = coords\ndist = (x**2 + y**2) ** 0.5\nprint(dist)\n```",
+      "problem": "Cho tuple `coords = (3, 4)` biểu diễn điểm (x, y). Dùng **tuple unpacking** để tách `x` và `y`, rồi tính khoảng cách từ gốc tọa độ theo công thức √(x²+y²). In kết quả."
+    },
+    {
+      "id": "dict-e-002",
+      "topicId": "t-tuple-set-dict",
+      "title": "Đếm phần tử trong tuple",
+      "difficulty": "easy",
+      "starterCode": "t = (1, 2, 3, 2, 1, 2)\n# Đếm và in số lần xuất hiện của 2\n",
+      "expectedOutput": "3",
+      "solution": "```python\nt = (1, 2, 3, 2, 1, 2)\nprint(t.count(2))\n```",
+      "problem": "Cho tuple `t = (1, 2, 3, 2, 1, 2)`. In ra số lần xuất hiện của giá trị `2` trong tuple (dùng phương thức tuple)."
+    },
+    {
+      "id": "dict-e-003",
+      "topicId": "t-tuple-set-dict",
+      "title": "Thao tác cơ bản với set",
+      "difficulty": "easy",
+      "starterCode": "s = {10, 20, 30}\n# Thêm 40\n# Xóa 20\n# In sorted(s)\n# In: 25 in s\n",
+      "expectedOutput": "[10, 30, 40]\nFalse",
+      "solution": "```python\ns = {10, 20, 30}\ns.add(40)\ns.remove(20)\nprint(sorted(s))\nprint(25 in s)\n```",
+      "problem": "Bắt đầu với `s = {10, 20, 30}`. Thêm `40` vào set, xóa `20` khỏi set. In danh sách đã sắp xếp tăng dần, rồi in `True` hoặc `False` xem `25` có trong set không."
+    },
+    {
+      "id": "dict-e-004",
+      "topicId": "t-tuple-set-dict",
+      "title": "Phép toán tập hợp",
+      "difficulty": "medium",
+      "starterCode": "A = {1, 2, 3, 4, 5}\nB = {3, 4, 5, 6, 7}\n# In sorted union\n# In sorted intersection\n# In sorted difference A - B\n",
+      "expectedOutput": "[1, 2, 3, 4, 5, 6, 7]\n[3, 4, 5]\n[1, 2]",
+      "solution": "```python\nA = {1, 2, 3, 4, 5}\nB = {3, 4, 5, 6, 7}\nprint(sorted(A | B))\nprint(sorted(A & B))\nprint(sorted(A - B))\n```",
+      "problem": "Cho `A = {1, 2, 3, 4, 5}` và `B = {3, 4, 5, 6, 7}`. In ra (mỗi dòng một phép):\n1. Hợp `A ∪ B` (đã sắp xếp)\n2. Giao `A ∩ B` (đã sắp xếp)\n3. Hiệu `A \\ B` (phần tử có trong A không có trong B, đã sắp xếp)"
+    },
+    {
+      "id": "dict-e-005",
+      "topicId": "t-tuple-set-dict",
+      "title": "Loại bỏ trùng lặp, giữ thứ tự",
+      "difficulty": "medium",
+      "starterCode": "lst = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nseen = []\nfor x in lst:\n    # Chỉ thêm x nếu chưa có trong seen\n    pass\nprint(seen)\n",
+      "expectedOutput": "[3, 1, 4, 5, 9, 2, 6]",
+      "solution": "```python\nlst = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]\nseen = []\nfor x in lst:\n    if x not in seen:\n        seen.append(x)\nprint(seen)\n```",
+      "problem": "Cho `lst = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]`. **Không dùng set trực tiếp** (vì set mất thứ tự). Dùng vòng lặp để tạo danh sách `seen` chỉ giữ lần xuất hiện **đầu tiên** của mỗi phần tử, theo thứ tự gốc. In `seen`."
+    },
+    {
+      "id": "dict-e-006",
+      "topicId": "t-tuple-set-dict",
+      "title": "Tạo dict từ hai danh sách",
+      "difficulty": "easy",
+      "starterCode": "keys = ['a', 'b', 'c']\nvals = [10, 20, 30]\n# Tạo d = dict từ zip(keys, vals)\n# In d\n",
+      "expectedOutput": "{'a': 10, 'b': 20, 'c': 30}",
+      "solution": "```python\nkeys = ['a', 'b', 'c']\nvals = [10, 20, 30]\nd = dict(zip(keys, vals))\nprint(d)\n```",
+      "problem": "Cho `keys = ['a', 'b', 'c']` và `vals = [10, 20, 30]`. Dùng `dict(zip(...))` để tạo dict `d` ghép key-value tương ứng. In `d`."
+    },
+    {
+      "id": "dict-e-007",
+      "topicId": "t-tuple-set-dict",
+      "title": "Đếm tần suất từ trong câu",
+      "difficulty": "medium",
+      "starterCode": "sentence = 'the cat sat on the mat the cat'\nwords = sentence.split()\nfreq = {}\nfor w in words:\n    # Cập nhật freq[w]\n    pass\nfor k in sorted(freq):\n    print(k, freq[k])\n",
+      "expectedOutput": "cat 2\nmat 1\non 1\nsat 1\nthe 3",
+      "solution": "```python\nsentence = 'the cat sat on the mat the cat'\nwords = sentence.split()\nfreq = {}\nfor w in words:\n    freq[w] = freq.get(w, 0) + 1\nfor k in sorted(freq):\n    print(k, freq[k])\n```",
+      "problem": "Cho `sentence = 'the cat sat on the mat the cat'`. Tách thành các từ, đếm tần suất xuất hiện của mỗi từ bằng dict (dùng `.get()`). In từng cặp `từ tần_suất` theo **thứ tự alphabet** (sorted keys)."
+    },
+    {
+      "id": "dict-e-008",
+      "topicId": "t-tuple-set-dict",
+      "title": "Tra điểm với giá trị mặc định",
+      "difficulty": "easy",
+      "starterCode": "scores = {'Alice': 90, 'Bob': 75}\nnames = ['Alice', 'Charlie', 'Bob']\nfor name in names:\n    # In name và điểm (0 nếu không có)\n    pass\n",
+      "expectedOutput": "Alice 90\nCharlie 0\nBob 75",
+      "solution": "```python\nscores = {'Alice': 90, 'Bob': 75}\nnames = ['Alice', 'Charlie', 'Bob']\nfor name in names:\n    print(name, scores.get(name, 0))\n```",
+      "problem": "Cho `scores = {'Alice': 90, 'Bob': 75}`. Duyệt danh sách tên `['Alice', 'Charlie', 'Bob']`, dùng `.get()` để lấy điểm — nếu không có thì mặc định là `0`. In `tên điểm` mỗi dòng."
+    },
+    {
+      "id": "dict-e-009",
+      "topicId": "t-tuple-set-dict",
+      "title": "Dict comprehension nhân đôi giá trị",
+      "difficulty": "medium",
+      "starterCode": "d = {'a': 1, 'b': 2, 'c': 3}\n# d2 = {k: v*2 ...}\n# In d2\n",
+      "expectedOutput": "{'a': 2, 'b': 4, 'c': 6}",
+      "solution": "```python\nd = {'a': 1, 'b': 2, 'c': 3}\nd2 = {k: v * 2 for k, v in d.items()}\nprint(d2)\n```",
+      "problem": "Cho `d = {'a': 1, 'b': 2, 'c': 3}`. Dùng **dict comprehension** tạo `d2` là dict mới với cùng key nhưng mỗi giá trị nhân đôi. In `d2`."
+    },
+    {
+      "id": "dict-e-010",
+      "topicId": "t-tuple-set-dict",
+      "title": "Hợp nhất hai dict (key trùng thì dict sau thắng)",
+      "difficulty": "medium",
+      "starterCode": "d1 = {'x': 1, 'y': 2}\nd2 = {'y': 99, 'z': 3}\n# merged = ...\n# In merged\n",
+      "expectedOutput": "{'x': 1, 'y': 99, 'z': 3}",
+      "solution": "```python\nd1 = {'x': 1, 'y': 2}\nd2 = {'y': 99, 'z': 3}\nmerged = {**d1, **d2}\nprint(merged)\n```",
+      "problem": "Cho `d1 = {'x': 1, 'y': 2}` và `d2 = {'y': 99, 'z': 3}`. Hợp nhất thành `merged` — key trùng thì giữ giá trị của `d2`. Dùng cú pháp `{**d1, **d2}`. In `merged`."
+    },
+    {
+      "id": "dict-e-011",
+      "topicId": "t-tuple-set-dict",
+      "title": "Lọc dict theo điều kiện giá trị",
+      "difficulty": "medium",
+      "starterCode": "prices = {'apple': 5, 'banana': 2, 'cherry': 8, 'date': 3}\n# expensive = {k: v ... if v > 3}\n# In sorted(expensive.keys())\n",
+      "expectedOutput": "['apple', 'cherry']",
+      "solution": "```python\nprices = {'apple': 5, 'banana': 2, 'cherry': 8, 'date': 3}\nexpensive = {k: v for k, v in prices.items() if v > 3}\nprint(sorted(expensive.keys()))\n```",
+      "problem": "Cho `prices = {'apple': 5, 'banana': 2, 'cherry': 8, 'date': 3}`. Dùng dict comprehension tạo `expensive` chỉ giữ các mặt hàng có giá **lớn hơn 3**. In danh sách key của `expensive` đã sắp xếp."
+    },
+    {
+      "id": "dict-e-012",
+      "topicId": "t-tuple-set-dict",
+      "title": "Tìm ký tự xuất hiện nhiều nhất",
+      "difficulty": "hard",
+      "starterCode": "text = 'programming'\nfreq = {}\nfor c in text:\n    # Cập nhật freq[c]\n    pass\nmax_c = max(freq, key=lambda k: freq[k])\nprint(max_c, freq[max_c])\n",
+      "expectedOutput": "r 2",
+      "solution": "```python\ntext = 'programming'\nfreq = {}\nfor c in text:\n    freq[c] = freq.get(c, 0) + 1\nmax_c = max(freq, key=lambda k: freq[k])\nprint(max_c, freq[max_c])\n```",
+      "problem": "Cho `text = 'programming'`. Đếm tần suất từng ký tự bằng dict, rồi tìm ký tự xuất hiện **nhiều nhất** (dùng `max` với `key`). In `ký_tự tần_suất`."
+    },
+    {
+      "id": "ctrl-e-001",
+      "topicId": "t-control",
+      "difficulty": "easy",
+      "title": "FizzBuzz 1–15",
+      "starterCode": "for i in range(1, 16):\n    # TODO: kiểm tra điều kiện và in kết quả\n    pass",
+      "expectedOutput": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz",
+      "solution": "```python\nfor i in range(1, 16):\n    if i % 15 == 0:\n        print('FizzBuzz')\n    elif i % 3 == 0:\n        print('Fizz')\n    elif i % 5 == 0:\n        print('Buzz')\n    else:\n        print(i)\n```",
+      "hints": [
+        "Kiểm tra chia hết cho 15 trước (vì 15 = 3×5), sau đó mới kiểm tra 3 và 5 riêng lẻ.",
+        "Dùng toán tử `%` (chia lấy dư): `i % 3 == 0` nghĩa là i chia hết cho 3."
+      ],
+      "problem": "In các số từ 1 đến 15. Nếu số chia hết cho 3 in `Fizz`, chia hết cho 5 in `Buzz`, chia hết cho cả 3 và 5 in `FizzBuzz`."
+    },
+    {
+      "id": "ctrl-e-002",
+      "topicId": "t-control",
+      "difficulty": "easy",
+      "title": "Tổng số chẵn",
+      "starterCode": "total = 0\nfor i in range(1, 11):\n    # TODO: cộng i vào total nếu i là số chẵn\n    pass\nprint(total)",
+      "expectedOutput": "30",
+      "solution": "```python\ntotal = 0\nfor i in range(1, 11):\n    if i % 2 == 0:\n        total += i\nprint(total)\n```",
+      "hints": [
+        "Số chẵn thoả mãn `i % 2 == 0`.",
+        "Tích lũy vào biến `total` trong mỗi lần lặp."
+      ],
+      "problem": "Tính và in tổng tất cả số chẵn từ 1 đến 10 (gồm cả 10)."
+    },
+    {
+      "id": "ctrl-e-003",
+      "topicId": "t-control",
+      "difficulty": "easy",
+      "title": "Đếm nguyên âm",
+      "starterCode": "text = 'Hello World'\ncount = 0\nvowels = 'aeiouAEIOU'\n# TODO: duyệt từng ký tự, đếm nguyên âm\nprint(count)",
+      "expectedOutput": "3",
+      "solution": "```python\ntext = 'Hello World'\ncount = 0\nvowels = 'aeiouAEIOU'\nfor c in text:\n    if c in vowels:\n        count += 1\nprint(count)\n```",
+      "hints": [
+        "Dùng `for c in text` để duyệt từng ký tự.",
+        "Kiểm tra `c in vowels` (kiểm tra cả hoa lẫn thường).",
+        "'Hello World' có nguyên âm: e, o, o → 3."
+      ],
+      "problem": "Đếm số nguyên âm (a, e, i, o, u) trong chuỗi `'Hello World'`. In kết quả ra màn hình."
+    },
+    {
+      "id": "ctrl-e-004",
+      "topicId": "t-control",
+      "difficulty": "easy",
+      "title": "Bảng cửu chương số 5",
+      "starterCode": "for i in range(1, 11):\n    # TODO: in dòng tương ứng\n    pass",
+      "expectedOutput": "5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50",
+      "solution": "```python\nfor i in range(1, 11):\n    print(f'5 x {i} = {5 * i}')\n```",
+      "hints": [
+        "Dùng f-string để định dạng: `f'5 x {i} = {5 * i}'`."
+      ],
+      "problem": "In bảng cửu chương của số 5 từ 5×1 đến 5×10 theo định dạng `5 x 1 = 5`."
+    },
+    {
+      "id": "ctrl-e-005",
+      "topicId": "t-control",
+      "difficulty": "easy",
+      "title": "Tam giác sao",
+      "starterCode": "for i in range(1, 6):\n    # TODO: in i dấu '*'\n    pass",
+      "expectedOutput": "*\n**\n***\n****\n*****",
+      "solution": "```python\nfor i in range(1, 6):\n    print('*' * i)\n```",
+      "hints": [
+        "Nhân chuỗi: `'*' * 3` cho ra `'***'`.",
+        "Hàng i in `'*' * i`."
+      ],
+      "problem": "In tam giác sao phải (right-aligned ngược lại: tăng dần) 5 hàng. Hàng i có i dấu `*`."
+    },
+    {
+      "id": "ctrl-e-006",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "Tìm giá trị lớn nhất",
+      "starterCode": "numbers = [3, 7, 2, 9, 1, 5]\nmax_val = numbers[0]\nfor n in numbers:\n    # TODO: cập nhật max_val nếu n lớn hơn\n    pass\nprint(max_val)",
+      "expectedOutput": "9",
+      "solution": "```python\nnumbers = [3, 7, 2, 9, 1, 5]\nmax_val = numbers[0]\nfor n in numbers:\n    if n > max_val:\n        max_val = n\nprint(max_val)\n```",
+      "hints": [
+        "Khởi tạo `max_val = numbers[0]`.",
+        "Mỗi lần lặp so sánh `n > max_val`, nếu đúng thì cập nhật."
+      ],
+      "problem": "Dùng vòng lặp (không dùng hàm `max()`) tìm và in giá trị lớn nhất trong danh sách `[3, 7, 2, 9, 1, 5]`."
+    },
+    {
+      "id": "ctrl-e-007",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "Đảo chuỗi bằng vòng lặp",
+      "starterCode": "text = 'Python'\nresult = ''\n# TODO: duyệt text từ cuối về đầu và ghép vào result\nprint(result)",
+      "expectedOutput": "nohtyP",
+      "solution": "```python\ntext = 'Python'\nresult = ''\nfor i in range(len(text) - 1, -1, -1):\n    result += text[i]\nprint(result)\n```",
+      "hints": [
+        "Dùng `range(len(text)-1, -1, -1)` để lặp từ cuối về đầu.",
+        "Hoặc dùng `for c in text: result = c + result` để chèn vào đầu."
+      ],
+      "problem": "Đảo ngược chuỗi `'Python'` bằng vòng lặp (không dùng slicing `[::-1]`). In kết quả."
+    },
+    {
+      "id": "ctrl-e-008",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "Kiểm tra số nguyên tố",
+      "starterCode": "n = 17\nis_prime = True\n# TODO: dùng vòng lặp kiểm tra từ 2 đến n-1\nif is_prime:\n    print(f'{n} là số nguyên tố')\nelse:\n    print(f'{n} không phải số nguyên tố')",
+      "expectedOutput": "17 là số nguyên tố",
+      "solution": "```python\nn = 17\nis_prime = True\nif n < 2:\n    is_prime = False\nelse:\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            is_prime = False\n            break\nif is_prime:\n    print(f'{n} là số nguyên tố')\nelse:\n    print(f'{n} không phải số nguyên tố')\n```",
+      "hints": [
+        "Số nguyên tố chỉ chia hết cho 1 và chính nó.",
+        "Chỉ cần kiểm tra đến √n (dùng `int(n**0.5) + 1`).",
+        "Nếu tìm được ước → gán `is_prime = False` và `break`."
+      ],
+      "problem": "Viết chương trình kiểm tra xem số `n = 17` có phải số nguyên tố không. In `'17 là số nguyên tố'` hoặc `'17 không phải số nguyên tố'`."
+    },
+    {
+      "id": "ctrl-e-009",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "Giai thừa với while",
+      "starterCode": "n = 6\nresult = 1\ni = 1\n# TODO: nhân result với i từ 1 đến n\nprint(result)",
+      "expectedOutput": "720",
+      "solution": "```python\nn = 6\nresult = 1\ni = 1\nwhile i <= n:\n    result *= i\n    i += 1\nprint(result)\n```",
+      "hints": [
+        "Khởi tạo `result = 1`, `i = 1`.",
+        "Nhân `result *= i` rồi tăng `i += 1` cho đến khi `i > n`."
+      ],
+      "problem": "Dùng vòng lặp `while` tính giai thừa của `n = 6` (6! = 720). In kết quả."
+    },
+    {
+      "id": "ctrl-e-010",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "Các cặp có tổng bằng 5",
+      "starterCode": "for i in range(1, 6):\n    for j in range(1, 6):\n        # TODO: in (i, j) nếu i + j == 5\n        pass",
+      "expectedOutput": "(1, 4)\n(2, 3)\n(3, 2)\n(4, 1)",
+      "solution": "```python\nfor i in range(1, 6):\n    for j in range(1, 6):\n        if i + j == 5:\n            print(f'({i}, {j})')\n```",
+      "hints": [
+        "Vòng lặp lồng nhau: i và j mỗi cái chạy từ 1 đến 5.",
+        "Kiểm tra điều kiện `i + j == 5` rồi in."
+      ],
+      "problem": "Dùng vòng lặp lồng nhau tìm tất cả các cặp `(i, j)` với `i, j` trong `range(1, 6)` sao cho `i + j == 5`. In mỗi cặp trên một dòng."
+    },
+    {
+      "id": "ctrl-e-011",
+      "topicId": "t-control",
+      "difficulty": "medium",
+      "title": "10 số Fibonacci đầu tiên",
+      "starterCode": "a, b = 0, 1\nresult = []\n# TODO: dùng vòng lặp sinh 10 số Fibonacci\nprint(' '.join(map(str, result)))",
+      "expectedOutput": "0 1 1 2 3 5 8 13 21 34",
+      "solution": "```python\na, b = 0, 1\nresult = []\nfor _ in range(10):\n    result.append(a)\n    a, b = b, a + b\nprint(' '.join(map(str, result)))\n```",
+      "hints": [
+        "Khởi tạo `a=0, b=1`. Mỗi bước: thêm `a` vào danh sách, rồi `a, b = b, a+b`.",
+        "Lặp đúng 10 lần."
+      ],
+      "problem": "In 10 số Fibonacci đầu tiên trên một dòng, cách nhau bằng dấu cách. Dãy bắt đầu: 0 1 1 2 3 5 8 13 21 34."
+    },
+    {
+      "id": "ctrl-e-012",
+      "topicId": "t-control",
+      "difficulty": "hard",
+      "title": "Bảng cửu chương 2–5",
+      "starterCode": "for n in range(2, 6):\n    for i in range(1, 11):\n        # TODO: in dòng tương ứng\n        pass\n    # TODO: in dòng trống giữa các bảng (trừ bảng cuối)\n    pass",
+      "expectedOutput": "2 x 1 = 2\n2 x 2 = 4\n2 x 3 = 6\n2 x 4 = 8\n2 x 5 = 10\n2 x 6 = 12\n2 x 7 = 14\n2 x 8 = 16\n2 x 9 = 18\n2 x 10 = 20\n\n3 x 1 = 3\n3 x 2 = 6\n3 x 3 = 9\n3 x 4 = 12\n3 x 5 = 15\n3 x 6 = 18\n3 x 7 = 21\n3 x 8 = 24\n3 x 9 = 27\n3 x 10 = 30\n\n4 x 1 = 4\n4 x 2 = 8\n4 x 3 = 12\n4 x 4 = 16\n4 x 5 = 20\n4 x 6 = 24\n4 x 7 = 28\n4 x 8 = 32\n4 x 9 = 36\n4 x 10 = 40\n\n5 x 1 = 5\n5 x 2 = 10\n5 x 3 = 15\n5 x 4 = 20\n5 x 5 = 25\n5 x 6 = 30\n5 x 7 = 35\n5 x 8 = 40\n5 x 9 = 45\n5 x 10 = 50",
+      "solution": "```python\nfor n in range(2, 6):\n    for i in range(1, 11):\n        print(f'{n} x {i} = {n * i}')\n    if n < 5:\n        print()\n```",
+      "hints": [
+        "Vòng ngoài lặp `n` từ 2 đến 5, vòng trong lặp `i` từ 1 đến 10.",
+        "In dòng trống sau mỗi bảng ngoại trừ bảng cuối: `if n < 5: print()`."
+      ],
+      "problem": "In bảng cửu chương cho các số từ 2 đến 5, mỗi bảng cách nhau bằng một dòng trống. Định dạng mỗi dòng: `2 x 1 = 2`. Không in dòng trống sau bảng cuối cùng."
+    },
+    {
+      "id": "fn-e-001",
+      "topicId": "t-functions",
+      "title": "Hàm tính tổng hai số",
+      "difficulty": "easy",
+      "problem": "Viết hàm `tinh_tong(a, b)` nhận hai số và trả về tổng của chúng. Gọi hàm với `(3, 5)` và `(10, -4)`, in kết quả.",
+      "hints": [
+        "Dùng `return a + b`",
+        "Gọi hàm và in: `print(tinh_tong(3, 5))`"
+      ],
+      "starterCode": "def tinh_tong(a, b):\n    # TODO: trả về tổng a + b\n    pass\n\nprint(tinh_tong(3, 5))\nprint(tinh_tong(10, -4))",
+      "expectedOutput": "8\n6",
+      "solution": "```python\ndef tinh_tong(a, b):\n    return a + b\n\nprint(tinh_tong(3, 5))\nprint(tinh_tong(10, -4))\n```",
+      "tags": [
+        "def",
+        "return",
+        "basic"
+      ]
+    },
+    {
+      "id": "fn-e-002",
+      "topicId": "t-functions",
+      "title": "Giá trị tuyệt đối",
+      "difficulty": "easy",
+      "problem": "Viết hàm `gia_tri_tuyet_doi(x)` trả về giá trị tuyệt đối của `x` **không dùng** `abs()`. Gọi với `-7` và `3`.",
+      "hints": [
+        "Nếu `x < 0` thì trả về `-x`, ngược lại trả về `x`"
+      ],
+      "starterCode": "def gia_tri_tuyet_doi(x):\n    # TODO: không dùng abs()\n    pass\n\nprint(gia_tri_tuyet_doi(-7))\nprint(gia_tri_tuyet_doi(3))",
+      "expectedOutput": "7\n3",
+      "solution": "```python\ndef gia_tri_tuyet_doi(x):\n    if x < 0:\n        return -x\n    return x\n\nprint(gia_tri_tuyet_doi(-7))\nprint(gia_tri_tuyet_doi(3))\n```",
+      "tags": [
+        "def",
+        "return",
+        "if-else"
+      ]
+    },
+    {
+      "id": "fn-e-003",
+      "topicId": "t-functions",
+      "title": "Lũy thừa với tham số mặc định",
+      "difficulty": "easy",
+      "problem": "Viết hàm `luy_thua(x, n=2)` trả về `x` mũ `n`. Tham số `n` mặc định là `2`. Gọi `luy_thua(3)` (bình phương) và `luy_thua(2, 10)` (mũ 10).",
+      "hints": [
+        "Dùng toán tử `**`",
+        "Định nghĩa: `def luy_thua(x, n=2):`"
+      ],
+      "starterCode": "def luy_thua(x, n=2):\n    # TODO: trả về x mũ n\n    pass\n\nprint(luy_thua(3))\nprint(luy_thua(2, 10))",
+      "expectedOutput": "9\n1024",
+      "solution": "```python\ndef luy_thua(x, n=2):\n    return x ** n\n\nprint(luy_thua(3))\nprint(luy_thua(2, 10))\n```",
+      "tags": [
+        "default-param",
+        "return"
+      ]
+    },
+    {
+      "id": "fn-e-004",
+      "topicId": "t-functions",
+      "title": "Trả về nhiều giá trị — min và max",
+      "difficulty": "easy",
+      "problem": "Viết hàm `tim_min_max(lst)` nhận một danh sách số, trả về **cả hai** giá trị nhỏ nhất và lớn nhất (dưới dạng tuple). Gọi với `[3, 1, 4, 1, 5, 9, 2, 6]` và unpack kết quả vào `mn, mx`, rồi in.",
+      "hints": [
+        "`return min(lst), max(lst)` tự tạo tuple",
+        "Unpack: `mn, mx = tim_min_max(...)`"
+      ],
+      "starterCode": "def tim_min_max(lst):\n    # TODO: trả về (min, max)\n    pass\n\nmn, mx = tim_min_max([3, 1, 4, 1, 5, 9, 2, 6])\nprint(mn, mx)",
+      "expectedOutput": "1 9",
+      "solution": "```python\ndef tim_min_max(lst):\n    return min(lst), max(lst)\n\nmn, mx = tim_min_max([3, 1, 4, 1, 5, 9, 2, 6])\nprint(mn, mx)\n```",
+      "tags": [
+        "return",
+        "tuple",
+        "multiple-values"
+      ]
+    },
+    {
+      "id": "fn-e-005",
+      "topicId": "t-functions",
+      "title": "Đếm số từ trong câu",
+      "difficulty": "easy",
+      "problem": "Viết hàm `dem_tu(cau)` nhận một chuỗi và trả về số từ trong câu đó. Gọi với `'Xin chao the gioi'`.",
+      "hints": [
+        "Dùng `.split()` để tách từ theo khoảng trắng",
+        "`len(...)` đếm số phần tử"
+      ],
+      "starterCode": "def dem_tu(cau):\n    # TODO: trả về số từ\n    pass\n\nprint(dem_tu('Xin chao the gioi'))",
+      "expectedOutput": "4",
+      "solution": "```python\ndef dem_tu(cau):\n    return len(cau.split())\n\nprint(dem_tu('Xin chao the gioi'))\n```",
+      "tags": [
+        "def",
+        "return",
+        "string"
+      ]
+    },
+    {
+      "id": "fn-e-006",
+      "topicId": "t-functions",
+      "title": "Tổng trung bình cộng với *args",
+      "difficulty": "medium",
+      "problem": "Viết hàm `tinh_tbcong(*args)` nhận **số lượng tùy ý** các số và trả về trung bình cộng. Gọi với `(1, 2, 3, 4, 5)`.",
+      "hints": [
+        "`*args` thu gom tất cả đối số vào tuple",
+        "`sum(args) / len(args)` tính trung bình"
+      ],
+      "starterCode": "def tinh_tbcong(*args):\n    # TODO: trả về trung bình cộng\n    pass\n\nprint(tinh_tbcong(1, 2, 3, 4, 5))",
+      "expectedOutput": "3.0",
+      "solution": "```python\ndef tinh_tbcong(*args):\n    return sum(args) / len(args)\n\nprint(tinh_tbcong(1, 2, 3, 4, 5))\n```",
+      "tags": [
+        "args",
+        "return"
+      ]
+    },
+    {
+      "id": "fn-e-007",
+      "topicId": "t-functions",
+      "title": "In danh sách có số thứ tự bằng enumerate",
+      "difficulty": "medium",
+      "problem": "Viết hàm `in_co_so_thu_tu(lst)` in từng phần tử có số thứ tự bắt đầu từ **1** (không phải 0). Gọi với `['Táo', 'Cam', 'Xoài']`. Output:\n```\n1. Táo\n2. Cam\n3. Xoài\n```",
+      "hints": [
+        "`enumerate(lst, start=1)` đếm từ 1",
+        "f-string: `f'{i}. {v}'`"
+      ],
+      "starterCode": "def in_co_so_thu_tu(lst):\n    # TODO: in mỗi phần tử kèm số thứ tự bắt đầu từ 1\n    pass\n\nin_co_so_thu_tu(['Táo', 'Cam', 'Xoài'])",
+      "expectedOutput": "1. Táo\n2. Cam\n3. Xoài",
+      "solution": "```python\ndef in_co_so_thu_tu(lst):\n    for i, v in enumerate(lst, start=1):\n        print(f'{i}. {v}')\n\nin_co_so_thu_tu(['Táo', 'Cam', 'Xoài'])\n```",
+      "tags": [
+        "enumerate",
+        "for-loop"
+      ]
+    },
+    {
+      "id": "fn-e-008",
+      "topicId": "t-functions",
+      "title": "Ghép cặp hai danh sách bằng zip",
+      "difficulty": "medium",
+      "problem": "Viết hàm `gop_cap(lst1, lst2)` nhận hai danh sách và trả về danh sách các tuple ghép cặp phần tử cùng vị trí. Gọi với `([1, 2, 3], ['a', 'b', 'c'])`.",
+      "hints": [
+        "`zip(lst1, lst2)` ghép cặp",
+        "Bọc `list()` để lấy kết quả"
+      ],
+      "starterCode": "def gop_cap(lst1, lst2):\n    # TODO: trả về list các tuple ghép cặp\n    pass\n\nprint(gop_cap([1, 2, 3], ['a', 'b', 'c']))",
+      "expectedOutput": "[(1, 'a'), (2, 'b'), (3, 'c')]",
+      "solution": "```python\ndef gop_cap(lst1, lst2):\n    return list(zip(lst1, lst2))\n\nprint(gop_cap([1, 2, 3], ['a', 'b', 'c']))\n```",
+      "tags": [
+        "zip",
+        "return"
+      ]
+    },
+    {
+      "id": "fn-e-009",
+      "topicId": "t-functions",
+      "title": "Lọc số chẵn bằng filter + lambda",
+      "difficulty": "medium",
+      "problem": "Viết hàm `lay_chan(lst)` dùng `filter` và `lambda` để trả về danh sách chỉ chứa số chẵn. Gọi với `[1, 2, 3, 4, 5, 6]`.",
+      "hints": [
+        "`filter(lambda x: x % 2 == 0, lst)`",
+        "Bọc `list()` để lấy kết quả"
+      ],
+      "starterCode": "def lay_chan(lst):\n    # TODO: dùng filter + lambda\n    pass\n\nprint(lay_chan([1, 2, 3, 4, 5, 6]))",
+      "expectedOutput": "[2, 4, 6]",
+      "solution": "```python\ndef lay_chan(lst):\n    return list(filter(lambda x: x % 2 == 0, lst))\n\nprint(lay_chan([1, 2, 3, 4, 5, 6]))\n```",
+      "tags": [
+        "filter",
+        "lambda"
+      ]
+    },
+    {
+      "id": "fn-e-010",
+      "topicId": "t-functions",
+      "title": "Bình phương các phần tử bằng map + lambda",
+      "difficulty": "medium",
+      "problem": "Viết hàm `binh_phuong(lst)` dùng `map` và `lambda` để trả về danh sách bình phương mỗi phần tử. Gọi với `[1, 2, 3, 4, 5]`.",
+      "hints": [
+        "`map(lambda x: x**2, lst)`",
+        "Bọc `list()` để lấy kết quả"
+      ],
+      "starterCode": "def binh_phuong(lst):\n    # TODO: dùng map + lambda\n    pass\n\nprint(binh_phuong([1, 2, 3, 4, 5]))",
+      "expectedOutput": "[1, 4, 9, 16, 25]",
+      "solution": "```python\ndef binh_phuong(lst):\n    return list(map(lambda x: x**2, lst))\n\nprint(binh_phuong([1, 2, 3, 4, 5]))\n```",
+      "tags": [
+        "map",
+        "lambda"
+      ]
+    },
+    {
+      "id": "fn-e-011",
+      "topicId": "t-functions",
+      "title": "Chào với **kwargs",
+      "difficulty": "medium",
+      "problem": "Viết hàm `chao(**kwargs)` nhận keyword arguments `ten` (mặc định `'bạn'`) và `formal` (bool, mặc định `False`). Nếu `formal=True` trả về `'Kính chào, <ten>!'`, ngược lại `'Hey <ten>!'`. Gọi với `(ten='An', formal=True)` và `(ten='Bình')`.",
+      "hints": [
+        "`kwargs.get('ten', 'bạn')` lấy giá trị hoặc mặc định",
+        "Dùng f-string để tạo câu chào"
+      ],
+      "starterCode": "def chao(**kwargs):\n    ten = kwargs.get('ten', 'bạn')\n    formal = kwargs.get('formal', False)\n    # TODO: trả về câu chào phù hợp\n    pass\n\nprint(chao(ten='An', formal=True))\nprint(chao(ten='Bình'))",
+      "expectedOutput": "Kính chào, An!\nHey Bình!",
+      "solution": "```python\ndef chao(**kwargs):\n    ten = kwargs.get('ten', 'bạn')\n    formal = kwargs.get('formal', False)\n    if formal:\n        return f'Kính chào, {ten}!'\n    return f'Hey {ten}!'\n\nprint(chao(ten='An', formal=True))\nprint(chao(ten='Bình'))\n```",
+      "tags": [
+        "kwargs",
+        "dict",
+        "f-string"
+      ]
+    },
+    {
+      "id": "fn-e-012",
+      "topicId": "t-functions",
+      "title": "Đếm số nguyên tố trong danh sách",
+      "difficulty": "hard",
+      "problem": "Viết hai hàm:\n- `la_nguyen_to(n)` → `True` nếu `n` là số nguyên tố.\n- `dem_nguyen_to(lst)` dùng `filter` + hàm `la_nguyen_to` (không dùng lambda) để đếm số nguyên tố trong `lst`.\n\nGọi `dem_nguyen_to([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])`.",
+      "hints": [
+        "Số nguyên tố: n >= 2 và không chia hết cho bất kỳ số nào từ 2 đến sqrt(n)",
+        "`filter(la_nguyen_to, lst)` truyền hàm không cần gọi (không có dấu `()`)",
+        "`len(list(filter(...)))` đếm số phần tử"
+      ],
+      "starterCode": "def la_nguyen_to(n):\n    # TODO: trả về True nếu n là số nguyên tố\n    pass\n\ndef dem_nguyen_to(lst):\n    # TODO: dùng filter + la_nguyen_to\n    pass\n\nprint(dem_nguyen_to([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))",
+      "expectedOutput": "4",
+      "solution": "```python\ndef la_nguyen_to(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            return False\n    return True\n\ndef dem_nguyen_to(lst):\n    return len(list(filter(la_nguyen_to, lst)))\n\nprint(dem_nguyen_to([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))\n```",
+      "tags": [
+        "filter",
+        "higher-order",
+        "prime",
+        "def"
+      ]
+    },
+    {
+      "id": "comp-e-001",
+      "topicId": "t-comprehension",
+      "difficulty": "easy",
+      "title": "Nhân đôi với list comprehension",
+      "problem": "Viết lại vòng for sau bằng **list comprehension** để tạo list các số từ 1 đến 5 nhân đôi:\n```python\nresult = []\nfor x in range(1, 6):\n    result.append(x * 2)\nprint(result)\n```",
+      "hints": [
+        "Cú pháp: `[biểu_thức for biến in iterable]`",
+        "`range(1, 6)` sinh 1, 2, 3, 4, 5"
+      ],
+      "starterCode": "# Viết lại bằng list comprehension (1 dòng)\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[2, 4, 6, 8, 10]",
+      "solution": "```python\nresult = [x * 2 for x in range(1, 6)]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-002",
+      "topicId": "t-comprehension",
+      "difficulty": "easy",
+      "title": "Lọc số chẵn",
+      "problem": "Dùng list comprehension lấy tất cả số chẵn từ 1 đến 20 (bao gồm 20).",
+      "hints": [
+        "Điều kiện lọc `if` đặt sau phần `for`",
+        "Số chẵn: `x % 2 == 0`"
+      ],
+      "starterCode": "# Lấy số chẵn từ 1 đến 20\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]",
+      "solution": "```python\nresult = [x for x in range(1, 21) if x % 2 == 0]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-003",
+      "topicId": "t-comprehension",
+      "difficulty": "easy",
+      "title": "Bình phương số lẻ",
+      "problem": "Dùng list comprehension tạo list bình phương của các số lẻ từ 1 đến 10.",
+      "hints": [
+        "Kết hợp biến đổi (`x**2`) và lọc (`if x%2!=0`) trong một comprehension",
+        "Số lẻ: `x % 2 != 0`"
+      ],
+      "starterCode": "# Bình phương số lẻ từ 1-10\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[1, 9, 25, 49, 81]",
+      "solution": "```python\nresult = [x**2 for x in range(1, 11) if x % 2 != 0]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-004",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Làm phẳng ma trận (flatten)",
+      "problem": "Dùng list comprehension lồng để 'làm phẳng' list 2D sau thành list 1D:\n```python\nmatrix = [[1, 2], [3, 4], [5, 6]]\n```",
+      "hints": [
+        "Dùng hai `for`: `for row in matrix` rồi `for x in row`",
+        "Thứ tự: `[x for row in matrix for x in row]`"
+      ],
+      "starterCode": "matrix = [[1, 2], [3, 4], [5, 6]]\n# Làm phẳng matrix thành list 1D\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[1, 2, 3, 4, 5, 6]",
+      "solution": "```python\nmatrix = [[1, 2], [3, 4], [5, 6]]\nresult = [x for row in matrix for x in row]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-005",
+      "topicId": "t-comprehension",
+      "difficulty": "easy",
+      "title": "Độ dài các từ",
+      "problem": "Dùng list comprehension tạo list độ dài của các từ trong list sau:\n```python\nwords = ['python', 'list', 'comprehension', 'is', 'cool']\n```",
+      "hints": [
+        "`len(w)` trả độ dài chuỗi w",
+        "Không cần điều kiện if ở bài này"
+      ],
+      "starterCode": "words = ['python', 'list', 'comprehension', 'is', 'cool']\n# Tạo list độ dài các từ\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[6, 4, 13, 2, 4]",
+      "solution": "```python\nwords = ['python', 'list', 'comprehension', 'is', 'cool']\nresult = [len(w) for w in words]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-006",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Dict comprehension từ hai list",
+      "problem": "Dùng **dict comprehension** + `zip()` tạo dict ánh xạ mỗi key sang value tương ứng:\n```python\nkeys = ['a', 'b', 'c', 'd']\nvals = [10, 20, 30, 40]\n```",
+      "hints": [
+        "`zip(keys, vals)` ghép cặp: ('a',10), ('b',20), ...",
+        "Dict comprehension: `{k: v for k, v in ...}`"
+      ],
+      "starterCode": "keys = ['a', 'b', 'c', 'd']\nvals = [10, 20, 30, 40]\n# Tạo dict từ hai list\nresult = {}  # thay dòng này\nprint(result)",
+      "expectedOutput": "{'a': 10, 'b': 20, 'c': 30, 'd': 40}",
+      "solution": "```python\nkeys = ['a', 'b', 'c', 'd']\nvals = [10, 20, 30, 40]\nresult = {k: v for k, v in zip(keys, vals)}\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-007",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Đảo ngược dict",
+      "problem": "Dùng **dict comprehension** để đảo ngược dict (key↔value):\n```python\nd = {'x': 1, 'y': 2, 'z': 3}\n```\nOutput mong đợi: `{1: 'x', 2: 'y', 3: 'z'}`",
+      "hints": [
+        "Dùng `.items()` để lấy cặp (k, v)",
+        "Trong comprehension: viết `v: k` thay vì `k: v`"
+      ],
+      "starterCode": "d = {'x': 1, 'y': 2, 'z': 3}\n# Đảo ngược key-value\nresult = {}  # thay dòng này\nprint(result)",
+      "expectedOutput": "{1: 'x', 2: 'y', 3: 'z'}",
+      "solution": "```python\nd = {'x': 1, 'y': 2, 'z': 3}\nresult = {v: k for k, v in d.items()}\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-008",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Lọc dict theo điều kiện",
+      "problem": "Dùng **dict comprehension** lấy các sinh viên có điểm >= 60 từ dict sau:\n```python\nscores = {'alice': 85, 'bob': 42, 'carol': 90, 'dave': 55}\n```",
+      "hints": [
+        "Dùng `.items()` để duyệt cả key và value",
+        "Thêm `if v >= 60` sau phần `for`"
+      ],
+      "starterCode": "scores = {'alice': 85, 'bob': 42, 'carol': 90, 'dave': 55}\n# Lấy sinh viên đạt (điểm >= 60)\npassed = {}  # thay dòng này\nprint(passed)",
+      "expectedOutput": "{'alice': 85, 'carol': 90}",
+      "solution": "```python\nscores = {'alice': 85, 'bob': 42, 'carol': 90, 'dave': 55}\npassed = {k: v for k, v in scores.items() if v >= 60}\nprint(passed)\n```"
+    },
+    {
+      "id": "comp-e-009",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Set ký tự đầu của từ",
+      "problem": "Dùng **set comprehension** tìm tập hợp ký tự đầu (không trùng lặp) của các từ sau:\n```python\nwords = ['apple', 'banana', 'avocado', 'cherry', 'blueberry']\n```\nIn kết quả sau khi `sorted()`.",
+      "hints": [
+        "`w[0]` lấy ký tự đầu của chuỗi w",
+        "Set tự động loại trùng lặp"
+      ],
+      "starterCode": "words = ['apple', 'banana', 'avocado', 'cherry', 'blueberry']\n# Tập hợp ký tự đầu (không trùng)\nfirst_chars = set()  # thay dòng này\nprint(sorted(first_chars))",
+      "expectedOutput": "['a', 'b', 'c']",
+      "solution": "```python\nwords = ['apple', 'banana', 'avocado', 'cherry', 'blueberry']\nfirst_chars = {w[0] for w in words}\nprint(sorted(first_chars))\n```"
+    },
+    {
+      "id": "comp-e-010",
+      "topicId": "t-comprehension",
+      "difficulty": "medium",
+      "title": "Đường chéo ma trận",
+      "problem": "Dùng list comprehension lấy các phần tử trên đường chéo chính của ma trận 3×3:\n```python\nmatrix = [[1, 2, 3],\n          [4, 5, 6],\n          [7, 8, 9]]\n```",
+      "hints": [
+        "Phần tử đường chéo: `matrix[i][i]` với i = 0, 1, 2",
+        "Dùng `range(3)` hoặc `range(len(matrix))`"
+      ],
+      "starterCode": "matrix = [[1, 2, 3],\n          [4, 5, 6],\n          [7, 8, 9]]\n# Lấy đường chéo chính\ndiag = []  # thay dòng này\nprint(diag)",
+      "expectedOutput": "[1, 5, 9]",
+      "solution": "```python\nmatrix = [[1, 2, 3],\n          [4, 5, 6],\n          [7, 8, 9]]\ndiag = [matrix[i][i] for i in range(len(matrix))]\nprint(diag)\n```"
+    },
+    {
+      "id": "comp-e-011",
+      "topicId": "t-comprehension",
+      "difficulty": "hard",
+      "title": "FizzBuzz với comprehension",
+      "problem": "Dùng list comprehension tạo list FizzBuzz cho range(1, 16):\n- Chia hết cho 3 → `'Fizz'`\n- Chia hết cho 5 → `'Buzz'`\n- Còn lại → `str(x)`",
+      "hints": [
+        "Dùng biểu thức tam nguyên lồng: `A if cond1 else B if cond2 else C`",
+        "Kiểm tra % 3 trước, rồi % 5"
+      ],
+      "starterCode": "# FizzBuzz comprehension cho 1-15\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "['1', '2', 'Fizz', '4', 'Buzz', 'Fizz', '7', '8', 'Fizz', 'Buzz', '11', 'Fizz', '13', '14', 'Fizz']",
+      "solution": "```python\nresult = ['Fizz' if x % 3 == 0 else 'Buzz' if x % 5 == 0 else str(x)\n          for x in range(1, 16)]\nprint(result)\n```"
+    },
+    {
+      "id": "comp-e-012",
+      "topicId": "t-comprehension",
+      "difficulty": "hard",
+      "title": "Cặp số có tổng nhỏ hơn ngưỡng",
+      "problem": "Dùng list comprehension lồng tạo list tất cả cặp `(x, y)` sao cho:\n- `x` trong `[1, 2, 3]`, `y` trong `[4, 5]`\n- `x + y < 7`",
+      "hints": [
+        "Hai vòng `for` lồng trong comprehension",
+        "Thêm điều kiện `if x + y < 7` sau các `for`"
+      ],
+      "starterCode": "# Tìm các cặp (x, y) với x+y < 7\nresult = []  # thay dòng này\nprint(result)",
+      "expectedOutput": "[(1, 4), (1, 5), (2, 4)]",
+      "solution": "```python\nresult = [(x, y) for x in [1, 2, 3] for y in [4, 5] if x + y < 7]\nprint(result)\n```"
+    },
+    {
+      "id": "np-e-001",
+      "topicId": "t-numpy",
+      "difficulty": "easy",
+      "title": "Tạo mảng và kiểm tra thuộc tính",
+      "problem": "Tạo mảng 1D từ list `[3, 1, 4, 1, 5, 9, 2, 6]`. In ra `shape`, `ndim`, `size`, và `dtype` của mảng.",
+      "hints": [
+        "Dùng `np.array()` để tạo mảng từ list Python",
+        "Các thuộc tính là `.shape`, `.ndim`, `.size`, `.dtype`"
+      ],
+      "starterCode": "import numpy as np\n# Tạo mảng từ list\narr = \n# In ra các thuộc tính\n",
+      "expectedOutput": "(8,)\n1\n8\nint32",
+      "solution": "```python\nimport numpy as np\narr = np.array([3, 1, 4, 1, 5, 9, 2, 6])\nprint(arr.shape)\nprint(arr.ndim)\nprint(arr.size)\nprint(arr.dtype)\n```"
+    },
+    {
+      "id": "np-e-002",
+      "topicId": "t-numpy",
+      "difficulty": "easy",
+      "title": "Các hàm tạo mảng cơ bản",
+      "problem": "Dùng `np.zeros`, `np.ones`, `np.arange`, `np.linspace` để tạo các mảng sau và in ra dưới dạng list:\n1. Mảng zeros shape (2, 3)\n2. Mảng ones shape (3,)\n3. Dãy số từ 0 đến 8 (không gồm 9) với bước 3\n4. 5 điểm cách đều trong [0.0, 1.0]",
+      "hints": [
+        "`np.zeros((rows, cols))` tạo mảng 2D",
+        "`np.arange(start, stop, step)` — stop không được gồm",
+        "`np.linspace(start, stop, num)` — stop được gồm"
+      ],
+      "starterCode": "import numpy as np\n# 1. zeros 2x3\n\n# 2. ones 1D\n\n# 3. arange\n\n# 4. linspace\n",
+      "expectedOutput": "[[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]\n[1.0, 1.0, 1.0]\n[0, 3, 6]\n[0.0, 0.25, 0.5, 0.75, 1.0]",
+      "solution": "```python\nimport numpy as np\nprint(np.zeros((2, 3)).tolist())\nprint(np.ones(3).tolist())\nprint(np.arange(0, 9, 3).tolist())\nprint(np.linspace(0, 1, 5).tolist())\n```"
+    },
+    {
+      "id": "np-e-003",
+      "topicId": "t-numpy",
+      "difficulty": "easy",
+      "title": "Indexing và slicing 1D",
+      "problem": "Cho mảng `a = np.array([10, 20, 30, 40, 50, 60, 70, 80])`.\nIn ra:\n1. Phần tử thứ 3 (index 2)\n2. Phần tử cuối cùng\n3. Các phần tử từ index 2 đến 5 (không gồm 6)\n4. Mỗi phần tử cách 2 (step=2)",
+      "hints": [
+        "Index âm: -1 là phần tử cuối",
+        "Slicing: `a[start:stop]` không gồm stop",
+        "Step: `a[::step]`"
+      ],
+      "starterCode": "import numpy as np\na = np.array([10, 20, 30, 40, 50, 60, 70, 80])\n# 1. phần tử index 2\n\n# 2. phần tử cuối\n\n# 3. index 2 đến 5\n\n# 4. bước 2\n",
+      "expectedOutput": "30\n80\n[30, 40, 50, 60]\n[10, 30, 50, 70]",
+      "solution": "```python\nimport numpy as np\na = np.array([10, 20, 30, 40, 50, 60, 70, 80])\nprint(a[2])\nprint(a[-1])\nprint(a[2:6].tolist())\nprint(a[::2].tolist())\n```"
+    },
+    {
+      "id": "np-e-004",
+      "topicId": "t-numpy",
+      "difficulty": "easy",
+      "title": "Phép toán vectorized và scalar",
+      "problem": "Cho `a = np.array([1, 2, 3, 4])` và `b = np.array([10, 20, 30, 40])`.\nTính và in ra (dạng list):\n1. `a + b`\n2. `a * b`\n3. `a ** 2`\n4. `np.sqrt(b)` làm tròn 2 chữ số thập phân",
+      "hints": [
+        "Các phép toán +,-,*,** áp dụng element-wise",
+        "Dùng `np.sqrt()` cho căn bậc hai",
+        "Dùng `.round(2)` trước `.tolist()` để làm tròn"
+      ],
+      "starterCode": "import numpy as np\na = np.array([1, 2, 3, 4])\nb = np.array([10, 20, 30, 40])\n# Tính các phép toán\n",
+      "expectedOutput": "[11, 22, 33, 44]\n[10, 40, 90, 160]\n[1, 4, 9, 16]\n[3.16, 4.47, 5.48, 6.32]",
+      "solution": "```python\nimport numpy as np\na = np.array([1, 2, 3, 4])\nb = np.array([10, 20, 30, 40])\nprint((a + b).tolist())\nprint((a * b).tolist())\nprint((a ** 2).tolist())\nprint(np.sqrt(b).round(2).tolist())\n```"
+    },
+    {
+      "id": "np-e-005",
+      "topicId": "t-numpy",
+      "difficulty": "medium",
+      "title": "Indexing và slicing 2D",
+      "problem": "Cho mảng:\n```python\na = np.array([[1,2,3],[4,5,6],[7,8,9]])\n```\nIn ra:\n1. Phần tử hàng 1, cột 2\n2. Toàn bộ hàng 0\n3. Toàn bộ cột 2\n4. Sub-matrix gồm 2 hàng cuối, 2 cột cuối",
+      "hints": [
+        "Indexing 2D: `a[row, col]`",
+        "Lấy toàn bộ hàng: `a[0, :]` hoặc `a[0]`",
+        "Lấy toàn bộ cột: `a[:, col_idx]`",
+        "Sub-matrix: `a[1:, 1:]`"
+      ],
+      "starterCode": "import numpy as np\na = np.array([[1,2,3],[4,5,6],[7,8,9]])\n# 1. phần tử [1,2]\n\n# 2. hàng 0\n\n# 3. cột 2\n\n# 4. sub-matrix 2 hàng cuối, 2 cột cuối\n",
+      "expectedOutput": "6\n[1, 2, 3]\n[3, 6, 9]\n[[5, 6], [8, 9]]",
+      "solution": "```python\nimport numpy as np\na = np.array([[1,2,3],[4,5,6],[7,8,9]])\nprint(a[1, 2])\nprint(a[0, :].tolist())\nprint(a[:, 2].tolist())\nprint(a[1:, 1:].tolist())\n```"
+    },
+    {
+      "id": "np-e-006",
+      "topicId": "t-numpy",
+      "difficulty": "medium",
+      "title": "Reshape và flatten",
+      "problem": "Dùng `np.arange(12)` để tạo mảng 12 phần tử, sau đó:\n1. Reshape thành mảng 3×4, in shape\n2. Reshape thành mảng 2 hàng (tự tính số cột), in shape\n3. Flatten về 1D, in length",
+      "hints": [
+        "`reshape(rows, cols)` — rows*cols phải bằng tổng phần tử",
+        "Dùng -1 để NumPy tự tính chiều còn lại: `reshape(2, -1)`",
+        "`.flatten()` hoặc `.ravel()` trả về mảng 1D"
+      ],
+      "starterCode": "import numpy as np\na = np.arange(12)\n# 1. reshape 3x4\n\n# 2. reshape 2 hàng, tự tính cột\n\n# 3. flatten\n",
+      "expectedOutput": "(3, 4)\n(2, 6)\n12",
+      "solution": "```python\nimport numpy as np\na = np.arange(12)\nb = a.reshape(3, 4)\nprint(b.shape)\nc = a.reshape(2, -1)\nprint(c.shape)\nprint(len(c.flatten()))\n```"
+    },
+    {
+      "id": "np-e-007",
+      "topicId": "t-numpy",
+      "difficulty": "medium",
+      "title": "Thống kê cơ bản với axis",
+      "problem": "Cho mảng:\n```python\na = np.array([[4, 7, 2], [1, 8, 5]])\n```\nTính và in:\n1. Tổng toàn bộ\n2. Giá trị lớn nhất\n3. Tổng mỗi cột (axis=0)\n4. Trung bình mỗi hàng (axis=1)\n5. Độ lệch chuẩn làm tròn 4 chữ số",
+      "hints": [
+        "`.sum()`, `.max()`, `.min()`, `.mean()`, `.std()`",
+        "`axis=0` → kết quả theo cột (tổng hợp hàng)",
+        "`axis=1` → kết quả theo hàng (tổng hợp cột)"
+      ],
+      "starterCode": "import numpy as np\na = np.array([[4, 7, 2], [1, 8, 5]])\n# Tính thống kê\n",
+      "expectedOutput": "27\n8\n[5, 15, 7]\n[4.333333333333333, 4.666666666666667]\n2.5",
+      "solution": "```python\nimport numpy as np\na = np.array([[4, 7, 2], [1, 8, 5]])\nprint(a.sum())\nprint(a.max())\nprint(a.sum(axis=0).tolist())\nprint(a.mean(axis=1).tolist())\nprint(round(a.std(), 4))\n```"
+    },
+    {
+      "id": "np-e-008",
+      "topicId": "t-numpy",
+      "difficulty": "medium",
+      "title": "Boolean mask — lọc và gán",
+      "problem": "Cho `a = np.array([3, 7, 1, 9, 4, 6, 2, 8])`:\n1. In các phần tử lớn hơn 5\n2. In các phần tử chẵn\n3. Gán 0 cho các phần tử nhỏ hơn 4, in mảng kết quả",
+      "hints": [
+        "Boolean mask: `a[a > 5]`",
+        "Phần tử chẵn: `a[a % 2 == 0]`",
+        "Gán qua mask: `a[condition] = value`"
+      ],
+      "starterCode": "import numpy as np\na = np.array([3, 7, 1, 9, 4, 6, 2, 8])\n# 1. lớn hơn 5\n\n# 2. phần tử chẵn\n\n# 3. gán 0 cho < 4\n",
+      "expectedOutput": "[7, 9, 6, 8]\n[4, 6, 2, 8]\n[0, 7, 0, 9, 4, 6, 0, 8]",
+      "solution": "```python\nimport numpy as np\na = np.array([3, 7, 1, 9, 4, 6, 2, 8])\nprint(a[a > 5].tolist())\nprint(a[a % 2 == 0].tolist())\na[a < 4] = 0\nprint(a.tolist())\n```"
+    },
+    {
+      "id": "np-e-009",
+      "topicId": "t-numpy",
+      "difficulty": "medium",
+      "title": "Broadcasting — cộng vector vào ma trận",
+      "problem": "Cho ma trận điểm số:\n```python\nscores = np.array([[70, 80, 90], [60, 75, 85], [55, 65, 95]])\nbias = np.array([5, 3, 2])  # bonus cho từng môn\n```\n1. Cộng bonus vào từng hàng (broadcasting)\n2. In tổng điểm mỗi sinh viên sau khi cộng bonus\n3. In điểm cao nhất mỗi môn sau khi cộng bonus",
+      "hints": [
+        "Broadcasting: `scores + bias` — bias shape (3,) tự mở rộng theo từng hàng",
+        "Tổng mỗi sinh viên: `axis=1`",
+        "Max mỗi môn: `axis=0`"
+      ],
+      "starterCode": "import numpy as np\nscores = np.array([[70, 80, 90], [60, 75, 85], [55, 65, 95]])\nbias = np.array([5, 3, 2])\n# 1. cộng bonus\n\n# 2. tổng mỗi sinh viên\n\n# 3. max mỗi môn\n",
+      "expectedOutput": "[[75, 83, 92], [65, 78, 87], [60, 68, 97]]\n[250, 230, 225]\n[75, 83, 97]",
+      "solution": "```python\nimport numpy as np\nscores = np.array([[70, 80, 90], [60, 75, 85], [55, 65, 95]])\nbias = np.array([5, 3, 2])\nadjusted = scores + bias\nprint(adjusted.tolist())\nprint(adjusted.sum(axis=1).tolist())\nprint(adjusted.max(axis=0).tolist())\n```"
+    },
+    {
+      "id": "np-e-010",
+      "topicId": "t-numpy",
+      "difficulty": "hard",
+      "title": "Chuẩn hóa (Normalization) với NumPy",
+      "problem": "Cho mảng dữ liệu: `data = np.array([[2.0, 8.0, 1.0], [4.0, 6.0, 3.0], [6.0, 4.0, 5.0]])`.\nThực hiện Min-Max normalization từng cột:\n- `normalized = (data - col_min) / (col_max - col_min)`\nIn kết quả làm tròn 4 chữ số thập phân.",
+      "hints": [
+        "Tính min và max theo cột: `data.min(axis=0)`, `data.max(axis=0)`",
+        "Broadcasting tự động xử lý phép tính trên từng hàng",
+        "Dùng `.round(4)` và `.tolist()` để in"
+      ],
+      "starterCode": "import numpy as np\ndata = np.array([[2.0, 8.0, 1.0], [4.0, 6.0, 3.0], [6.0, 4.0, 5.0]])\n# Tính col_min và col_max\n\n# Chuẩn hóa\n\n# In kết quả\n",
+      "expectedOutput": "[[0.0, 1.0, 0.0], [0.5, 0.5, 0.5], [1.0, 0.0, 1.0]]",
+      "solution": "```python\nimport numpy as np\ndata = np.array([[2.0, 8.0, 1.0], [4.0, 6.0, 3.0], [6.0, 4.0, 5.0]])\ncol_min = data.min(axis=0)\ncol_max = data.max(axis=0)\nnormalized = (data - col_min) / (col_max - col_min)\nprint(normalized.round(4).tolist())\n```"
+    },
+    {
+      "id": "np-e-011",
+      "topicId": "t-numpy",
+      "difficulty": "hard",
+      "title": "Nhân ma trận và tính toán tổng hợp",
+      "problem": "Ma trận trọng số `W` và dữ liệu `X`:\n```python\nX = np.array([[1, 2], [3, 4], [5, 6]])   # shape (3,2)\nW = np.array([[0.5, 0.3], [0.2, 0.8]])   # shape (2,2)\n```\n1. Tính `Y = X @ W` (nhân ma trận), in shape và tolist()\n2. Tính trung bình mỗi cột của Y, làm tròn 2 chữ số",
+      "hints": [
+        "Dùng `@` hoặc `np.matmul()` cho nhân ma trận",
+        "Shape kết quả: (3,2) @ (2,2) = (3,2)",
+        "`.mean(axis=0)` cho trung bình cột"
+      ],
+      "starterCode": "import numpy as np\nX = np.array([[1, 2], [3, 4], [5, 6]])\nW = np.array([[0.5, 0.3], [0.2, 0.8]])\n# 1. Nhân ma trận\n\n# 2. Trung bình cột\n",
+      "expectedOutput": "(3, 2)\n[[0.9, 1.9], [2.3, 4.1], [3.7, 6.3]]\n[2.3, 4.1]",
+      "solution": "```python\nimport numpy as np\nX = np.array([[1, 2], [3, 4], [5, 6]])\nW = np.array([[0.5, 0.3], [0.2, 0.8]])\nY = X @ W\nprint(Y.shape)\nprint(Y.round(1).tolist())\nprint(Y.mean(axis=0).round(2).tolist())\n```"
+    },
+    {
+      "id": "np-e-012",
+      "topicId": "t-numpy",
+      "difficulty": "hard",
+      "title": "Phân tích dữ liệu với boolean mask nâng cao",
+      "problem": "Cho mảng điểm thi:\n```python\ngrades = np.array([45, 72, 88, 55, 91, 63, 78, 49, 85, 67])\n```\n1. Đếm số sinh viên đạt (>= 60)\n2. Tính điểm trung bình của những người đạt\n3. Xếp loại: điểm < 60 là 'F', 60-79 là 'P', >= 80 là 'E'. In mảng xếp loại dùng `np.where`.",
+      "hints": [
+        "Đếm: `(grades >= 60).sum()` hoặc `np.sum(mask)`",
+        "Mean của phần đạt: `grades[grades >= 60].mean()`",
+        "`np.where(cond, val_true, val_false)` — có thể lồng nhau"
+      ],
+      "starterCode": "import numpy as np\ngrades = np.array([45, 72, 88, 55, 91, 63, 78, 49, 85, 67])\n# 1. đếm đạt\n\n# 2. trung bình đạt\n\n# 3. xếp loại\n",
+      "expectedOutput": "7\n77.71\n['F', 'P', 'E', 'F', 'E', 'P', 'P', 'F', 'E', 'P']",
+      "solution": "```python\nimport numpy as np\ngrades = np.array([45, 72, 88, 55, 91, 63, 78, 49, 85, 67])\nprint((grades >= 60).sum())\nprint(round(grades[grades >= 60].mean(), 2))\nrank = np.where(grades >= 80, 'E', np.where(grades >= 60, 'P', 'F'))\nprint(rank.tolist())\n```"
+    },
+    {
+      "id": "pd-e-001",
+      "topicId": "t-pandas",
+      "title": "Tạo Series với index nhãn và truy cập phần tử",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\n# Tạo Series điểm số của 3 sinh viên: Nam=85, Lan=90, Minh=78\n# Gán index là tên sinh viên\ns = ...\nprint(s['Lan'])",
+      "expectedOutput": "90",
+      "solution": "```python\nimport pandas as pd\n\ns = pd.Series([85, 90, 78], index=['Nam', 'Lan', 'Minh'])\nprint(s['Lan'])\n```",
+      "tags": [
+        "series",
+        "index"
+      ],
+      "problem": "Tạo một `Series` điểm số của 3 sinh viên: **Nam=85, Lan=90, Minh=78**, với index là tên sinh viên. In ra điểm của **Lan**."
+    },
+    {
+      "id": "pd-e-002",
+      "topicId": "t-pandas",
+      "title": "Tạo DataFrame từ dict và kiểm tra shape",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\n# Tạo DataFrame với 3 cột: 'ten', 'tuoi', 'diem'\n# 4 sinh viên: An(20,8.5), Binh(21,7.0), Chi(19,9.0), Dung(22,6.5)\ndata = {\n    'ten': ['An', 'Binh', 'Chi', 'Dung'],\n    'tuoi': [20, 21, 19, 22],\n    'diem': [8.5, 7.0, 9.0, 6.5]\n}\ndf = pd.DataFrame(data)\nprint(df.shape)",
+      "expectedOutput": "(4, 3)",
+      "solution": "```python\nimport pandas as pd\n\ndata = {\n    'ten': ['An', 'Binh', 'Chi', 'Dung'],\n    'tuoi': [20, 21, 19, 22],\n    'diem': [8.5, 7.0, 9.0, 6.5]\n}\ndf = pd.DataFrame(data)\nprint(df.shape)\n```",
+      "tags": [
+        "dataframe",
+        "shape"
+      ],
+      "problem": "Cho `DataFrame` gồm 3 cột `ten`, `tuoi`, `diem` của 4 sinh viên. In ra `shape` của DataFrame (số hàng, số cột)."
+    },
+    {
+      "id": "pd-e-003",
+      "topicId": "t-pandas",
+      "title": "Lấy danh sách tên cột và xem dữ liệu đầu",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'san_pham': ['A', 'B', 'C', 'D', 'E'],\n    'gia': [100, 200, 150, 300, 250],\n    'so_luong': [10, 5, 8, 3, 6]\n})\n# In ra list tên cột theo thứ tự\nprint(list(df.columns))",
+      "expectedOutput": "['san_pham', 'gia', 'so_luong']",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'san_pham': ['A', 'B', 'C', 'D', 'E'],\n    'gia': [100, 200, 150, 300, 250],\n    'so_luong': [10, 5, 8, 3, 6]\n})\nprint(list(df.columns))\n```",
+      "tags": [
+        "dataframe",
+        "columns",
+        "head"
+      ],
+      "problem": "Cho DataFrame sản phẩm. In ra **danh sách tên cột** theo thứ tự bằng `list(df.columns)`."
+    },
+    {
+      "id": "pd-e-004",
+      "topicId": "t-pandas",
+      "title": "Chọn cột và tính tổng",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'mon': ['Toan', 'Van', 'Anh', 'Ly', 'Hoa'],\n    'diem': [8, 7, 9, 6, 8]\n})\n# Tính tổng điểm tất cả các môn\ntong = df['diem'].sum()\nprint(tong)",
+      "expectedOutput": "38",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'mon': ['Toan', 'Van', 'Anh', 'Ly', 'Hoa'],\n    'diem': [8, 7, 9, 6, 8]\n})\ntong = df['diem'].sum()\nprint(tong)\n```",
+      "tags": [
+        "select-column",
+        "sum"
+      ],
+      "problem": "Cho DataFrame điểm các môn. Tính và in ra **tổng điểm** tất cả các môn (dùng `.sum()`)."
+    },
+    {
+      "id": "pd-e-005",
+      "topicId": "t-pandas",
+      "title": "Dùng loc và iloc để truy cập dữ liệu",
+      "difficulty": "medium",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi'],\n    'diem': [8.5, 7.0, 9.0]\n}, index=['sv1', 'sv2', 'sv3'])\n# Dùng loc lấy điểm của sv2\ndiem_sv2 = df.loc['sv2', 'diem']\n# Dùng iloc lấy điểm của hàng vị trí 2 (Chi)\ndiem_chi = df.iloc[2, 1]\nprint(round(diem_sv2 + diem_chi, 1))",
+      "expectedOutput": "16.0",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi'],\n    'diem': [8.5, 7.0, 9.0]\n}, index=['sv1', 'sv2', 'sv3'])\ndiem_sv2 = df.loc['sv2', 'diem']\ndiem_chi = df.iloc[2, 1]\nprint(round(diem_sv2 + diem_chi, 1))\n```",
+      "tags": [
+        "loc",
+        "iloc"
+      ],
+      "problem": "Dùng `loc` lấy điểm của `sv2` và `iloc` lấy điểm hàng ở vị trí 2, rồi in ra **tổng** hai điểm (làm tròn 1 chữ số)."
+    },
+    {
+      "id": "pd-e-006",
+      "topicId": "t-pandas",
+      "title": "Lọc boolean — sinh viên đạt điểm cao",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em'],\n    'diem': [8.5, 6.0, 9.0, 7.5, 5.5]\n})\n# Lọc sinh viên có điểm >= 7.5\ncao = df[df['diem'] >= 7.5]\n# In số sinh viên đạt yêu cầu\nprint(len(cao))",
+      "expectedOutput": "3",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em'],\n    'diem': [8.5, 6.0, 9.0, 7.5, 5.5]\n})\ncao = df[df['diem'] >= 7.5]\nprint(len(cao))\n```",
+      "tags": [
+        "filter",
+        "boolean-indexing"
+      ],
+      "problem": "Lọc (boolean) các sinh viên có `diem >= 7.5` và in ra **số lượng** sinh viên đạt."
+    },
+    {
+      "id": "pd-e-007",
+      "topicId": "t-pandas",
+      "title": "Thêm cột tính toán và xóa cột tạm",
+      "difficulty": "medium",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'san_pham': ['A', 'B', 'C'],\n    'gia': [100, 200, 150],\n    'so_luong': [3, 2, 4]\n})\n# Thêm cột 'doanh_thu' = gia * so_luong\ndf['doanh_thu'] = df['gia'] * df['so_luong']\n# Xóa cột 'so_luong'\ndf = df.drop('so_luong', axis=1)\n# In tổng doanh thu\nprint(df['doanh_thu'].sum())",
+      "expectedOutput": "1300",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'san_pham': ['A', 'B', 'C'],\n    'gia': [100, 200, 150],\n    'so_luong': [3, 2, 4]\n})\ndf['doanh_thu'] = df['gia'] * df['so_luong']\ndf = df.drop('so_luong', axis=1)\nprint(df['doanh_thu'].sum())\n```",
+      "tags": [
+        "add-column",
+        "drop-column"
+      ],
+      "problem": "Thêm cột `doanh_thu = gia * so_luong`, sau đó **xóa** cột `so_luong`, rồi in **tổng doanh thu**."
+    },
+    {
+      "id": "pd-e-008",
+      "topicId": "t-pandas",
+      "title": "Sắp xếp DataFrame và lấy top 3",
+      "difficulty": "medium",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em'],\n    'diem': [7.0, 9.5, 8.0, 6.5, 9.0]\n})\n# Sắp xếp giảm dần theo điểm, lấy top 3 tên\ntop3 = df.sort_values('diem', ascending=False).head(3)['ten'].tolist()\nprint(top3)",
+      "expectedOutput": "['Binh', 'Em', 'Chi']",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em'],\n    'diem': [7.0, 9.5, 8.0, 6.5, 9.0]\n})\ntop3 = df.sort_values('diem', ascending=False).head(3)['ten'].tolist()\nprint(top3)\n```",
+      "tags": [
+        "sort_values",
+        "head"
+      ],
+      "problem": "Sắp xếp DataFrame **giảm dần** theo `diem`, lấy danh sách **tên 3 sinh viên** đứng đầu (top 3)."
+    },
+    {
+      "id": "pd-e-009",
+      "topicId": "t-pandas",
+      "title": "groupby + mean — điểm trung bình theo khoa",
+      "difficulty": "medium",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'khoa': ['CNTT', 'CNTT', 'KT', 'KT', 'CNTT'],\n    'diem': [8.0, 9.0, 7.0, 6.0, 7.5]\n})\n# Tính điểm trung bình từng khoa, làm tròn 2 chữ số\navg = df.groupby('khoa')['diem'].mean().round(2)\n# In điểm TB của khoa CNTT\nprint(avg['CNTT'])",
+      "expectedOutput": "8.17",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'khoa': ['CNTT', 'CNTT', 'KT', 'KT', 'CNTT'],\n    'diem': [8.0, 9.0, 7.0, 6.0, 7.5]\n})\navg = df.groupby('khoa')['diem'].mean().round(2)\nprint(avg['CNTT'])\n```",
+      "tags": [
+        "groupby",
+        "mean"
+      ],
+      "problem": "Tính **điểm trung bình từng khoa** bằng `groupby` (làm tròn 2 chữ số), in điểm TB của khoa **CNTT**."
+    },
+    {
+      "id": "pd-e-010",
+      "topicId": "t-pandas",
+      "title": "value_counts — tần suất thành phố",
+      "difficulty": "easy",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em', 'Phuong'],\n    'thanh_pho': ['HCM', 'HN', 'HCM', 'DN', 'HCM', 'HN']\n})\n# Đếm số người ở mỗi thành phố\ncounts = df['thanh_pho'].value_counts()\n# In số người ở HCM\nprint(counts['HCM'])",
+      "expectedOutput": "3",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'ten': ['An', 'Binh', 'Chi', 'Dung', 'Em', 'Phuong'],\n    'thanh_pho': ['HCM', 'HN', 'HCM', 'DN', 'HCM', 'HN']\n})\ncounts = df['thanh_pho'].value_counts()\nprint(counts['HCM'])\n```",
+      "tags": [
+        "value_counts"
+      ],
+      "problem": "Đếm **số người ở mỗi thành phố** bằng `value_counts()`, in số người ở **HCM**."
+    },
+    {
+      "id": "pd-e-011",
+      "topicId": "t-pandas",
+      "title": "describe() — phân tích thống kê lương",
+      "difficulty": "medium",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'nhan_vien': ['A', 'B', 'C', 'D', 'E'],\n    'luong': [10000, 15000, 12000, 8000, 20000]\n})\n# Dùng describe() để lấy giá trị lớn nhất của cột luong\nstats = df['luong'].describe()\nprint(int(stats['max']))",
+      "expectedOutput": "20000",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'nhan_vien': ['A', 'B', 'C', 'D', 'E'],\n    'luong': [10000, 15000, 12000, 8000, 20000]\n})\nstats = df['luong'].describe()\nprint(int(stats['max']))\n```",
+      "tags": [
+        "describe",
+        "statistics"
+      ],
+      "problem": "Dùng `describe()` trên cột `luong`, lấy và in ra **giá trị lớn nhất (max)** dưới dạng số nguyên."
+    },
+    {
+      "id": "pd-e-012",
+      "topicId": "t-pandas",
+      "title": "Kết hợp groupby + count + sort — phân tích đơn hàng",
+      "difficulty": "hard",
+      "starterCode": "import pandas as pd\n\ndf = pd.DataFrame({\n    'khach_hang': ['KH1','KH2','KH1','KH3','KH2','KH1','KH3'],\n    'so_tien': [200, 150, 300, 100, 250, 180, 90]\n})\n# Tính tổng tiền mỗi khách hàng\ntong_tien = df.groupby('khach_hang')['so_tien'].sum()\n# Tìm khách hàng chi tiêu nhiều nhất\nkhach_top = tong_tien.idxmax()\nprint(khach_top)",
+      "expectedOutput": "KH1",
+      "solution": "```python\nimport pandas as pd\n\ndf = pd.DataFrame({\n    'khach_hang': ['KH1','KH2','KH1','KH3','KH2','KH1','KH3'],\n    'so_tien': [200, 150, 300, 100, 250, 180, 90]\n})\ntong_tien = df.groupby('khach_hang')['so_tien'].sum()\nkhach_top = tong_tien.idxmax()\nprint(khach_top)\n```",
+      "tags": [
+        "groupby",
+        "sum",
+        "idxmax"
+      ],
+      "problem": "Tính **tổng tiền mỗi khách hàng** bằng `groupby`, rồi tìm và in **khách chi tiêu nhiều nhất** (dùng `idxmax()`)."
+    }
+  ]
+}

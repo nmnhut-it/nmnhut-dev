@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charm — Tìm các tập đóng</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./study.css">
+  <script defer src="./study.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+  <nav class="study-nav sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-slate-200">
+    <div class="max-w-5xl mx-auto px-4 flex items-center gap-1 overflow-x-auto py-2 text-sm font-medium whitespace-nowrap">
+      <a href="./index.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">🏠 Trang chủ</a>
+      <a href="./nen-tang.html" class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Nền tảng</a>
+      <span class="text-slate-300">|</span>
+      <a href="./charm.html"    class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">Charm</a>
+      <a href="./genmax.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">GenMax</a>
+      <a href="./declat.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dEclat</a>
+      <a href="./dcharm.html"   class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dCharm</a>
+      <a href="./dgenmax.html"  class="px-3 py-1.5 rounded-lg text-slate-600 hover:bg-slate-100">dGenMax</a>
+    </div>
+  </nav>
+
+  <main class="max-w-4xl mx-auto px-4 md:px-6 py-10">
+    <header class="mb-8">
+      <p class="text-indigo-600 font-semibold text-sm uppercase tracking-wide">Bài 1 · Tập đóng</p>
+      <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 mt-1">Charm — tìm các tập đóng</h1>
+      <p class="text-slate-600 mt-3 text-lg">Charm đi tìm các tập đóng, tức là những tập phổ biến không bị một tập cha nào cùng độ phổ biến che lấp. Cách làm của nó là lần lượt ghép từng cặp mặt hàng, rồi dựa vào việc so sánh hai danh sách giao dịch để quyết định: lúc thì gộp luôn hai mặt hàng vì chúng đi liền nhau, lúc thì mở thêm một nhánh mới để đào sâu.</p>
+      <button onclick="revealAll(true)" class="no-print mt-4 text-sm bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg">Mở hết lời giải</button>
+    </header>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">1. Ý tưởng chung</h2>
+      <p class="text-slate-700 mb-3 leading-relaxed">Một tập gọi là <strong>đóng</strong> khi không có tập cha trực tiếp nào của nó có cùng độ phổ biến. Hiểu nôm na, tập đóng là "người đại diện" cho cả một nhóm tập con cùng độ phổ biến, nhờ vậy ta nén dữ liệu lại mà vẫn suy ra được độ phổ biến của mọi tập con.</p>
+      <p class="text-slate-700 mb-3 leading-relaxed">Để bắt đầu, ta sắp các mặt hàng theo độ phổ biến từ thấp đến cao; nếu bằng nhau thì xếp theo bảng chữ cái. Với bảng dữ liệu của chúng ta, thứ tự đó là A rồi D rồi T (cả ba cùng có độ phổ biến bốn), sau đó tới W (độ phổ biến năm) và cuối cùng là C (độ phổ biến sáu).</p>
+      <p class="text-slate-700 leading-relaxed">Ta xét lần lượt từng mặt hàng. Với mỗi mặt hàng đang xét, ta đem nó ghép với từng mặt hàng đứng sau nó, mỗi lần ghép lại quyết định một trong bốn tình huống dưới đây.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">2. Bốn tình huống khi ghép một cặp</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Gọi mặt hàng đang xét là mặt hàng trước, mặt hàng đem ghép là mặt hàng sau. Ta nhìn vào phần chung của hai danh sách giao dịch; nếu phần chung còn đạt ngưỡng phổ biến thì xét tiếp một trong bốn tình huống sau, tùy theo quan hệ giữa hai danh sách:</p>
+      <div class="space-y-3">
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-indigo-700">Tình huống một — hai danh sách giống hệt nhau</div>
+          <p class="text-sm text-slate-600 mt-1">Hai mặt hàng luôn xuất hiện cùng nhau ở đúng những giao dịch như nhau. Khi đó ta gộp mặt hàng sau vào mặt hàng trước, và bỏ hẳn mặt hàng sau khỏi danh sách vì ở đâu có cái này thì ở đó có cái kia.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-indigo-700">Tình huống hai — danh sách của mặt hàng trước nằm gọn trong danh sách của mặt hàng sau</div>
+          <p class="text-sm text-slate-600 mt-1">Mọi giao dịch có mặt hàng trước thì cũng có mặt hàng sau, nhưng mặt hàng sau còn xuất hiện thêm ở vài chỗ khác. Ta vẫn gộp mặt hàng sau vào mặt hàng trước, nhưng giữ lại mặt hàng sau, vì nó còn ghép được với những mặt hàng khác.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-indigo-700">Tình huống ba — danh sách của mặt hàng sau nằm gọn trong danh sách của mặt hàng trước</div>
+          <p class="text-sm text-slate-600 mt-1">Ngược lại với tình huống hai. Ta bỏ mặt hàng sau khỏi danh sách, đồng thời mở một nhánh con mới cho tập ghép để đào sâu sau này.</p>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-4">
+          <div class="font-bold text-indigo-700">Tình huống bốn — không bên nào chứa trọn bên nào</div>
+          <p class="text-sm text-slate-600 mt-1">Hai danh sách có phần chung nhưng mỗi bên vẫn có giao dịch riêng. Ta giữ cả hai mặt hàng, và mở một nhánh con mới cho tập ghép.</p>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4 text-sm text-amber-900 leading-relaxed">
+        Điểm dễ sai nhất nằm ở đây: mỗi khi tình huống một hoặc hai làm mặt hàng trước "lớn lên" (gộp thêm một mặt hàng mới), thì tất cả những nhánh con đã mở từ trước cũng phải được gộp thêm mặt hàng mới đó, bởi vì chúng dùng chung phần đầu với mặt hàng trước. Chính nhờ quy tắc này mà nhánh AT về sau lớn dần thành ACTW.
+      </div>
+      <p class="text-slate-700 mt-4 leading-relaxed">Khi xét xong một mặt hàng, ta ghi tập hiện có (đã lớn lên) vào danh sách các tập đóng, với điều kiện nó chưa bị một tập nào tìm được trước đó cùng độ phổ biến bao trùm.</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">3. Giải mẫu từng bước</h2>
+      <p class="text-slate-700 mb-5 leading-relaxed">Ta dùng bảng dữ liệu quen thuộc, ngưỡng phổ biến bằng ba, thứ tự xét là A, D, T, W rồi C. Mỗi bước hãy thử tự nghĩ trước, sau đó mở lời giải để đối chiếu.</p>
+
+      <h3 class="text-xl font-bold text-slate-800 mb-2">Nhánh mặt hàng A (A có mặt ở các giao dịch 1, 3, 4, 5)</h3>
+      <div class="space-y-3">
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép A với D.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-ad">Xem lời giải</button>
+          <div class="reveal-body" id="c-ad"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            A có ở các giao dịch 1, 3, 4, 5; D có ở 2, 4, 5, 6. Phần chung chỉ là giao dịch 4 và 5, tức độ phổ biến bằng hai. Vì hai nhỏ hơn ngưỡng ba nên cặp AD không đủ phổ biến, ta bỏ qua, không xét tiếp.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép A với T.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-at">Xem lời giải</button>
+          <div class="reveal-body" id="c-at"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            A có ở các giao dịch 1, 3, 4, 5; T có ở 1, 3, 5, 6. Phần chung là 1, 3, 5, độ phổ biến bằng ba, vẫn đạt ngưỡng. Bây giờ so hai danh sách: A có giao dịch 4 mà T không có, ngược lại T có giao dịch 6 mà A không có, nên không bên nào chứa trọn bên kia. Đây là tình huống bốn: ta mở một nhánh con mới cho tập AT, gắn cho nó danh sách giao dịch 1, 3, 5.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép A với W.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-aw">Xem lời giải</button>
+          <div class="reveal-body" id="c-aw"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            A có ở các giao dịch 1, 3, 4, 5; W có ở 1, 2, 3, 4, 5. Mọi giao dịch có A thì đều có W, còn W xuất hiện thêm ở giao dịch 2. Vậy danh sách của A nằm gọn trong danh sách của W, đúng là tình huống hai. Ta gộp W vào A, nên mặt hàng đang xét bây giờ là AW. Đồng thời, vì A vừa lớn lên, nhánh con AT đã mở lúc nãy cũng phải gộp thêm W, trở thành ATW.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Ghép tập đang xét (lúc này là AW) với C.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-ac">Xem lời giải</button>
+          <div class="reveal-body" id="c-ac"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            AW có ở các giao dịch 1, 3, 4, 5; C có ở tất cả sáu giao dịch. Mọi giao dịch có AW đều có C, nên lại là tình huống hai. Ta gộp C vào, tập đang xét trở thành ACW với độ phổ biến bốn. Và một lần nữa, nhánh con đang là ATW cũng gộp thêm C, trở thành ACTW với danh sách giao dịch 1, 3, 5.
+          </div></div></div>
+        </div>
+        <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+          <p class="text-slate-700">Kết thúc nhánh A.</p>
+          <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-aend">Xem lời giải</button>
+          <div class="reveal-body" id="c-aend"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+            Trước hết ta đào sâu nhánh con. Nhánh con bây giờ chỉ còn một tập là ACTW, không còn gì để ghép thêm, nên ta ghi nhận <strong>ACTW là một tập đóng, độ phổ biến ba</strong>. Sau đó, quay về tập đang xét, ta ghi nhận tiếp <strong>ACW là một tập đóng, độ phổ biến bốn</strong>.
+          </div></div></div>
+        </div>
+      </div>
+
+      <h3 class="text-xl font-bold text-slate-800 mb-2 mt-8">Các nhánh D, T, W và C</h3>
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="c-rest" data-label-show="Mở phần các nhánh còn lại" data-label-hide="Ẩn">Mở phần các nhánh còn lại</button>
+        <div class="reveal-body" id="c-rest"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          <strong>Nhánh D (D có ở các giao dịch 2, 4, 5, 6).</strong> Ghép D với T cho phần chung chỉ gồm giao dịch 5 và 6, độ phổ biến bằng hai, dưới ngưỡng nên bỏ. Ghép D với W cho phần chung là 2, 4, 5; hai danh sách không bên nào chứa trọn bên kia nên là tình huống bốn, ta mở nhánh con DW. Ghép D với C thì mọi giao dịch có D đều có C, là tình huống hai, ta gộp C vào để được CD và đồng thời nhánh con DW lớn lên thành DWC. Cuối nhánh, ta thu được <strong>CDW là tập đóng độ phổ biến ba</strong> và <strong>CD là tập đóng độ phổ biến bốn</strong>.<br><br>
+          <strong>Nhánh T (T có ở các giao dịch 1, 3, 5, 6).</strong> Ghép T với W cho phần chung là 1, 3, 5; không bên nào chứa trọn bên kia, là tình huống bốn, ta mở nhánh con TW. Ghép T với C thì mọi giao dịch có T đều có C, là tình huống hai, ta gộp C để được CT và nhánh con TW lớn lên thành TWC. Khi đào sâu, tập TWC có cùng danh sách giao dịch 1, 3, 5 với ACTW đã tìm trước đó, lại là tập con của ACTW, nên nó bị ACTW bao trùm và ta không ghi nó vào nữa. Cuối nhánh, ta chỉ thu được <strong>CT là tập đóng độ phổ biến bốn</strong>.<br><br>
+          <strong>Nhánh W (W có ở các giao dịch 1, 2, 3, 4, 5).</strong> Ghép W với C thì mọi giao dịch có W đều có C, là tình huống hai, ta gộp C để được CW. Ta thu được <strong>CW là tập đóng độ phổ biến năm</strong>.<br><br>
+          <strong>Nhánh C.</strong> Không còn mặt hàng nào đứng sau để ghép, nên ta chỉ ghi nhận <strong>C là tập đóng độ phổ biến sáu</strong>.
+        </div></div></div>
+      </div>
+
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+        <div class="font-bold text-indigo-800 mb-1">Kết quả: bảy tập đóng</div>
+        <p class="text-indigo-900 leading-relaxed">C độ phổ biến sáu; CW độ phổ biến năm; ACW độ phổ biến bốn; CD độ phổ biến bốn; CT độ phổ biến bốn; CDW độ phổ biến ba; và ACTW độ phổ biến ba.</p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-bold text-slate-900 mb-3">4. Bài tập tự luyện</h2>
+      <p class="text-slate-700 mb-4 leading-relaxed">Hãy dùng một bảng dữ liệu khác để luyện, gọi là bảng P, với ngưỡng phổ biến bằng hai. Bảng gồm năm giao dịch: giao dịch một có B, C, M; giao dịch hai có B, E; giao dịch ba có B, C, E, M; giao dịch bốn có C, E, O; giao dịch năm có B, C, E, M. Hãy tự chạy Charm bằng tay rồi mở đáp án để so.</p>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <p class="text-slate-700 font-medium">Bài một. Hãy lập bảng dạng dọc và loại bỏ mặt hàng không đủ phổ biến.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="p1">Xem đáp án</button>
+        <div class="reveal-body" id="p1"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          B có mặt ở các giao dịch 1, 2, 3, 5 nên độ phổ biến bốn. C có mặt ở 1, 3, 4, 5 nên độ phổ biến bốn. E có mặt ở 2, 3, 4, 5 nên độ phổ biến bốn. M có mặt ở 1, 3, 5 nên độ phổ biến ba. O chỉ có mặt ở giao dịch 4, độ phổ biến một, nhỏ hơn ngưỡng hai nên ta loại bỏ O. Sắp theo độ phổ biến từ thấp đến cao, ta xét M trước, rồi tới B, C, E.
+        </div></div></div>
+      </div>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200 mb-3">
+        <p class="text-slate-700 font-medium">Bài hai. Ghép M với B rơi vào tình huống nào, và cho kết quả gì?</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="p2">Xem đáp án</button>
+        <div class="reveal-body" id="p2"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          M có ở các giao dịch 1, 3, 5; B có ở 1, 2, 3, 5. Phần chung là 1, 3, 5, độ phổ biến ba, đạt ngưỡng. Mọi giao dịch có M thì đều có B, còn B xuất hiện thêm ở giao dịch 2, nên danh sách của M nằm gọn trong danh sách của B. Đây là tình huống hai: ta gộp B vào M, được tập MB với danh sách giao dịch 1, 3, 5.
+        </div></div></div>
+      </div>
+
+      <div class="step pl-4 py-3 bg-white rounded-r-xl border border-l-0 border-slate-200">
+        <p class="text-slate-700 font-medium">Bài ba. Hãy liệt kê toàn bộ tập đóng và tập tối đại của bảng P.</p>
+        <button class="reveal-btn text-indigo-600 font-medium text-sm" data-reveal="p3">Xem đáp án</button>
+        <div class="reveal-body" id="p3"><div class="reveal-inner"><div class="subst-box p-3 mt-2 text-sm leading-relaxed">
+          Có bảy tập đóng: B độ phổ biến bốn; C độ phổ biến bốn; E độ phổ biến bốn; BE độ phổ biến ba; CE độ phổ biến ba; BCM độ phổ biến ba; và BCEM độ phổ biến hai. Chỉ có một tập tối đại duy nhất là BCEM, độ phổ biến hai. Gợi ý để hiểu: M chỉ xuất hiện cùng với B và C, nên tập đại diện đóng của M là BCM.
+        </div></div></div>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-slate-400 pt-6 border-t border-slate-200">
+      <a href="./genmax.html" class="text-indigo-600 font-medium">Học tiếp: GenMax</a>
+    </footer>
+  </main>
+</body>
+</html>

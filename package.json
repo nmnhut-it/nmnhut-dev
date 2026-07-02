@@ -5,7 +5,7 @@
   "scripts": {
     "build": "hugo --minify",
     "preview": "hugo server -D",
-    "deploy": "hugo --minify && wrangler pages deploy public --project-name=nmnhut-dev"
+    "deploy": "hugo --minify && wrangler pages deploy public --project-name=nmnhut-dev --branch=master --commit-dirty=true"
   },
   "devDependencies": {
     "wrangler": "^4"

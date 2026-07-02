@@ -1,0 +1,838 @@
+{
+  "id": "ai-prog",
+  "subject": "Lập trình cho trí tuệ nhân tạo nâng cao - HP2-K35",
+  "exercises": [
+    {
+      "id": "e-001",
+      "topicId": "t-list",
+      "title": "Cắt lát (slicing) danh sách",
+      "difficulty": "easy",
+      "problem": "Cho `Lst = [10, 20, 30, 40, 50, 60, 70, 80]`. Viết code in ra:\n1. 3 phần tử đầu\n2. 3 phần tử cuối\n3. danh sách đảo ngược\n4. các phần tử ở vị trí chẵn (index 0,2,4,...)",
+      "hints": [
+        "Cú pháp slicing: `Lst[start:end:step]`, endpoint không bao gồm.",
+        "Đảo ngược dùng `Lst[::-1]`; step 2 dùng `Lst[::2]`."
+      ],
+      "solution": "```python\nLst = [10, 20, 30, 40, 50, 60, 70, 80]\n\nprint(Lst[:3])      # 3 phan tu dau\nprint(Lst[-3:])     # 3 phan tu cuoi\nprint(Lst[::-1])    # dao nguoc\nprint(Lst[::2])     # index chan\n```\n\n**Giải thích:**\n- `Lst[:3]` lấy index 0..2 (bỏ index 3).\n- `Lst[-3:]` bắt đầu từ phần tử thứ 3 tính từ cuối đến hết.\n- `Lst[::-1]` step âm nên duyệt ngược.\n- `Lst[::2]` lấy mỗi 2 phần tử một.\n\n**Kết quả:**\n```\n[10, 20, 30]\n[60, 70, 80]\n[80, 70, 60, 50, 40, 30, 20, 10]\n[10, 30, 50, 70]\n```",
+      "tags": [
+        "list",
+        "slicing"
+      ]
+    },
+    {
+      "id": "e-002",
+      "topicId": "t-list",
+      "title": "Tìm tất cả vị trí của phần tử",
+      "difficulty": "easy",
+      "problem": "Viết hàm trả về index của **tất cả** các lần xuất hiện của một phần tử trong danh sách.\n\nVí dụ: `A = [1, 2, 2, 3, 2, 2]`, `element = 2` → trả về `[1, 2, 4, 5]`.",
+      "hints": [
+        "Dùng `enumerate(A)` để lấy đồng thời index và giá trị.",
+        "Có thể viết gọn bằng list comprehension."
+      ],
+      "solution": "```python\ndef find_all_indices(A, element):\n    return [i for i, v in enumerate(A) if v == element]\n\nA = [1, 2, 2, 3, 2, 2]\nprint(find_all_indices(A, 2))   # [1, 2, 4, 5]\n```\n\n**Giải thích:** `enumerate` sinh ra cặp `(index, value)`. List comprehension giữ lại index nơi `value == element`. Method `list.index()` chỉ trả về lần xuất hiện đầu tiên nên không dùng được ở đây.\n\n**Kết quả:** `[1, 2, 4, 5]`",
+      "tags": [
+        "list",
+        "enumerate",
+        "search"
+      ]
+    },
+    {
+      "id": "e-003",
+      "topicId": "t-list",
+      "title": "Đếm số nguyên tố trong danh sách",
+      "difficulty": "medium",
+      "problem": "Viết chương trình đếm số lượng **số nguyên tố** trong một danh sách các số nguyên dương.\n\nVí dụ: `[2, 3, 4, 5, 10, 11, 15, 17]` → có 5 số nguyên tố (2, 3, 5, 11, 17).",
+      "hints": [
+        "Số nguyên tố > 1 và chỉ chia hết cho 1 và chính nó.",
+        "Chỉ cần kiểm tra ước từ 2 đến `int(sqrt(n))`."
+      ],
+      "solution": "```python\ndef is_prime(n):\n    if n < 2:\n        return False\n    for d in range(2, int(n ** 0.5) + 1):\n        if n % d == 0:\n            return False\n    return True\n\ndef count_primes(lst):\n    return sum(1 for x in lst if is_prime(x))\n\nnums = [2, 3, 4, 5, 10, 11, 15, 17]\nprint(count_primes(nums))   # 5\n```\n\n**Giải thích:** `is_prime` duyệt ước từ 2 tới `sqrt(n)` (đủ vì nếu n có ước lớn hơn sqrt thì cũng có ước nhỏ hơn sqrt). `count_primes` cộng dồn 1 cho mỗi phần tử nguyên tố.\n\n**Kết quả:** `5`",
+      "tags": [
+        "list",
+        "prime",
+        "loop"
+      ]
+    },
+    {
+      "id": "e-004",
+      "topicId": "t-list",
+      "title": "Chèn tổng giữa hai số lẻ liên tiếp",
+      "difficulty": "medium",
+      "problem": "Nếu hai phần tử liên tiếp **đều là số lẻ**, chèn tổng của chúng vào giữa.\n\nVí dụ: `[1, 3, 5, 3]` → `[1, 4, 3, 8, 5, 8, 3]` (4=1+3, 8=3+5, 8=5+3).",
+      "hints": [
+        "Duyệt và xây danh sách kết quả mới thay vì sửa khi đang lặp.",
+        "Sau khi thêm phần tử hiện tại, kiểm tra cặp (hiện tại, kế tiếp) cùng lẻ thì chèn tổng."
+      ],
+      "solution": "```python\ndef insert_odd_sums(lst):\n    result = []\n    for i in range(len(lst)):\n        result.append(lst[i])\n        if i + 1 < len(lst) and lst[i] % 2 == 1 and lst[i + 1] % 2 == 1:\n            result.append(lst[i] + lst[i + 1])\n    return result\n\nprint(insert_odd_sums([1, 3, 5, 3]))   # [1, 4, 3, 8, 5, 8, 3]\n```\n\n**Giải thích:** Ta tạo danh sách `result` mới. Với mỗi phần tử ta thêm nó vào, rồi nếu nó và phần tử kế tiếp đều lẻ (`% 2 == 1`) thì chèn tổng. Không sửa trực tiếp danh sách gốc trong lúc lặp để tránh lỗi index.\n\n**Kết quả:** `[1, 4, 3, 8, 5, 8, 3]`",
+      "tags": [
+        "list",
+        "loop",
+        "build-list"
+      ]
+    },
+    {
+      "id": "e-005",
+      "topicId": "t-list",
+      "title": "Selection sort thủ công",
+      "difficulty": "medium",
+      "problem": "Cài đặt **selection sort** (sắp xếp tăng dần) KHÔNG dùng `sort()`/`sorted()`.\n\nÝ tưởng: lặp lại tìm phần tử nhỏ nhất của phần chưa sắp xếp rồi đưa lên đầu.",
+      "hints": [
+        "Vòng ngoài `i` từ 0..n-1 là ranh giới phần đã sắp xếp.",
+        "Vòng trong tìm index nhỏ nhất trong `lst[i:]`, rồi swap với `lst[i]`."
+      ],
+      "solution": "```python\ndef selection_sort(lst):\n    n = len(lst)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if lst[j] < lst[min_idx]:\n                min_idx = j\n        lst[i], lst[min_idx] = lst[min_idx], lst[i]\n    return lst\n\nprint(selection_sort([64, 25, 12, 22, 11]))   # [11, 12, 22, 25, 64]\n```\n\n**Giải thích:** Mỗi vòng `i`, ta tìm `min_idx` là vị trí phần tử nhỏ nhất trong đoạn chưa sắp `[i..n-1]`, rồi hoán đổi nó về vị trí `i`. Sau vòng `i`, đoạn `[0..i]` đã đúng thứ tự. Độ phức tạp O(n^2).\n\n**Kết quả:** `[11, 12, 22, 25, 64]`",
+      "tags": [
+        "list",
+        "sorting",
+        "selection-sort"
+      ]
+    },
+    {
+      "id": "e-006",
+      "topicId": "t-list",
+      "title": "Dồn số lẻ sang trái (in-place, giữ thứ tự)",
+      "difficulty": "hard",
+      "problem": "Viết chương trình dồn tất cả **số lẻ sang trái**, số chẵn sang phải, GIỮ thứ tự tương đối của các phần tử, và KHÔNG dùng danh sách phụ (in-place).\n\nVí dụ: `[4, 5, 1, 7, 9, 3, 0, 2]` → `[5, 1, 7, 9, 3, 4, 0, 2]`.",
+      "hints": [
+        "Để giữ thứ tự tương đối và in-place, dùng kiểu 'insertion': khi gặp số lẻ, dịch các số chẵn đứng trước nó sang phải 1 ô.",
+        "Theo dõi `pos` = vị trí số lẻ tiếp theo sẽ đặt."
+      ],
+      "solution": "```python\ndef move_odds_left(arr):\n    pos = 0  # vi tri se dat so le tiep theo\n    for i in range(len(arr)):\n        if arr[i] % 2 == 1:          # so le\n            key = arr[i]\n            j = i\n            while j > pos:           # dich cac so chan sang phai\n                arr[j] = arr[j - 1]\n                j -= 1\n            arr[pos] = key\n            pos += 1\n    return arr\n\nprint(move_odds_left([4, 5, 1, 7, 9, 3, 0, 2]))\n# [5, 1, 7, 9, 3, 4, 0, 2]\n```\n\n**Giải thích:** Giống insertion sort theo tính chẵn/lẻ. Khi gặp số lẻ ở `i`, ta lưu `key`, dịch toàn bộ đoạn `[pos..i-1]` (đang là số chẵn) sang phải 1 ô, rồi đặt `key` vào `pos`. Vì chỉ dịch trong cùng mảng nên đạt yêu cầu in-place và giữ nguyên thứ tự tương đối.\n\n**Kết quả:** `[5, 1, 7, 9, 3, 4, 0, 2]`",
+      "tags": [
+        "list",
+        "in-place",
+        "partition"
+      ]
+    },
+    {
+      "id": "e-007",
+      "topicId": "t-numpy",
+      "title": "Đặt giá trị âm về 0 (boolean indexing)",
+      "difficulty": "easy",
+      "problem": "Cho ma trận số nguyên NxM. Viết hàm đặt mọi **giá trị âm về 0** dùng boolean indexing (không vòng lặp).\n\nVí dụ input: `[[1, 2, -3], [-1, -2, 3]]`.",
+      "hints": [
+        "Tạo mask `arr < 0`.",
+        "Gán `arr[mask] = 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef set_zero_negative(arr):\n    arr[arr < 0] = 0\n    return arr\n\na = np.array([[1, 2, -3], [-1, -2, 3]])\nprint(set_zero_negative(a))\n# [[1 2 0]\n#  [0 0 3]]\n```\n\n**Giải thích:** `arr < 0` tạo mảng boolean cùng shape. `arr[mask] = 0` chỉ gán cho các phần tử True. Đây là cách vectorized thay cho 2 vòng lặp lồng nhau.\n\n**Kết quả:**\n```\n[[1 2 0]\n [0 0 3]]\n```",
+      "tags": [
+        "numpy",
+        "boolean-indexing"
+      ]
+    },
+    {
+      "id": "e-008",
+      "topicId": "t-numpy",
+      "title": "Đặt âm về 0 chỉ ở các hàng chẵn",
+      "difficulty": "medium",
+      "problem": "Cho ma trận NxM. Đặt giá trị âm về 0 **chỉ ở các hàng có index chẵn** (0, 2, 4, ...). Dùng slicing thay cho vòng lặp.\n\nVí dụ: `[[1,2,-3],[-1,-2,3],[-3,-2,4]]`.",
+      "hints": [
+        "`arr[::2]` chọn các hàng chẵn (là một view).",
+        "Áp boolean indexing trên view đó: `even[even < 0] = 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef set_zero_even_rows(arr):\n    even_rows = arr[::2]          # view cac hang chan\n    even_rows[even_rows < 0] = 0  # sua tren view -> sua goc\n    return arr\n\na = np.array([[1, 2, -3], [-1, -2, 3], [-3, -2, 4]])\nprint(set_zero_even_rows(a))\n# [[1 2 0]\n#  [-1 -2 3]\n#  [0 0 4]]\n```\n\n**Giải thích:** `arr[::2]` là một **view** (không sao chép) gồm hàng 0 và 2. Vì là view, mọi gán trên `even_rows` phản ánh trực tiếp lên `arr` gốc. Hàng index lẻ (hàng 1) giữ nguyên giá trị âm.\n\n**Kết quả:**\n```\n[[ 1  2  0]\n [-1 -2  3]\n [ 0  0  4]]\n```",
+      "tags": [
+        "numpy",
+        "slicing",
+        "view"
+      ]
+    },
+    {
+      "id": "e-009",
+      "topicId": "t-numpy",
+      "title": "Ma trận bàn cờ (checkerboard)",
+      "difficulty": "medium",
+      "problem": "Viết hàm tạo ma trận bàn cờ NxN gồm 0 và 1 xen kẽ (góc trên-trái là 0), KHÔNG dùng vòng lặp.\n\nVí dụ N=4:\n```\n0 1 0 1\n1 0 1 0\n0 1 0 1\n1 0 1 0\n```",
+      "hints": [
+        "Khởi tạo `np.zeros((n,n))`.",
+        "Gán 1 cho các vị trí (hàng lẻ, cột chẵn) và (hàng chẵn, cột lẻ) bằng slicing 2 chiều."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef checkerboard(n):\n    arr = np.zeros((n, n), dtype=np.int64)\n    arr[1::2, ::2] = 1   # hang le, cot chan\n    arr[::2, 1::2] = 1   # hang chan, cot le\n    return arr\n\nprint(checkerboard(4))\n```\n\n**Giải thích:** `arr[1::2, ::2]` chọn giao của các hàng index lẻ và cột index chẵn — đặt 1. `arr[::2, 1::2]` chọn hàng chẵn, cột lẻ — đặt 1. Các ô còn lại giữ 0. Tổng thể tạo thành bàn cờ.\n\n**Kết quả:**\n```\n[[0 1 0 1]\n [1 0 1 0]\n [0 1 0 1]\n [1 0 1 0]]\n```",
+      "tags": [
+        "numpy",
+        "slicing",
+        "checkerboard"
+      ]
+    },
+    {
+      "id": "e-010",
+      "topicId": "t-numpy",
+      "title": "Ma trận viền 1, trong ruột 0",
+      "difficulty": "easy",
+      "problem": "Tạo ma trận NxM với **viền bằng 1** và phần bên trong bằng 0.\n\nVí dụ 3x4:\n```\n1 1 1 1\n1 0 0 1\n1 1 1 1\n```",
+      "hints": [
+        "Bắt đầu bằng `np.ones((n,m))`.",
+        "Đặt phần trong về 0: `arr[1:-1, 1:-1] = 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef border_matrix(n, m):\n    arr = np.ones((n, m), dtype=np.int64)\n    arr[1:-1, 1:-1] = 0\n    return arr\n\nprint(border_matrix(3, 4))\n```\n\n**Giải thích:** Tạo toàn 1 rồi 'khoét' phần ruột. `arr[1:-1, 1:-1]` bỏ hàng/cột đầu và cuối, chính là vùng bên trong — gán 0. Đây là cách ngắn gọn nhất so với kiểm tra biên bằng vòng lặp.\n\n**Kết quả:**\n```\n[[1 1 1 1]\n [1 0 0 1]\n [1 1 1 1]]\n```",
+      "tags": [
+        "numpy",
+        "slicing"
+      ]
+    },
+    {
+      "id": "e-011",
+      "topicId": "t-numpy",
+      "title": "Đảo thứ tự phần tử qua reshape + transpose",
+      "difficulty": "medium",
+      "problem": "Cho `arr = np.arange(12)` (tức `[0..11]`). Hãy biến đổi thành\n`[0, 4, 8, 1, 5, 9, 2, 6, 10, 3, 7, 11]` mà KHÔNG dùng vòng lặp.",
+      "hints": [
+        "Reshape về (3, 4).",
+        "Transpose rồi flatten."
+      ],
+      "solution": "```python\nimport numpy as np\n\narr = np.arange(12)\nresult = arr.reshape(3, 4).T.flatten()\nprint(result)\n# [ 0  4  8  1  5  9  2  6 10  3  7 11]\n```\n\n**Giải thích:** `reshape(3,4)` xếp thành 3 hàng 4 cột (theo hàng). `.T` chuyển vị thành (4,3): đọc theo cột gốc. `.flatten()` duỗi lại theo hàng của ma trận đã chuyển vị → lấy lần lượt cột 0, cột 1... của ma trận gốc.\n\n**Kết quả:** `[ 0  4  8  1  5  9  2  6 10  3  7 11]`",
+      "tags": [
+        "numpy",
+        "reshape",
+        "transpose"
+      ]
+    },
+    {
+      "id": "e-012",
+      "topicId": "t-numpy",
+      "title": "Nhân hai ma trận không dùng np.dot",
+      "difficulty": "hard",
+      "problem": "Viết hàm nhân hai ma trận NxN **không dùng `np.dot()` hay `@`** (cài tay 3 vòng lặp). Sau đó kiểm chứng với `@`.",
+      "hints": [
+        "c[i][j] = tổng theo k của a[i][k]*b[k][j].",
+        "Khởi tạo ma trận kết quả bằng `np.zeros`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef matrix_multiply(a, b):\n    n = len(a)\n    c = np.zeros((n, n), dtype=a.dtype)\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                c[i][j] += a[i][k] * b[k][j]\n    return c\n\na = np.array([[1, 2], [3, 4]])\nb = np.array([[5, 6], [7, 8]])\nprint(matrix_multiply(a, b))\nprint(a @ b)   # kiem chung\n```\n\n**Giải thích:** Định nghĩa tích ma trận: phần tử (i,j) bằng tích vô hướng hàng i của a với cột j của b. Ba vòng lặp i,j,k cộng dồn `a[i][k]*b[k][j]`. Kết quả trùng với `a @ b`.\n\n**Kết quả:**\n```\n[[19 22]\n [43 50]]\n[[19 22]\n [43 50]]\n```",
+      "tags": [
+        "numpy",
+        "matrix",
+        "loop"
+      ]
+    },
+    {
+      "id": "e-013",
+      "topicId": "t-numpy",
+      "title": "np.where: nhân đôi số dương, gán -2 cho số âm",
+      "difficulty": "medium",
+      "problem": "Tạo ma trận NxM ngẫu nhiên. Với mỗi phần tử: nếu **dương** thì nhân đôi (2x), nếu **âm** thì gán `-2`. Dùng `np.where`.",
+      "hints": [
+        "`np.where(cond, a, b)` chọn a khi cond True, ngược lại b.",
+        "Đặt seed để kết quả tái lập."
+      ],
+      "solution": "```python\nimport numpy as np\n\nnp.random.seed(0)\nmatrix = np.random.randn(2, 3) * 10\nmodified = np.where(matrix > 0, 2 * matrix, -2)\nprint(matrix)\nprint(modified)\n```\n\n**Giải thích:** `np.where(matrix > 0, 2*matrix, -2)` duyệt từng phần tử: chỗ nào > 0 lấy `2*matrix`, còn lại lấy `-2`. Đây là dạng vectorized của if/else, nhanh hơn vòng lặp.\n\n**Kết quả (seed=0):**\n```\n[[ 17.64  4.00  9.79]\n [ 22.41 18.67 -9.77]]\n[[35.28  8.00 19.58]\n [44.82 37.34 -2.00]]\n```\n(giá trị làm tròn để minh họa)",
+      "tags": [
+        "numpy",
+        "np.where",
+        "vectorize"
+      ]
+    },
+    {
+      "id": "e-014",
+      "topicId": "t-numpy",
+      "title": "repeat + tile để dựng mảng theo mẫu",
+      "difficulty": "medium",
+      "problem": "Cho `a = np.array([1, 2, 3])`. Tạo mảng sau mà KHÔNG dùng vòng lặp hay khởi tạo thủ công:\n`[1, 1, 1, 2, 2, 2, 3, 3, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3]`.",
+      "hints": [
+        "Phần đầu lặp từng phần tử 3 lần → `np.repeat`.",
+        "Phần sau lặp cả mảng 3 lần → `np.tile`. Ghép bằng `np.concatenate`."
+      ],
+      "solution": "```python\nimport numpy as np\n\na = np.array([1, 2, 3])\npart1 = np.repeat(a, 3)   # [1 1 1 2 2 2 3 3 3]\npart2 = np.tile(a, 3)     # [1 2 3 1 2 3 1 2 3]\nresult = np.concatenate((part1, part2))\nprint(result)\n```\n\n**Giải thích:** `np.repeat(a, 3)` lặp **từng phần tử** 3 lần. `np.tile(a, 3)` lặp **cả mảng** 3 lần. `np.concatenate` nối hai phần.\n\n**Kết quả:** `[1 1 1 2 2 2 3 3 3 1 2 3 1 2 3 1 2 3]`",
+      "tags": [
+        "numpy",
+        "repeat",
+        "tile"
+      ]
+    },
+    {
+      "id": "e-015",
+      "topicId": "t-numpy",
+      "title": "Mảng đan xen dương/âm 2x(N*N//2)",
+      "difficulty": "hard",
+      "problem": "Cho số chẵn n. Tạo mảng 2x((N*N)//2) đan xen số dương và số âm như sau.\nVí dụ n=4:\n```\n[[ 0 -8  1 -9  2 -10  3 -11]\n [ 4 -12  5 -13  6 -14  7 -15]]\n```",
+      "hints": [
+        "Số dương là `arange(n*n//2)`; số âm là `-arange(n*n//2, n*n)`.",
+        "Đặt dương vào vị trí chẵn, âm vào vị trí lẻ của mảng phẳng rồi reshape."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef create_interleaved(n):\n    if n % 2 != 0:\n        return None\n    pos = np.arange(n * n // 2)\n    neg = -1 * np.arange(n * n // 2, n * n)\n    out = np.empty(n * n, dtype=int)\n    out[::2] = pos\n    out[1::2] = neg\n    return out.reshape(2, n * n // 2)\n\nprint(create_interleaved(4))\n```\n\n**Giải thích:** Với n=4 có 16 ô. Một nửa (8) là số dương `0..7`, nửa kia là số âm `-(8..15)`. Ta đặt dương vào index chẵn của mảng phẳng (`out[::2]`), âm vào index lẻ (`out[1::2]`), rồi `reshape(2, 8)`.\n\n**Kết quả:**\n```\n[[  0  -8   1  -9   2 -10   3 -11]\n [  4 -12   5 -13   6 -14   7 -15]]\n```",
+      "tags": [
+        "numpy",
+        "interleave",
+        "reshape"
+      ]
+    },
+    {
+      "id": "e-016",
+      "topicId": "t-numpy",
+      "title": "Broadcasting: chuẩn hóa theo cột",
+      "difficulty": "medium",
+      "problem": "Cho ma trận `X` shape (4,3). Hãy trừ mỗi cột đi **trung bình của cột đó** (mean-centering theo cột), chỉ dùng broadcasting.",
+      "hints": [
+        "`X.mean(axis=0)` cho vector trung bình mỗi cột, shape (3,).",
+        "Phép `X - col_mean` tự broadcast theo hàng."
+      ],
+      "solution": "```python\nimport numpy as np\n\nnp.random.seed(1)\nX = np.random.randint(0, 10, (4, 3)).astype(float)\ncol_mean = X.mean(axis=0)        # shape (3,)\ncentered = X - col_mean          # broadcast\nprint('mean moi cot:', col_mean)\nprint('sau khi center, mean ~ 0:', centered.mean(axis=0))\n```\n\n**Giải thích:** `X.mean(axis=0)` tính trung bình theo trục 0 (gộp các hàng) → một giá trị cho mỗi cột. Khi làm `X - col_mean`, NumPy broadcast vector (3,) lên (4,3): mỗi hàng bị trừ cùng vector. Sau đó trung bình mỗi cột xấp xỉ 0.\n\n**Kết quả:** `centered.mean(axis=0)` cho ra vector gần `[0, 0, 0]`.",
+      "tags": [
+        "numpy",
+        "broadcasting",
+        "mean"
+      ]
+    },
+    {
+      "id": "e-017",
+      "topicId": "t-pandas-basics",
+      "title": "Tạo Series và căn chỉnh theo index",
+      "difficulty": "easy",
+      "problem": "Tạo hai Series có index khác nhau rồi cộng chúng; giải thích vì sao một số phần tử là `NaN`.\n\n`s1` index `['a','b','c']` giá trị `[1,2,3]`; `s2` index `['b','c','d']` giá trị `[10,20,30]`.",
+      "hints": [
+        "Cộng Series căn chỉnh theo nhãn index.",
+        "Nhãn chỉ có ở một bên → NaN."
+      ],
+      "solution": "```python\nimport pandas as pd\n\ns1 = pd.Series([1, 2, 3], index=['a', 'b', 'c'])\ns2 = pd.Series([10, 20, 30], index=['b', 'c', 'd'])\nprint(s1 + s2)\n```\n\n**Giải thích:** Pandas cộng theo **nhãn index**, không theo vị trí. Nhãn `b`, `c` có ở cả hai nên cộng được. `a` chỉ có ở s1, `d` chỉ có ở s2 → kết quả `NaN`.\n\n**Kết quả:**\n```\na     NaN\nb    12.0\nc    23.0\nd     NaN\ndtype: float64\n```",
+      "tags": [
+        "pandas",
+        "series",
+        "alignment"
+      ]
+    },
+    {
+      "id": "e-018",
+      "topicId": "t-pandas-basics",
+      "title": "Tạo DataFrame, thêm cột dẫn xuất",
+      "difficulty": "easy",
+      "problem": "Tạo DataFrame từ dict gồm cột `year`, `state`, `pop`. Thêm cột boolean `eastern` = (state == 'Ohio'), rồi xóa cột đó.",
+      "hints": [
+        "`pd.DataFrame(data)`.",
+        "So sánh cột tạo Series boolean; `del df['col']` để xóa."
+      ],
+      "solution": "```python\nimport pandas as pd\n\ndata = {'year': [2000, 2001, 2002],\n        'state': ['Ohio', 'Nevada', 'Ohio'],\n        'pop': [1.5, 2.4, 3.6]}\nframe = pd.DataFrame(data)\nframe['eastern'] = frame['state'] == 'Ohio'\nprint(frame)\ndel frame['eastern']\nprint(frame.columns.tolist())\n```\n\n**Giải thích:** `frame['state'] == 'Ohio'` tạo Series boolean theo từng hàng, gán thành cột mới `eastern`. `del frame['eastern']` xóa cột. Cuối cùng còn `['year','state','pop']`.\n\n**Kết quả:** cột `eastern` = `[True, False, True]`; sau khi xóa còn `['year', 'state', 'pop']`.",
+      "tags": [
+        "pandas",
+        "dataframe",
+        "column"
+      ]
+    },
+    {
+      "id": "e-019",
+      "topicId": "t-pandas-basics",
+      "title": "Histogram tần suất theo nhiều cột",
+      "difficulty": "medium",
+      "problem": "Cho `data = pd.DataFrame({'Qu1':[1,3,4,3,4], 'Qu2':[2,3,1,2,3], 'Qu3':[1,5,2,4,4]})`.\nTính bảng đếm tần suất giá trị xuất hiện trong từng cột (mỗi giá trị là một hàng, mỗi cột giữ nguyên).",
+      "hints": [
+        "Dùng `data.apply(pd.value_counts)` hoặc `data.apply(lambda c: c.value_counts())`.",
+        "Giá trị không xuất hiện ở một cột → NaN, có thể `fillna(0)`."
+      ],
+      "solution": "```python\nimport pandas as pd\n\ndata = pd.DataFrame({'Qu1': [1, 3, 4, 3, 4],\n                     'Qu2': [2, 3, 1, 2, 3],\n                     'Qu3': [1, 5, 2, 4, 4]})\nresult = data.apply(pd.value_counts).fillna(0).astype(int)\nprint(result)\n```\n\n**Giải thích:** `apply(pd.value_counts)` chạy `value_counts` trên **từng cột**, kết quả ghép theo nhãn giá trị (1..5) thành các hàng. Ô NaN nghĩa là giá trị đó không xuất hiện ở cột tương ứng; `fillna(0)` đưa về 0.\n\n**Kết quả:**\n```\n   Qu1  Qu2  Qu3\n1    1    1    1\n2    0    2    1\n3    2    2    0\n4    2    0    2\n5    0    0    1\n```",
+      "tags": [
+        "pandas",
+        "value_counts",
+        "apply"
+      ]
+    },
+    {
+      "id": "e-020",
+      "topicId": "t-pandas-index",
+      "title": "Chọn dữ liệu bằng loc và iloc",
+      "difficulty": "easy",
+      "problem": "Cho DataFrame `data` các bang (index) và cột `['one','two','three','four']`.\nHãy: (1) lấy ô hàng 'Colorado' cột 'two','three' bằng `loc`; (2) lấy hàng index số 2, cột 3,0,1 bằng `iloc`.",
+      "hints": [
+        "`loc` dùng nhãn; `iloc` dùng số nguyên.",
+        "Có thể truyền danh sách nhãn/chỉ số."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndata = pd.DataFrame(np.arange(16).reshape(4, 4),\n                    index=['Ohio', 'Colorado', 'Utah', 'New York'],\n                    columns=['one', 'two', 'three', 'four'])\nprint(data.loc['Colorado', ['two', 'three']])\nprint(data.iloc[2, [3, 0, 1]])\n```\n\n**Giải thích:** `loc` định vị theo nhãn: hàng 'Colorado', các cột 'two'/'three'. `iloc` định vị theo số nguyên: hàng thứ 2 ('Utah'), cột 3,0,1 theo đúng thứ tự yêu cầu.\n\n**Kết quả:**\n```\ntwo      5\nthree    6\nName: Colorado, dtype: int64\nfour     11\none       8\ntwo       9\nName: Utah, dtype: int64\n```",
+      "tags": [
+        "pandas",
+        "loc",
+        "iloc"
+      ]
+    },
+    {
+      "id": "e-021",
+      "topicId": "t-pandas-index",
+      "title": "Reindex với forward fill",
+      "difficulty": "medium",
+      "problem": "Cho `obj = pd.Series(['blue','purple','yellow'], index=[0, 2, 4])`.\nHãy reindex về index `0..5` và điền tiến (forward fill) cho các nhãn mới.",
+      "hints": [
+        "`reindex(range(6), method='ffill')`.",
+        "ffill lấy giá trị hợp lệ gần nhất phía trước."
+      ],
+      "solution": "```python\nimport pandas as pd\n\nobj = pd.Series(['blue', 'purple', 'yellow'], index=[0, 2, 4])\nprint(obj.reindex(range(6), method='ffill'))\n```\n\n**Giải thích:** `reindex(range(6))` tạo các nhãn 0..5. `method='ffill'` điền nhãn còn trống bằng giá trị gần nhất trước đó: nhãn 1 lấy của 0 ('blue'), nhãn 3 lấy của 2 ('purple'), nhãn 5 lấy của 4 ('yellow').\n\n**Kết quả:**\n```\n0      blue\n1      blue\n2    purple\n3    purple\n4    yellow\n5    yellow\n```",
+      "tags": [
+        "pandas",
+        "reindex",
+        "ffill"
+      ]
+    },
+    {
+      "id": "e-022",
+      "topicId": "t-pandas-index",
+      "title": "Drop hàng/cột và lọc boolean",
+      "difficulty": "medium",
+      "problem": "Cho DataFrame 4x4 các bang. Hãy: (1) xóa hai hàng 'Colorado','Ohio'; (2) xóa cột 'two'; (3) chọn các hàng có cột 'three' > 5.",
+      "hints": [
+        "`drop(labels)` xóa hàng; `drop(col, axis=1)` xóa cột.",
+        "Lọc boolean: `data[data['three'] > 5]`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndata = pd.DataFrame(np.arange(16).reshape(4, 4),\n                    index=['Ohio', 'Colorado', 'Utah', 'New York'],\n                    columns=['one', 'two', 'three', 'four'])\nprint(data.drop(['Colorado', 'Ohio']))\nprint(data.drop('two', axis=1))\nprint(data[data['three'] > 5])\n```\n\n**Giải thích:** `drop([...])` mặc định xóa theo **hàng** (axis=0). Thêm `axis=1` để xóa **cột**. `data[data['three'] > 5]` giữ các hàng thỏa điều kiện boolean (Utah=10, New York=14 > 5).\n\n**Kết quả cuối:** chỉ còn hàng 'Utah' và 'New York'.",
+      "tags": [
+        "pandas",
+        "drop",
+        "boolean-filter"
+      ]
+    },
+    {
+      "id": "e-023",
+      "topicId": "t-pandas-align",
+      "title": "Cộng hai DataFrame với fill_value",
+      "difficulty": "medium",
+      "problem": "Cho hai DataFrame `df1` (2x3) và `df2` (3x4) có nhãn hàng/cột lệch nhau. Cộng chúng sao cho ô chỉ có ở một bên KHÔNG thành NaN mà lấy giá trị bên còn có (coi bên thiếu = 0).",
+      "hints": [
+        "Phép `df1 + df2` cho NaN ở nhãn không khớp.",
+        "Dùng `df1.add(df2, fill_value=0)`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf1 = pd.DataFrame(np.arange(6).reshape(2, 3), columns=list('abc'))\ndf2 = pd.DataFrame(np.arange(12).reshape(3, 4), columns=list('abcd'))\nprint(df1.add(df2, fill_value=0))\n```\n\n**Giải thích:** `df1 + df2` chỉ cộng được ở các nhãn chung; nhãn lệch → NaN. `df1.add(df2, fill_value=0)` coi ô thiếu ở một bên bằng 0 trước khi cộng, nên cột 'd' và hàng thứ 3 (chỉ df2 có) giữ nguyên giá trị thay vì NaN.\n\n**Kết quả:** không còn NaN ở các ô mà ít nhất một bên có dữ liệu.",
+      "tags": [
+        "pandas",
+        "add",
+        "fill_value"
+      ]
+    },
+    {
+      "id": "e-024",
+      "topicId": "t-pandas-align",
+      "title": "Trừ DataFrame cho Series (broadcast)",
+      "difficulty": "medium",
+      "problem": "Cho DataFrame `frame` (3 hàng, cột `b,d,e`). Hãy: (1) trừ frame cho hàng đầu tiên (broadcast theo cột); (2) trừ frame cho một Series theo **hàng** dùng `sub(..., axis='index')`.",
+      "hints": [
+        "`frame - frame.iloc[0]` broadcast Series-cột theo từng hàng.",
+        "`frame.sub(series, axis='index')` căn theo nhãn hàng."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\nframe = pd.DataFrame(np.arange(9).reshape(3, 3),\n                     columns=list('bde'),\n                     index=['Utah', 'Ohio', 'Texas'])\nseries = frame.iloc[0]                 # hang dau, index = b,d,e\nprint(frame - series)                  # broadcast theo cot\n\nseries3 = frame['d']                   # cot d, index = hang\nprint(frame.sub(series3, axis='index'))\n```\n\n**Giải thích:** Khi trừ DataFrame cho Series có nhãn = **tên cột**, Pandas broadcast theo từng hàng (mặc định). Để trừ theo **hàng** (Series có nhãn = tên hàng) phải chỉ rõ `axis='index'`.\n\n**Kết quả:** phép (1) cho hàng 'Utah' toàn 0; phép (2) cho cột 'd' toàn 0.",
+      "tags": [
+        "pandas",
+        "broadcast",
+        "sub"
+      ]
+    },
+    {
+      "id": "e-025",
+      "topicId": "t-pandas-func",
+      "title": "apply theo cột và theo hàng",
+      "difficulty": "medium",
+      "problem": "Cho DataFrame ngẫu nhiên (4x3, cột b,d,e). Viết hàm `f = max - min` và áp dụng: (1) theo cột (mặc định); (2) theo hàng (`axis='columns'`).",
+      "hints": [
+        "`f = lambda x: x.max() - x.min()`.",
+        "`frame.apply(f)` theo cột; thêm `axis='columns'` để theo hàng."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\nnp.random.seed(2)\nframe = pd.DataFrame(np.random.randn(4, 3), columns=list('bde'),\n                     index=['Utah', 'Ohio', 'Texas', 'Oregon'])\nf = lambda x: x.max() - x.min()\nprint(frame.apply(f))                 # range moi cot\nprint(frame.apply(f, axis='columns')) # range moi hang\n```\n\n**Giải thích:** `apply(f)` mặc định truyền **mỗi cột** (một Series) vào `f` → trả range của từng cột. `axis='columns'` truyền **mỗi hàng** vào `f` → range của từng hàng.\n\n**Kết quả:** phép (1) trả Series chỉ số theo cột b,d,e; phép (2) trả Series chỉ số theo hàng Utah..Oregon.",
+      "tags": [
+        "pandas",
+        "apply",
+        "axis"
+      ]
+    },
+    {
+      "id": "e-026",
+      "topicId": "t-pandas-func",
+      "title": "sort_values và rank",
+      "difficulty": "easy",
+      "problem": "Cho `frame = pd.DataFrame({'b':[4,7,-3,2], 'a':[0,1,0,1]})`.\nHãy: (1) sắp xếp theo cột 'b' tăng dần; (2) sắp xếp theo ['a','b']; (3) tính hạng (`rank`) của cột 'b'.",
+      "hints": [
+        "`sort_values(by=...)`.",
+        "`rank()` trả thứ hạng; mặc định hạng trung bình cho giá trị bằng nhau."
+      ],
+      "solution": "```python\nimport pandas as pd\n\nframe = pd.DataFrame({'b': [4, 7, -3, 2], 'a': [0, 1, 0, 1]})\nprint(frame.sort_values(by='b'))\nprint(frame.sort_values(by=['a', 'b']))\nprint(frame['b'].rank())\n```\n\n**Giải thích:** `sort_values(by='b')` sắp các hàng theo giá trị cột 'b' tăng dần. `by=['a','b']` sắp theo 'a' trước, hòa thì theo 'b'. `rank()` gán thứ hạng tăng dần (giá trị nhỏ nhất = 1.0).\n\n**Kết quả `rank`:** -3→1.0, 2→2.0, 4→3.0, 7→4.0 (theo thứ tự hàng gốc: 3.0, 4.0, 1.0, 2.0).",
+      "tags": [
+        "pandas",
+        "sort_values",
+        "rank"
+      ]
+    },
+    {
+      "id": "e-027",
+      "topicId": "t-pandas-stats",
+      "title": "unique, value_counts, isin",
+      "difficulty": "easy",
+      "problem": "Cho `obj = pd.Series(['c','a','d','a','a','b','b','c','c'])`.\nHãy: (1) liệt kê giá trị duy nhất; (2) đếm tần suất; (3) lọc các phần tử thuộc {'b','c'}.",
+      "hints": [
+        "`unique()`, `value_counts()`, `isin([...])`.",
+        "Dùng mask của `isin` để lọc."
+      ],
+      "solution": "```python\nimport pandas as pd\n\nobj = pd.Series(['c', 'a', 'd', 'a', 'a', 'b', 'b', 'c', 'c'])\nprint(obj.unique())\nprint(obj.value_counts())\nmask = obj.isin(['b', 'c'])\nprint(obj[mask])\n```\n\n**Giải thích:** `unique()` trả mảng các giá trị khác nhau theo thứ tự xuất hiện. `value_counts()` đếm số lần mỗi giá trị, sắp giảm dần. `isin([...])` tạo mask boolean, `obj[mask]` giữ các phần tử thuộc tập.\n\n**Kết quả:** unique = `['c' 'a' 'd' 'b']`; value_counts: c=3, a=3, b=2, d=1.",
+      "tags": [
+        "pandas",
+        "unique",
+        "value_counts",
+        "isin"
+      ]
+    },
+    {
+      "id": "e-028",
+      "topicId": "t-pandas-stats",
+      "title": "describe và thống kê cơ bản",
+      "difficulty": "easy",
+      "problem": "Cho một DataFrame số. Hãy in bảng thống kê tổng hợp (`describe`) và riêng giá trị trung bình từng cột, độ lệch chuẩn từng cột.",
+      "hints": [
+        "`df.describe()` cho count/mean/std/min/quartiles/max.",
+        "`df.mean()`, `df.std()`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\nnp.random.seed(3)\ndf = pd.DataFrame(np.random.randn(5, 3), columns=['x', 'y', 'z'])\nprint(df.describe())\nprint('mean:\\n', df.mean())\nprint('std:\\n', df.std())\n```\n\n**Giải thích:** `describe()` tóm tắt từng cột số: số lượng, trung bình, độ lệch chuẩn, min, các tứ phân vị, max. `mean()`/`std()` trả riêng từng đại lượng theo cột (mặc định axis=0).\n\n**Kết quả:** bảng `describe` 8 hàng x 3 cột; `mean`/`std` là Series theo cột x,y,z.",
+      "tags": [
+        "pandas",
+        "describe",
+        "statistics"
+      ]
+    },
+    {
+      "id": "e-029",
+      "topicId": "t-pandas-io",
+      "title": "read_csv với names và index_col",
+      "difficulty": "medium",
+      "problem": "Một file CSV không có dòng header, các cột là a,b,c,d và một cột nhãn 'message'. Hãy đọc nó, đặt tên cột và dùng 'message' làm index. (Tự tạo file để chạy thử.)",
+      "hints": [
+        "`names=[...]` đặt tên khi không có header.",
+        "`index_col='message'` chọn cột làm index."
+      ],
+      "solution": "```python\nimport pandas as pd\nfrom io import StringIO\n\ncsv_text = '1,2,3,4,hello\\n5,6,7,8,world\\n9,10,11,12,foo\\n'\nnames = ['a', 'b', 'c', 'd', 'message']\ndf = pd.read_csv(StringIO(csv_text), names=names, index_col='message')\nprint(df)\n```\n\n**Giải thích:** File không có dòng tiêu đề nên truyền `names` để đặt tên cột. `index_col='message'` lấy cột 'message' làm chỉ mục hàng thay vì RangeIndex mặc định. (`StringIO` giả lập file để ví dụ chạy được ngay.)\n\n**Kết quả:**\n```\n         a   b   c   d\nmessage                \nhello    1   2   3   4\nworld    5   6   7   8\nfoo      9  10  11  12\n```",
+      "tags": [
+        "pandas",
+        "read_csv",
+        "index_col"
+      ]
+    },
+    {
+      "id": "e-030",
+      "topicId": "t-pandas-io",
+      "title": "Đếm dồn value_counts theo từng chunk",
+      "difficulty": "hard",
+      "problem": "Giả sử file rất lớn, không đọc hết vào RAM. Hãy đọc theo `chunksize` và cộng dồn `value_counts` của một cột qua các khối. (Mô phỏng bằng dữ liệu tạo sẵn.)",
+      "hints": [
+        "`read_csv(..., chunksize=N)` trả iterator các DataFrame.",
+        "Cộng dồn Series bằng `add(..., fill_value=0)`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\nfrom io import StringIO\n\nnp.random.seed(4)\nletters = np.random.choice(list('abcd'), size=20)\ncsv_text = 'key\\n' + '\\n'.join(letters) + '\\n'\n\ntotal = pd.Series(dtype=int)\nfor chunk in pd.read_csv(StringIO(csv_text), chunksize=5):\n    vc = chunk['key'].value_counts()\n    total = total.add(vc, fill_value=0)\n\nprint(total.astype(int).sort_index())\n```\n\n**Giải thích:** `chunksize=5` khiến `read_csv` trả về iterator, mỗi lần một DataFrame 5 dòng. Ta đếm trong từng chunk rồi cộng dồn vào `total`; `fill_value=0` xử lý nhãn chưa từng xuất hiện. Cách này dùng bộ nhớ hằng số bất kể file lớn cỡ nào.\n\n**Kết quả:** tổng đếm 20 ký tự (a+b+c+d = 20).",
+      "tags": [
+        "pandas",
+        "chunksize",
+        "value_counts"
+      ]
+    },
+    {
+      "id": "e-031",
+      "topicId": "t-pandas-io",
+      "title": "Ghi DataFrame ra CSV với tùy chọn",
+      "difficulty": "easy",
+      "problem": "Cho một DataFrame có NaN. Hãy ghi ra CSV: thay NaN bằng 'NULL', bỏ cột index, chỉ ghi các cột chọn. In lại nội dung file.",
+      "hints": [
+        "`to_csv(path, na_rep='NULL', index=False, columns=[...])`.",
+        "Có thể dùng StringIO để xem chuỗi CSV."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\nfrom io import StringIO\n\ndf = pd.DataFrame({'a': [1, 2, np.nan], 'b': [4, np.nan, 6], 'c': [7, 8, 9]})\nbuf = StringIO()\ndf.to_csv(buf, na_rep='NULL', index=False, columns=['a', 'b'])\nprint(buf.getvalue())\n```\n\n**Giải thích:** `na_rep='NULL'` thay mọi NaN bằng chuỗi 'NULL'. `index=False` không ghi cột chỉ mục. `columns=['a','b']` chỉ xuất hai cột này (bỏ 'c').\n\n**Kết quả:**\n```\na,b\n1.0,4.0\n2.0,NULL\nNULL,6.0\n```",
+      "tags": [
+        "pandas",
+        "to_csv",
+        "na_rep"
+      ]
+    },
+    {
+      "id": "e-032",
+      "topicId": "t-pandas-multi",
+      "title": "MultiIndex: stack và unstack",
+      "difficulty": "medium",
+      "problem": "Cho Series có MultiIndex 2 cấp (outer a,b,c,d; inner 1,2,3). Hãy: (1) chọn nhóm 'b'; (2) `unstack()` thành DataFrame; (3) `stack()` ngược lại.",
+      "hints": [
+        "Tạo Series với `index=[[outer...],[inner...]]`.",
+        "`unstack()` đưa cấp trong thành cột; `stack()` đảo lại."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndata = pd.Series(np.arange(9),\n                 index=[['a','a','a','b','b','c','c','d','d'],\n                        [1, 2, 3, 1, 3, 1, 2, 2, 3]])\nprint(data['b'])\nframe = data.unstack()\nprint(frame)\nprint(frame.stack())\n```\n\n**Giải thích:** MultiIndex cho phép lập chỉ mục phân cấp. `data['b']` chọn toàn bộ nhóm outer='b'. `unstack()` chuyển cấp index trong cùng (1,2,3) thành các cột → bảng 2 chiều (ô thiếu = NaN). `stack()` gập cột trở lại thành cấp index, loại NaN.\n\n**Kết quả `data['b']`:** index 1→3, 3→4.",
+      "tags": [
+        "pandas",
+        "multiindex",
+        "stack",
+        "unstack"
+      ]
+    },
+    {
+      "id": "e-033",
+      "topicId": "t-pandas-multi",
+      "title": "swaplevel và sort theo level",
+      "difficulty": "medium",
+      "problem": "Cho DataFrame có MultiIndex hàng `(key1, key2)`. Hãy hoán đổi hai cấp index (`swaplevel`) và sắp xếp lại theo cấp ngoài cùng.",
+      "hints": [
+        "`df.swaplevel('key1','key2')`.",
+        "`df.sort_index(level=0)` để sắp theo cấp ngoài."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\nframe = pd.DataFrame(np.arange(12).reshape(4, 3),\n                     index=[['a','a','b','b'], [1, 2, 1, 2]],\n                     columns=['x', 'y', 'z'])\nframe.index.names = ['key1', 'key2']\nswapped = frame.swaplevel('key1', 'key2')\nprint(swapped)\nprint(swapped.sort_index(level=0))\n```\n\n**Giải thích:** `swaplevel('key1','key2')` đổi vị trí hai cấp của MultiIndex (key2 thành cấp ngoài). `sort_index(level=0)` sắp xếp theo cấp ngoài cùng mới để dữ liệu gọn gàng, truy vấn theo cấp hiệu quả.\n\n**Kết quả:** index sau swap có thứ tự (key2, key1).",
+      "tags": [
+        "pandas",
+        "multiindex",
+        "swaplevel"
+      ]
+    },
+    {
+      "id": "e-034",
+      "topicId": "t-pandas-groupby",
+      "title": "GroupBy mean theo một và nhiều khóa",
+      "difficulty": "medium",
+      "problem": "Cho DataFrame có `key1`, `key2`, `data1`. Hãy: (1) trung bình `data1` theo `key1`; (2) trung bình theo `['key1','key2']` rồi `unstack()`.",
+      "hints": [
+        "`df['data1'].groupby(df['key1']).mean()`.",
+        "Nhiều khóa → MultiIndex; `.unstack()` để bung thành bảng."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({'key1': ['a','a','b','b','a'],\n                   'key2': ['one','two','one','two','one'],\n                   'data1': [1, 2, 3, 4, 5]})\nprint(df.groupby('key1')['data1'].mean())\nprint(df.groupby(['key1', 'key2'])['data1'].mean().unstack())\n```\n\n**Giải thích:** `groupby('key1')` gom theo giá trị key1 rồi `mean()` trung bình mỗi nhóm. Gom theo 2 khóa cho kết quả Series MultiIndex; `unstack()` đưa key2 thành cột để dễ đọc dạng bảng.\n\n**Kết quả (1):** a → (1+2+5)/3 = 2.667; b → (3+4)/2 = 3.5.",
+      "tags": [
+        "pandas",
+        "groupby",
+        "mean",
+        "unstack"
+      ]
+    },
+    {
+      "id": "e-035",
+      "topicId": "t-pandas-groupby",
+      "title": "Aggregate nhiều hàm và hàm tự định nghĩa",
+      "difficulty": "medium",
+      "problem": "Cho bảng `tips` có `total_bill`, `tip`, `smoker`. Tạo cột `tip_pct = tip/total_bill`, rồi theo nhóm `smoker` tính đồng thời mean, std và hàm `peak_to_peak = max - min` của `tip_pct`.",
+      "hints": [
+        "Tạo cột phái sinh trước.",
+        "`grouped['tip_pct'].agg(['mean','std', peak_to_peak])`."
+      ],
+      "solution": "```python\nimport pandas as pd\n\ntips = pd.DataFrame({\n    'total_bill': [10, 20, 30, 40, 25, 15],\n    'tip':        [1.5, 3.0, 4.0, 8.0, 2.5, 3.0],\n    'smoker':     ['No', 'No', 'Yes', 'Yes', 'No', 'Yes'],\n})\ntips['tip_pct'] = tips['tip'] / tips['total_bill']\n\ndef peak_to_peak(arr):\n    return arr.max() - arr.min()\n\nprint(tips.groupby('smoker')['tip_pct'].agg(['mean', 'std', peak_to_peak]))\n```\n\n**Giải thích:** Cột `tip_pct` là tỉ lệ tip trên hóa đơn. `agg([...])` áp **nhiều hàm** cùng lúc lên mỗi nhóm: 'mean'/'std' là chuỗi tên, `peak_to_peak` là hàm tự định nghĩa (max - min). Mỗi hàm thành một cột kết quả.\n\n**Kết quả:** bảng 2 hàng (No, Yes) x 3 cột (mean, std, peak_to_peak).",
+      "tags": [
+        "pandas",
+        "groupby",
+        "agg"
+      ]
+    },
+    {
+      "id": "e-036",
+      "topicId": "t-pandas-groupby",
+      "title": "apply: lấy top-n mỗi nhóm",
+      "difficulty": "hard",
+      "problem": "Cho bảng `tips` (như trên, có `tip_pct`, `smoker`). Viết hàm `top(df, n, column)` trả về n hàng có `column` lớn nhất, rồi áp dụng theo nhóm `smoker` để lấy top-2 mỗi nhóm.",
+      "hints": [
+        "`top` sắp xếp theo column rồi lấy `[-n:]`.",
+        "`grouped.apply(top, n=2, column='tip_pct')`."
+      ],
+      "solution": "```python\nimport pandas as pd\n\ntips = pd.DataFrame({\n    'total_bill': [10, 20, 30, 40, 25, 15],\n    'tip':        [1.5, 3.0, 4.0, 8.0, 2.5, 3.0],\n    'smoker':     ['No', 'No', 'Yes', 'Yes', 'No', 'Yes'],\n})\ntips['tip_pct'] = tips['tip'] / tips['total_bill']\n\ndef top(df, n=2, column='tip_pct'):\n    return df.sort_values(by=column)[-n:]\n\nprint(tips.groupby('smoker', group_keys=False).apply(top, n=2, column='tip_pct'))\n```\n\n**Giải thích:** `apply` truyền **từng nhóm con (DataFrame)** vào `top`, vốn sắp theo `column` rồi cắt `[-n:]` lấy n giá trị lớn nhất. Tham số `n`, `column` truyền kèm sau tên hàm. `group_keys=False` tránh thêm cấp index nhóm vào kết quả.\n\n**Kết quả:** 2 hàng tip_pct cao nhất cho mỗi nhóm No/Yes.",
+      "tags": [
+        "pandas",
+        "groupby",
+        "apply",
+        "top-n"
+      ]
+    },
+    {
+      "id": "e-037",
+      "topicId": "t-exercises",
+      "title": "Ex1 — Điền giá trị thiếu annual_income bằng mean",
+      "difficulty": "easy",
+      "problem": "Dữ liệu khách hàng của một startup (xem code khởi tạo trong lời giải). Cột `annual_income` có giá trị thiếu (NaN).\n\n**Yêu cầu:** điền các NaN bằng **trung bình** của cột.",
+      "hints": [
+        "`df['annual_income'].mean()` tự bỏ qua NaN.",
+        "`fillna(value)` để điền."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\nmean_income = df['annual_income'].mean()\ndf['annual_income'] = df['annual_income'].fillna(mean_income)\nprint(df['annual_income'].tolist())\n```\n\n**Giải thích:** `mean()` tính trung bình bỏ qua NaN. Hai khách thiếu thu nhập (id 2 và 6) được điền bằng trung bình của 6 giá trị còn lại = (45000+60000+52000+30000+75000+48000)/6 = 51666.67.\n\n**Kết quả:** hai ô NaN trở thành 51666.67.",
+      "tags": [
+        "pandas",
+        "fillna",
+        "mean"
+      ]
+    },
+    {
+      "id": "e-038",
+      "topicId": "t-exercises",
+      "title": "Ex2 — Khách hàng có annual_income > 50.000",
+      "difficulty": "easy",
+      "problem": "Dùng dữ liệu khách hàng. Liệt kê các khách hàng có `annual_income > 50000`.",
+      "hints": [
+        "Lọc boolean: `df[df['annual_income'] > 50000]`.",
+        "Nên điền NaN trước nếu muốn tính cả các ô từng thiếu."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\nresult = df[df['annual_income'] > 50000]\nprint(result[['customer_id', 'annual_income']])\n```\n\n**Giải thích:** Sau khi điền NaN, `df['annual_income'] > 50000` tạo mask boolean; `df[mask]` giữ các hàng thỏa. Kết quả gồm id 3 (60000), 4 (52000), 7 (75000), và hai ô vừa điền 51666.67 (id 2, 6).\n\n**Kết quả:** id 2, 3, 4, 6, 7.",
+      "tags": [
+        "pandas",
+        "boolean-filter"
+      ]
+    },
+    {
+      "id": "e-039",
+      "topicId": "t-exercises",
+      "title": "Ex3 — income > 50k VÀ complaints > 2",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Liệt kê `customer_id` của khách có `annual_income > 50000` **và** `complaints > 2`.",
+      "hints": [
+        "Kết hợp điều kiện bằng `&` và bọc mỗi điều kiện trong ngoặc.",
+        "Chỉ lấy cột `customer_id`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\nmask = (df['annual_income'] > 50000) & (df['complaints'] > 2)\nprint(df.loc[mask, 'customer_id'].tolist())\n```\n\n**Giải thích:** Hai điều kiện boolean nối bằng `&` (and theo phần tử). Bắt buộc bọc ngoặc vì `&` có độ ưu tiên cao hơn `>`. Khách thỏa cả hai: id 7 (75000, 3 complaints). id 4 có income 52000 nhưng complaints=4 >2 nên cũng thỏa.\n\n**Kết quả:** `[4, 7]`.",
+      "tags": [
+        "pandas",
+        "boolean-filter",
+        "and"
+      ]
+    },
+    {
+      "id": "e-040",
+      "topicId": "t-exercises",
+      "title": "Ex4 — Khách mua trong tháng 4",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Liệt kê các khách có `purchase_date` rơi vào **tháng 4**.",
+      "hints": [
+        "`df['purchase_date'].dt.month` lấy số tháng.",
+        "Lọc `== 4`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\napril = df[df['purchase_date'].dt.month == 4]\nprint(april[['customer_id', 'purchase_date']])\n```\n\n**Giải thích:** Cột `purchase_date` kiểu datetime nên dùng accessor `.dt.month` lấy tháng. So sánh `== 4` cho mask, lọc ra các hàng mua trong tháng 4: id 1 (04-05), 3 (04-20), 5 (04-15), 7 (04-28).\n\n**Kết quả:** id 1, 3, 5, 7.",
+      "tags": [
+        "pandas",
+        "datetime",
+        "dt.month"
+      ]
+    },
+    {
+      "id": "e-041",
+      "topicId": "t-exercises",
+      "title": "Ex5 — Khách có purchases > 5",
+      "difficulty": "easy",
+      "problem": "Dùng dữ liệu khách hàng. Liệt kê các khách có số lần mua `purchases > 5`.",
+      "hints": [
+        "Lọc boolean trên cột `purchases`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\nresult = df[df['purchases'] > 5]\nprint(result[['customer_id', 'purchases']])\n```\n\n**Giải thích:** `df['purchases'] > 5` tạo mask; lọc ra id 2 (7), 4 (8), 5 (6), 7 (9).\n\n**Kết quả:** id 2, 4, 5, 7.",
+      "tags": [
+        "pandas",
+        "boolean-filter"
+      ]
+    },
+    {
+      "id": "e-042",
+      "topicId": "t-exercises",
+      "title": "Ex6 — Thu nhập trung bình của khách Divorced",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Tính **thu nhập trung bình** của các khách có `marital_status == 'Divorced'`.",
+      "hints": [
+        "Lọc nhóm Divorced rồi `.mean()` cột income.",
+        "Nhớ điền NaN trước (id 6 Divorced bị thiếu income)."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\navg = df.loc[df['marital_status'] == 'Divorced', 'annual_income'].mean()\nprint(round(avg, 2))\n```\n\n**Giải thích:** Lọc các hàng Divorced (id 3 income 60000, id 6 income đã điền 51666.67) rồi lấy trung bình. (60000 + 51666.67)/2 = 55833.33.\n\n**Kết quả:** 55833.33.",
+      "tags": [
+        "pandas",
+        "filter",
+        "mean"
+      ]
+    },
+    {
+      "id": "e-043",
+      "topicId": "t-exercises",
+      "title": "Ex7 — Tần suất số lần khiếu nại",
+      "difficulty": "easy",
+      "problem": "Dùng dữ liệu khách hàng. Tính **tần suất** số lần khiếu nại (bao nhiêu khách có 1 complaint, bao nhiêu khách có 3 complaints, ...).",
+      "hints": [
+        "`df['complaints'].value_counts()`.",
+        "Có thể `sort_index()` cho dễ đọc."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\nprint(df['complaints'].value_counts().sort_index())\n```\n\n**Giải thích:** `value_counts()` đếm số khách ứng với mỗi giá trị complaints. `sort_index()` sắp theo số complaints tăng dần. Dữ liệu: complaints = [1,3,0,4,2,1,3,1].\n\n**Kết quả:**\n```\n0    1\n1    3\n2    1\n3    2\n4    1\n```",
+      "tags": [
+        "pandas",
+        "value_counts"
+      ]
+    },
+    {
+      "id": "e-044",
+      "topicId": "t-exercises",
+      "title": "Ex8 — Thu nhập trung bình khách 30–40 tuổi",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Tính thu nhập trung bình của các khách có **tuổi trong khoảng 30–40** (bao gồm hai đầu).",
+      "hints": [
+        "Lọc `(age >= 30) & (age <= 40)`.",
+        "Có thể dùng `df['age'].between(30, 40)`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\nmask = df['age'].between(30, 40)\nprint(round(df.loc[mask, 'annual_income'].mean(), 2))\n```\n\n**Giải thích:** `between(30, 40)` tương đương `(age>=30)&(age<=40)`. Các khách thỏa: id 2 (34), 4 (38), 7 (33), 8 (31). Lấy trung bình thu nhập của nhóm này.\n\n**Kết quả:** trung bình của [51666.67, 52000, 75000, 48000] ≈ 56666.67.",
+      "tags": [
+        "pandas",
+        "between",
+        "mean"
+      ]
+    },
+    {
+      "id": "e-045",
+      "topicId": "t-exercises",
+      "title": "Ex9 — Bậc học có thu nhập trung bình cao nhất",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Xác định `educational_level` nào có **thu nhập trung bình cao nhất**.",
+      "hints": [
+        "`groupby('educational_level')['annual_income'].mean()`.",
+        "`idxmax()` trả nhãn nhóm có giá trị lớn nhất."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\navg_by_edu = df.groupby('educational_level')['annual_income'].mean()\nprint(avg_by_edu)\nprint('Cao nhat:', avg_by_edu.idxmax())\n```\n\n**Giải thích:** `groupby(...).mean()` cho thu nhập trung bình mỗi bậc học. `idxmax()` trả về **nhãn** (tên bậc học) ứng với giá trị lớn nhất, thay vì giá trị. Bachelor: (45000+52000+75000)/3=57333; Master: (51666.67+30000+48000)/3=43222; PhD: (60000+51666.67)/2=55833.\n\n**Kết quả:** `Bachelor`.",
+      "tags": [
+        "pandas",
+        "groupby",
+        "idxmax"
+      ]
+    },
+    {
+      "id": "e-046",
+      "topicId": "t-exercises",
+      "title": "Ex10 — Thu nhập lớn nhất trong mỗi bậc học",
+      "difficulty": "easy",
+      "problem": "Dùng dữ liệu khách hàng. Với mỗi `educational_level`, tìm **thu nhập lớn nhất**.",
+      "hints": [
+        "`groupby('educational_level')['annual_income'].max()`."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\nprint(df.groupby('educational_level')['annual_income'].max())\n```\n\n**Giải thích:** `groupby(...).max()` trả giá trị lớn nhất của `annual_income` trong từng nhóm bậc học. Bachelor→75000, Master→51666.67, PhD→60000.\n\n**Kết quả:**\n```\nBachelor    75000.00\nMaster      51666.67\nPhD         60000.00\n```",
+      "tags": [
+        "pandas",
+        "groupby",
+        "max"
+      ]
+    },
+    {
+      "id": "e-047",
+      "topicId": "t-exercises",
+      "title": "Ex11 — Tổng doanh số theo (năm sinh, hôn nhân)",
+      "difficulty": "medium",
+      "problem": "Dùng dữ liệu khách hàng. Tính **tổng `purchases`** theo từng nhóm `(year_of_birth, marital_status)` (groupby nhiều khóa).",
+      "hints": [
+        "`groupby(['year_of_birth','marital_status'])['purchases'].sum()`.",
+        "Kết quả là Series MultiIndex."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\nresult = df.groupby(['year_of_birth', 'marital_status'])['purchases'].sum()\nprint(result)\n```\n\n**Giải thích:** Gom theo **hai khóa** tạo nhóm cho từng tổ hợp (năm sinh, tình trạng hôn nhân), rồi `sum()` cộng `purchases` trong mỗi tổ hợp. Kết quả Series có MultiIndex (year_of_birth, marital_status).\n\n**Kết quả:** mỗi tổ hợp một dòng tổng số lần mua (vì dữ liệu mỗi tổ hợp thường 1 khách nên bằng chính purchases của khách đó).",
+      "tags": [
+        "pandas",
+        "groupby",
+        "multi-key",
+        "sum"
+      ]
+    },
+    {
+      "id": "e-048",
+      "topicId": "t-exercises",
+      "title": "Ex12 — Phân loại income thành low/medium/high",
+      "difficulty": "hard",
+      "problem": "Dùng dữ liệu khách hàng. Phân loại `annual_income` thành 3 mức: **low** nếu < mean − 10%·mean, **high** nếu > mean + 10%·mean, còn lại **medium**. Thêm cột `income_level`.",
+      "hints": [
+        "Tính mean, ngưỡng low = mean*0.9, ngưỡng high = mean*1.1.",
+        "Dùng hàm + `apply`, hoặc `pd.cut` với bins = [-inf, low, high, inf]."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\ndf['annual_income'] = df['annual_income'].fillna(df['annual_income'].mean())\nmean = df['annual_income'].mean()\nlow, high = mean * 0.9, mean * 1.1\n\ndef classify(x):\n    if x < low:\n        return 'low'\n    if x > high:\n        return 'high'\n    return 'medium'\n\ndf['income_level'] = df['annual_income'].apply(classify)\nprint(df[['customer_id', 'annual_income', 'income_level']])\n\n# Cach 2 tuong duong dung pd.cut:\nimport numpy as np\ndf['income_level2'] = pd.cut(df['annual_income'],\n                             bins=[-np.inf, low, high, np.inf],\n                             labels=['low', 'medium', 'high'])\n```\n\n**Giải thích:** Lấy mean = 51666.67 → low<46500, high>56833.33. `apply(classify)` áp hàm cho từng giá trị. Cách 2 dùng `pd.cut` chia khoảng với `bins` và `labels` tương ứng — gọn và vectorized.\n\n**Kết quả:** ví dụ id 5 (30000)→low, id 7 (75000)→high, id 4 (52000)→medium.",
+      "tags": [
+        "pandas",
+        "apply",
+        "cut",
+        "classify"
+      ]
+    },
+    {
+      "id": "e-049",
+      "topicId": "t-exercises",
+      "title": "Ex13 — Merge bảng giá và tính cột Amount",
+      "difficulty": "hard",
+      "problem": "Dùng dữ liệu khách hàng. Cho bảng giá theo bậc học `item-price` (cột `educational_level`, `price`). Hãy **merge** vào df theo `educational_level` rồi thêm cột `Amount = price * purchases`.",
+      "hints": [
+        "Tạo DataFrame giá rồi `pd.merge(df, price_df, on='educational_level')`.",
+        "Merge mặc định là inner join theo cột chung."
+      ],
+      "solution": "```python\nimport pandas as pd\nimport numpy as np\n\ndf = pd.DataFrame({\n    'customer_id':      [1, 2, 3, 4, 5, 6, 7, 8],\n    'annual_income':    [45000, np.nan, 60000, 52000, 30000, np.nan, 75000, 48000],\n    'complaints':       [1, 3, 0, 4, 2, 1, 3, 1],\n    'purchases':        [3, 7, 2, 8, 6, 1, 9, 4],\n    'purchase_date':    pd.to_datetime(['2023-04-05','2023-03-12','2023-04-20','2023-05-01',\n                                        '2023-04-15','2023-02-10','2023-04-28','2023-06-03']),\n    'marital_status':   ['Single','Married','Divorced','Married','Single','Divorced','Married','Single'],\n    'age':              [25, 34, 42, 38, 29, 55, 33, 31],\n    'year_of_birth':    [1998, 1989, 1981, 1985, 1994, 1968, 1990, 1992],\n    'educational_level':['Bachelor','Master','PhD','Bachelor','Master','PhD','Bachelor','Master'],\n})\n\nprice_df = pd.DataFrame({\n    'educational_level': ['Bachelor', 'Master', 'PhD'],\n    'price': [100, 150, 200],\n})\n\nmerged = pd.merge(df, price_df, on='educational_level')\nmerged['Amount'] = merged['price'] * merged['purchases']\nprint(merged[['customer_id', 'educational_level', 'price', 'purchases', 'Amount']])\n```\n\n**Giải thích:** `pd.merge(df, price_df, on='educational_level')` ghép giá vào mỗi khách theo bậc học (inner join trên cột chung). Sau đó cột mới `Amount` = đơn giá × số lần mua. Ví dụ khách Bachelor (price 100) mua 3 lần → Amount = 300.\n\n**Kết quả:** mỗi khách có thêm `price` và `Amount` tương ứng bậc học.",
+      "tags": [
+        "pandas",
+        "merge",
+        "join",
+        "derived-column"
+      ]
+    }
+  ]
+}

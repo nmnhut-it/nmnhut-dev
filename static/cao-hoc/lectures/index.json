@@ -1,0 +1,86 @@
+{
+  "ai-prog": [
+    {
+      "id": "ai-01-list",
+      "title": "Python List — Cơ bản"
+    },
+    {
+      "id": "ai-02-numpy",
+      "title": "NumPy — Mảng & Tính toán"
+    },
+    {
+      "id": "ai-03-pandas-basics",
+      "title": "Pandas — Series & DataFrame cơ bản"
+    },
+    {
+      "id": "ai-04-pandas-io",
+      "title": "Pandas — Đọc/Ghi dữ liệu (I/O)"
+    },
+    {
+      "id": "ai-05-pandas-merge-groupby",
+      "title": "Pandas — Merge & GroupBy"
+    }
+  ],
+  "data-mining": [
+    {
+      "id": "dm-01-intro",
+      "title": "Khai thác dữ liệu — Giới thiệu"
+    },
+    {
+      "id": "dm-02-data",
+      "title": "Dữ liệu & Tiền xử lý"
+    },
+    {
+      "id": "dm-03-frequent-sequence",
+      "title": "Tập phổ biến & Luật kết hợp & Mẫu tuần tự"
+    },
+    {
+      "id": "dm-04-classification",
+      "title": "Phân lớp (Classification)"
+    },
+    {
+      "id": "dm-05-ann",
+      "title": "Mạng nơ-ron nhân tạo (ANN)"
+    }
+  ],
+  "nlp": [
+    {
+      "id": "nlp-00-intro",
+      "title": "NLP — Giới thiệu"
+    },
+    {
+      "id": "nlp-01-natural-language",
+      "title": "Ngôn ngữ tự nhiên & Nhập nhằng"
+    },
+    {
+      "id": "nlp-02-formal-language",
+      "title": "Ngôn ngữ hình thức"
+    },
+    {
+      "id": "nlp-03-corpus",
+      "title": "Ngữ liệu học (Corpus Linguistics)"
+    }
+  ],
+  "seminar": [
+    {
+      "id": "paper-01-chatkbqa",
+      "title": "ChatKBQA — Generate-then-Retrieve KBQA bằng LLM fine-tuned"
+    },
+    {
+      "id": "paper-02-stqad",
+      "title": "STQAD & STCQA — Hỏi đáp trên Đồ thị tri thức Không-Thời gian"
+    },
+    {
+      "id": "paper-03-temporal-norm",
+      "title": "Chuẩn hoá biểu thức thời gian đa ngôn ngữ (VIR fill-mask)"
+    },
+    {
+      "id": "paper-04-ctde-marl",
+      "title": "CTDE trong Học tăng cường đa tác tử hợp tác (nhập môn)"
+    },
+    {
+      "id": "paper-05-harl",
+      "title": "HARL — Học tăng cường đa tác tử dị thể"
+    }
+  ]
+}

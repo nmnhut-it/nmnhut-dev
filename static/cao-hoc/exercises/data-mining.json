@@ -1,0 +1,727 @@
+{
+  "id": "data-mining",
+  "subject": "Khai thác dữ liệu lớn - HP2-K35",
+  "exercises": [
+    {
+      "id": "e-001",
+      "topicId": "t-assoc",
+      "title": "Tính support của itemset",
+      "difficulty": "easy",
+      "problem": "Cho bảng giao dịch (mỗi dòng là một giỏ hàng):\n\n| TID | Items |\n|-----|-------|\n| T1 | Bread, Milk |\n| T2 | Bread, Diaper, Beer, Egg |\n| T3 | Milk, Diaper, Beer, Cola |\n| T4 | Bread, Milk, Diaper, Beer |\n| T5 | Bread, Milk, Diaper, Cola |\n\nTính **support** (độ hỗ trợ) của các itemset sau (theo cả số đếm và tỉ lệ): `{Beer}`, `{Milk, Diaper}`, `{Milk, Diaper, Beer}`.",
+      "hints": [
+        "support(X) = số giao dịch chứa X / tổng số giao dịch N. Ở đây N = 5.",
+        "Đếm số dòng chứa ĐẦY ĐỦ tất cả các item của itemset."
+      ],
+      "solution": "Tổng số giao dịch N = 5.\n\n**{Beer}**: xuất hiện ở T2, T3, T4 → đếm = 3 → support = 3/5 = **0.6 (60%)**.\n\n**{Milk, Diaper}**: cần chứa cả Milk và Diaper.\n- T3 (Milk, Diaper, Beer, Cola) ✓\n- T4 (Bread, Milk, Diaper, Beer) ✓\n- T5 (Bread, Milk, Diaper, Cola) ✓\n\n→ đếm = 3 → support = 3/5 = **0.6 (60%)**.\n\n**{Milk, Diaper, Beer}**: cần chứa cả 3.\n- T3 ✓ (Milk, Diaper, Beer)\n- T4 ✓ (Milk, Diaper, Beer)\n- T5 ✗ (không có Beer)\n\n→ đếm = 2 → support = 2/5 = **0.4 (40%)**.",
+      "tags": [
+        "support",
+        "itemset",
+        "cơ bản"
+      ]
+    },
+    {
+      "id": "e-002",
+      "topicId": "t-assoc",
+      "title": "Tính confidence và lift của luật kết hợp",
+      "difficulty": "medium",
+      "problem": "Dùng lại bảng giao dịch:\n\n| TID | Items |\n|-----|-------|\n| T1 | Bread, Milk |\n| T2 | Bread, Diaper, Beer, Egg |\n| T3 | Milk, Diaper, Beer, Cola |\n| T4 | Bread, Milk, Diaper, Beer |\n| T5 | Bread, Milk, Diaper, Cola |\n\nCho luật **{Milk, Diaper} → {Beer}**. Tính:\n1. support của luật,\n2. confidence,\n3. lift,\nvà cho biết luật có \"thú vị\" (item phụ thuộc dương) hay không.",
+      "hints": [
+        "support(luật X→Y) = support(X ∪ Y).",
+        "confidence(X→Y) = support(X∪Y) / support(X).",
+        "lift(X→Y) = confidence(X→Y) / support(Y) = support(X∪Y)/(support(X)·support(Y)). Lift > 1 ⇒ tương quan dương."
+      ],
+      "solution": "N = 5.\n\n**Bước 1 — Support các thành phần:**\n- support({Milk, Diaper}) = 3/5 = 0.6 (T3, T4, T5)\n- support({Milk, Diaper, Beer}) = 2/5 = 0.4 (T3, T4)\n- support({Beer}) = 3/5 = 0.6 (T2, T3, T4)\n\n**Bước 2 — Support của luật:**\nsupport(luật) = support({Milk, Diaper, Beer}) = 2/5 = **0.4**.\n\n**Bước 3 — Confidence:**\nconfidence = support({Milk,Diaper,Beer}) / support({Milk,Diaper}) = 0.4 / 0.6 = **0.667 (66.7%)**.\n\n**Bước 4 — Lift:**\nlift = confidence / support({Beer}) = 0.667 / 0.6 = **1.11**.\n\n**Kết luận:** lift = 1.11 > 1 ⇒ Milk,Diaper và Beer có **tương quan dương** (mua Milk+Diaper làm tăng nhẹ khả năng mua Beer). Tuy nhiên lift chỉ hơn 1 chút nên mức độ phụ thuộc yếu.",
+      "tags": [
+        "confidence",
+        "lift",
+        "luật kết hợp"
+      ]
+    },
+    {
+      "id": "e-003",
+      "topicId": "t-assoc",
+      "title": "Confidence không đối xứng",
+      "difficulty": "medium",
+      "problem": "Cho bảng giao dịch (mỗi TID là một giỏ hàng):\n\n| TID | Items |\n|-----|-------|\n| 0001 | a, d, e |\n| 0024 | a, b, c, e |\n| 0012 | a, b, d, e |\n| 0031 | a, c, d, e |\n| 0015 | b, c, e |\n| 0022 | b, d, e |\n| 0029 | c, d |\n| 0040 | a, b, c |\n| 0033 | a, d, e |\n| 0038 | a, b, e |\n\n1. Tính support của `{e}`, `{b, d}`, `{b, d, e}`.\n2. Tính confidence của hai luật `{b,d} → {e}` và `{e} → {b,d}`. Confidence có phải là độ đo đối xứng không?",
+      "hints": [
+        "N = 10.",
+        "confidence({b,d}→{e}) = sup({b,d,e})/sup({b,d}); confidence({e}→{b,d}) = sup({b,d,e})/sup({e})."
+      ],
+      "solution": "N = 10.\n\n**1. Support:**\n- {e}: các giỏ chứa e: 0001,0024,0012,0031,0015,0022,0033,0038 → 8 → support = 8/10 = **0.8**.\n- {b,d}: chứa cả b và d: 0012 (a,b,d,e), 0022 (b,d,e) → 2 → support = 2/10 = **0.2**.\n- {b,d,e}: chứa b,d,e: 0012, 0022 → 2 → support = 2/10 = **0.2**.\n\n**2. Confidence:**\n- {b,d}→{e}: = sup({b,d,e})/sup({b,d}) = 0.2/0.2 = **1.0 (100%)**.\n- {e}→{b,d}: = sup({b,d,e})/sup({e}) = 0.2/0.8 = **0.25 (25%)**.\n\n**Kết luận:** Hai confidence khác nhau (1.0 ≠ 0.25) ⇒ **confidence KHÔNG đối xứng**. Nó phụ thuộc vào hướng của luật vì mẫu số là support của vế trái.",
+      "tags": [
+        "confidence",
+        "đối xứng",
+        "support"
+      ]
+    },
+    {
+      "id": "e-004",
+      "topicId": "t-assoc",
+      "title": "Chạy Apriori từng bước (minsup = 50%)",
+      "difficulty": "hard",
+      "problem": "Cho cơ sở dữ liệu giao dịch:\n\n| TID | Items |\n|-----|-------|\n| 1 | A, C, D |\n| 2 | B, C, E |\n| 3 | A, B, C, E |\n| 4 | B, E |\n\nVới **minsup = 2** (tức 50%), hãy chạy thuật toán **Apriori**: liệt kê C1→L1, C2→L2, C3→L3 và tập itemset phổ biến cuối cùng.",
+      "hints": [
+        "Apriori: C_k sinh từ L_{k-1}, đếm support, giữ lại các itemset có support ≥ minsup.",
+        "Cắt tỉa: mọi tập con của itemset phổ biến phải phổ biến."
+      ],
+      "solution": "N = 4, minsup = 2.\n\n**Bước 1 — C1 và L1:**\n| Item | Support |\n|------|---------|\n| A | 2 (T1,T3) |\n| B | 3 (T2,T3,T4) |\n| C | 3 (T1,T2,T3) |\n| D | 1 (T1) |\n| E | 3 (T2,T3,T4) |\n\nD có support 1 < 2 → loại. **L1 = {A, B, C, E}**.\n\n**Bước 2 — C2 (ghép L1×L1) và đếm:**\n| Itemset | Support |\n|---------|---------|\n| {A,B} | 1 (T3) |\n| {A,C} | 2 (T1,T3) |\n| {A,E} | 1 (T3) |\n| {B,C} | 2 (T2,T3) |\n| {B,E} | 3 (T2,T3,T4) |\n| {C,E} | 2 (T2,T3) |\n\n**L2 = {{A,C}:2, {B,C}:2, {B,E}:3, {C,E}:2}** (loại {A,B}, {A,E}).\n\n**Bước 3 — C3:**\nGhép L2: ứng viên tiềm năng {B,C,E} (từ {B,C},{B,E},{C,E}). Kiểm tra cắt tỉa: các tập con {B,C},{B,E},{C,E} đều ∈ L2 ✓ → giữ.\nỨng viên {A,C,E}? cần {A,E} ∈ L2 nhưng {A,E} không phổ biến → **cắt tỉa**.\n\nĐếm support {B,C,E}: T2 (B,C,E)✓, T3 (A,B,C,E)✓ → 2 ≥ 2.\n**L3 = {{B,C,E}:2}**.\n\n**Bước 4 — C4 = ∅ → dừng.**\n\n**Tập itemset phổ biến:** A, B, C, E, {A,C}, {B,C}, {B,E}, {C,E}, {B,C,E}.",
+      "tags": [
+        "Apriori",
+        "từng bước",
+        "frequent itemset"
+      ]
+    },
+    {
+      "id": "e-005",
+      "topicId": "t-assoc",
+      "title": "Sinh ứng viên Apriori và cắt tỉa",
+      "difficulty": "medium",
+      "problem": "Cho tập các 3-itemset phổ biến:\n\nL3 = { {1,2,3}, {1,2,4}, {1,2,5}, {1,3,4}, {1,3,5}, {2,3,4}, {2,3,5}, {3,4,5} }\n\n(chỉ có 5 item: 1..5).\n1. Liệt kê các ứng viên 4-itemset sinh bằng chiến lược ghép **F_{k-1} × F_{k-1}** của Apriori (hai itemset chỉ ghép khi k−2 phần tử đầu giống nhau).\n2. Sau bước **cắt tỉa** (mọi tập con kích thước 3 phải ∈ L3), ứng viên nào còn sống sót?",
+      "hints": [
+        "Sắp các item trong mỗi itemset theo thứ tự; ghép hai itemset cùng tiền tố 2 phần tử đầu.",
+        "Cắt tỉa: với ứng viên 4-itemset, kiểm tra tất cả 4 tập con kích thước 3."
+      ],
+      "solution": "**1. Sinh ứng viên (ghép cùng tiền tố 2 phần tử đầu):**\n- Tiền tố {1,2}: {1,2,3},{1,2,4},{1,2,5} → ghép đôi: {1,2,3,4}, {1,2,3,5}, {1,2,4,5}.\n- Tiền tố {1,3}: {1,3,4},{1,3,5} → {1,3,4,5}.\n- Tiền tố {2,3}: {2,3,4},{2,3,5} → {2,3,4,5}.\n- Các tiền tố khác chỉ có 1 itemset → không ghép được.\n\nỨng viên C4 = { {1,2,3,4}, {1,2,3,5}, {1,2,4,5}, {1,3,4,5}, {2,3,4,5} }.\n\n**2. Cắt tỉa — kiểm tra 4 tập con-3 của mỗi ứng viên:**\n- {1,2,3,4}: con {1,2,3}✓ {1,2,4}✓ {1,3,4}✓ {2,3,4}✓ → **giữ**.\n- {1,2,3,5}: {1,2,3}✓ {1,2,5}✓ {1,3,5}✓ {2,3,5}✓ → **giữ**.\n- {1,2,4,5}: {1,2,4}✓ {1,2,5}✓ {1,4,5}✗ (không ∈ L3) → **loại**.\n- {1,3,4,5}: {1,3,4}✓ {1,3,5}✓ {1,4,5}✗ → **loại**.\n- {2,3,4,5}: {2,3,4}✓ {2,3,5}✓ {2,4,5}✗ → **loại**.\n\n**Ứng viên sống sót sau cắt tỉa: {1,2,3,4} và {1,2,3,5}.**",
+      "tags": [
+        "Apriori",
+        "sinh ứng viên",
+        "cắt tỉa"
+      ]
+    },
+    {
+      "id": "e-006",
+      "topicId": "t-assoc",
+      "title": "Bảng tương quan và độ đo Interest (lift)",
+      "difficulty": "hard",
+      "problem": "Cho bảng giao dịch:\n\n| TID | Items |\n|-----|-------|\n| 1 | a, b, d, e |\n| 2 | b, c, d |\n| 3 | a, b, d, e |\n| 4 | a, c, d, e |\n| 5 | b, c, d, e |\n| 6 | b, d, e |\n| 7 | c, d |\n| 8 | a, b, c |\n| 9 | a, d, e |\n| 10 | b, d |\n\nVới luật **{b} → {c}**:\n1. Lập bảng tương quan (contingency table) 2×2 cho b và c.\n2. Tính support, confidence, và độ đo **Interest** I(b,c) = P(b,c) / (P(b)·P(c)).\n3. b và c tương quan dương hay âm?",
+      "hints": [
+        "P(X) = sup(X)/N. Đếm số giao dịch chứa b, chứa c, chứa cả hai, chứa không-b/không-c.",
+        "Interest > 1: dương; = 1: độc lập; < 1: âm."
+      ],
+      "solution": "N = 10.\n\n**Đếm:**\n- b: T1,T2,T3,T5,T6,T8,T10 → 7 (b̄ = 3)\n- c: T2,T4,T5,T7,T8 → 5 (c̄ = 5)\n- b và c (cả hai): T2, T5, T8 → 3\n\n**1. Bảng tương quan (số đếm):**\n| | c | c̄ | tổng |\n|---|---|---|---|\n| **b** | 3 | 4 | 7 |\n| **b̄** | 2 | 1 | 3 |\n| **tổng** | 5 | 5 | 10 |\n\n(b,c̄ = 7−3 = 4; b̄,c = 5−3 = 2; b̄,c̄ = 3−2 = 1.)\n\n**2. Các độ đo:**\n- support({b,c}) = 3/10 = **0.3**.\n- confidence({b}→{c}) = P(b,c)/P(b) = 0.3/0.7 = **0.429**.\n- P(b) = 0.7, P(c) = 0.5 ⇒ P(b)·P(c) = 0.35.\n- Interest I = P(b,c)/(P(b)·P(c)) = 0.3/0.35 = **0.857**.\n\n**3. Kết luận:** I = 0.857 < 1 ⇒ b và c **tương quan âm** (mua b làm giảm nhẹ khả năng mua c), mặc dù confidence = 0.429 trông không nhỏ. Đây là lý do cần lift/Interest thay vì chỉ confidence.",
+      "tags": [
+        "Interest",
+        "contingency table",
+        "tương quan"
+      ]
+    },
+    {
+      "id": "e-007",
+      "topicId": "t-assoc",
+      "title": "Hệ số φ (phi correlation)",
+      "difficulty": "hard",
+      "problem": "Cho bảng tương quan 2×2 cho cặp {A, B} trên 100 giao dịch:\n\n| | B | B̄ |\n|---|---|---|\n| **A** | 9 | 1 |\n| **Ā** | 1 | 89 |\n\nTính: support({A,B}), Interest I(A,B), và **hệ số tương quan φ** với công thức:\n\nφ = ( P(A,B) − P(A)P(B) ) / √( P(A)P(B)(1−P(A))(1−P(B)) ).",
+      "hints": [
+        "P(A) = (9+1)/100, P(B) = (9+1)/100, P(A,B)=9/100.",
+        "φ ∈ [−1,1]: gần 1 ⇒ tương quan dương mạnh."
+      ],
+      "solution": "N = 100.\n\n**Xác suất biên:**\n- P(A) = (9+1)/100 = 0.10\n- P(B) = (9+1)/100 = 0.10\n- P(A,B) = 9/100 = 0.09\n\n**Support:** support({A,B}) = **0.09**.\n\n**Interest:** I = P(A,B)/(P(A)P(B)) = 0.09/(0.10·0.10) = 0.09/0.01 = **9.0** (tương quan dương rất mạnh).\n\n**Hệ số φ:**\n- Tử số: P(A,B) − P(A)P(B) = 0.09 − 0.01 = 0.08.\n- Mẫu số: √(0.10·0.10·0.90·0.90) = √(0.0081) = 0.09.\n- φ = 0.08 / 0.09 = **0.889**.\n\n**Kết luận:** φ ≈ 0.889 gần 1 ⇒ A và B tương quan dương rất mạnh, phù hợp với Interest = 9.",
+      "tags": [
+        "phi",
+        "correlation",
+        "contingency table"
+      ]
+    },
+    {
+      "id": "e-008",
+      "topicId": "t-assoc",
+      "title": "Itemset phổ biến tối đa (maximal) và đóng (closed)",
+      "difficulty": "medium",
+      "problem": "Cho minsup = 2 và tập các itemset phổ biến cùng support:\n\n| Itemset | Support |\n|---------|---------|\n| {a} | 4 |\n| {b} | 4 |\n| {a,b} | 4 |\n| {c} | 3 |\n| {a,c} | 2 |\n| {a,b,c} | 2 |\n\nXác định các itemset nào là **đóng (closed)** và itemset nào là **tối đa (maximal)**.",
+      "hints": [
+        "Closed: không có tập cha trực tiếp nào có CÙNG support.",
+        "Maximal: phổ biến nhưng không có tập cha nào phổ biến."
+      ],
+      "solution": "**Itemset đóng (closed):** X đóng nếu không tồn tại tập cha Y ⊃ X với support(Y) = support(X).\n- {a}: sup 4; cha {a,b} cũng sup 4 ⇒ **không đóng**.\n- {b}: sup 4; cha {a,b} cũng sup 4 ⇒ **không đóng**.\n- {a,b}: sup 4; các cha {a,b,c} sup 2 ≠ 4 ⇒ **ĐÓNG**.\n- {c}: sup 3; cha {a,c} sup 2 ≠ 3 ⇒ **ĐÓNG**.\n- {a,c}: sup 2; cha {a,b,c} sup 2 = 2 ⇒ **không đóng**.\n- {a,b,c}: sup 2; không có cha phổ biến ⇒ **ĐÓNG**.\n\n→ Closed = **{a,b}, {c}, {a,b,c}**.\n\n**Itemset tối đa (maximal):** phổ biến và không có tập cha phổ biến.\n- {a,b}: cha {a,b,c} phổ biến ⇒ không maximal.\n- {a,b,c}: không có cha phổ biến ⇒ **MAXIMAL**.\n- {c}: cha {a,c} phổ biến ⇒ không maximal.\n\n→ Maximal = **{a,b,c}**.\n\n**Nhận xét:** Maximal ⊆ Closed. Mọi maximal đều đóng nhưng không ngược lại ({a,b}, {c} đóng nhưng không maximal).",
+      "tags": [
+        "closed",
+        "maximal",
+        "frequent itemset"
+      ]
+    },
+    {
+      "id": "e-009",
+      "topicId": "t-assoc",
+      "title": "Số luật kết hợp tối đa",
+      "difficulty": "medium",
+      "problem": "Cho một cơ sở dữ liệu có **d = 6** item phân biệt (Milk, Beer, Diaper, Bread, Butter, Cookies).\n1. Số itemset (khác rỗng) tối đa có thể có là bao nhiêu?\n2. Số **luật kết hợp** tối đa có thể trích xuất (kể cả luật support = 0) là bao nhiêu? Dùng công thức R = 3^d − 2^{d+1} + 1.",
+      "hints": [
+        "Số itemset khác rỗng = 2^d − 1.",
+        "Số luật từ d item: R = 3^d − 2^{d+1} + 1."
+      ],
+      "solution": "d = 6.\n\n**1. Số itemset khác rỗng:** 2^6 − 1 = 64 − 1 = **63**.\n\n**2. Số luật kết hợp tối đa:**\nR = 3^d − 2^{d+1} + 1\n= 3^6 − 2^7 + 1\n= 729 − 128 + 1\n= **602 luật**.\n\n**Giải thích công thức:** mỗi item có 3 khả năng (thuộc vế trái, thuộc vế phải, hoặc không trong luật) → 3^d. Trừ các trường hợp vế trái rỗng (2^d) và vế phải rỗng (2^d), nhưng cộng lại 1 lần trường hợp cả hai rỗng bị trừ 2 lần: 3^d − 2·2^d + 1 = 3^d − 2^{d+1} + 1.",
+      "tags": [
+        "số luật",
+        "tổ hợp",
+        "lý thuyết"
+      ]
+    },
+    {
+      "id": "e-010",
+      "topicId": "t-assoc",
+      "title": "Xếp hạng luật theo confidence",
+      "difficulty": "easy",
+      "problem": "Cho cùng bảng tương quan đã đếm sẵn cho 3 luật trên N = 10 giao dịch:\n\n| Luật | sup(X) | sup(X∪Y) |\n|------|--------|----------|\n| {a}→{d} | 6 | 5 |\n| {b}→{d} | 7 | 5 |\n| {c}→{a} | 5 | 2 |\n\nTính confidence từng luật và xếp hạng giảm dần theo confidence.",
+      "hints": [
+        "confidence = sup(X∪Y)/sup(X)."
+      ],
+      "solution": "**Tính confidence:**\n- {a}→{d}: 5/6 = **0.833**.\n- {b}→{d}: 5/7 = **0.714**.\n- {c}→{a}: 2/5 = **0.400**.\n\n**Xếp hạng giảm dần theo confidence:**\n1. {a}→{d} (0.833)\n2. {b}→{d} (0.714)\n3. {c}→{a} (0.400)",
+      "tags": [
+        "confidence",
+        "xếp hạng"
+      ]
+    },
+    {
+      "id": "e-011",
+      "topicId": "t-assoc",
+      "title": "Phần trăm itemset phổ biến trong lattice",
+      "difficulty": "medium",
+      "problem": "Cho minsup = 30% (≥ 3 giao dịch trong 10). Sau khi chạy Apriori trên một CSDL 5 item {a,b,c,d,e}, người ta đếm được **15** itemset là phổ biến (frequent). Tổng số itemset khác rỗng trong lattice là 2^5 − 1.\n\n1. Tổng số itemset (khác rỗng) trong lattice là bao nhiêu?\n2. Tỉ lệ phần trăm itemset phổ biến so với toàn bộ lattice?",
+      "hints": [
+        "Tổng itemset khác rỗng = 2^d − 1 với d = 5."
+      ],
+      "solution": "**1. Tổng số itemset khác rỗng:** 2^5 − 1 = 32 − 1 = **31**.\n\n**2. Tỉ lệ phổ biến:** 15 / 31 = 0.4839 = **48.4%**.\n\n**Nhận xét:** chưa tới một nửa số itemset là phổ biến; phần còn lại hoặc không sinh ra (bị cắt tỉa nhờ tính chất Apriori) hoặc bị loại sau khi đếm support — đây chính là nguồn tiết kiệm chi phí của Apriori.",
+      "tags": [
+        "lattice",
+        "tỉ lệ",
+        "frequent"
+      ]
+    },
+    {
+      "id": "e-012",
+      "topicId": "t-classify",
+      "title": "Tính Entropy của tập huấn luyện",
+      "difficulty": "medium",
+      "problem": "Cho tập huấn luyện 9 mẫu bài toán phân lớp nhị phân (lớp + / −):\n\n| Instance | a1 | a2 | a3 | Class |\n|----|----|----|----|----|\n| 1 | T | T | 1.0 | + |\n| 2 | T | T | 6.0 | + |\n| 3 | T | F | 5.0 | − |\n| 4 | F | F | 4.0 | + |\n| 5 | F | T | 7.0 | − |\n| 6 | F | T | 3.0 | − |\n| 7 | F | F | 8.0 | − |\n| 8 | T | F | 7.0 | + |\n| 9 | F | T | 5.0 | − |\n\nTính **entropy** của tập theo thuộc tính lớp.",
+      "hints": [
+        "Entropy = −Σ p_i log2(p_i).",
+        "Đếm số + và số −, mỗi nhóm chia cho 9."
+      ],
+      "solution": "Đếm lớp: **+** = {1,2,4,8} = 4; **−** = {3,5,6,7,9} = 5. Tổng = 9.\n\n- p(+) = 4/9 = 0.444; p(−) = 5/9 = 0.556.\n\nEntropy = −p(+)·log2 p(+) − p(−)·log2 p(−)\n- −0.444·log2(0.444) = −0.444·(−1.170) = 0.520\n- −0.556·log2(0.556) = −0.556·(−0.848) = 0.471\n\n**Entropy = 0.520 + 0.471 = 0.991 bit.**\n\n(Gần 1 vì hai lớp gần cân bằng 4/5.)",
+      "tags": [
+        "entropy",
+        "phân lớp",
+        "cơ bản"
+      ]
+    },
+    {
+      "id": "e-013",
+      "topicId": "t-classify",
+      "title": "Information Gain của thuộc tính",
+      "difficulty": "hard",
+      "problem": "Dùng lại tập 9 mẫu (entropy gốc = 0.991):\n\n| Instance | a1 | a2 | Class |\n|----|----|----|----|\n| 1 | T | T | + |\n| 2 | T | T | + |\n| 3 | T | F | − |\n| 4 | F | F | + |\n| 5 | F | T | − |\n| 6 | F | T | − |\n| 7 | F | F | − |\n| 8 | T | F | + |\n| 9 | F | T | − |\n\nTính **information gain** của a1 và a2. Thuộc tính nào tốt hơn?",
+      "hints": [
+        "Gain(A) = Entropy(gốc) − Σ (|Sv|/|S|)·Entropy(Sv).",
+        "Tách theo từng giá trị T/F, đếm +/− trong mỗi nhánh."
+      ],
+      "solution": "Entropy gốc = 0.991 (4 +, 5 −).\n\n**Thuộc tính a1:**\n- a1 = T: {1,2,3,8} → +,+,−,+ = 3+, 1−.\n  Entropy = −(3/4)log2(3/4) − (1/4)log2(1/4) = 0.75·0.415 + 0.25·2 = 0.311 + 0.5 = 0.811.\n- a1 = F: {4,5,6,7,9} → +,−,−,−,− = 1+, 4−.\n  Entropy = −(1/5)log2(1/5) − (4/5)log2(4/5) = 0.2·2.322 + 0.8·0.322 = 0.464 + 0.258 = 0.722.\n- Entropy có trọng số = (4/9)·0.811 + (5/9)·0.722 = 0.360 + 0.401 = 0.761.\n- **Gain(a1) = 0.991 − 0.761 = 0.230.**\n\n**Thuộc tính a2:**\n- a2 = T: {1,2,5,6,9} → +,+,−,−,− = 2+, 3−.\n  Entropy = −(2/5)log2(2/5) − (3/5)log2(3/5) = 0.4·1.322 + 0.6·0.737 = 0.529 + 0.442 = 0.971.\n- a2 = F: {3,4,7,8} → −,+,−,+ = 2+, 2−. Entropy = 1.0.\n- Entropy có trọng số = (5/9)·0.971 + (4/9)·1.0 = 0.539 + 0.444 = 0.984.\n- **Gain(a2) = 0.991 − 0.984 = 0.007.**\n\n**Kết luận:** Gain(a1) = 0.230 ≫ Gain(a2) = 0.007 ⇒ **a1 tốt hơn** (được chọn làm điểm chia ở gốc).",
+      "tags": [
+        "information gain",
+        "decision tree",
+        "entropy"
+      ]
+    },
+    {
+      "id": "e-014",
+      "topicId": "t-classify",
+      "title": "Information gain cho thuộc tính liên tục",
+      "difficulty": "hard",
+      "problem": "Cho thuộc tính liên tục a3 và nhãn lớp (đã sắp tăng theo a3):\n\n| a3 | 1.0 | 3.0 | 4.0 | 5.0 | 5.0 | 6.0 | 7.0 | 7.0 | 8.0 |\n|----|----|----|----|----|----|----|----|----|----|\n| Class | + | − | + | − | − | + | − | + | − |\n\nTập có 4 lớp + và 5 lớp − (entropy gốc 0.991). Xét điểm chia tại **a3 ≤ 2.0** (ngưỡng giữa 1.0 và 3.0). Tính information gain của điểm chia này.",
+      "hints": [
+        "Với thuộc tính liên tục, xét ngưỡng giữa hai giá trị liền kề; chia thành (≤ ngưỡng) và (> ngưỡng)."
+      ],
+      "solution": "Entropy gốc = 0.991 (4+, 5−), N = 9.\n\n**Điểm chia a3 ≤ 2.0:**\n- Nhánh a3 ≤ 2.0: chỉ gồm giá trị 1.0 → lớp +. → 1+, 0−. Entropy = 0.\n- Nhánh a3 > 2.0: 8 mẫu còn lại → 3+ (4.0, 6.0, 7.0→+) và 5−.\n  Đếm: {3.0:−, 4.0:+, 5.0:−, 5.0:−, 6.0:+, 7.0:−, 7.0:+, 8.0:−} = 3+, 5−.\n  Entropy = −(3/8)log2(3/8) − (5/8)log2(5/8) = 0.375·1.415 + 0.625·0.678 = 0.531 + 0.424 = 0.954.\n\n**Entropy có trọng số** = (1/9)·0 + (8/9)·0.954 = 0.848.\n\n**Gain = 0.991 − 0.848 = 0.143.**\n\n**Nhận xét:** tách 1 mẫu thuần lớp + ra giúp giảm entropy đáng kể (Gain = 0.143). Để tìm điểm chia tối ưu ta lặp lại cho mọi ngưỡng và chọn gain lớn nhất.",
+      "tags": [
+        "information gain",
+        "thuộc tính liên tục",
+        "điểm chia"
+      ]
+    },
+    {
+      "id": "e-015",
+      "topicId": "t-classify",
+      "title": "Chỉ số Gini của nút và lựa chọn split",
+      "difficulty": "medium",
+      "problem": "Một nút cha P được chia thành hai nút con C1, C2 bởi một điều kiện kiểm tra:\n\n| | P | C1 | C2 |\n|---|---|---|---|\n| Class 0 | 7 | 3 | 4 |\n| Class 1 | 3 | 0 | 3 |\n\n1. Tính chỉ số **Gini** và **misclassification error** của nút cha P.\n2. Tính **Gini có trọng số** của hai nút con. Có nên chọn split này (theo Gini) không?",
+      "hints": [
+        "Gini(t) = 1 − Σ p_i². Misclass error = 1 − max p_i.",
+        "Gini split = Σ (n_con/n_cha)·Gini(con). So sánh với Gini(cha)."
+      ],
+      "solution": "**1. Nút cha P** (7 lớp 0, 3 lớp 1, tổng 10):\n- p0 = 0.7, p1 = 0.3.\n- Gini(P) = 1 − (0.7² + 0.3²) = 1 − (0.49 + 0.09) = **0.42**.\n- Misclass error(P) = 1 − max(0.7, 0.3) = **0.30**.\n\n**2. Nút con:**\n- C1 (3 lớp 0, 0 lớp 1, n=3): Gini = 1 − (1² + 0²) = **0** (thuần).\n- C2 (4 lớp 0, 3 lớp 1, n=7): p0 = 4/7 = 0.571, p1 = 3/7 = 0.429.\n  Gini = 1 − (0.571² + 0.429²) = 1 − (0.327 + 0.184) = **0.490**.\n- Gini có trọng số = (3/10)·0 + (7/10)·0.490 = 0 + 0.343 = **0.343**.\n\n**Kết luận:** Gini sau split (0.343) < Gini cha (0.42) ⇒ độ thuần khiết tăng, **Gini giảm 0.077** ⇒ **nên chọn** điều kiện kiểm tra này.",
+      "tags": [
+        "Gini",
+        "split",
+        "decision tree"
+      ]
+    },
+    {
+      "id": "e-016",
+      "topicId": "t-classify",
+      "title": "Gini index của thuộc tính nhiều giá trị (multiway split)",
+      "difficulty": "hard",
+      "problem": "Cho tập 20 mẫu, thuộc tính **Car Type** (Family/Sports/Luxury) và lớp (C0/C1):\n\n| Car Type | C0 | C1 |\n|----------|----|----|\n| Family | 1 | 3 |\n| Sports | 8 | 0 |\n| Luxury | 1 | 7 |\n\nToàn tập có 10 mẫu C0 và 10 mẫu C1. Tính **Gini của toàn tập** và **Gini có trọng số của Car Type** (multiway split).",
+      "hints": [
+        "Gini(node) = 1 − Σ p². Gini(attr) = Σ (n_v/N)·Gini(node_v)."
+      ],
+      "solution": "N = 20, toàn tập 10 C0 / 10 C1.\n\n**Gini toàn tập:** 1 − (0.5² + 0.5²) = 1 − 0.5 = **0.5**.\n\n**Gini từng giá trị:**\n- Family (n=4: 1 C0, 3 C1): 1 − ((1/4)² + (3/4)²) = 1 − (0.0625 + 0.5625) = **0.375**.\n- Sports (n=8: 8 C0, 0 C1): 1 − (1² + 0²) = **0** (thuần).\n- Luxury (n=8: 1 C0, 7 C1): 1 − ((1/8)² + (7/8)²) = 1 − (0.0156 + 0.7656) = **0.219**.\n\n**Gini có trọng số:**\n= (4/20)·0.375 + (8/20)·0 + (8/20)·0.219\n= 0.2·0.375 + 0 + 0.4·0.219\n= 0.075 + 0.0875\n= **0.1625**.\n\n**Nhận xét:** Gini giảm từ 0.5 → 0.1625 ⇒ Car Type chia rất tốt (nhất là nhánh Sports thuần khiết).",
+      "tags": [
+        "Gini",
+        "multiway split",
+        "thuộc tính"
+      ]
+    },
+    {
+      "id": "e-017",
+      "topicId": "t-classify",
+      "title": "Phân lớp Naive Bayes",
+      "difficulty": "hard",
+      "problem": "Cho tập huấn luyện \"Chơi tennis\" (14 mẫu):\n\n| Day | Outlook | Temp | Humidity | Wind | Play |\n|----|---------|------|----------|------|------|\n| 1 | Sunny | Hot | High | Weak | No |\n| 2 | Sunny | Hot | High | Strong | No |\n| 3 | Overcast | Hot | High | Weak | Yes |\n| 4 | Rain | Mild | High | Weak | Yes |\n| 5 | Rain | Cool | Normal | Weak | Yes |\n| 6 | Rain | Cool | Normal | Strong | No |\n| 7 | Overcast | Cool | Normal | Strong | Yes |\n| 8 | Sunny | Mild | High | Weak | No |\n| 9 | Sunny | Cool | Normal | Weak | Yes |\n| 10 | Rain | Mild | Normal | Weak | Yes |\n| 11 | Sunny | Mild | Normal | Strong | Yes |\n| 12 | Overcast | Mild | High | Strong | Yes |\n| 13 | Overcast | Hot | Normal | Weak | Yes |\n| 14 | Rain | Mild | High | Strong | No |\n\nDùng **Naive Bayes** để phân lớp mẫu mới **X = (Outlook=Sunny, Temp=Cool, Humidity=High, Wind=Strong)**.",
+      "hints": [
+        "P(class|X) ∝ P(class)·Π P(attr_i | class).",
+        "Đếm tần suất có điều kiện trong từng lớp Yes/No."
+      ],
+      "solution": "Tổng: **Yes = 9, No = 5** → P(Yes) = 9/14, P(No) = 5/14.\n\n**Xác suất điều kiện cho lớp Yes (9 mẫu):**\n- P(Sunny|Yes) = 2/9 (ngày 9, 11)\n- P(Cool|Yes) = 3/9 (ngày 5, 7, 9)\n- P(High|Yes) = 3/9 (ngày 3, 4, 12)\n- P(Strong|Yes) = 3/9 (ngày 7, 11, 12)\n\nP(Yes|X) ∝ (9/14)·(2/9)·(3/9)·(3/9)·(3/9)\n= 0.643 · 0.2222 · 0.3333 · 0.3333 · 0.3333\n= **0.00529**.\n\n**Xác suất điều kiện cho lớp No (5 mẫu):**\n- P(Sunny|No) = 3/5 (ngày 1, 2, 8)\n- P(Cool|No) = 1/5 (ngày 6)\n- P(High|No) = 4/5 (ngày 1, 2, 8, 14)\n- P(Strong|No) = 3/5 (ngày 2, 6, 14)\n\nP(No|X) ∝ (5/14)·(3/5)·(1/5)·(4/5)·(3/5)\n= 0.357 · 0.6 · 0.2 · 0.8 · 0.6\n= **0.02057**.\n\n**So sánh:** P(No|X) = 0.02057 > P(Yes|X) = 0.00529.\n\n**Kết luận: dự đoán Play = No.**",
+      "tags": [
+        "Naive Bayes",
+        "phân lớp",
+        "tennis"
+      ]
+    },
+    {
+      "id": "e-018",
+      "topicId": "t-classify",
+      "title": "Naive Bayes với hiệu chỉnh Laplace",
+      "difficulty": "medium",
+      "problem": "Dùng lại tập \"Chơi tennis\" (Yes=9, No=5). Phân lớp mẫu mới **X = (Outlook=Overcast, Wind=Strong)** chỉ với 2 thuộc tính.\n\nLưu ý: trong lớp **No**, Outlook=Overcast xuất hiện **0 lần** ⇒ dùng **hiệu chỉnh Laplace** (smoothing) cho thuộc tính Outlook (có 3 giá trị: Sunny/Overcast/Rain). Wind không cần Laplace.",
+      "hints": [
+        "Laplace: P(value|class) = (count + 1) / (n_class + số_giá_trị_thuộc_tính).",
+        "Outlook có 3 giá trị nên cộng 3 vào mẫu số."
+      ],
+      "solution": "P(Yes) = 9/14, P(No) = 5/14.\n\n**Thuộc tính Outlook (3 giá trị → Laplace cộng 1 / cộng 3):**\n- Lớp Yes: Overcast xuất hiện 4 lần → P(Overcast|Yes) = (4+1)/(9+3) = 5/12 = 0.4167.\n- Lớp No: Overcast xuất hiện 0 lần → P(Overcast|No) = (0+1)/(5+3) = 1/8 = 0.125.\n\n(Không có Laplace thì P(Overcast|No) = 0 làm cả tích = 0 — đó là lý do cần smoothing.)\n\n**Thuộc tính Wind (đếm thường):**\n- P(Strong|Yes) = 3/9 = 0.333.\n- P(Strong|No) = 3/5 = 0.6.\n\n**Tính:**\n- P(Yes|X) ∝ (9/14)·0.4167·0.333 = 0.643·0.1389 = **0.0893**.\n- P(No|X) ∝ (5/14)·0.125·0.6 = 0.357·0.075 = **0.0268**.\n\n**Kết luận:** 0.0893 > 0.0268 ⇒ **dự đoán Play = Yes** (Overcast là dấu hiệu mạnh của lớp Yes).",
+      "tags": [
+        "Naive Bayes",
+        "Laplace",
+        "smoothing"
+      ]
+    },
+    {
+      "id": "e-019",
+      "topicId": "t-classify",
+      "title": "Precision, Recall, F1 từ confusion matrix",
+      "difficulty": "medium",
+      "problem": "Một bộ phân lớp nhị phân (lớp dương = Positive) cho ma trận nhầm lẫn trên 200 mẫu kiểm thử:\n\n| | Dự đoán Positive | Dự đoán Negative |\n|---|---|---|\n| **Thực Positive** | 80 (TP) | 30 (FN) |\n| **Thực Negative** | 20 (FP) | 70 (TN) |\n\nTính **Accuracy, Precision, Recall, F1-score**.",
+      "hints": [
+        "Precision = TP/(TP+FP); Recall = TP/(TP+FN); F1 = 2·P·R/(P+R); Accuracy = (TP+TN)/Tổng."
+      ],
+      "solution": "TP = 80, FP = 20, FN = 30, TN = 70. Tổng = 200.\n\n**Accuracy** = (TP+TN)/Tổng = (80+70)/200 = 150/200 = **0.75 (75%)**.\n\n**Precision** = TP/(TP+FP) = 80/(80+20) = 80/100 = **0.80**.\n\n**Recall (Sensitivity)** = TP/(TP+FN) = 80/(80+30) = 80/110 = **0.727**.\n\n**F1-score** = 2·P·R/(P+R) = 2·0.80·0.727 / (0.80+0.727)\n= 1.1636 / 1.527 = **0.762**.\n\n**Nhận xét:** Precision (0.80) > Recall (0.727) ⇒ mô hình \"chắc chắn\" khi báo dương nhưng bỏ sót khá nhiều mẫu dương thật (30 FN).",
+      "tags": [
+        "precision",
+        "recall",
+        "F1",
+        "confusion matrix"
+      ]
+    },
+    {
+      "id": "e-020",
+      "topicId": "t-classify",
+      "title": "Confusion matrix đa lớp — precision/recall theo lớp",
+      "difficulty": "medium",
+      "problem": "Bài toán 3 lớp (A, B, C), ma trận nhầm lẫn (hàng = thực, cột = dự đoán):\n\n| | dự A | dự B | dự C |\n|---|---|---|---|\n| **thực A** | 30 | 5 | 5 |\n| **thực B** | 4 | 40 | 6 |\n| **thực C** | 6 | 4 | 50 |\n\nTính **precision** và **recall** cho lớp **B**, và **accuracy** tổng thể.",
+      "hints": [
+        "Với lớp B: TP = ô (B,B). Precision_B dùng tổng cột B; Recall_B dùng tổng hàng B.",
+        "Accuracy = tổng đường chéo / tổng tất cả."
+      ],
+      "solution": "**Lớp B:** TP = 40.\n- Tổng cột \"dự B\" = 5 + 40 + 4 = 49 ⇒ **Precision_B** = 40/49 = **0.816**.\n- Tổng hàng \"thực B\" = 4 + 40 + 6 = 50 ⇒ **Recall_B** = 40/50 = **0.80**.\n\n**Accuracy tổng thể:**\n- Đường chéo = 30 + 40 + 50 = 120.\n- Tổng tất cả ô = 30+5+5 + 4+40+6 + 6+4+50 = 40 + 50 + 60 = 150.\n- Accuracy = 120/150 = **0.80 (80%)**.",
+      "tags": [
+        "confusion matrix",
+        "đa lớp",
+        "precision",
+        "recall"
+      ]
+    },
+    {
+      "id": "e-021",
+      "topicId": "t-classify",
+      "title": "Misclassification error và chọn thuộc tính chia",
+      "difficulty": "medium",
+      "problem": "Cho nút gốc gồm 10 mẫu (6 lớp +, 4 lớp −). Hai thuộc tính ứng viên A, B chia như sau:\n\n**Chia theo A:** A=T → (4+, 0−); A=F → (2+, 4−).\n**Chia theo B:** B=T → (3+, 1−); B=F → (3+, 3−).\n\nDùng **misclassification error** làm tiêu chí, thuộc tính nào được chọn?",
+      "hints": [
+        "Error(node) = 1 − max(p+, p−). Error(split) = Σ trọng số · error(con).",
+        "Gain = Error(gốc) − Error(split). Chọn gain lớn hơn."
+      ],
+      "solution": "**Nút gốc** (6+, 4−): Error = 1 − max(6/10, 4/10) = 1 − 0.6 = **0.4**.\n\n**Chia theo A:**\n- A=T (4+,0−, n=4): error = 1 − 1 = 0.\n- A=F (2+,4−, n=6): error = 1 − max(2/6,4/6) = 1 − 0.667 = 0.333.\n- Error(A) = (4/10)·0 + (6/10)·0.333 = 0 + 0.2 = **0.2**.\n- Gain(A) = 0.4 − 0.2 = **0.2**.\n\n**Chia theo B:**\n- B=T (3+,1−, n=4): error = 1 − 3/4 = 0.25.\n- B=F (3+,3−, n=6): error = 1 − 3/6 = 0.5.\n- Error(B) = (4/10)·0.25 + (6/10)·0.5 = 0.1 + 0.3 = **0.4**.\n- Gain(B) = 0.4 − 0.4 = **0.0**.\n\n**Kết luận:** Gain(A) = 0.2 > Gain(B) = 0 ⇒ **chọn A**. (B không giảm error chút nào dù vẫn thay đổi phân bố — đây là nhược điểm của misclassification error so với Gini/entropy.)",
+      "tags": [
+        "misclassification error",
+        "split",
+        "decision tree"
+      ]
+    },
+    {
+      "id": "e-022",
+      "topicId": "t-classify",
+      "title": "Cây quyết định 2 mức bằng error rate",
+      "difficulty": "hard",
+      "problem": "Cho tập huấn luyện tóm tắt theo 3 thuộc tính nhị phân X, Y, Z (số mẫu mỗi lớp):\n\n| X | Y | Z | C1 | C2 |\n|---|---|---|----|----|\n| 0 | 0 | 0 | 5 | 40 |\n| 0 | 0 | 1 | 0 | 15 |\n| 0 | 1 | 0 | 10 | 5 |\n| 0 | 1 | 1 | 45 | 0 |\n| 1 | 0 | 0 | 10 | 5 |\n| 1 | 0 | 1 | 25 | 0 |\n| 1 | 1 | 0 | 5 | 20 |\n| 1 | 1 | 1 | 0 | 15 |\n\nChọn **thuộc tính chia ở gốc** (mức 1) theo classification error rate. (Tổng C1 = 100, C2 = 100.)",
+      "hints": [
+        "Với mỗi thuộc tính, gộp số mẫu theo giá trị 0/1, tính error mỗi nhánh, lấy trọng số.",
+        "Error gốc = 1 − max(100/200, 100/200) = 0.5."
+      ],
+      "solution": "Tổng: C1 = 100, C2 = 100, N = 200. Error gốc = 1 − 0.5 = 0.5.\n\n**Chia theo X:**\n- X=0: C1 = 5+0+10+45 = 60; C2 = 40+15+5+0 = 60. (n=120) error = 1 − 60/120 = 0.5.\n- X=1: C1 = 10+25+5+0 = 40; C2 = 5+0+20+15 = 40. (n=80) error = 1 − 40/80 = 0.5.\n- Error(X) = (120/200)·0.5 + (80/200)·0.5 = **0.5**. Gain = 0.\n\n**Chia theo Y:**\n- Y=0: C1 = 5+0+10+25 = 40; C2 = 40+15+5+0 = 60. (n=100) error = 1 − 60/100 = 0.4.\n- Y=1: C1 = 10+45+5+0 = 60; C2 = 5+0+20+15 = 40. (n=100) error = 1 − 60/100 = 0.4.\n- Error(Y) = 0.5·0.4 + 0.5·0.4 = **0.4**. Gain = 0.1.\n\n**Chia theo Z:**\n- Z=0: C1 = 5+10+10+5 = 30; C2 = 40+5+5+20 = 70. (n=100) error = 1 − 70/100 = 0.3.\n- Z=1: C1 = 0+45+25+0 = 70; C2 = 15+0+0+15 = 30. (n=100) error = 1 − 70/100 = 0.3.\n- Error(Z) = 0.5·0.3 + 0.5·0.3 = **0.3**. Gain = 0.2.\n\n**Kết luận:** Gain lớn nhất ở **Z** (0.2) ⇒ chọn **Z** làm thuộc tính chia ở gốc. (Lưu ý: X cho gain = 0 ở mức 1 dù có thể tốt ở mức sâu hơn — minh hoạ tính \"tham lam\" của thuật toán.)",
+      "tags": [
+        "decision tree",
+        "error rate",
+        "greedy"
+      ]
+    },
+    {
+      "id": "e-023",
+      "topicId": "t-classify",
+      "title": "Entropy của phân bố hai lớp",
+      "difficulty": "easy",
+      "problem": "Tính entropy (theo bit) cho một nút có phân bố lớp như sau:\n1. 8 mẫu lớp +, 0 mẫu lớp −.\n2. 4 mẫu +, 4 mẫu −.\n3. 6 mẫu +, 2 mẫu −.",
+      "hints": [
+        "Entropy = −Σ p log2 p; quy ước 0·log0 = 0."
+      ],
+      "solution": "**1. (8+, 0−):** p+ = 1, p− = 0. Entropy = −1·log2(1) − 0 = **0** (nút thuần khiết).\n\n**2. (4+, 4−):** p+ = p− = 0.5. Entropy = −0.5·(−1) − 0.5·(−1) = **1.0** (bất định tối đa).\n\n**3. (6+, 2−):** p+ = 0.75, p− = 0.25.\nEntropy = −0.75·log2(0.75) − 0.25·log2(0.25)\n= 0.75·0.415 + 0.25·2 = 0.311 + 0.5 = **0.811**.\n\n**Nhận xét:** entropy = 0 khi thuần, = 1 khi cân bằng 50/50, và nằm giữa khi lệch.",
+      "tags": [
+        "entropy",
+        "cơ bản"
+      ]
+    },
+    {
+      "id": "e-024",
+      "topicId": "t-classify",
+      "title": "Generalization error: optimistic vs pessimistic",
+      "difficulty": "medium",
+      "problem": "Một cây quyết định có **4 nút lá**, được huấn luyện trên **30 mẫu** và phạm **7 lỗi** trên tập huấn luyện.\n\n1. Tính generalization error theo phương pháp **lạc quan (optimistic)**.\n2. Tính theo phương pháp **bi quan (pessimistic)** với phạt 0.5 cho mỗi nút lá.",
+      "hints": [
+        "Optimistic = lỗi huấn luyện / tổng mẫu.",
+        "Pessimistic = (lỗi + 0.5·số_lá) / tổng mẫu."
+      ],
+      "solution": "Số lá = 4, lỗi huấn luyện = 7, N = 30.\n\n**1. Optimistic error** = 7/30 = **0.233 (23.3%)**.\n\n**2. Pessimistic error** = (7 + 0.5·4) / 30 = (7 + 2) / 30 = 9/30 = **0.30 (30%)**.\n\n**Nhận xét:** phương pháp bi quan cộng \"chi phí độ phức tạp\" 0.5 cho mỗi lá → ước lượng lỗi cao hơn (0.30 > 0.233), nhằm phạt cây quá lớn và chống overfitting.",
+      "tags": [
+        "generalization error",
+        "pruning",
+        "overfitting"
+      ]
+    },
+    {
+      "id": "e-025",
+      "topicId": "t-data",
+      "title": "Khoảng cách Euclidean, Manhattan, Supremum",
+      "difficulty": "easy",
+      "problem": "Cho hai điểm 2 chiều: **x = (1, 2)** và **y = (4, 6)**.\nTính khoảng cách:\n1. Manhattan (L1),\n2. Euclidean (L2),\n3. Supremum (L∞).",
+      "hints": [
+        "L1 = Σ|xi−yi|; L2 = √Σ(xi−yi)²; L∞ = max|xi−yi|."
+      ],
+      "solution": "Hiệu từng chiều: |1−4| = 3, |2−6| = 4.\n\n**1. Manhattan (L1):** |3| + |4| = **7**.\n\n**2. Euclidean (L2):** √(3² + 4²) = √(9 + 16) = √25 = **5**.\n\n**3. Supremum (L∞):** max(3, 4) = **4**.\n\n(Bộ số 3-4-5 quen thuộc của tam giác vuông.)",
+      "tags": [
+        "distance",
+        "Euclidean",
+        "Manhattan"
+      ]
+    },
+    {
+      "id": "e-026",
+      "topicId": "t-data",
+      "title": "Khoảng cách Minkowski bậc 3",
+      "difficulty": "medium",
+      "problem": "Cho hai điểm **x = (1, 2)**, **y = (4, 6)**. Tính khoảng cách **Minkowski bậc h = 3** (L3 norm):\n\nd(x,y) = ( Σ |xi − yi|^h )^(1/h).",
+      "hints": [
+        "Lấy hiệu tuyệt đối, lũy thừa 3, cộng, rồi căn bậc 3."
+      ],
+      "solution": "Hiệu: |1−4| = 3, |2−6| = 4.\n\nd = (3³ + 4³)^(1/3) = (27 + 64)^(1/3) = 91^(1/3).\n\n91^(1/3): vì 4³ = 64 và 4.5³ = 91.125 ≈ 91 ⇒ d ≈ **4.498**.\n\n**Nhận xét:** với cùng cặp điểm, L1 = 7, L2 = 5, L3 ≈ 4.50, L∞ = 4. Khi bậc h tăng, khoảng cách Minkowski giảm dần và tiến về L∞ = max = 4.",
+      "tags": [
+        "Minkowski",
+        "distance",
+        "norm"
+      ]
+    },
+    {
+      "id": "e-027",
+      "topicId": "t-data",
+      "title": "Chuẩn hóa z-score và min-max",
+      "difficulty": "medium",
+      "problem": "Cho thuộc tính tuổi với 5 giá trị: **{10, 20, 30, 40, 50}**.\n1. Chuẩn hóa **z-score** cho giá trị 10 và 50 (dùng độ lệch chuẩn tổng thể).\n2. Chuẩn hóa **min-max** về đoạn [0, 1] cho giá trị 20 và 40.",
+      "hints": [
+        "z = (x − μ)/σ với μ là trung bình, σ độ lệch chuẩn (tổng thể).",
+        "min-max: x_new = (x − min)/(max − min)."
+      ],
+      "solution": "**Trung bình** μ = (10+20+30+40+50)/5 = 150/5 = 30.\n\n**Độ lệch chuẩn (tổng thể):**\nPhương sai = [(10−30)² + (20−30)² + (30−30)² + (40−30)² + (50−30)²]/5\n= [400 + 100 + 0 + 100 + 400]/5 = 1000/5 = 200.\nσ = √200 = 14.142.\n\n**1. z-score:**\n- z(10) = (10 − 30)/14.142 = **−1.414**.\n- z(50) = (50 − 30)/14.142 = **+1.414**.\n\n**2. Min-max về [0,1]** (min = 10, max = 50, khoảng = 40):\n- x(20) = (20 − 10)/40 = **0.25**.\n- x(40) = (40 − 10)/40 = **0.75**.",
+      "tags": [
+        "normalization",
+        "z-score",
+        "min-max"
+      ]
+    },
+    {
+      "id": "e-028",
+      "topicId": "t-data",
+      "title": "Độ tương tự Cosine",
+      "difficulty": "medium",
+      "problem": "Cho hai vector tài liệu (term-frequency):\n**d1 = (1, 2, 3)**, **d2 = (2, 0, 4)**.\nTính **cosine similarity** cos(d1, d2).",
+      "hints": [
+        "cos = (d1·d2)/(||d1||·||d2||); ||d|| = √Σ d_i²."
+      ],
+      "solution": "**Tích vô hướng:** d1·d2 = 1·2 + 2·0 + 3·4 = 2 + 0 + 12 = 14.\n\n**Độ dài:**\n- ||d1|| = √(1² + 2² + 3²) = √(1+4+9) = √14 = 3.742.\n- ||d2|| = √(2² + 0² + 4²) = √(4+0+16) = √20 = 4.472.\n\n**Cosine:** cos = 14 / (3.742 · 4.472) = 14 / 16.733 = **0.837**.\n\n**Nhận xét:** cos ≈ 0.84 (gần 1) ⇒ hai tài liệu khá tương đồng về hướng (phân bố từ).",
+      "tags": [
+        "cosine",
+        "similarity",
+        "vector"
+      ]
+    },
+    {
+      "id": "e-029",
+      "topicId": "t-data",
+      "title": "Hệ số Jaccard cho thuộc tính nhị phân bất đối xứng",
+      "difficulty": "medium",
+      "problem": "Hai bệnh nhân với các xét nghiệm nhị phân bất đối xứng (Y = 1, N = 0):\n\n| Tên | Fever | Cough | Test-1 | Test-2 | Test-3 | Test-4 |\n|-----|-------|-------|--------|--------|--------|--------|\n| Jack | Y | N | P | N | N | N |\n| Mary | Y | N | P | N | P | N |\n\nTính **hệ số khoảng cách Jaccard** d(Jack, Mary) cho biến nhị phân bất đối xứng (bỏ qua cặp 0-0).",
+      "hints": [
+        "Lập bảng: q = số (1,1), r = số (1,0), s = số (0,1), t = số (0,0).",
+        "Jaccard distance = (r + s)/(q + r + s) — KHÔNG tính t."
+      ],
+      "solution": "Mã hóa (Y/P = 1, N = 0):\n- Jack = (1, 0, 1, 0, 0, 0)\n- Mary = (1, 0, 1, 0, 1, 0)\n\n**Đếm cặp:**\n- q (cả hai = 1): Fever, Test-1 → q = 2.\n- r (Jack=1, Mary=0): không có → r = 0.\n- s (Jack=0, Mary=1): Test-3 → s = 1.\n- t (cả hai = 0): Cough, Test-2, Test-4 → t = 3 (bỏ qua).\n\n**Khoảng cách Jaccard:**\nd = (r + s)/(q + r + s) = (0 + 1)/(2 + 0 + 1) = 1/3 = **0.33**.\n\n(Tương ứng độ tương tự Jaccard = q/(q+r+s) = 2/3 = 0.67.)",
+      "tags": [
+        "Jaccard",
+        "binary",
+        "asymmetric"
+      ]
+    },
+    {
+      "id": "e-030",
+      "topicId": "t-data",
+      "title": "Khoảng cách cho thuộc tính nominal",
+      "difficulty": "medium",
+      "problem": "Hai đối tượng được mô tả bởi 4 thuộc tính **nominal**:\n\n| | A1 | A2 | A3 | A4 |\n|---|----|----|----|----|\n| obj_i | red | small | round | metal |\n| obj_j | red | large | round | wood |\n\nTính độ **dissimilarity** d(i,j) cho thuộc tính nominal bằng phương pháp đối sánh đơn giản (simple matching): d = (p − m)/p.",
+      "hints": [
+        "p = tổng số thuộc tính; m = số thuộc tính khớp (giống nhau)."
+      ],
+      "solution": "p = 4 thuộc tính.\n\n**Đối sánh:**\n- A1: red = red ✓ (khớp)\n- A2: small ≠ large ✗\n- A3: round = round ✓ (khớp)\n- A4: metal ≠ wood ✗\n\n→ số khớp m = 2.\n\n**Dissimilarity:** d(i,j) = (p − m)/p = (4 − 2)/4 = 2/4 = **0.5**.\n\n(Độ tương tự sim = m/p = 0.5.)",
+      "tags": [
+        "nominal",
+        "dissimilarity",
+        "simple matching"
+      ]
+    },
+    {
+      "id": "e-031",
+      "topicId": "t-data",
+      "title": "Thống kê mô tả: trung bình, trung vị, mode",
+      "difficulty": "easy",
+      "problem": "Cho dãy dữ liệu (đã sắp xếp): **{3, 5, 7, 7, 8, 10, 12, 15}** (n = 8).\nTính: trung bình (mean), trung vị (median), mode, và khoảng tứ phân vị IQR (Q3 − Q1).",
+      "hints": [
+        "Median của n chẵn = trung bình 2 giá trị giữa.",
+        "Q1 là trung vị nửa dưới, Q3 là trung vị nửa trên."
+      ],
+      "solution": "Dãy: 3, 5, 7, 7, 8, 10, 12, 15 (n = 8).\n\n**Mean** = (3+5+7+7+8+10+12+15)/8 = 67/8 = **8.375**.\n\n**Median:** n chẵn ⇒ trung bình 2 giá trị giữa (vị trí 4 và 5) = (7 + 8)/2 = **7.5**.\n\n**Mode:** giá trị xuất hiện nhiều nhất = **7** (xuất hiện 2 lần).\n\n**Tứ phân vị:**\n- Nửa dưới {3, 5, 7, 7} → Q1 = (5+7)/2 = 6.\n- Nửa trên {8, 10, 12, 15} → Q3 = (10+12)/2 = 11.\n- **IQR = Q3 − Q1 = 11 − 6 = 5.**",
+      "tags": [
+        "statistics",
+        "mean",
+        "median",
+        "IQR"
+      ]
+    },
+    {
+      "id": "e-032",
+      "topicId": "t-data",
+      "title": "Phát hiện outlier bằng quy tắc 1.5·IQR",
+      "difficulty": "medium",
+      "problem": "Cho dãy: **{2, 4, 5, 6, 7, 8, 9, 10, 25}**. Biết Q1 = 5, Q3 = 9.\nXác định các giá trị **outlier** theo quy tắc 1.5·IQR.",
+      "hints": [
+        "IQR = Q3 − Q1. Outlier: x < Q1 − 1.5·IQR hoặc x > Q3 + 1.5·IQR."
+      ],
+      "solution": "Q1 = 5, Q3 = 9 ⇒ IQR = 9 − 5 = 4.\n\n**Ngưỡng:**\n- Dưới: Q1 − 1.5·IQR = 5 − 1.5·4 = 5 − 6 = −1.\n- Trên: Q3 + 1.5·IQR = 9 + 1.5·4 = 9 + 6 = 15.\n\n**Kiểm tra:** mọi giá trị < −1 hoặc > 15 là outlier.\n- Dãy {2,4,5,6,7,8,9,10,25}: chỉ **25 > 15** ⇒ outlier.\n\n**Kết luận:** giá trị **25** là outlier duy nhất.",
+      "tags": [
+        "outlier",
+        "IQR",
+        "boxplot"
+      ]
+    },
+    {
+      "id": "e-033",
+      "topicId": "t-sequence",
+      "title": "Kiểm tra chuỗi con (subsequence) và đếm support",
+      "difficulty": "easy",
+      "problem": "Cho CSDL chuỗi:\n\n| SID | Sequence |\n|-----|----------|\n| 1 | <(cd)(abc)(abf)(acdf)> |\n| 2 | <(abf)(e)> |\n| 3 | <(abf)> |\n| 4 | <(dgh)(bf)(agh)> |\n\n1. Chuỗi **<(d)(bf)>** có là chuỗi con của chuỗi 1? của chuỗi 4?\n2. Tính **support** của mẫu **<(d)(bf)>** (số chuỗi chứa nó). Với minSup = 2, nó có phổ biến không?",
+      "hints": [
+        "Chuỗi con: phải khớp theo đúng thứ tự itemset; itemset con phải nằm gọn trong một itemset của chuỗi.",
+        "(d) phải xuất hiện trước (bf) trong cùng một chuỗi."
+      ],
+      "solution": "**1. Kiểm tra chuỗi con <(d)(bf)>:**\n- Chuỗi 1 <(cd)(abc)(abf)(acdf)>: (d) ⊆ (cd) ở vị trí 1; sau đó cần (bf) ⊆ một itemset sau — (abf) chứa b,f ✓. → **là chuỗi con của chuỗi 1**.\n- Chuỗi 4 <(dgh)(bf)(agh)>: (d) ⊆ (dgh); sau đó (bf) ⊆ (bf) ✓. → **là chuỗi con của chuỗi 4**.\n\n**2. Support:** đếm số chuỗi chứa <(d)(bf)>:\n- Chuỗi 1 ✓, Chuỗi 2 ✗ (không có d), Chuỗi 3 ✗, Chuỗi 4 ✓ → support = **2**.\n\nVới minSup = 2: support = 2 ≥ 2 ⇒ <(d)(bf)> **là mẫu tuần tự phổ biến**.",
+      "tags": [
+        "subsequence",
+        "support",
+        "sequence"
+      ]
+    },
+    {
+      "id": "e-034",
+      "topicId": "t-sequence",
+      "title": "GSP/AprioriAll: sinh ứng viên và đếm support chuỗi",
+      "difficulty": "hard",
+      "problem": "Cho CSDL chuỗi (đã ánh xạ item về số):\n\n| SID | Sequence |\n|-----|----------|\n| 1 | <{1} {5}> |\n| 2 | <{1} {2,3,4}> |\n| 3 | <{1,3}> |\n| 4 | <{1} {2,3,4} {5}> |\n| 5 | <{5}> |\n\nminSup = 2. Cho biết L1 (1-sequence phổ biến) = <1>:4, <2>:2, <3>:3, <4>:2, <5>:3.\n1. Tính support các 2-sequence ứng viên: <1 2>, <1 3>, <2 3>, <2 5>, <3 5>.\n2. Liệt kê L2 (chỉ với các ứng viên trên).",
+      "hints": [
+        "<x y> nghĩa item x xuất hiện trong một itemset TRƯỚC item y (theo thứ tự thời gian).",
+        "Đếm số chuỗi chứa mẫu tuần tự đó."
+      ],
+      "solution": "Đếm support từng 2-sequence (item trước → item sau theo thứ tự):\n\n**<1 2>** (1 xuất hiện trước 2):\n- Chuỗi 2 <{1}{2,3,4}>: 1 rồi 2 ✓; Chuỗi 4 ✓. → support = **2**.\n\n**<1 3>**:\n- Chuỗi 2: 1 trước 3 ✓; Chuỗi 4 ✓; Chuỗi 3 <{1,3}>: 1 và 3 cùng itemset → 1 KHÔNG trước 3 ✗. → support = **2**.\n  (Lưu ý: nếu định nghĩa cho phép cùng itemset thì khác; ở đây <1 3> nghĩa 1 trước 3 ⇒ chuỗi 3 không tính. Tuy nhiên nhiều giáo trình tính <1 3> support = 3 nếu xét cả đồng thời — ta theo định nghĩa nghiêm ngặt \"trước\".)\n- Vậy support(<1 3>) = **2** (chuỗi 2, 4).\n\n**<2 3>**: cần 2 trước 3. Trong chuỗi 2 và 4, 2 và 3 cùng itemset {2,3,4} → không \"trước\". → support = **0**.\n\n**<2 5>**: 2 trước 5: chỉ chuỗi 4 <...{2,3,4}{5}> ✓. → support = **1**.\n\n**<3 5>**: 3 trước 5: chỉ chuỗi 4 ✓. → support = **1**.\n\n**L2 (support ≥ 2):** **<1 2>:2, <1 3>:2** (các ứng viên còn lại < 2 bị loại).\n\n**Ghi chú:** kết quả phụ thuộc quy ước \"cùng itemset có tính là trước không\"; ở đây dùng quy ước thứ tự nghiêm ngặt giữa các itemset.",
+      "tags": [
+        "GSP",
+        "AprioriAll",
+        "candidate",
+        "support"
+      ]
+    },
+    {
+      "id": "e-035",
+      "topicId": "t-sequence",
+      "title": "PrefixSpan: chiếu CSDL theo tiền tố",
+      "difficulty": "hard",
+      "problem": "Cho CSDL chuỗi, minSup = 2:\n\n| SID | Sequence |\n|-----|----------|\n| 1 | <(cd)(abc)(abf)(acdf)> |\n| 2 | <(abf)(e)> |\n| 3 | <(abf)> |\n| 4 | <(dgh)(bf)(agh)> |\n\n1. Xây dựng **CSDL chiếu theo tiền tố <a>** (D|<a>).\n2. Tìm các item phổ biến trong D|<a> (cả mở rộng itemset \"_x\" và mở rộng chuỗi \"x\") và suy ra các mẫu phổ biến có tiền tố <a> độ dài 2.",
+      "hints": [
+        "Chiếu theo <a>: với mỗi chuỗi, lấy phần SAU lần xuất hiện đầu tiên của a; nếu a nằm giữa itemset, phần còn lại của itemset ghi dạng (_...).",
+        "Item phổ biến: đếm theo chuỗi (mỗi chuỗi đếm 1 lần)."
+      ],
+      "solution": "**1. CSDL chiếu theo <a> (D|<a>):**\nVới mỗi chuỗi, tìm a đầu tiên, giữ phần còn lại (dấu \"_\" = phần đuôi của itemset chứa a):\n\n| SID | D|<a> |\n|-----|-------|\n| 1 | <(_bc)(abf)(acdf)> |\n| 2 | <(_bf)(e)> |\n| 3 | <(_bf)> |\n| 4 | <(_gh)> |\n\n(Chuỗi 1: a đầu tiên ở itemset (abc) → đuôi \"_bc\"; chuỗi 4: a ở (agh) → \"_gh\".)\n\n**2. Đếm item phổ biến trong D|<a>:**\n- \"_b\" (b cùng itemset với a, tức (ab)): xuất hiện ở chuỗi 1,2,3 → 3 ≥ 2 ✓.\n- \"f\" (mở rộng chuỗi, a → f): chuỗi 1 (abf), 2 (_bf), 3 (_bf) → 3 ≥ 2 ✓.\n- \"_g\", \"c\", \"e\"... < 2 → loại.\n\n**Mẫu phổ biến tiền tố <a> độ dài 2:**\n- **<(ab)>** : support 3 (mở rộng theo itemset).\n- **<(a)(f)>** : support 3 (mở rộng theo chuỗi).\n\nTiếp theo PrefixSpan đệ quy chiếu theo <(ab)> và <(a)(f)> để tìm mẫu dài hơn.",
+      "tags": [
+        "PrefixSpan",
+        "projected database",
+        "prefix"
+      ]
+    },
+    {
+      "id": "e-036",
+      "topicId": "t-sequence",
+      "title": "Đếm support theo SID trong định dạng dọc (SPADE)",
+      "difficulty": "medium",
+      "problem": "Trong SPADE, mỗi item lưu danh sách (SID, TID). Cho ID-list của hai item:\n\n**A:** (1,15) (1,20) (2,25) (3,10) (4,15)\n**B:** (1,15) (2,20) (3,25)\n\n1. Tính support của <A> và <B> (= số SID phân biệt).\n2. Kết theo thời gian (temporal join) để tính ID-list và support của chuỗi **<A → B>** (A xuất hiện TRƯỚC B trong cùng SID: cùng SID, TID_A < TID_B).",
+      "hints": [
+        "support = số SID phân biệt trong ID-list.",
+        "A→B: với mỗi SID chung, cần tồn tại TID_A < TID_B; kết quả ghi (SID, TID_B)."
+      ],
+      "solution": "**1. Support đơn:**\n- <A>: SID có mặt = {1, 2, 3, 4} → support = **4**.\n- <B>: SID = {1, 2, 3} → support = **3**.\n\n**2. Kết theo thời gian <A → B>** (cùng SID, TID_A < TID_B):\n- SID 1: A có TID 15,20; B có TID 15. Cần TID_A < 15 → không có (15 không < 15) → loại.\n- SID 2: A có TID 25; B có TID 20. 25 < 20? Không → loại.\n- SID 3: A có TID 10; B có TID 25. 10 < 25 ✓ → ghi (3, 25).\n- SID 4: B không có → bỏ.\n\nID-list(<A→B>) = {(3,25)}.\n**Support(<A → B>) = 1** (chỉ SID 3).\n\n**Nhận xét:** dù A và B đều khá phổ biến, ràng buộc thứ tự thời gian làm support của chuỗi <A→B> rất thấp (1).",
+      "tags": [
+        "SPADE",
+        "vertical format",
+        "temporal join"
+      ]
+    },
+    {
+      "id": "e-037",
+      "topicId": "t-ann",
+      "title": "Áp dụng mô hình Perceptron",
+      "difficulty": "easy",
+      "problem": "Cho perceptron với hàm dấu (sign), bias w0 = −0.4 và trọng số w1 = w2 = w3 = 0.3 trên 3 đầu vào (x1, x2, x3). Đầu ra:\n\nY = sign(0.3·x1 + 0.3·x2 + 0.3·x3 − 0.4),  với sign(z) = +1 nếu z ≥ 0, ngược lại −1.\n\nTính đầu ra Y cho các đầu vào:\n1. (1, 0, 1)\n2. (1, 0, 0)\n3. (1, 1, 1)",
+      "hints": [
+        "Tính tổng có trọng số S rồi áp dụng sign."
+      ],
+      "solution": "Công thức: S = 0.3·x1 + 0.3·x2 + 0.3·x3 − 0.4.\n\n**1. (1, 0, 1):** S = 0.3 + 0 + 0.3 − 0.4 = 0.2 ≥ 0 → Y = **+1**.\n\n**2. (1, 0, 0):** S = 0.3 + 0 + 0 − 0.4 = −0.1 < 0 → Y = **−1**.\n\n**3. (1, 1, 1):** S = 0.3 + 0.3 + 0.3 − 0.4 = 0.5 ≥ 0 → Y = **+1**.\n\n**Nhận xét:** mô hình này xấp xỉ hàm \"đa số\": Y = +1 khi ít nhất 2 trong 3 đầu vào bằng 1 (vì khi đó tổng 0.3·k ≥ 0.4 cần k ≥ 2). Trường hợp 1 (k=2) và 3 (k=3) cho +1; trường hợp 2 (k=1) cho −1. Đúng.",
+      "tags": [
+        "perceptron",
+        "sign",
+        "forward"
+      ]
+    },
+    {
+      "id": "e-038",
+      "topicId": "t-ann",
+      "title": "Quy tắc học Perceptron — cập nhật trọng số",
+      "difficulty": "hard",
+      "problem": "Perceptron với learning rate λ = 0.1, hàm sign (sign(z)=+1 nếu z ≥ 0, ngược lại −1). Trọng số hiện tại (w0, w1, w2, w3) = (0, 0, 0, 0); quy ước x0 = 1 (bias).\n\nQuy tắc cập nhật: **w_j ← w_j + λ·(y − f(w,x))·x_j**.\n\nCho mẫu huấn luyện đầu tiên: x = (x0=1, x1=1, x2=0, x3=0), nhãn y = −1.\n1. Tính f(w,x) hiện tại.\n2. Cập nhật trọng số sau mẫu này.",
+      "hints": [
+        "f = sign(Σ w_j x_j). Nếu f = y thì không cập nhật; sai số e = y − f ∈ {0, +2, −2}.",
+        "Chỉ những x_j khác 0 mới làm thay đổi w_j."
+      ],
+      "solution": "**1. Tính f hiện tại:**\nS = w0·1 + w1·1 + w2·0 + w3·0 = 0+0+0+0 = 0.\nsign(0) = +1 (quy ước z ≥ 0 → +1). → f(w,x) = **+1**.\n\n**2. Sai số:** e = y − f = −1 − (+1) = **−2** (≠ 0 ⇒ phải cập nhật).\n\nHệ số cập nhật mỗi trọng số = λ·e·x_j = 0.1·(−2)·x_j = −0.2·x_j.\n\n| j | x_j | Δw_j = −0.2·x_j | w_j mới |\n|---|-----|------|--------|\n| 0 | 1 | −0.2 | 0 + (−0.2) = **−0.2** |\n| 1 | 1 | −0.2 | **−0.2** |\n| 2 | 0 | 0 | **0** |\n| 3 | 0 | 0 | **0** |\n\n**Trọng số sau cập nhật: (w0, w1, w2, w3) = (−0.2, −0.2, 0, 0).**\n\n**Trực giác:** vì mô hình dự đoán +1 nhưng nhãn là −1 (dự đoán quá cao), trọng số bị **giảm** để lần sau tổng S nhỏ hơn → dễ ra −1 hơn.",
+      "tags": [
+        "perceptron",
+        "learning rule",
+        "weight update"
+      ]
+    },
+    {
+      "id": "e-039",
+      "topicId": "t-ann",
+      "title": "Vì sao Perceptron thất bại với XOR",
+      "difficulty": "medium",
+      "problem": "Cho dữ liệu XOR:\n\n| x1 | x2 | y |\n|----|----|---|\n| 0 | 0 | −1 |\n| 1 | 0 | +1 |\n| 0 | 1 | +1 |\n| 1 | 1 | −1 |\n\nGiả sử ta muốn tìm perceptron Y = sign(w1·x1 + w2·x2 − t). Chứng minh không tồn tại bộ (w1, w2, t) phân tách đúng cả 4 điểm.",
+      "hints": [
+        "Viết 4 bất phương trình từ điều kiện sign khớp nhãn rồi tìm mâu thuẫn."
+      ],
+      "solution": "Với Y = sign(w1·x1 + w2·x2 − t), điều kiện đúng nhãn:\n\n- (0,0)→ −1: w1·0 + w2·0 − t < 0 ⟹ **−t < 0 ⟹ t > 0**. … (1)\n- (1,0)→ +1: w1 − t ≥ 0 ⟹ **w1 ≥ t**. … (2)\n- (0,1)→ +1: w2 − t ≥ 0 ⟹ **w2 ≥ t**. … (3)\n- (1,1)→ −1: w1 + w2 − t < 0 ⟹ **w1 + w2 < t**. … (4)\n\n**Tìm mâu thuẫn:** Từ (2) và (3): w1 + w2 ≥ 2t.\nKết hợp (4): 2t ≤ w1 + w2 < t ⟹ **2t < t ⟹ t < 0**.\n\nNhưng (1) đòi **t > 0**. Mâu thuẫn (t > 0 và t < 0 không thể cùng đúng).\n\n**Kết luận:** không tồn tại (w1, w2, t) ⇒ XOR **không khả tách tuyến tính**, perceptron một lớp không học được. Cần mạng đa lớp (thêm lớp ẩn) để giải.",
+      "tags": [
+        "perceptron",
+        "XOR",
+        "linearly separable"
+      ]
+    },
+    {
+      "id": "e-040",
+      "topicId": "t-exercises",
+      "title": "Bài tổng hợp: Apriori đầy đủ + sinh luật",
+      "difficulty": "hard",
+      "problem": "Cho CSDL giao dịch:\n\n| TID | Items |\n|-----|-------|\n| 1 | M, O, N, K, E, Y |\n| 2 | D, O, N, K, E, Y |\n| 3 | M, A, K, E |\n| 4 | M, U, C, K, Y |\n| 5 | C, O, O, K, I, E |\n\nminsup = 3 (60%), minconf = 80%.\n1. Tìm tất cả itemset phổ biến.\n2. Từ itemset phổ biến lớn nhất, sinh các luật có confidence ≥ 80%.",
+      "hints": [
+        "Coi mỗi item là 1 lần (tập hợp). Đếm support 1-itemset trước.",
+        "Confidence(X→Y) = sup(X∪Y)/sup(X)."
+      ],
+      "solution": "Mỗi giao dịch là tập item (O lặp ở TID5 vẫn tính 1 lần):\n- T1 {M,O,N,K,E,Y}, T2 {D,O,N,K,E,Y}, T3 {M,A,K,E}, T4 {M,U,C,K,Y}, T5 {C,O,K,I,E}.\n\n**Bước 1 — 1-itemset (support):**\nK: T1-T5 = 5; E: T1,T2,T3,T5 = 4; O: T1,T2,T5 = 3; M: T1,T3,T4 = 3; Y: T1,T2,T4 = 3.\nCác item khác (N=2, D=1, A=1, U=1, C=2, I=1) < 3 → loại.\n**L1 = {K:5, E:4, O:3, M:3, Y:3}.**\n\n**Bước 2 — 2-itemset (chỉ ghép L1):**\n- {K,E}: T1,T2,T3,T5 = 4 ✓\n- {K,O}: T1,T2,T5 = 3 ✓\n- {K,M}: T1,T3,T4 = 3 ✓\n- {K,Y}: T1,T2,T4 = 3 ✓\n- {E,O}: T1,T2,T5 = 3 ✓\n- {E,M}: T1,T3 = 2 ✗\n- {E,Y}: T1,T2 = 2 ✗\n- {O,M}: T1 = 1 ✗; {O,Y}: T1,T2 = 2 ✗; {M,Y}: T1,T4 = 2 ✗\n**L2 = {KE:4, KO:3, KM:3, KY:3, EO:3}.**\n\n**Bước 3 — 3-itemset:**\n- {K,E,O}: cần KE,KO,EO ∈ L2 ✓. support: T1,T2,T5 = 3 ✓.\n- {K,E,M}: cần EM ∈ L2 ✗ → loại. Các ứng viên khác tương tự bị cắt.\n**L3 = {KEO:3}.** C4 = ∅ → dừng.\n\n**Bước 4 — Sinh luật từ {K,E,O} (sup 3), minconf 80%:**\n| Luật | conf = sup(KEO)/sup(vế trái) |\n|------|------|\n| K,E → O | 3/4 = 0.75 ✗ |\n| K,O → E | 3/3 = 1.00 ✓ |\n| E,O → K | 3/3 = 1.00 ✓ |\n| O → K,E | 3/3 = 1.00 ✓ |\n| K → E,O | 3/5 = 0.60 ✗ |\n| E → K,O | 3/4 = 0.75 ✗ |\n\n**Luật mạnh (conf ≥ 0.8):** {K,O}→{E}, {E,O}→{K}, {O}→{K,E}, tất cả confidence = 100%.",
+      "tags": [
+        "Apriori",
+        "sinh luật",
+        "tổng hợp",
+        "đề thi"
+      ]
+    },
+    {
+      "id": "e-041",
+      "topicId": "t-exercises",
+      "title": "Bài tổng hợp: cây quyết định một mức bằng Gini",
+      "difficulty": "hard",
+      "problem": "Cho tập huấn luyện 10 mẫu, 2 thuộc tính nhị phân A, B, lớp (+/−):\n\n| # | A | B | Class |\n|---|---|---|-------|\n| 1 | T | F | + |\n| 2 | T | T | + |\n| 3 | T | T | + |\n| 4 | T | F | − |\n| 5 | T | T | + |\n| 6 | F | F | − |\n| 7 | F | F | − |\n| 8 | F | F | − |\n| 9 | T | T | − |\n| 10 | T | F | − |\n\nDùng **Gini** để chọn thuộc tính chia ở gốc giữa A và B.",
+      "hints": [
+        "Gini(node) = 1 − Σ p². Gini(attr) = Σ trọng số · Gini(nhánh). Chọn Gini nhỏ hơn."
+      ],
+      "solution": "Tập gốc: + = {1,2,3,5} = 4; − = {4,6,7,8,9,10} = 6. (N=10)\nGini gốc = 1 − (0.4² + 0.6²) = 1 − (0.16+0.36) = 0.48.\n\n**Chia theo A:**\n- A=T: {1,2,3,4,5,9,10} (n=7): + = {1,2,3,5}=4, − = {4,9,10}=3.\n  Gini = 1 − ((4/7)² + (3/7)²) = 1 − (0.3265+0.1837) = 0.4898.\n- A=F: {6,7,8} (n=3): + = 0, − = 3 → Gini = 0.\n- Gini(A) = (7/10)·0.4898 + (3/10)·0 = **0.343**.\n\n**Chia theo B:**\n- B=T: {2,3,5,9} (n=4): + = {2,3,5}=3, − = {9}=1.\n  Gini = 1 − ((3/4)² + (1/4)²) = 1 − (0.5625+0.0625) = 0.375.\n- B=F: {1,4,6,7,8,10} (n=6): + = {1}=1, − = {4,6,7,8,10}=5.\n  Gini = 1 − ((1/6)² + (5/6)²) = 1 − (0.0278+0.6944) = 0.2778.\n- Gini(B) = (4/10)·0.375 + (6/10)·0.2778 = 0.15 + 0.1667 = **0.317**.\n\n**Kết luận:** Gini(B) = 0.317 < Gini(A) = 0.343 ⇒ **chọn B** làm thuộc tính chia ở gốc (Gini sau chia nhỏ hơn ⇒ độ thuần cao hơn).",
+      "tags": [
+        "Gini",
+        "decision tree",
+        "tổng hợp",
+        "đề thi"
+      ]
+    },
+    {
+      "id": "e-042",
+      "topicId": "t-exercises",
+      "title": "Bài tổng hợp: đánh giá mô hình từ kết quả dự đoán",
+      "difficulty": "medium",
+      "problem": "Một mô hình phân lớp nhị phân cho kết quả trên 10 mẫu kiểm thử (P = positive, N = negative):\n\n| Mẫu | Thực | Dự đoán |\n|-----|------|---------|\n| 1 | P | P |\n| 2 | P | P |\n| 3 | P | N |\n| 4 | N | P |\n| 5 | N | N |\n| 6 | P | P |\n| 7 | N | N |\n| 8 | P | N |\n| 9 | N | P |\n| 10 | N | N |\n\n1. Lập confusion matrix.\n2. Tính Accuracy, Precision, Recall, F1 (lớp dương = P).",
+      "hints": [
+        "Đếm TP, FP, FN, TN từ bảng. Lớp dương = P."
+      ],
+      "solution": "**Phân loại từng mẫu:**\n- TP (thực P, dự P): mẫu 1, 2, 6 → TP = 3.\n- FN (thực P, dự N): mẫu 3, 8 → FN = 2.\n- FP (thực N, dự P): mẫu 4, 9 → FP = 2.\n- TN (thực N, dự N): mẫu 5, 7, 10 → TN = 3.\n\n**1. Confusion matrix:**\n| | dự P | dự N |\n|---|---|---|\n| **thực P** | 3 (TP) | 2 (FN) |\n| **thực N** | 2 (FP) | 3 (TN) |\n\n**2. Các độ đo:**\n- Accuracy = (TP+TN)/10 = (3+3)/10 = **0.60**.\n- Precision = TP/(TP+FP) = 3/(3+2) = 3/5 = **0.60**.\n- Recall = TP/(TP+FN) = 3/(3+2) = 3/5 = **0.60**.\n- F1 = 2·P·R/(P+R) = 2·0.6·0.6/(0.6+0.6) = 0.72/1.2 = **0.60**.\n\n(Trường hợp đặc biệt: P = R nên F1 = P = R = 0.60.)",
+      "tags": [
+        "confusion matrix",
+        "F1",
+        "đánh giá",
+        "đề thi"
+      ]
+    },
+    {
+      "id": "e-043",
+      "topicId": "t-exercises",
+      "title": "Bài tổng hợp: ma trận khoảng cách Euclidean",
+      "difficulty": "medium",
+      "problem": "Cho 4 điểm 2 chiều:\n\n| Điểm | attr1 | attr2 |\n|------|-------|-------|\n| x1 | 1 | 2 |\n| x2 | 3 | 5 |\n| x3 | 2 | 0 |\n| x4 | 4 | 5 |\n\nLập **ma trận khoảng cách Euclidean** (tam giác dưới) giữa 4 điểm (làm tròn 2 chữ số).",
+      "hints": [
+        "d(xi,xj) = √((Δattr1)² + (Δattr2)²) cho từng cặp."
+      ],
+      "solution": "Tính từng cặp:\n- d(x1,x2) = √((1−3)²+(2−5)²) = √(4+9) = √13 = **3.61**.\n- d(x1,x3) = √((1−2)²+(2−0)²) = √(1+4) = √5 = **2.24**.\n- d(x1,x4) = √((1−4)²+(2−5)²) = √(9+9) = √18 = **4.24**.\n- d(x2,x3) = √((3−2)²+(5−0)²) = √(1+25) = √26 = **5.10**.\n- d(x2,x4) = √((3−4)²+(5−5)²) = √(1+0) = **1.00**.\n- d(x3,x4) = √((2−4)²+(0−5)²) = √(4+25) = √29 = **5.39**.\n\n**Ma trận khoảng cách (tam giác dưới):**\n| | x1 | x2 | x3 | x4 |\n|---|---|---|---|---|\n| **x1** | 0 | | | |\n| **x2** | 3.61 | 0 | | |\n| **x3** | 2.24 | 5.10 | 0 | |\n| **x4** | 4.24 | 1.00 | 5.39 | 0 |\n\nCặp gần nhau nhất: x2–x4 (1.00); xa nhất: x3–x4 (5.39).",
+      "tags": [
+        "distance matrix",
+        "Euclidean",
+        "đề thi"
+      ]
+    }
+  ]
+}

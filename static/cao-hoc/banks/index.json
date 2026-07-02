@@ -1,0 +1,37 @@
+[
+  {
+    "id": "python-co-ban",
+    "subject": "Python cơ bản — tự học từ 0",
+    "file": "python-co-ban.json",
+    "questionCount": 504,
+    "description": "Tự học Python từ 0 → NumPy/Pandas. Quiz + bài tập viết code chạy ngay trên trình duyệt (Pyodide)."
+  },
+  {
+    "id": "ai-prog",
+    "subject": "Lập trình cho trí tuệ nhân tạo nâng cao - HP2-K35",
+    "file": "ai-prog.json",
+    "questionCount": 692,
+    "description": "Python/NumPy/Pandas — bám sát slide & notebook giảng viên (ngân hàng lớn)"
+  },
+  {
+    "id": "data-mining",
+    "subject": "Khai thác dữ liệu lớn - HP2-K35",
+    "file": "data-mining.json",
+    "questionCount": 521,
+    "description": "Bài 1–5 + bài tập — bám sát slide giảng viên (ngân hàng lớn)"
+  },
+  {
+    "id": "nlp",
+    "subject": "Xử lý ngôn ngữ tự nhiên nâng cao - HP2-K35",
+    "file": "nlp.json",
+    "questionCount": 600,
+    "description": "NLP: giới thiệu, nhập nhằng, ngôn ngữ tự nhiên/hình thức, ngữ liệu — bám sát slide (NLP0–NLP3)"
+  },
+  {
+    "id": "seminar",
+    "subject": "Seminar đọc paper — TTNT K35",
+    "file": "seminar.json",
+    "questionCount": 267,
+    "description": "Đọc hiểu 5 paper (ChatKBQA, STQAD/STCQA, Temporal Normalization, CTDE-MARL, HARL) theo 6 chiều: ý tưởng · cách làm · dataset · liên hệ · đánh giá · cái mới của đánh giá"
+  }
+]
