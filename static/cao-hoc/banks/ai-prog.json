@@ -1,7 +1,7 @@
 {
   "id": "ai-prog",
   "subject": "Lập trình cho trí tuệ nhân tạo nâng cao - HP2-K35",
-  "version": "2.2",
+  "version": "2.3",
   "description": "Chủ đề 1: Python/NumPy/Pandas — bám sát slide & notebook giảng viên; ngân hàng lớn (nhiều agent + khử trùng lặp)",
   "topics": [
     {
@@ -13924,6 +13924,983 @@
       "tags": [
         "python",
         "pandas"
+      ]
+    },
+    {
+      "id": "q-569",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.array([250, 10], dtype=np.uint8)`. Kết quả của `a[0] + a[1]` là gì?",
+      "options": [
+        "260",
+        "4",
+        "-6",
+        "Báo lỗi OverflowError"
+      ],
+      "answer": 1,
+      "explanation": "Cả hai phần tử đều có dtype `uint8` (0-255), nên phép cộng được thực hiện **trong cùng dtype uint8** chứ không tự nâng cấp lên kiểu lớn hơn. 250 + 10 = 260, nhưng uint8 chỉ biểu diễn được 0-255 nên tràn số **âm thầm** (không báo lỗi): 260 mod 256 = 4.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "overflow"
+      ]
+    },
+    {
+      "id": "q-570",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `b = np.array([100, 50], dtype=np.int8)`. Kết quả của `b[0] + b[1]` là gì?",
+      "options": [
+        "150",
+        "-106",
+        "106",
+        "Báo lỗi ValueError"
+      ],
+      "answer": 1,
+      "explanation": "`int8` biểu diễn giá trị từ -128 đến 127. Tổng thực 100+50=150 vượt quá 127 nên tràn số theo kiểu bù 2 (wrap-around): 150 - 256 = -106. NumPy không báo lỗi khi tràn số nguyên có dấu.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "overflow"
+      ]
+    },
+    {
+      "id": "q-571",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `c = np.array([1, 2, 3], dtype=np.int32)`. `dtype` của `c + 1.5` là gì?",
+      "options": [
+        "int32",
+        "float32",
+        "float64",
+        "int64"
+      ],
+      "answer": 2,
+      "explanation": "Khi cộng mảng số nguyên với một số thực Python (`1.5`), NumPy không thể biểu diễn kết quả dưới dạng số nguyên nên phải nâng cấp (upcast) dtype. Kiểu số thực mặc định của NumPy là `float64`, nên kết quả có dtype `float64` bất kể dtype gốc của mảng số nguyên là gì.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "casting"
+      ]
+    },
+    {
+      "id": "q-572",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Trên hệ điều hành **Windows**, `np.array([1, 2, 3]).dtype` (không chỉ định dtype) mặc định là gì?",
+      "options": [
+        "int64",
+        "int32",
+        "int16",
+        "Luôn giống hệt trên mọi hệ điều hành"
+      ],
+      "answer": 1,
+      "explanation": "NumPy ánh xạ dtype số nguyên mặc định theo kiểu `long` của C trên hệ điều hành đang chạy. Trên Linux/macOS, `long` là 64-bit nên mặc định là `int64`; trên **Windows**, `long` chỉ 32-bit nên mặc định là `int32`. Đây là một bẫy phổ biến khi code chạy khác kết quả giữa Windows và Linux/macOS.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "platform"
+      ]
+    },
+    {
+      "id": "q-573",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "hard",
+      "question": "Trên Linux/macOS, `np.array([1, 2, 3]).dtype` mặc định là `int64`, nhưng trên Windows lại là `int32`, do NumPy ánh xạ theo kiểu `long` của C của hệ điều hành.",
+      "answer": true,
+      "explanation": "Đúng. Đây là khác biệt nền tảng thực sự của NumPy: dtype số nguyên mặc định theo `np.array()` không cố định `int64` trên mọi máy — nó phụ thuộc độ rộng bit của kiểu `long` trong C của hệ điều hành (64-bit trên Linux/macOS, 32-bit trên Windows).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "platform"
+      ]
+    },
+    {
+      "id": "q-574",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `a = np.arange(3)` (shape `(3,)`). `a[:, np.newaxis].shape` là gì?",
+      "options": [
+        "(3,)",
+        "(1, 3)",
+        "(3, 1)",
+        "(3, 3)"
+      ],
+      "answer": 2,
+      "explanation": "`np.newaxis` (tương đương `None`) chèn thêm một trục mới có kích thước 1 tại đúng vị trí nó xuất hiện trong chỉ số. `a[:, np.newaxis]` giữ nguyên trục gốc ở vị trí 0 rồi thêm trục mới ở vị trí 1, cho shape `(3, 1)` — biến mảng 1-D thành **vector cột**.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "newaxis",
+        "shape"
+      ]
+    },
+    {
+      "id": "q-575",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "question": "Với `a` là mảng 1-D, `a[np.newaxis, :]` và `np.expand_dims(a, axis=0)` cho ra cùng một `shape`.",
+      "answer": true,
+      "explanation": "Cả hai cách đều chèn một trục mới kích thước 1 vào vị trí axis=0 (đầu tiên): nếu `a.shape == (n,)` thì kết quả của cả hai đều có `shape == (1, n)`. `np.expand_dims` chỉ là một hàm tiện dụng thực hiện cùng thao tác với `np.newaxis`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "newaxis",
+        "expand_dims"
+      ]
+    },
+    {
+      "id": "q-576",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.array([1, 2, 3])` và `b = np.array([10, 20])`. Xét `m = a[:, None] * b[None, :]` (shape `(3, 2)`). Giá trị `m[2, 1]` là bao nhiêu?",
+      "options": [
+        "30",
+        "40",
+        "60",
+        "20"
+      ],
+      "answer": 2,
+      "explanation": "`a[:, None]` có shape `(3, 1)` = `[[1],[2],[3]]`; `b[None, :]` có shape `(1, 2)` = `[[10, 20]]`. Broadcasting nhân từng cặp cho ma trận `m` với `m[i, j] = a[i] * b[j]`. Tại `i=2, j=1`: `a[2] * b[1] = 3 * 20 = 60`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "broadcasting",
+        "newaxis"
+      ]
+    },
+    {
+      "id": "q-577",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "question": "Nếu gọi `np.random.seed(42)` ngay trước mỗi lần gọi `np.random.rand(3)`, hai lần chạy chương trình (ở hai lần thực thi khác nhau) sẽ luôn cho ra cùng một kết quả.",
+      "answer": true,
+      "explanation": "`np.random.seed(x)` khởi tạo lại trạng thái nội bộ của bộ sinh số ngẫu nhiên toàn cục (global RNG) về đúng một điểm xác định. Với cùng seed, chuỗi số \"ngẫu nhiên\" sinh ra sau đó hoàn toàn xác định (deterministic) và tái lập được, phục vụ mục đích debug/so sánh kết quả.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "random",
+        "reproducibility"
+      ]
+    },
+    {
+      "id": "q-578",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Chạy `np.random.choice(np.arange(10), size=15, replace=False)`. Điều gì xảy ra?",
+      "options": [
+        "Trả về mảng 15 phần tử, có thể lặp lại",
+        "Trả về mảng 10 phần tử (giới hạn ở kích thước quần thể)",
+        "Báo lỗi ValueError vì không thể lấy 15 phần tử khác nhau từ quần thể chỉ có 10 phần tử",
+        "Trả về mảng rỗng"
+      ],
+      "answer": 2,
+      "explanation": "Khi `replace=False`, `np.random.choice` lấy mẫu **không hoàn lại** nên số phần tử lấy ra (`size`) không thể vượt quá kích thước quần thể nguồn. Ở đây quần thể chỉ có 10 phần tử nhưng yêu cầu lấy 15, NumPy báo `ValueError: Cannot take a larger sample than population when 'replace=False'`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "random",
+        "choice"
+      ]
+    },
+    {
+      "id": "q-579",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "easy",
+      "question": "Với `replace=True` (mặc định), `np.random.choice` có thể trả về kết quả chứa các phần tử **trùng lặp**.",
+      "answer": true,
+      "explanation": "`replace=True` nghĩa là lấy mẫu **có hoàn lại**: sau mỗi lần chọn, phần tử được \"trả lại\" quần thể nên có thể được chọn lại ở lần sau, dẫn đến kết quả có thể chứa phần tử trùng lặp. Muốn đảm bảo không trùng phải đặt `replace=False`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "random",
+        "choice"
+      ]
+    },
+    {
+      "id": "q-580",
+      "topicId": "t-numpy",
+      "type": "fill",
+      "difficulty": "medium",
+      "question": "Tham số nào của `np.random.choice` dùng để chỉ định phân phối xác suất (không đều) khi lấy mẫu từng phần tử? (chỉ ghi tên tham số)",
+      "answer": [
+        "p"
+      ],
+      "explanation": "Tham số `p` nhận một mảng xác suất tương ứng với từng phần tử của quần thể nguồn (tổng phải bằng 1). Nếu không truyền `p`, mặc định lấy mẫu với phân phối đều (uniform).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "random",
+        "choice"
+      ]
+    },
+    {
+      "id": "q-581",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.array([1, 2, 3])` và `b = np.array([4, 5, 6])` (đều là mảng 1-D). Kết quả và kiểu dữ liệu của `a @ b` là gì?",
+      "options": [
+        "Mảng shape `(3,)`: `[4, 10, 18]`",
+        "Một số vô hướng (scalar) bằng 32",
+        "Mảng shape `(1, 3)`",
+        "Báo lỗi vì `@` chỉ dùng cho mảng 2-D"
+      ],
+      "answer": 1,
+      "explanation": "Với hai mảng **1-D**, `@` (cũng như `np.dot`) tính **tích vô hướng** (dot product): `1*4 + 2*5 + 3*6 = 4 + 10 + 18 = 32`, trả về một số vô hướng (mảng 0-D), không phải mảng element-wise.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "matmul",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "q-582",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `A = np.array([[1, 2, 3], [4, 5, 6]])` (shape `(2, 3)`) và `v = np.array([1, 0, 1])` (shape `(3,)`). Kết quả của `A @ v` là gì?",
+      "options": [
+        "`[4, 10]`",
+        "`[6, 15]`",
+        "Báo lỗi shape không khớp",
+        "`[[1, 0, 3], [4, 0, 6]]`"
+      ],
+      "answer": 0,
+      "explanation": "Khi nhân ma trận `(2,3)` với vector `(3,)`, NumPy coi `v` như vector cột `(3,1)` và trả về vector `(2,)`. Hàng 0: `1*1+2*0+3*1 = 4`. Hàng 1: `4*1+5*0+6*1 = 10`. Kết quả `[4, 10]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "matmul",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "q-583",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `v = np.array([1, 2, 3])` (shape `(3,)`) và `B = np.array([[1, 0], [0, 1], [1, 1]])` (shape `(3, 2)`). Kết quả của `v @ B` là gì?",
+      "options": [
+        "`[4, 5]`",
+        "`[3, 3]`",
+        "`[1, 2, 3]`",
+        "Báo lỗi shape không khớp"
+      ],
+      "answer": 0,
+      "explanation": "Khi nhân vector `(3,)` với ma trận `(3,2)`, NumPy coi `v` như vector hàng `(1,3)` rồi bỏ trục thừa, trả về vector `(2,)`. Cột 0: `1*1+2*0+3*1 = 4`. Cột 1: `1*0+2*1+3*1 = 5`. Kết quả `[4, 5]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "matmul",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "q-584",
+      "topicId": "t-numpy",
+      "type": "short",
+      "difficulty": "medium",
+      "question": "Viết một biểu thức NumPy (không dùng vòng lặp `for`) tương đương với đoạn code sau: `total = 0` rồi `for x in arr: total += x**2`.",
+      "answer": [
+        "np.sum(arr**2)",
+        "np.sum(arr ** 2)",
+        "(arr**2).sum()",
+        "(arr ** 2).sum()"
+      ],
+      "explanation": "Vòng lặp cộng dồn bình phương từng phần tử chính là tổng của mảng đã bình phương theo từng phần tử (vectorized): `np.sum(arr**2)`. NumPy tính `arr**2` element-wise rồi `sum()` cộng tất cả — nhanh hơn nhiều so với vòng lặp Python thuần.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "vectorization"
+      ]
+    },
+    {
+      "id": "q-585",
+      "topicId": "t-numpy",
+      "type": "short",
+      "difficulty": "medium",
+      "question": "Cho hai mảng `a`, `b` cùng shape. Viết biểu thức NumPy (không dùng vòng lặp) tính **tổng bình phương sai khác** giữa `a` và `b` (tương đương $\\sum (a_i - b_i)^2$).",
+      "answer": [
+        "np.sum((a - b)**2)",
+        "np.sum((a-b)**2)",
+        "np.sum((a - b) ** 2)",
+        "((a - b)**2).sum()"
+      ],
+      "explanation": "Nhờ vectorization, `a - b` tính hiệu element-wise, `(a-b)**2` bình phương từng phần tử, và `np.sum(...)` cộng tất cả lại — thay thế hoàn toàn vòng lặp Python `for i in range(len(a)): total += (a[i]-b[i])**2`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "vectorization"
+      ]
+    },
+    {
+      "id": "q-586",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.arange(5, dtype=np.int64)` (tức `[0, 1, 2, 3, 4]`, mỗi phần tử 8 byte). Dùng `numpy.lib.stride_tricks.as_strided(a, shape=(3, 3), strides=(8, 8))`. Kết quả là ma trận nào?",
+      "options": [
+        "`[[0,1,2],[1,2,3],[2,3,4]]`",
+        "`[[0,1,2],[3,4,0],[1,2,3]]`",
+        "`[[0,0,0],[1,1,1],[2,2,2]]`",
+        "Báo lỗi vì strides không hợp lệ"
+      ],
+      "answer": 0,
+      "explanation": "`as_strided` không copy dữ liệu — nó đọc bộ nhớ của `a` theo `strides` cho trước. `strides=(8,8)` nghĩa là mỗi bước sang **hàng** kế tiếp chỉ dịch 8 byte (1 phần tử), giống bước sang **cột**. Hàng 0 bắt đầu ở offset 0: đọc `a[0],a[1],a[2]=0,1,2`. Hàng 1 bắt đầu ở offset 8 (lệch 1 phần tử): `a[1],a[2],a[3]=1,2,3`. Hàng 2: `a[2],a[3],a[4]=2,3,4`. Đây là kỹ thuật tạo **sliding window** không tốn thêm bộ nhớ.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "stride",
+        "as_strided"
+      ]
+    },
+    {
+      "id": "q-587",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "hard",
+      "question": "Mảng trả về bởi `as_strided` là một **view** chia sẻ bộ nhớ với mảng gốc, nên sửa giá trị trên đó cũng làm thay đổi mảng gốc (kể cả khi các \"hàng\" của view chồng lấn dữ liệu nhau).",
+      "answer": true,
+      "explanation": "`as_strided` không kiểm tra biên hay tạo bản sao — nó chỉ tạo một cách \"nhìn\" khác vào cùng vùng bộ nhớ theo `shape`/`strides` tuỳ ý. Vì vậy các \"hàng\" chồng lấn (overlapping windows) thực chất trỏ đến cùng byte trong bộ nhớ gốc, và ghi vào view sẽ ảnh hưởng đồng thời nhiều vị trí — đây là công cụ mạnh nhưng rất dễ gây lỗi nếu dùng sai.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "stride",
+        "as_strided",
+        "view-copy"
+      ]
+    },
+    {
+      "id": "q-588",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Chạy `a = np.arange(10)`, `b = a[a > 5]`, rồi `b[0] = 100`. Giá trị của `a[6]` sau đó là bao nhiêu?",
+      "options": [
+        "100",
+        "6",
+        "0",
+        "10"
+      ],
+      "answer": 1,
+      "explanation": "Boolean mask indexing (`a[a > 5]`) luôn trả về một **bản sao (copy)**, không phải view. `b` là mảng độc lập `[6,7,8,9]`; sửa `b[0]=100` chỉ ảnh hưởng `b`, không lan sang `a`. `a[6]` vẫn giữ giá trị gốc là `6`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy",
+        "boolean-indexing"
+      ]
+    },
+    {
+      "id": "q-589",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Chạy `a = np.arange(10)`, `idx = np.array([2, 4, 6])`, rồi `a[idx] = 0`. Giá trị của `a[4]` sau đó là bao nhiêu?",
+      "options": [
+        "0",
+        "4",
+        "Không đổi vì fancy indexing chỉ đọc, không ghi được",
+        "Báo lỗi"
+      ],
+      "answer": 0,
+      "explanation": "Tuy **đọc** bằng fancy indexing (`a[idx]`) trả về bản sao, nhưng **gán giá trị qua fancy indexing** (`a[idx] = ...`) lại ghi trực tiếp vào các vị trí tương ứng trên mảng gốc `a` — đây là điểm khác biệt dễ gây nhầm lẫn. Sau lệnh gán, `a[2]=a[4]=a[6]=0`, nên `a[4] = 0`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy",
+        "fancy-indexing"
+      ]
+    },
+    {
+      "id": "q-590",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "hard",
+      "question": "`a[fancy_idx] = giá_trị` sẽ ghi trực tiếp vào mảng gốc `a` (không phải vào một bản sao), mặc dù việc **đọc** `a[fancy_idx]` lại trả về một bản sao độc lập.",
+      "answer": true,
+      "explanation": "Đây là điểm cần phân biệt rõ: fancy indexing khi **đọc** (`x = a[idx]`) tạo bản sao mới vì các phần tử được chọn không nằm liền kề theo một stride cố định. Nhưng khi dùng ở **vế trái** của phép gán (`a[idx] = v`), Python/NumPy thực hiện gán tại chỗ (in-place) lên đúng các phần tử đó của `a`, không tạo mảng trung gian.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy",
+        "fancy-indexing"
+      ]
+    },
+    {
+      "id": "q-591",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `a = np.arange(24).reshape(2, 3, 4)`. `a[..., 0].shape` là gì?",
+      "options": [
+        "(2, 3)",
+        "(2, 3, 1)",
+        "(3, 4)",
+        "(2, 4)"
+      ],
+      "answer": 0,
+      "explanation": "`...` (Ellipsis) tự động thay thế cho \"tất cả các trục còn lại\" — ở đây là 2 trục đầu (`2, 3`). Chỉ định `0` ở trục cuối (kích thước 4) chọn đúng 1 lát cắt, làm mất trục đó. Kết quả có shape `(2, 3)`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "indexing",
+        "ellipsis"
+      ]
+    },
+    {
+      "id": "q-592",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `A = np.array([[1, 2, 3], [4, 5, 6]])`. Kết quả của `np.cumsum(A, axis=1)` là gì?",
+      "options": [
+        "`[[1, 3, 6], [4, 9, 15]]`",
+        "`[[1, 2, 3], [5, 7, 9]]`",
+        "`[1, 3, 6, 10, 15, 21]`",
+        "`[[1, 3, 6], [10, 15, 21]]`"
+      ],
+      "answer": 0,
+      "explanation": "`axis=1` cộng dồn theo từng **hàng** (dọc theo cột). Hàng 0: `1, 1+2=3, 1+2+3=6`. Hàng 1: `4, 4+5=9, 4+5+6=15`. Kết quả `[[1,3,6],[4,9,15]]`, giữ nguyên shape `(2,3)`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "cumsum",
+        "axis"
+      ]
+    },
+    {
+      "id": "q-593",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `a = np.array([-5, 0, 5, 10])`. Kết quả của `np.clip(a, 0, 8)` là gì?",
+      "options": [
+        "`[-5, 0, 5, 10]`",
+        "`[0, 0, 5, 8]`",
+        "`[0, 0, 8, 8]`",
+        "`[0, 0, 0, 8]`"
+      ],
+      "answer": 1,
+      "explanation": "`np.clip(a, lo, hi)` giới hạn mỗi phần tử trong khoảng `[lo, hi]`: giá trị nhỏ hơn `lo` bị kéo lên `lo`, lớn hơn `hi` bị kéo xuống `hi`, giá trị nằm trong khoảng giữ nguyên. `-5 → 0`, `0 → 0`, `5` nằm trong `[0,8]` giữ nguyên `5`, `10 → 8`. Kết quả `[0, 0, 5, 8]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "clip"
+      ]
+    },
+    {
+      "id": "q-594",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `a = np.array([True, False, True, True])`. Giá trị của `a.sum()` là bao nhiêu?",
+      "options": [
+        "4",
+        "3",
+        "True",
+        "Báo lỗi vì không thể sum() mảng bool"
+      ],
+      "answer": 1,
+      "explanation": "Khi tính toán số học trên mảng `bool`, NumPy coi `True = 1` và `False = 0`. `a.sum()` đếm số phần tử `True`: có 3 giá trị `True` trong mảng, nên kết quả là `3` (dtype trả về là số nguyên, không phải bool).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "bool"
+      ]
+    },
+    {
+      "id": "q-595",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `A = np.array([[0, 1], [0, 0]])`. Kết quả của `np.any(A, axis=0)` là gì?",
+      "options": [
+        "`[False, True]`",
+        "`[True, False]`",
+        "`True`",
+        "`[False, False]`"
+      ],
+      "answer": 0,
+      "explanation": "`axis=0` gộp theo **cột** (duyệt xuống các hàng của từng cột). Cột 0: các giá trị `[0, 0]` → không có phần tử khác 0 → `False`. Cột 1: `[1, 0]` → có `1` (khác 0, coi là True) → `True`. Kết quả `[False, True]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "any",
+        "axis"
+      ]
+    },
+    {
+      "id": "q-596",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.array([1, 2, 3, 4, 5])`. Viết `mask = a > 1 & a < 4` (KHÔNG có dấu ngoặc quanh từng điều kiện). Điều gì xảy ra?",
+      "options": [
+        "`mask = [False, True, True, False, False]` như mong đợi",
+        "Báo lỗi vì toán tử `&` có độ ưu tiên **cao hơn** so sánh, làm biểu thức bị parse sai (ví dụ raise `ValueError: truth value of an array...`)",
+        "`mask` toàn `True`",
+        "`mask` toàn `False`"
+      ],
+      "answer": 1,
+      "explanation": "Trong Python, `&` (bitwise AND) có độ ưu tiên **cao hơn** các toán tử so sánh (`>`, `<`). Biểu thức được parse thành so sánh chuỗi (`a > (1 & a) < 4`), tương đương `(a > (1&a)) and ((1&a) < 4)` — mà `and` gọi `bool()` lên một mảng nhiều phần tử, gây `ValueError: truth value of an array with more than one element is ambiguous`. Cách viết đúng là `(a > 1) & (a < 4)` với ngoặc rõ ràng quanh từng điều kiện.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "boolean-indexing",
+        "operator-precedence"
+      ]
+    },
+    {
+      "id": "q-597",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `A = np.arange(1, 10).reshape(3, 3)` (tức `[[1,2,3],[4,5,6],[7,8,9]]`), `rows = np.array([[0], [1]])` (shape `(2,1)`), `cols = np.array([0, 1, 2])` (shape `(3,)`). Kết quả của `A[rows, cols]` là gì?",
+      "options": [
+        "`[[1, 2, 3], [4, 5, 6]]` (shape `(2, 3)`)",
+        "`[1, 5]` (shape `(2,)`)",
+        "Báo lỗi vì `rows` và `cols` khác shape",
+        "`[[1, 4, 7], [2, 5, 8]]`"
+      ],
+      "answer": 0,
+      "explanation": "`rows` shape `(2,1)` và `cols` shape `(3,)` được **broadcast** với nhau thành shape chung `(2,3)` trước khi lập chỉ số. Khối hàng 0 dùng chỉ số hàng `0` cho cả 3 cột: `A[0,0],A[0,1],A[0,2] = 1,2,3`. Khối hàng 1 dùng chỉ số hàng `1`: `A[1,0],A[1,1],A[1,2] = 4,5,6`. Kết quả `[[1,2,3],[4,5,6]]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "fancy-indexing",
+        "broadcasting"
+      ]
+    },
+    {
+      "id": "q-598",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `a = np.array([1, 2, 3])` và `b = np.array([1, 2])`. Kết quả của `np.outer(a, b)` là gì?",
+      "options": [
+        "`[[1,2],[2,4],[3,6]]`",
+        "`[[1,2,3],[2,4,6]]`",
+        "`[1,2,2,4,3,6]`",
+        "Báo lỗi vì `a`, `b` khác độ dài"
+      ],
+      "answer": 0,
+      "explanation": "`np.outer(a, b)` tính tích ngoài (outer product): phần tử `[i,j] = a[i] * b[j]`, cho ma trận shape `(len(a), len(b)) = (3,2)`. Hàng 0: `[1*1,1*2]=[1,2]`; hàng 1: `[2*1,2*2]=[2,4]`; hàng 2: `[3*1,3*2]=[3,6]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "outer",
+        "linear-algebra"
+      ]
+    },
+    {
+      "id": "q-599",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Cho `x = np.array([1, 2])` (độ dài 2) và `y = np.array([3, 4, 5])` (độ dài 3). `X, Y = np.meshgrid(x, y)` (mặc định `indexing='xy'`). `X.shape` là gì?",
+      "options": [
+        "(2, 3)",
+        "(3, 2)",
+        "(2,)",
+        "(3,)"
+      ],
+      "answer": 1,
+      "explanation": "Với `indexing='xy'` (mặc định), `np.meshgrid` trả về lưới có shape `(len(y), len(x))` — số hàng theo độ dài của tham số thứ hai (`y`), số cột theo độ dài tham số đầu (`x`). Ở đây `len(y)=3, len(x)=2` nên `X.shape = (3, 2)`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "meshgrid",
+        "shape"
+      ]
+    },
+    {
+      "id": "q-600",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "medium",
+      "question": "Sau `b = a` (không gọi `.copy()`), sửa `b[0]` cũng làm thay đổi `a[0]`, vì `b` chỉ là một tên khác trỏ tới cùng đối tượng ndarray.",
+      "answer": true,
+      "explanation": "Trong Python, `b = a` không tạo mảng mới — nó chỉ gán thêm một tên biến (reference) trỏ tới cùng đối tượng trong bộ nhớ. Muốn có một mảng độc lập thật sự, phải gọi tường minh `b = a.copy()`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy",
+        "alias"
+      ]
+    },
+    {
+      "id": "q-601",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `a = np.arange(6)` (tức `[0,1,2,3,4,5]`). Kết quả của `a.reshape(2, 3, order='F')` là gì?",
+      "options": [
+        "`[[0,1,2],[3,4,5]]`",
+        "`[[0,2,4],[1,3,5]]`",
+        "`[[0,3],[1,4],[2,5]]`",
+        "`[[5,4,3],[2,1,0]]`"
+      ],
+      "answer": 1,
+      "explanation": "`order='F'` (Fortran, column-major) điền dữ liệu vào mảng **theo cột trước** thay vì theo hàng (mặc định `order='C'`). Cột 0 nhận 2 phần tử đầu `0,1`; cột 1 nhận `2,3`; cột 2 nhận `4,5`. Ghép lại theo hàng: hàng 0 = `[0,2,4]`, hàng 1 = `[1,3,5]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "reshape",
+        "memory-order"
+      ]
+    },
+    {
+      "id": "q-602",
+      "topicId": "t-numpy",
+      "type": "truefalse",
+      "difficulty": "hard",
+      "question": "`np.ravel()` trả về **view** khi có thể (mảng liền kề bộ nhớ), chỉ trả về bản sao khi bắt buộc; trong khi `np.flatten()` (method) **luôn luôn** trả về bản sao.",
+      "answer": true,
+      "explanation": "Đây là khác biệt chính giữa hai hàm tưởng như giống nhau: `ravel()` ưu tiên tránh copy để tiết kiệm bộ nhớ, chỉ copy khi mảng không thể duỗi phẳng thành view hợp lệ (ví dụ sau khi transpose không liền kề). `flatten()` luôn trả về bản sao độc lập, an toàn hơn nhưng tốn bộ nhớ hơn.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy",
+        "ravel",
+        "flatten"
+      ]
+    },
+    {
+      "id": "q-603",
+      "topicId": "t-numpy",
+      "type": "short",
+      "difficulty": "medium",
+      "question": "Tên hàm/phương thức NumPy giống `flatten()` (duỗi mảng đa chiều thành 1-D) nhưng ưu tiên trả về **view** thay vì luôn copy?",
+      "answer": [
+        "ravel",
+        "np.ravel",
+        ".ravel()"
+      ],
+      "explanation": "`np.ravel(a)` (hoặc `a.ravel()`) duỗi phẳng mảng nhưng cố gắng trả về view (chia sẻ bộ nhớ) khi bố cục dữ liệu cho phép, khác với `flatten()` luôn tạo bản sao mới.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "ravel",
+        "view-copy"
+      ]
+    },
+    {
+      "id": "q-604",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "hard",
+      "question": "Cho `x = np.array([127], dtype=np.int8)`. Kết quả của `x + np.int8(1)` là gì?",
+      "options": [
+        "`[128]`",
+        "`[-128]`",
+        "`[0]`",
+        "Báo lỗi OverflowError"
+      ],
+      "answer": 1,
+      "explanation": "`int8` biểu diễn giá trị từ -128 đến 127 (7 bit cộng dấu). `127` là giá trị lớn nhất có thể biểu diễn; cộng thêm 1 vượt biên tràn số theo kiểu bù 2, quay vòng về giá trị nhỏ nhất: `128 - 256 = -128`. Đây là ví dụ kinh điển của tràn số nguyên có dấu, NumPy không tự cảnh báo.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "overflow"
+      ]
+    },
+    {
+      "id": "q-605",
+      "topicId": "t-numpy",
+      "type": "mcq",
+      "difficulty": "medium",
+      "question": "Kết quả của `np.array([True, False]) + np.array([1, 2])` là gì?",
+      "options": [
+        "`[2, 2]` (dtype số nguyên)",
+        "`[True, True]`",
+        "`[1, 2]`",
+        "Báo lỗi vì không cộng được bool với int"
+      ],
+      "answer": 0,
+      "explanation": "Khi cộng mảng `bool` với mảng số nguyên, NumPy tự nâng cấp (upcast) `bool` thành số nguyên (`True→1, False→0`) rồi cộng element-wise, kết quả có dtype số nguyên chứ không còn là `bool`. `True(1)+1=2`, `False(0)+2=2` → `[2, 2]`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "bool"
+      ]
+    },
+    {
+      "id": "q-606",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "hard",
+      "question": "Cho `a = np.arange(12)` (12 phần tử, `0..11`). Chọn TẤT CẢ biểu thức cho ra mảng có `shape = (3, 4)`.",
+      "options": [
+        "`a.reshape(3, 4)`",
+        "`a.reshape(4, 3).T`",
+        "`a.reshape(-1, 4)`",
+        "`a.reshape(4, -1)`"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "`a.reshape(3,4)` cho shape `(3,4)` trực tiếp. `a.reshape(4,3).T`: reshape ra `(4,3)` rồi chuyển vị thành `(3,4)`. `a.reshape(-1,4)`: NumPy tự suy `-1 = 12/4 = 3`, cho `(3,4)`. Riêng `a.reshape(4,-1)` suy `-1 = 12/4 = 3`, cho `(4,3)` — KHÔNG phải `(3,4)`.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "reshape",
+        "shape"
+      ]
+    },
+    {
+      "id": "q-607",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "medium",
+      "question": "Cho `a = np.arange(5)` (shape `(5,)`). Chọn TẤT CẢ cách tạo ra mảng có `shape = (1, 5)`.",
+      "options": [
+        "`a.reshape(1, 5)`",
+        "`a[np.newaxis, :]`",
+        "`np.expand_dims(a, axis=0)`",
+        "`a[:, np.newaxis]`"
+      ],
+      "answer": [
+        0,
+        1,
+        2
+      ],
+      "explanation": "Ba cách đầu đều chèn một trục kích thước 1 vào **vị trí đầu tiên** (axis=0), cho shape `(1, 5)`. Riêng `a[:, np.newaxis]` chèn trục mới vào **vị trí thứ hai** (axis=1), cho shape `(5, 1)` — biến `a` thành vector cột, không phải hàng.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "newaxis",
+        "shape"
+      ]
+    },
+    {
+      "id": "q-608",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "medium",
+      "question": "Chọn TẤT CẢ phát biểu ĐÚNG khi so sánh `np.dot` và `@`.",
+      "options": [
+        "Với hai mảng 2-D, `np.dot(A, B)` và `A @ B` cho cùng kết quả (nhân ma trận)",
+        "Với hai mảng 1-D, `np.dot(a, b)` tính tích vô hướng (scalar), giống hệt `a @ b`",
+        "`np.dot` xử lý mảng N-chiều (N>2) theo đúng quy tắc \"nhân theo từng batch ma trận\" giống `@`/`matmul`",
+        "`A * B` (nhân element-wise) luôn cho kết quả giống `A @ B` khi `A`, `B` là ma trận vuông cùng shape"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Với mảng 1-D và 2-D, `np.dot` và `@` tương đương nhau (A, B đúng). Nhưng với N>2 chiều, `np.dot` có ngữ nghĩa khác `@`/`matmul`: `np.dot` lấy tổng theo trục cuối của mảng đầu và trục áp út của mảng sau (không broadcast theo batch), còn `@` coi các trục thừa là các \"lô\" ma trận được nhân độc lập theo broadcasting (C sai). `A * B` là nhân từng phần tử tương ứng, hoàn toàn khác phép nhân ma trận trừ trường hợp đặc biệt (D sai).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "matmul",
+        "dot"
+      ]
+    },
+    {
+      "id": "q-609",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "hard",
+      "question": "Chọn TẤT CẢ cặp shape sẽ báo lỗi (`ValueError`) khi cộng hai mảng có shape tương ứng.",
+      "options": [
+        "`(3, 4)` và `(4,)`",
+        "`(3, 4)` và `(3,)`",
+        "`(3, 4)` và `(3, 1)`",
+        "`(2, 3, 4)` và `(3, 1)`"
+      ],
+      "answer": [
+        1
+      ],
+      "explanation": "Theo luật broadcasting (so từ trục cuối, đệm trái bằng 1 nếu thiếu trục): `(3,4)`&`(4,)` → đệm `(1,4)`, khớp `4` với `4` → OK. `(3,4)`&`(3,)` → đệm `(1,3)`, so với `(3,4)`: trục cuối `4` vs `3` không bằng nhau và không có trục nào bằng 1 → **lỗi**. `(3,4)`&`(3,1)` → trục cuối `4` vs `1` (1 broadcast được) → OK. `(2,3,4)`&`(3,1)` → đệm `(1,3,1)`, so với `(2,3,4)`: từng trục đều khớp hoặc bằng 1 → OK. Chỉ cặp thứ hai gây lỗi.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "broadcasting"
+      ]
+    },
+    {
+      "id": "q-610",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "medium",
+      "question": "Chọn TẤT CẢ phát biểu ĐÚNG về `np.newaxis`.",
+      "options": [
+        "`np.newaxis` thực chất chỉ là `None`",
+        "Dùng `np.newaxis` sẽ tạo ra một **bản sao dữ liệu** mới trong bộ nhớ",
+        "Có thể dùng nhiều `np.newaxis` trong cùng một lần lập chỉ số để thêm nhiều trục cùng lúc",
+        "`np.newaxis` chỉ dùng được ở vị trí **đầu tiên** của chỉ số, không dùng được ở giữa hoặc cuối"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "`np.newaxis is None` → `True`, nó chỉ là alias dễ đọc hơn cho `None` (A đúng). Việc thêm trục kích thước 1 không cần copy dữ liệu — kết quả vẫn là view chia sẻ bộ nhớ với mảng gốc (B sai). Có thể chèn nhiều `np.newaxis` cùng lúc, ví dụ `a[:, np.newaxis, np.newaxis]` để thêm 2 trục (C đúng). Vị trí đặt `np.newaxis` hoàn toàn tuỳ ý — đầu, giữa hay cuối chỉ số đều hợp lệ (D sai).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "newaxis"
+      ]
+    },
+    {
+      "id": "q-611",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "medium",
+      "question": "Chọn TẤT CẢ phát biểu ĐÚNG về nâng cấp dtype (type promotion) trong NumPy.",
+      "options": [
+        "`np.array([1], dtype=np.int32) + np.array([1], dtype=np.int64)` cho kết quả dtype `int64`",
+        "`np.array([1.0], dtype=np.float32) + np.array([1.0], dtype=np.float64)` cho kết quả dtype `float64`",
+        "So sánh (`==`) hai mảng có dtype số khác nhau (ví dụ `int32` và `int64`) luôn báo lỗi",
+        "`np.array([True, False]) + np.array([1, 2])` cho kết quả dtype `bool`"
+      ],
+      "answer": [
+        0,
+        1
+      ],
+      "explanation": "Khi cộng hai dtype số nguyên khác độ rộng, kết quả lấy dtype rộng hơn, đủ chứa cả hai (`int64`, A đúng). Giữa hai dtype float khác độ chính xác, dtype có độ chính xác cao hơn (`float64`) luôn thắng (B đúng). So sánh `==` giữa các dtype số khác nhau vẫn hoạt động bình thường nhờ broadcasting/casting ngầm, không báo lỗi (C sai). Cộng `bool` với `int` tự nâng cấp `bool` thành số nguyên, kết quả có dtype số nguyên chứ không còn `bool` (D sai).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "dtype",
+        "casting"
+      ]
+    },
+    {
+      "id": "q-612",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "medium",
+      "question": "Chọn TẤT CẢ phát biểu ĐÚNG về `np.random`.",
+      "options": [
+        "`np.random.seed(x)` đặt lại trạng thái của bộ sinh số ngẫu nhiên **toàn cục**, ảnh hưởng mọi lần gọi `np.random.*` sau đó",
+        "Hai lần gọi `np.random.rand(3)` liên tiếp (không seed lại giữa chừng) sẽ luôn cho cùng kết quả",
+        "`np.random.choice(a, size=n, replace=False)` yêu cầu `n <= len(a)`, nếu không sẽ báo lỗi",
+        "`np.random.permutation(a)` luôn thay đổi **tại chỗ** (in-place) mảng gốc `a`"
+      ],
+      "answer": [
+        0,
+        2
+      ],
+      "explanation": "`seed()` reset trạng thái RNG toàn cục dùng chung cho mọi hàm `np.random.*` gọi sau đó (A đúng). Hai lần gọi `rand()` liên tiếp KHÔNG seed lại sẽ cho hai kết quả khác nhau vì trạng thái RNG đã tiến triển sau lần gọi đầu (B sai). `choice` không hoàn lại đòi hỏi quần thể đủ lớn (C đúng). `np.random.permutation` trả về một **bản sao** đã xáo trộn, không đổi mảng gốc — muốn xáo trộn tại chỗ phải dùng `np.random.shuffle` (D sai).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "random"
+      ]
+    },
+    {
+      "id": "q-613",
+      "topicId": "t-numpy",
+      "type": "multi",
+      "difficulty": "hard",
+      "question": "Cho `a` là một mảng NumPy liền kề bộ nhớ (C-contiguous). Chọn TẤT CẢ thao tác dưới đây trả về **bản sao (copy)**, KHÔNG phải view.",
+      "options": [
+        "`a[1:3]` (basic slicing)",
+        "`a[a > 0]` (boolean mask)",
+        "`a[[0, 2, 4]]` (fancy indexing)",
+        "`a.reshape(2, 3)`",
+        "`a.flatten()`"
+      ],
+      "answer": [
+        1,
+        2,
+        4
+      ],
+      "explanation": "Basic slicing (`a[1:3]`) và `reshape()` trên mảng liền kề chỉ tạo **view** (chia sẻ bộ nhớ). Ngược lại, boolean mask indexing và fancy indexing (danh sách/mảng chỉ số) đều tạo **bản sao** vì các phần tử được chọn không nằm theo một stride cố định. `flatten()` (method, khác `ravel()`) cũng luôn tạo bản sao theo thiết kế.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "view-copy"
+      ]
+    },
+    {
+      "id": "q-614",
+      "topicId": "t-numpy",
+      "type": "fill",
+      "difficulty": "easy",
+      "question": "Tham số nào của `np.concatenate` dùng để chỉ định **trục** nối các mảng lại với nhau? (chỉ ghi tên tham số)",
+      "answer": [
+        "axis"
+      ],
+      "explanation": "`np.concatenate([a, b], axis=k)` nối các mảng dọc theo trục `k` (mặc định `axis=0`). Các trục còn lại (không phải trục nối) bắt buộc phải có kích thước giống nhau ở tất cả mảng đầu vào.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "concatenate"
+      ]
+    },
+    {
+      "id": "q-615",
+      "topicId": "t-numpy",
+      "type": "short",
+      "difficulty": "medium",
+      "question": "Cho `a = np.array([3, 1, 4, 1, 5, 9, 2, 6])`. Viết một biểu thức NumPy trả về **chỉ số** của phần tử lớn nhất trong `a`.",
+      "answer": [
+        "np.argmax(a)",
+        "a.argmax()"
+      ],
+      "explanation": "`np.argmax(a)` (hoặc phương thức `a.argmax()`) trả về chỉ số (index) của giá trị lớn nhất, ở đây là chỉ số `5` (giá trị `9`) — khác với `np.max(a)` trả về chính giá trị lớn nhất (`9`).",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "argmax"
+      ]
+    },
+    {
+      "id": "q-616",
+      "topicId": "t-numpy",
+      "type": "fill",
+      "difficulty": "hard",
+      "question": "Tên hàm trong module `numpy.lib.stride_tricks` cho phép tạo một mảng mới bằng cách tự định nghĩa thủ công `shape` và `strides` trên cùng vùng bộ nhớ (thường dùng để tạo sliding window)? (chỉ ghi tên hàm)",
+      "answer": [
+        "as_strided"
+      ],
+      "explanation": "`numpy.lib.stride_tricks.as_strided(x, shape=..., strides=...)` tạo view mới đọc bộ nhớ của `x` theo shape/strides tuỳ ý, không kiểm tra biên an toàn — công cụ mạnh để tạo sliding window/patch không tốn thêm bộ nhớ nhưng dễ gây lỗi nếu tính sai strides.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "stride",
+        "as_strided"
+      ]
+    },
+    {
+      "id": "q-617",
+      "topicId": "t-numpy",
+      "type": "short",
+      "difficulty": "medium",
+      "question": "Cho `A` shape `(3, 4)` và `b` shape `(4,)`. Viết biểu thức NumPy (tận dụng broadcasting, không dùng vòng lặp) để cộng `b` vào **từng hàng** của `A`.",
+      "answer": [
+        "A + b"
+      ],
+      "explanation": "Nhờ broadcasting, `A + b` tự động đệm `b` (shape `(4,)`) thành `(1, 4)` rồi \"nhân bản\" theo trục hàng để cộng vào cả 3 hàng của `A` — không cần viết vòng lặp `for` hay `np.tile(b, (3,1))` thủ công.",
+      "source": "Tổng hợp phong cách đề thi ĐH quốc tế (Stanford/Berkeley) — biên soạn lại",
+      "tags": [
+        "numpy",
+        "broadcasting"
       ]
     }
   ]

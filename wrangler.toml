@@ -1,0 +1,8 @@
+name = "nmnhut-dev"
+pages_build_output_dir = "public"
+compatibility_date = "2026-07-08"
+
+[[d1_databases]]
+binding = "magic_dust_telemetry"
+database_name = "magic-dust-telemetry"
+database_id = "d918d243-205a-45ff-933f-c6591dbe7ff8"

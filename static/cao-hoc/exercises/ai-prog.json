@@ -833,6 +833,387 @@
         "join",
         "derived-column"
       ]
+    },
+    {
+      "id": "e-050",
+      "topicId": "t-numpy",
+      "title": "Đặt giá trị âm về 0 (boolean indexing, ma trận mới)",
+      "difficulty": "easy",
+      "problem": "Cho ma trận số nguyên `arr` kích thước 3x3:\n```\n[[ 5 -2  3]\n [-4  7 -1]\n [ 2 -8  9]]\n```\nViết hàm `set_negative_zero(arr)` sửa **tại chỗ** (in-place) mọi phần tử âm thành 0, rồi in ma trận kết quả.",
+      "hints": [
+        "Dùng boolean mask `arr < 0` để chọn các phần tử âm.",
+        "Gán trực tiếp `arr[mask] = 0`, không cần vòng lặp."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef set_negative_zero(arr):\n    arr[arr < 0] = 0\n    return arr\n\narr = np.array([[5, -2, 3], [-4, 7, -1], [2, -8, 9]])\nset_negative_zero(arr)\nprint(arr)\n```\nBoolean indexing `arr < 0` tạo mask cùng shape, gán trực tiếp lên các vị trí `True` — nhanh hơn và ngắn hơn vòng lặp thủ công.",
+      "starterCode": "import numpy as np\n\ndef set_negative_zero(arr):\n    # TODO: đặt các phần tử âm trong arr về 0 (in-place)\n    pass\n\narr = np.array([[5, -2, 3], [-4, 7, -1], [2, -8, 9]])\nset_negative_zero(arr)\nprint(arr)\n",
+      "expectedOutput": "[[5 0 3]\n [0 7 0]\n [2 0 9]]",
+      "tags": [
+        "numpy",
+        "boolean-indexing",
+        "in-place"
+      ]
+    },
+    {
+      "id": "e-051",
+      "topicId": "t-numpy",
+      "title": "Đặt âm về 0 chỉ ở hàng chẵn (index 0,2,...)",
+      "difficulty": "medium",
+      "problem": "Cho ma trận số nguyên 4x3:\n```\n[[ 2 -3  4]\n [-5 -6  7]\n [-8  1 -9]\n [ 3 -2 -1]]\n```\nViết hàm `zero_negative_even_rows(arr)` chỉ đặt các phần tử âm thành 0 ở những **hàng có chỉ số chẵn** (0, 2, ...), giữ nguyên các hàng lẻ. Sửa in-place rồi in kết quả.",
+      "hints": [
+        "Duyệt qua từng hàng bằng `range(arr.shape[0])`, kiểm tra `row % 2 == 0`.",
+        "Với hàng chẵn, dùng slicing bước 1 kết hợp boolean mask trên đúng hàng đó: `arr[row][arr[row] < 0] = 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef zero_negative_even_rows(arr):\n    for row in range(arr.shape[0]):\n        if row % 2 == 0:\n            arr[row][arr[row] < 0] = 0\n    return arr\n\narr = np.array([[2, -3, 4], [-5, -6, 7], [-8, 1, -9], [3, -2, -1]])\nzero_negative_even_rows(arr)\nprint(arr)\n```\nChỉ áp boolean mask lên các hàng có index chẵn; hàng lẻ (index 1, 3) giữ nguyên kể cả giá trị âm.",
+      "starterCode": "import numpy as np\n\ndef zero_negative_even_rows(arr):\n    # TODO: đặt phần tử âm về 0 CHỈ ở các hàng có chỉ số chẵn (0, 2, ...)\n    pass\n\narr = np.array([[2, -3, 4], [-5, -6, 7], [-8, 1, -9], [3, -2, -1]])\nzero_negative_even_rows(arr)\nprint(arr)\n",
+      "expectedOutput": "[[ 2  0  4]\n [-5 -6  7]\n [ 0  1  0]\n [ 3 -2 -1]]",
+      "tags": [
+        "numpy",
+        "boolean-indexing",
+        "slicing"
+      ]
+    },
+    {
+      "id": "e-052",
+      "topicId": "t-numpy",
+      "title": "Ma trận bàn cờ (checkerboard) bằng slicing",
+      "difficulty": "medium",
+      "problem": "Viết hàm `checkerboard(n)` trả về ma trận vuông `n x n` kiểu bàn cờ, bắt đầu bằng 0 ở góc trên-trái, xen kẽ 0/1 (giống bàn cờ vua), **không dùng vòng lặp for**. Gọi với n = 5 và in kết quả.",
+      "hints": [
+        "Dùng slicing bước 2: `arr[1::2, ::2] = 1` cho các ô lệch hàng lẻ/cột chẵn.",
+        "Tương tự `arr[::2, 1::2] = 1` cho hàng chẵn/cột lẻ."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef checkerboard(n):\n    arr = np.zeros((n, n), dtype=np.int64)\n    arr[1::2, ::2] = 1\n    arr[::2, 1::2] = 1\n    return arr\n\nprint(checkerboard(5))\n```\nHai lệnh slicing gán 1 vào đúng các vị trí xen kẽ theo (hàng, cột) mà không cần lặp phần tử.",
+      "starterCode": "import numpy as np\n\ndef checkerboard(n):\n    # TODO: tạo ma trận bàn cờ n x n (0 ở góc trên-trái), không dùng vòng lặp\n    pass\n\nprint(checkerboard(5))\n",
+      "expectedOutput": "[[0 1 0 1 0]\n [1 0 1 0 1]\n [0 1 0 1 0]\n [1 0 1 0 1]\n [0 1 0 1 0]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "checkerboard"
+      ]
+    },
+    {
+      "id": "e-053",
+      "topicId": "t-numpy",
+      "title": "Ma trận viền 1, ruột 0 (4x6)",
+      "difficulty": "easy",
+      "problem": "Viết hàm `border_matrix(n, m)` trả về ma trận `n x m` có toàn bộ viền ngoài = 1, phần bên trong = 0. Gọi với n = 4, m = 6 và in kết quả.",
+      "hints": [
+        "Tạo ma trận toàn số 1 bằng `np.ones`, rồi đặt phần bên trong (bỏ viền) về 0 bằng slicing `arr[1:-1, 1:-1] = 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef border_matrix(n, m):\n    arr = np.ones((n, m), dtype=np.int64)\n    arr[1:-1, 1:-1] = 0\n    return arr\n\nprint(border_matrix(4, 6))\n```\nCách này ngắn hơn việc gán từng cạnh (`arr[0,:]`, `arr[-1,:]`, `arr[:,0]`, `arr[:,-1]`) vì chỉ cần 1 slicing cho phần ruột.",
+      "starterCode": "import numpy as np\n\ndef border_matrix(n, m):\n    # TODO: trả về ma trận n x m, viền = 1, phần trong = 0\n    pass\n\nprint(border_matrix(4, 6))\n",
+      "expectedOutput": "[[1 1 1 1 1 1]\n [1 0 0 0 0 1]\n [1 0 0 0 0 1]\n [1 1 1 1 1 1]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "border"
+      ]
+    },
+    {
+      "id": "e-054",
+      "topicId": "t-numpy",
+      "title": "Ma trận với đường chéo chính = 100 (n=5)",
+      "difficulty": "medium",
+      "problem": "Viết hàm `diag_hundred(n)`: tạo ma trận `n x n` chứa các số `0..n*n-1` theo thứ tự (dùng `np.arange` rồi `reshape`), sau đó đặt toàn bộ phần tử trên **đường chéo chính** thành 100, không dùng vòng lặp for. Gọi với n = 5 và in kết quả.",
+      "hints": [
+        "Đường chéo chính của ma trận đã `reshape(n, -1)` từ `arange(n*n)` nằm ở các chỉ số phẳng `0, n+1, 2(n+1), ...`.",
+        "Dùng slicing bước `n+1` trên mảng 1 chiều trước khi reshape: `arr[0::n+1] = 100`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef diag_hundred(n):\n    arr = np.arange(n * n)\n    arr[0::n + 1] = 100\n    return arr.reshape(n, -1)\n\nprint(diag_hundred(5))\n```\nVì reshape không đổi thứ tự bộ nhớ, chỉ số phẳng của đường chéo chính luôn cách đều `n+1` — slicing bước `n+1` chọn đúng các ô đó mà không cần lặp hàng/cột.",
+      "starterCode": "import numpy as np\n\ndef diag_hundred(n):\n    # TODO: ma trận n x n chứa 0..n*n-1, đường chéo chính = 100, không dùng vòng lặp\n    pass\n\nprint(diag_hundred(5))\n",
+      "expectedOutput": "[[100   1   2   3   4]\n [  5 100   7   8   9]\n [ 10  11 100  13  14]\n [ 15  16  17 100  19]\n [ 20  21  22  23 100]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "reshape"
+      ]
+    },
+    {
+      "id": "e-055",
+      "topicId": "t-numpy",
+      "title": "Nhân hai ma trận 3x3 không dùng np.dot",
+      "difficulty": "hard",
+      "problem": "Cho hai ma trận 3x3:\n```\na = [[1,2,3],[0,1,4],[5,6,0]]\nb = [[2,0,1],[1,2,0],[0,1,3]]\n```\nViết hàm `matmul_manual(a, b)` tính tích ma trận **bằng vòng lặp thủ công** (không dùng `np.dot`, `@`, hay `np.matmul`). Sau đó tính lại bằng `a @ b` và in cả hai kết quả cùng kết luận `True`/`False` xem hai cách có khớp nhau không.",
+      "hints": [
+        "Công thức: `c[i][j] = sum(a[i][k] * b[k][j] for k)`.",
+        "Dùng 3 vòng lặp lồng nhau `i, j, k` trong phạm vi `n = len(a)`.",
+        "So sánh hai ma trận bằng `np.array_equal`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef matmul_manual(a, b):\n    n = len(a)\n    c = np.array([[0 for _ in range(n)] for _ in range(n)])\n    for i in range(n):\n        for j in range(n):\n            for k in range(n):\n                c[i][j] += a[i][k] * b[k][j]\n    return c\n\na = np.array([[1, 2, 3], [0, 1, 4], [5, 6, 0]])\nb = np.array([[2, 0, 1], [1, 2, 0], [0, 1, 3]])\nc1 = matmul_manual(a, b)\nc2 = a @ b\nprint(c1)\nprint(c2)\nprint(np.array_equal(c1, c2))\n```\nNhân ma trận thủ công là tổng các tích theo hàng-cột (định nghĩa toán học); `@`/`np.dot` cho kết quả giống hệt vì cùng công thức, chỉ khác NumPy tối ưu hóa bằng BLAS thay vì vòng lặp Python.",
+      "starterCode": "import numpy as np\n\ndef matmul_manual(a, b):\n    # TODO: nhân hai ma trận vuông a, b bằng vòng lặp thủ công (không dùng @, np.dot)\n    pass\n\na = np.array([[1, 2, 3], [0, 1, 4], [5, 6, 0]])\nb = np.array([[2, 0, 1], [1, 2, 0], [0, 1, 3]])\nc1 = matmul_manual(a, b)\nc2 = a @ b\nprint(c1)\nprint(c2)\nprint(np.array_equal(c1, c2))\n",
+      "expectedOutput": "[[ 4  7 10]\n [ 1  6 12]\n [16 12  5]]\n[[ 4  7 10]\n [ 1  6 12]\n [16 12  5]]\nTrue",
+      "tags": [
+        "numpy",
+        "matrix-multiply",
+        "loop"
+      ]
+    },
+    {
+      "id": "e-056",
+      "topicId": "t-numpy",
+      "title": "reshape + transpose + flatten theo thứ tự cho trước",
+      "difficulty": "medium",
+      "problem": "Cho mảng 1 chiều `arr = np.array([10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25])` (16 phần tử).\nReshape thành ma trận 4x4, chuyển vị (transpose), rồi làm phẳng (flatten) lại thành mảng 1 chiều. In kết quả cuối cùng.",
+      "hints": [
+        "Reshape trước: `matrix = arr.reshape(4, 4)`.",
+        "Transpose bằng `.T`, sau đó `.flatten()` để trả về mảng 1D theo thứ tự đọc hàng của ma trận đã chuyển vị."
+      ],
+      "solution": "```python\nimport numpy as np\n\narr = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25])\nmatrix = arr.reshape(4, 4)\ntransposed = matrix.T\nresult = transposed.flatten()\nprint(result)\n```\n`reshape(4,4)` không đổi bộ nhớ; `.T` chỉ đổi stride (view), còn `.flatten()` luôn trả về bản sao mới đọc theo thứ tự hàng của ma trận đã chuyển vị — tức đọc theo cột của ma trận gốc.",
+      "starterCode": "import numpy as np\n\narr = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25])\n# TODO: reshape thành 4x4, transpose, rồi flatten -> in kết quả\n",
+      "expectedOutput": "[10 14 18 22 11 15 19 23 12 16 20 24 13 17 21 25]",
+      "tags": [
+        "numpy",
+        "reshape",
+        "transpose",
+        "flatten"
+      ]
+    },
+    {
+      "id": "e-057",
+      "topicId": "t-numpy",
+      "title": "np.where: nhân đôi số dương, gán -2 cho số âm",
+      "difficulty": "medium",
+      "problem": "Cho ma trận:\n```\nmatrix = [[3, -2, 5], [-7, 0, 8], [-1, 4, -6]]\n```\nDùng `np.where` (không dùng vòng lặp) để tạo ma trận mới: giá trị dương `x` thành `2x`, giá trị không dương (âm hoặc bằng 0) thành `-2`. In kết quả.",
+      "hints": [
+        "`np.where(condition, giá_trị_nếu_true, giá_trị_nếu_false)` áp dụng elementwise.",
+        "Điều kiện: `matrix > 0`."
+      ],
+      "solution": "```python\nimport numpy as np\n\nmatrix = np.array([[3, -2, 5], [-7, 0, 8], [-1, 4, -6]])\nmodified = np.where(matrix > 0, 2 * matrix, -2)\nprint(modified)\n```\n`np.where` chọn `2*matrix` ở vị trí điều kiện đúng và `-2` ở vị trí còn lại — kể cả 0 (không dương) cũng nhận -2.",
+      "starterCode": "import numpy as np\n\nmatrix = np.array([[3, -2, 5], [-7, 0, 8], [-1, 4, -6]])\n# TODO: dùng np.where -> số dương x thành 2x, số không dương thành -2\n",
+      "expectedOutput": "[[ 6 -2 10]\n [-2 -2 16]\n [-2  8 -2]]",
+      "tags": [
+        "numpy",
+        "np.where",
+        "conditional"
+      ]
+    },
+    {
+      "id": "e-058",
+      "topicId": "t-numpy",
+      "title": "Ghép mảng arange với phần đệm ones (n=12)",
+      "difficulty": "medium",
+      "problem": "Viết hàm `create_matrix(n)` (n chẵn): tạo mảng `0..n-1` reshape thành ma trận 2 hàng, rồi ghép thêm (theo trục cột — axis=1) một khối cùng 2 hàng toàn số 1 có cùng tổng số phần tử `n`, dùng `np.concatenate`. Gọi với n = 12 và in kết quả.",
+      "hints": [
+        "`arr = np.arange(n).reshape(2, -1)`.",
+        "`ones = np.ones(n, dtype=int).reshape(2, -1)`.",
+        "`np.concatenate([arr, ones], axis=1)`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef create_matrix(n):\n    arr = np.arange(n).reshape(2, -1)\n    ones = np.ones(n, dtype=int).reshape(2, -1)\n    return np.concatenate([arr, ones], axis=1)\n\nprint(create_matrix(12))\n```\n`axis=1` ghép theo chiều cột, giữ nguyên 2 hàng — kết quả là mỗi hàng nối tiếp nửa dữ liệu gốc với nửa toàn số 1.",
+      "starterCode": "import numpy as np\n\ndef create_matrix(n):\n    # TODO: reshape arange(n) thành 2 hàng, ghép thêm khối ones cùng kích thước theo axis=1\n    pass\n\nprint(create_matrix(12))\n",
+      "expectedOutput": "[[ 0  1  2  3  4  5  1  1  1  1  1  1]\n [ 6  7  8  9 10 11  1  1  1  1  1  1]]",
+      "tags": [
+        "numpy",
+        "concatenate",
+        "reshape"
+      ]
+    },
+    {
+      "id": "e-059",
+      "topicId": "t-numpy",
+      "title": "Dựng mảng lặp bằng repeat + tile + concatenate",
+      "difficulty": "medium",
+      "problem": "Cho `a = np.array([4, 5, 6])`. Không dùng vòng lặp thủ công hay khởi tạo mảng bằng tay, tạo mảng:\n`[4, 4, 4, 5, 5, 5, 6, 6, 6, 4, 5, 6, 4, 5, 6, 4, 5, 6]`\n(mỗi phần tử lặp 3 lần liên tiếp, rồi nối thêm toàn bộ `a` lặp lại 3 lần).",
+      "hints": [
+        "`np.repeat(a, 3)` lặp từng phần tử liên tiếp.",
+        "`np.tile(a, 3)` lặp toàn bộ mảng.",
+        "Nối hai phần bằng `np.concatenate`."
+      ],
+      "solution": "```python\nimport numpy as np\n\na = np.array([4, 5, 6])\npart1 = np.repeat(a, 3)\npart2 = np.tile(a, 3)\nresult = np.concatenate((part1, part2))\nprint(result)\n```\n`repeat` lặp từng phần tử tại chỗ (4 4 4 5 5 5 6 6 6), `tile` lặp cả khối (4 5 6 4 5 6 4 5 6); nối hai phần cho đúng dãy yêu cầu.",
+      "starterCode": "import numpy as np\n\na = np.array([4, 5, 6])\n# TODO: dùng np.repeat + np.tile + np.concatenate để tạo dãy [4,4,4,5,5,5,6,6,6, 4,5,6,4,5,6,4,5,6]\n",
+      "expectedOutput": "[4 4 4 5 5 5 6 6 6 4 5 6 4 5 6 4 5 6]",
+      "tags": [
+        "numpy",
+        "repeat",
+        "tile",
+        "concatenate"
+      ]
+    },
+    {
+      "id": "e-060",
+      "topicId": "t-numpy",
+      "title": "Đảo ngược ma trận theo hàng bằng [::-1]",
+      "difficulty": "easy",
+      "problem": "Cho `arr = np.arange(16).reshape(4, 4)`. In ma trận sau khi đảo ngược thứ tự các hàng (hàng cuối lên đầu), dùng slicing `[::-1]`.",
+      "hints": [
+        "`arr[::-1]` đảo ngược theo trục đầu tiên (hàng) mà không đụng tới thứ tự cột."
+      ],
+      "solution": "```python\nimport numpy as np\n\narr = np.arange(16).reshape(4, 4)\nprint(arr[::-1])\n```\n`[::-1]` là slicing bước -1 trên trục 0 (hàng), trả về **view** với thứ tự hàng đảo ngược, không copy dữ liệu.",
+      "starterCode": "import numpy as np\n\narr = np.arange(16).reshape(4, 4)\n# TODO: in ma trận với thứ tự hàng đảo ngược, dùng slicing [::-1]\n",
+      "expectedOutput": "[[12 13 14 15]\n [ 8  9 10 11]\n [ 4  5  6  7]\n [ 0  1  2  3]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "reverse"
+      ]
+    },
+    {
+      "id": "e-061",
+      "topicId": "t-numpy",
+      "title": "Mảng đan xen dương/âm, kích thước 2x(n*n//2), n=6",
+      "difficulty": "hard",
+      "problem": "Viết hàm `interleave(n)` (n chẵn): tạo mảng 2 hàng, mỗi hàng dài `n*n//2`, trong đó các phần tử ở vị trí chẵn (0,2,4,...) khi làm phẳng là các số dương tăng dần từ 0, còn vị trí lẻ là số âm giảm dần tiếp theo dãy dương. Gọi với n = 6 và in kết quả.",
+      "hints": [
+        "Tạo `positive = np.arange(n*n//2)` và `negative = -1 * np.arange(n*n//2, n*n)`.",
+        "Tạo mảng rỗng `np.empty(n*n, dtype=int)`, gán `result[::2] = positive`, `result[1::2] = negative`, rồi `reshape(2, n*n//2)`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef interleave(n):\n    half = n * n // 2\n    positive = np.arange(half)\n    negative = -1 * np.arange(half, n * n)\n    result = np.empty(n * n, dtype=int)\n    result[::2] = positive\n    result[1::2] = negative\n    return result.reshape(2, half)\n\nprint(interleave(6))\n```\nGán xen kẽ bằng slicing bước 2 (`[::2]`, `[1::2]`) tránh phải lặp phần tử; reshape cuối cùng chia mảng phẳng thành 2 hàng.",
+      "starterCode": "import numpy as np\n\ndef interleave(n):\n    # TODO: tạo mảng 2 hàng, xen kẽ số dương tăng dần / số âm giảm dần, shape (2, n*n//2)\n    pass\n\nprint(interleave(6))\n",
+      "expectedOutput": "[[  0 -18   1 -19   2 -20   3 -21   4 -22   5 -23   6 -24   7 -25   8 -26]\n [  9 -27  10 -28  11 -29  12 -30  13 -31  14 -32  15 -33  16 -34  17 -35]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "interleave"
+      ]
+    },
+    {
+      "id": "e-062",
+      "topicId": "t-numpy",
+      "title": "Ma trận viền 1 ruột 0 bằng gán 4 cạnh (5x5)",
+      "difficulty": "easy",
+      "problem": "Viết hàm `border_matrix_v2(n, m)` tạo ma trận `n x m` toàn số 0, sau đó gán trực tiếp 4 cạnh (hàng đầu, hàng cuối, cột đầu, cột cuối) bằng 1, **không dùng slicing ruột `[1:-1,1:-1]`**. Gọi với n=5, m=5 và in kết quả.",
+      "hints": [
+        "Bắt đầu từ `np.zeros((n, m))`.",
+        "Gán lần lượt: `arr[0,:]=1`, `arr[n-1,:]=1`, `arr[:,0]=1`, `arr[:,m-1]=1`."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef border_matrix_v2(n, m):\n    arr = np.zeros((n, m), dtype=np.int64)\n    arr[0, :] = 1\n    arr[n - 1, :] = 1\n    arr[:, 0] = 1\n    arr[:, m - 1] = 1\n    return arr\n\nprint(border_matrix_v2(5, 5))\n```\nCách gán từng cạnh cho kết quả giống với cách slicing ruột (e-053) nhưng minh họa rõ ràng hơn 4 cạnh của ma trận, hữu ích khi n hoặc m rất nhỏ (≤2).",
+      "starterCode": "import numpy as np\n\ndef border_matrix_v2(n, m):\n    # TODO: ma trận n x m toàn 0, gán 4 cạnh = 1 (không dùng arr[1:-1,1:-1])\n    pass\n\nprint(border_matrix_v2(5, 5))\n",
+      "expectedOutput": "[[1 1 1 1 1]\n [1 0 0 0 1]\n [1 0 0 0 1]\n [1 0 0 0 1]\n [1 1 1 1 1]]",
+      "tags": [
+        "numpy",
+        "slicing",
+        "border"
+      ]
+    },
+    {
+      "id": "e-063",
+      "topicId": "t-numpy",
+      "title": "Ma trận bàn cờ bằng vòng lặp thủ công (n=6)",
+      "difficulty": "medium",
+      "problem": "Viết hàm `checkerboard_loop(n)` tạo ma trận bàn cờ `n x n` (bắt đầu 0 ở góc trên-trái) **bằng vòng lặp lồng nhau** (không dùng slicing như e-052), dùng biến cờ `mark` đảo giá trị 0/1 sau mỗi ô và đảo thêm 1 lần sau mỗi hàng để giữ đúng kiểu xen kẽ. Gọi với n = 6 và in kết quả, so sánh cách này với cách slicing ở e-052.",
+      "hints": [
+        "Dùng 2 vòng lặp `for row in range(n): for col in range(n)`.",
+        "`mark = not mark` sau mỗi ô để đảo 0/1; đảo thêm lần nữa ở cuối mỗi hàng để hàng kế tiếp bắt đầu ngược lại."
+      ],
+      "solution": "```python\nimport numpy as np\n\ndef checkerboard_loop(n):\n    arr = np.zeros((n, n), dtype=np.int64)\n    mark = 0\n    for row in range(n):\n        for col in range(n):\n            arr[row][col] = mark\n            mark = not mark\n        mark = not mark\n    return arr\n\nprint(checkerboard_loop(n=6))\n```\nĐảo `mark` sau mỗi ô tạo xen kẽ trong hàng; đảo thêm 1 lần cuối hàng bù lại số ô chẵn/lẻ để hàng sau bắt đầu đúng màu ngược lại — kết quả giống hệt cách slicing nhưng chậm hơn với n lớn vì có 2 vòng lặp Python.",
+      "starterCode": "import numpy as np\n\ndef checkerboard_loop(n):\n    # TODO: tạo ma trận bàn cờ n x n bằng vòng lặp lồng nhau + biến cờ mark\n    pass\n\nprint(checkerboard_loop(6))\n",
+      "expectedOutput": "[[0 1 0 1 0 1]\n [1 0 1 0 1 0]\n [0 1 0 1 0 1]\n [1 0 1 0 1 0]\n [0 1 0 1 0 1]\n [1 0 1 0 1 0]]",
+      "tags": [
+        "numpy",
+        "loop",
+        "checkerboard"
+      ]
+    },
+    {
+      "id": "e-064",
+      "topicId": "t-list",
+      "title": "Chèn tổng giữa các cặp số lẻ liên tiếp (biến thể)",
+      "difficulty": "medium",
+      "problem": "Cho danh sách `[2, 7, 9, 4, 5, 1, 6]`. Nếu hai phần tử liên tiếp đều là số lẻ, chèn tổng của chúng vào giữa. Ví dụ với `[1, 3, 5, 3]` kết quả là `[1, 4, 3, 8, 5, 8, 3]`. Áp dụng cho danh sách trên và in kết quả.",
+      "hints": [
+        "Duyệt qua từng chỉ số `i`, luôn thêm `lst[i]` vào kết quả trước.",
+        "Nếu `lst[i]` và `lst[i+1]` đều lẻ, thêm `lst[i] + lst[i+1]` ngay sau đó — kể cả khi số ở giữa vừa được dùng ở cặp trước."
+      ],
+      "solution": "```python\ndef insert_sum(lst):\n    result = []\n    i = 0\n    while i < len(lst):\n        result.append(lst[i])\n        if i + 1 < len(lst) and lst[i] % 2 != 0 and lst[i + 1] % 2 != 0:\n            result.append(lst[i] + lst[i + 1])\n        i += 1\n    return result\n\nprint(insert_sum([2, 7, 9, 4, 5, 1, 6]))\n```\nMỗi phần tử gốc luôn được giữ; ngay khi phát hiện cặp liên tiếp cùng lẻ (`7,9` và `5,1`), tổng của chúng được chèn thêm vào ngay sau phần tử đầu của cặp.",
+      "starterCode": "def insert_sum(lst):\n    # TODO: nếu hai phần tử liên tiếp đều lẻ, chèn tổng của chúng vào giữa\n    pass\n\nprint(insert_sum([2, 7, 9, 4, 5, 1, 6]))\n",
+      "expectedOutput": "[2, 7, 16, 9, 4, 5, 6, 1, 6]",
+      "tags": [
+        "list",
+        "iteration"
+      ]
+    },
+    {
+      "id": "e-065",
+      "topicId": "t-list",
+      "title": "Tìm tất cả vị trí của phần tử (biến thể)",
+      "difficulty": "easy",
+      "problem": "Cho `A = [5, 3, 5, 5, 8, 3, 5]` và `element = 5`. Viết hàm `find_all_indices(lst, target)` trả về danh sách tất cả chỉ số mà `lst[i] == target`. In kết quả cho ví dụ trên.",
+      "hints": [
+        "Dùng `enumerate(lst)` để có cả chỉ số và giá trị.",
+        "List comprehension: `[i for i, v in enumerate(lst) if v == target]`."
+      ],
+      "solution": "```python\ndef find_all_indices(lst, target):\n    return [i for i, v in enumerate(lst) if v == target]\n\nprint(find_all_indices([5, 3, 5, 5, 8, 3, 5], 5))\n```\n`enumerate` cho cặp `(chỉ_số, giá_trị)` mà không cần theo dõi biến đếm thủ công; list comprehension lọc đúng những chỉ số có giá trị khớp `target`.",
+      "starterCode": "def find_all_indices(lst, target):\n    # TODO: trả về list các chỉ số i sao cho lst[i] == target\n    pass\n\nprint(find_all_indices([5, 3, 5, 5, 8, 3, 5], 5))\n",
+      "expectedOutput": "[0, 2, 3, 6]",
+      "tags": [
+        "list",
+        "search"
+      ]
+    },
+    {
+      "id": "e-066",
+      "topicId": "t-list",
+      "title": "Đếm số nguyên tố trong danh sách (biến thể)",
+      "difficulty": "medium",
+      "problem": "Cho danh sách các số nguyên dương `[4, 7, 10, 11, 15, 17, 21, 23, 1, 2]`. Viết hàm `count_primes(lst)` đếm số lượng phần tử là số nguyên tố. In kết quả.",
+      "hints": [
+        "Số nguyên tố phải > 1.",
+        "Kiểm tra chia hết từ 2 đến `sqrt(n)` (dùng `int(n**0.5)+1`) để giảm số lần thử."
+      ],
+      "solution": "```python\ndef is_prime(n):\n    if n < 2:\n        return False\n    for i in range(2, int(n ** 0.5) + 1):\n        if n % i == 0:\n            return False\n    return True\n\ndef count_primes(lst):\n    return sum(1 for x in lst if is_prime(x))\n\nprint(count_primes([4, 7, 10, 11, 15, 17, 21, 23, 1, 2]))\n```\n`is_prime` chỉ cần thử chia đến căn bậc hai của `n` vì nếu `n` có ước lớn hơn căn bậc hai thì chắc chắn có ước nhỏ hơn tương ứng. Các số nguyên tố trong danh sách: 7, 11, 17, 23, 2 → 5 số.",
+      "starterCode": "def is_prime(n):\n    # TODO: trả về True nếu n là số nguyên tố\n    pass\n\ndef count_primes(lst):\n    # TODO: đếm số phần tử là số nguyên tố trong lst\n    pass\n\nprint(count_primes([4, 7, 10, 11, 15, 17, 21, 23, 1, 2]))\n",
+      "expectedOutput": "5",
+      "tags": [
+        "list",
+        "prime",
+        "algorithm"
+      ]
+    },
+    {
+      "id": "e-067",
+      "topicId": "t-list",
+      "title": "Dồn số lẻ sang trái, số chẵn sang phải, in-place O(1)",
+      "difficulty": "hard",
+      "problem": "Cho danh sách `[8, 3, 6, 1, 10, 5, 7, 2]`. Viết hàm `partition_odd_even(lst)` sắp xếp lại **tại chỗ** (in-place, KHÔNG dùng list tạm, không dùng `sorted`/`.sort()`) sao cho toàn bộ số lẻ nằm bên trái, số chẵn nằm bên phải. (Lưu ý: cách làm two-pointer này không nhất thiết giữ nguyên thứ tự tương đối giữa các số lẻ/chẵn.) Bộ nhớ phụ trội O(1). In danh sách sau khi sắp xếp.",
+      "hints": [
+        "Dùng 2 con trỏ `left = 0`, `right = len(lst) - 1`.",
+        "Nếu `lst[left]` đã lẻ, tăng `left`. Nếu `lst[right]` đã chẵn, giảm `right`. Ngược lại, hoán đổi `lst[left]` và `lst[right]`."
+      ],
+      "solution": "```python\ndef partition_odd_even(lst):\n    left = 0\n    right = len(lst) - 1\n    while left < right:\n        if lst[left] % 2 != 0:\n            left += 1\n        elif lst[right] % 2 == 0:\n            right -= 1\n        else:\n            lst[left], lst[right] = lst[right], lst[left]\n    return lst\n\nprint(partition_odd_even([8, 3, 6, 1, 10, 5, 7, 2]))\n```\nĐây là kỹ thuật two-pointer kiểu \"Dutch national flag\": con trỏ trái chỉ dừng ở số chẵn, con trỏ phải chỉ dừng ở số lẻ, hoán đổi tại chỗ để dồn dần — không cấp phát list mới nên đúng O(1) bộ nhớ phụ.",
+      "starterCode": "def partition_odd_even(lst):\n    # TODO: dồn số lẻ sang trái, số chẵn sang phải, in-place, không dùng list tạm\n    pass\n\nprint(partition_odd_even([8, 3, 6, 1, 10, 5, 7, 2]))\n",
+      "expectedOutput": "[7, 3, 5, 1, 10, 6, 8, 2]",
+      "tags": [
+        "list",
+        "in-place",
+        "two-pointer"
+      ]
+    },
+    {
+      "id": "e-068",
+      "topicId": "t-list",
+      "title": "Selection sort thủ công (biến thể)",
+      "difficulty": "medium",
+      "problem": "Cho danh sách `[9, 2, 7, 1, 8, 3, 5]`. Viết hàm `selection_sort(lst)` sắp xếp tăng dần **không dùng `sorted()` hay `.sort()`**, cài đặt thuật toán selection sort từ đầu (in-place). In kết quả.",
+      "hints": [
+        "Với mỗi vị trí `i` từ trái sang phải, tìm chỉ số phần tử nhỏ nhất trong phần chưa sắp `lst[i:]`.",
+        "Hoán đổi phần tử nhỏ nhất đó với `lst[i]`."
+      ],
+      "solution": "```python\ndef selection_sort(lst):\n    n = len(lst)\n    for i in range(n):\n        min_idx = i\n        for j in range(i + 1, n):\n            if lst[j] < lst[min_idx]:\n                min_idx = j\n        lst[i], lst[min_idx] = lst[min_idx], lst[i]\n    return lst\n\nprint(selection_sort([9, 2, 7, 1, 8, 3, 5]))\n```\nMỗi vòng ngoài \"chọn\" phần tử nhỏ nhất còn lại và đặt nó vào đúng vị trí đầu của phần chưa sắp — độ phức tạp O(n²) do vòng lặp lồng nhau.",
+      "starterCode": "def selection_sort(lst):\n    # TODO: cài đặt selection sort thủ công (không dùng sorted/.sort())\n    pass\n\nprint(selection_sort([9, 2, 7, 1, 8, 3, 5]))\n",
+      "expectedOutput": "[1, 2, 3, 5, 7, 8, 9]",
+      "tags": [
+        "list",
+        "sorting",
+        "selection-sort"
+      ]
+    },
+    {
+      "id": "e-069",
+      "topicId": "t-list",
+      "title": "Bubble sort thủ công (biến thể)",
+      "difficulty": "medium",
+      "problem": "Cho danh sách `[6, 1, 9, 4, 2, 8, 3]`. Viết hàm `bubble_sort(lst)` sắp xếp tăng dần **không dùng `sorted()` hay `.sort()`**, cài đặt thuật toán bubble sort từ đầu (in-place). In kết quả.",
+      "hints": [
+        "So sánh từng cặp phần tử liền kề `lst[j]` và `lst[j+1]`, hoán đổi nếu sai thứ tự.",
+        "Lặp lại `n-1` lượt, mỗi lượt sau giảm phạm vi so sánh vì phần tử lớn nhất đã 'nổi' về cuối."
+      ],
+      "solution": "```python\ndef bubble_sort(lst):\n    n = len(lst)\n    for i in range(n - 1):\n        for j in range(n - 1 - i):\n            if lst[j] > lst[j + 1]:\n                lst[j], lst[j + 1] = lst[j + 1], lst[j]\n    return lst\n\nprint(bubble_sort([6, 1, 9, 4, 2, 8, 3]))\n```\nSau lượt thứ `i`, `i` phần tử lớn nhất đã về đúng vị trí cuối, nên vòng lặp trong chỉ cần so sánh đến `n-1-i` — tránh so sánh lại phần đã sắp xong.",
+      "starterCode": "def bubble_sort(lst):\n    # TODO: cài đặt bubble sort thủ công (không dùng sorted/.sort())\n    pass\n\nprint(bubble_sort([6, 1, 9, 4, 2, 8, 3]))\n",
+      "expectedOutput": "[1, 2, 3, 4, 6, 8, 9]",
+      "tags": [
+        "list",
+        "sorting",
+        "bubble-sort"
+      ]
     }
   ]
 }

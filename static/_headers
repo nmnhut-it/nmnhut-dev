@@ -5,3 +5,4 @@
 /magic-dust/lessons/*
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: credentialless
+  Cache-Control: public, max-age=0, must-revalidate
