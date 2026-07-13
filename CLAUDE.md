@@ -41,6 +41,28 @@ not update `nmnhut.dev`.
 - Posts use `date`, `title`, `description`, and `tags`; `tags` drive the `/tags/`
   taxonomy pages automatically.
 
+## Shared static/ tenants — deploy rules (READ BEFORE DEPLOYING)
+
+`static/` hosts several **independently developed apps** besides the blog:
+`static/magic-dust/` (source: `D:/magic-dust`), `static/cao-hoc/` (source:
+`D:/master-first-year/ontap-app`), `static/on-tap/`, `static/speaking/`.
+Each app's pipeline snapshot-copies its build here and deploys the whole
+`public/` — so **every deploy ships every tenant**, whether you touched it
+or not.
+
+- **NEVER `git stash`, `git checkout --`, `git restore`, or `git clean`
+  another tenant's paths** to "tidy" the tree before committing. Dirty files
+  under another `static/<app>/` are that app's freshly-copied build awaiting
+  its own commit. Incident 2026-07-13: a magic-dust deploy stashed the
+  uncommitted `static/cao-hoc/` build around its commit, Hugo ran during the
+  stash window, and production reverted cao-hoc to a week-old bundle.
+- Commit **only your own tenant's paths** (`git add static/<your-app>` …),
+  leave the rest of the tree dirty — `npm run deploy` already uses
+  `--commit-dirty=true`, a dirty tree is fine.
+- When your pipeline copies a build into `static/<app>/`, **commit it in the
+  same session**. Uncommitted snapshots get silently reverted by the next
+  tenant's deploy the moment anything disturbs the working tree.
+
 ## Key conventions
 
 - **Raw HTML in markdown is allowed** — `markup.goldmark.renderer.unsafe = true`
