@@ -59,9 +59,13 @@ or not.
 - Commit **only your own tenant's paths** (`git add static/<your-app>` …),
   leave the rest of the tree dirty — `npm run deploy` already uses
   `--commit-dirty=true`, a dirty tree is fine.
-- When your pipeline copies a build into `static/<app>/`, **commit it in the
-  same session**. Uncommitted snapshots get silently reverted by the next
-  tenant's deploy the moment anything disturbs the working tree.
+- When your pipeline copies a build into `static/<app>/`, **commit AND push
+  it in the same session**. Some pipelines deploy from a **fresh clone of
+  GitHub main** (`/d/tmp/nmnhut-*-deploy-*`), which only contains pushed
+  state — an unpushed snapshot is reverted live by the very next such
+  deploy, even if committed locally.
+- Clone-based deployers: clone/pull the **latest** origin/main right before
+  building, so you carry every tenant's newest pushed snapshot.
 
 ## Key conventions
 

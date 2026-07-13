@@ -21,3 +21,8 @@ and every `npm run deploy` ships ALL of them (hugo builds the whole
 - A dirty tree is fine — the deploy script passes `--commit-dirty=true`.
   Commit only your own tenant's paths (`git add static/<your-app>` plus
   `static/_headers` if you changed it), never `git add -A`.
+- If you deploy from a **fresh clone** (`/d/tmp/nmnhut-*-deploy-*` pattern):
+  clone/pull the latest origin/main right before building — a clone only
+  contains pushed state, so it silently reverts any tenant whose newest
+  snapshot wasn't pushed yet. Likewise, **push your own tenant's snapshot
+  commit immediately** so other clones carry it.
