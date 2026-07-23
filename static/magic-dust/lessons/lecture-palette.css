@@ -1,0 +1,46 @@
+@import url("palette.css");
+@import url("fonts.css");
+
+/* Lecture aliases point only to the project-wide Kotopia palette. */
+:root {
+  --lecture-font-sans: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --lecture-font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+  --lecture-bg: var(--paper);
+  --lecture-panel: var(--paper-raised);
+  --lecture-panel-raised: var(--mint-soft);
+  --lecture-panel-deep: var(--ink);
+  --lecture-border: var(--mint-line);
+  --lecture-grid: var(--mint-line);
+  --lecture-ink: var(--ink);
+  --lecture-muted: var(--ink-muted);
+  --lecture-accent: var(--honey-line);
+  --lecture-highlight: var(--honey);
+  --lecture-success: var(--success-ink);
+  --lecture-particle: var(--danger-ink);
+  --lecture-danger: var(--danger-ink);
+  --lecture-button-ink: var(--honey-ink);
+
+  /* Backward-compatible names while old deck geometry is migrated. */
+  --lecture-dark-bg: var(--paper);
+  --lecture-dark-panel: var(--paper-raised);
+  --lecture-ink-dark: var(--ink);
+  --lecture-muted-dark: var(--ink-muted);
+  --lecture-cyan: var(--honey-line);
+  --lecture-gold: var(--honey);
+  --lecture-green: var(--success-ink);
+  --lecture-pink: var(--danger-ink);
+  --lecture-red: var(--danger-ink);
+}
+
+.reveal .controls,
+.reveal .progress {
+  color: var(--lecture-control, var(--honey-line));
+}
+
+.reveal a:focus-visible,
+.reveal button:focus-visible,
+body > a:focus-visible {
+  outline: 3px solid var(--lecture-focus, var(--honey));
+  outline-offset: 3px;
+}

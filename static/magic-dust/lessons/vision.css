@@ -1,0 +1,33 @@
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Be Vietnam Pro",Inter,system-ui,sans-serif;color:var(--ink);background:var(--mint-soft)}
+button,a{font:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid var(--honey-line);outline-offset:4px}
+.vision-sky{position:fixed;inset:0;background:linear-gradient(color-mix(in srgb,var(--paper-raised) 65%,transparent),color-mix(in srgb,var(--mint-mid) 72%,transparent)),url("assets/storybook/kotopia-sky-tile-v2.webp?v=20260713-224338") center top/cover}
+.vision-hud{position:fixed;z-index:20;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;min-height:70px;padding:10px clamp(14px,4vw,54px);color:var(--paper);background:color-mix(in srgb,var(--ink) 90%,transparent);box-shadow:0 7px 20px color-mix(in srgb,var(--ink) 30%,transparent);backdrop-filter:blur(10px)}
+.vision-hud a{min-height:46px;display:flex;align-items:center;padding:0 14px;border:2px solid var(--mint-line);border-radius:999px;color:var(--paper);text-decoration:none;font-weight:900}
+.vision-hud div{text-align:center}.vision-hud b,.vision-hud small{display:block}.vision-hud small{color:var(--mint-mid)}
+.vision-hud>span{padding:7px 12px;border-radius:999px;color:var(--honey-ink);background:var(--honey);font-size:10px;font-weight:1000}
+.vision-intro{position:relative;z-index:2;max-width:760px;margin:0 auto;padding:110px 22px 28px;text-align:center}
+.vision-intro small{font-weight:1000;letter-spacing:.14em;color:var(--ink-muted)}
+.vision-intro h1{margin:6px 0;font-size:clamp(27px,5vw,48px);line-height:1.08}.vision-intro p{margin:0 auto;max-width:650px;color:var(--ink-muted);font-weight:700}
+.vision-world{position:relative;z-index:2;width:min(900px,96vw);height:1380px;margin:0 auto 210px}
+.vision-world svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.vision-world path{fill:none;stroke:var(--honey-line);stroke-width:1.1;stroke-dasharray:1.4 1.1;filter:drop-shadow(0 3px 2px color-mix(in srgb,var(--ink) 24%,transparent))}
+.vision-node{position:absolute;width:min(310px,42vw);padding:0;border:0;background:none;transform:translate(-50%,-50%);cursor:pointer;text-align:left}
+.vision-beacon{position:absolute;top:50%;left:0;display:grid;place-items:center;width:74px;height:74px;transform:translate(-50%,-50%);border:5px solid var(--paper-raised);border-radius:50%;color:var(--paper);background:radial-gradient(circle,var(--mint-line),var(--ink));box-shadow:0 0 0 5px var(--honey-line),0 12px 22px color-mix(in srgb,var(--ink) 32%,transparent);transition:transform .2s ease}
+.vision-location{position:absolute;z-index:2;top:50%;left:0;width:132px;height:132px;transform:translate(-50%,-54%);transition:transform .2s ease;filter:drop-shadow(0 12px 10px color-mix(in srgb,var(--ink) 32%,transparent))}.vision-location img{display:block;width:100%;height:100%;object-fit:contain}.vision-location b{position:absolute;left:50%;bottom:4px;display:grid;place-items:center;width:32px;height:32px;transform:translateX(-50%);border:3px solid var(--paper-raised);border-radius:50%;color:var(--paper);background:var(--success-ink);box-shadow:0 0 0 3px var(--honey-line);font-size:12px}
+.vision-beacon i{position:absolute;inset:-13px;border:3px dotted var(--honey-line);border-radius:50%;animation:vision-spin 16s linear infinite}.vision-beacon b{font-size:17px}
+.vision-label{display:block;min-height:90px;padding:13px 15px 12px 48px;border:2px solid var(--mint-line);border-radius:14px;color:var(--ink);background:linear-gradient(180deg,var(--paper-raised),var(--paper-warm));box-shadow:0 7px 0 var(--honey-ink),0 13px 24px color-mix(in srgb,var(--ink) 25%,transparent)}
+.vision-node.has-location-art .vision-label{padding-left:74px}
+.vision-label small,.vision-label strong,.vision-label em{display:block}.vision-label small{font-size:9px;font-weight:1000;color:var(--ink-muted)}.vision-label strong{margin:3px 0;font-size:15px}.vision-label em{font-size:9px;font-style:normal;color:var(--ink-muted);font-weight:700}
+.vision-node:hover .vision-beacon{transform:translate(-50%,-54%) scale(1.08)}
+.vision-node:hover .vision-location{transform:translate(-50%,-58%) scale(1.06)}
+.vision-node.current .vision-beacon{background:radial-gradient(circle,var(--honey),var(--success-ink));box-shadow:0 0 0 6px var(--paper-raised),0 0 0 11px var(--honey-line),0 12px 28px color-mix(in srgb,var(--honey-line) 45%,transparent)}
+.vision-node.current .vision-label{border-color:var(--honey-line);background:linear-gradient(180deg,var(--paper-raised),var(--honey-soft))}
+.vision-node.done .vision-beacon{background:radial-gradient(circle,var(--success-soft),var(--success-ink))}.vision-node.done .vision-label{border-color:var(--success-ink)}
+.vision-node.planned{filter:saturate(.72);opacity:.78}.vision-node.locked{filter:grayscale(.85);opacity:.58}
+.vision-node:nth-of-type(even) .vision-beacon,.vision-node:nth-of-type(even) .vision-location{left:100%}.vision-node:nth-of-type(even) .vision-label{padding-left:15px;padding-right:48px;text-align:right}
+.vision-journal{position:fixed;z-index:15;left:50%;bottom:18px;width:min(680px,92vw);padding:16px 20px;transform:translateX(-50%);border:3px solid var(--honey-line);border-radius:20px;color:var(--ink);background:linear-gradient(180deg,var(--paper-raised),var(--paper-warm));box-shadow:0 9px 0 var(--honey-ink),0 18px 36px color-mix(in srgb,var(--ink) 38%,transparent)}
+.vision-journal small{font-size:9px;font-weight:1000;color:var(--ink-muted)}.vision-journal h2{margin:3px 0;font-size:20px}.vision-journal p{margin:0;color:var(--ink-muted);font-size:12px;font-weight:700}.vision-journal b{display:block;margin-top:5px;font-size:10px;color:var(--danger-ink)}
+@keyframes vision-spin{to{transform:rotate(360deg)}}
+@media(max-width:640px){.vision-hud{min-height:62px;padding:8px}.vision-hud a{width:44px;min-height:44px;padding:0;overflow:hidden;white-space:nowrap}.vision-hud div b{font-size:12px}.vision-hud div small{font-size:9px}.vision-intro{padding-top:90px}.vision-world{height:1260px}.vision-node{width:44vw}.vision-beacon{width:58px;height:58px}.vision-location{width:104px;height:104px}.vision-node:nth-of-type(even) .vision-beacon,.vision-node:nth-of-type(even) .vision-location{left:80%}.vision-label{min-height:84px;padding-left:34px}.vision-node.has-location-art .vision-label{padding-left:54px}.vision-node:nth-of-type(even) .vision-label{padding-right:34px}.vision-label strong{font-size:11px;overflow-wrap:anywhere}.vision-label em{display:none}.vision-journal{bottom:10px;padding:12px 15px}.vision-journal h2{font-size:16px}.vision-journal p{font-size:10px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}

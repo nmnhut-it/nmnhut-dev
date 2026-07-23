@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Search & Sort — Bài giảng trước Node 16</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="node16-lesson.css">
+</head>
+<body>
+  <a class="map-link" href="./index.html?noentry">← BẢN ĐỒ</a>
+  <a class="practice-cta" id="practiceCta" href="./lesson16v2.html">VÀO NODE THỰC HÀNH →</a>
+
+  <div class="reveal"><div class="slides">
+    <section data-background-color="#07131d">
+      <p class="eyebrow">SEARCH · DÒ TỪ TRÁI SANG PHẢI</p>
+      <h1>Đèn dò dừng ở số cần tìm</h1>
+      <div class="search-workbench" aria-label="List 4 7 2 9, mục tiêu 7">
+        <div class="target-badge">target <strong>7</strong></div>
+        <div class="number-rail search-rail" id="searchRail"></div>
+        <div class="search-readout">
+          <span><small>i</small><b id="searchIndex">0</b></span>
+          <span><small>found</small><b id="searchFound">False</b></span>
+          <strong id="searchCompare">Sẵn sàng dò từ index 0</strong>
+        </div>
+      </div>
+      <div class="lesson-controls">
+        <button id="searchNext">CHẠY BƯỚC TIẾP →</button>
+        <p id="searchEvidence">Máy chưa kiểm tra ô nào.</p>
+      </div>
+      <pre class="code-map"><code>while i &lt; len(a) and not found:
+    if a[i] == target:
+        found = True
+    i = i + 1</code></pre>
+      <aside class="notes">Hỏi trước bước tìm thấy: Đã thấy 7 rồi, máy có cần soi tiếp 2 và 9 không? Bằng chứng cần nghe: found thành True nên not found sai và vòng dừng.</aside>
+    </section>
+
+    <section data-background-color="#0b101b">
+      <p class="eyebrow">SORT · CHỈ SO HAI Ô CẠNH NHAU</p>
+      <h2>Cổng so sánh đưa số lớn nhất tới cuối</h2>
+      <div class="sort-workbench">
+        <div class="number-rail sort-rail" id="sortRail"></div>
+        <div class="compare-gate" id="compareGate" aria-hidden="true"><span>CỔNG SO SÁNH</span></div>
+        <div class="sort-readout">
+          <span><small>j</small><b id="sortIndex">0</b></span>
+          <strong id="sortCompare">Bắt đầu với 5 và 2</strong>
+        </div>
+      </div>
+      <div class="lesson-controls">
+        <button id="sortNext">SO CẶP TIẾP →</button>
+        <p id="sortEvidence">Cổng chỉ giữ hai ô cạnh nhau.</p>
+      </div>
+      <pre class="code-map"><code>if a[j] &gt; a[j + 1]:
+    temp = a[j]
+    a[j] = a[j + 1]
+    a[j + 1] = temp</code></pre>
+      <aside class="notes">Hỏi trước bước cuối: Cổng chưa so mọi cặp. Vì sao số 5 vẫn tới cuối? Bằng chứng: mỗi lần 5 lớn hơn ô bên phải, hai ô cạnh nhau đổi chỗ.</aside>
+    </section>
+
+    <section data-background-color="#08151a">
+      <p class="eyebrow">HAI QUY TẮC CẦN MANG THEO</p>
+      <h2>Nhìn cơ chế trước, rồi mới viết code</h2>
+      <div class="recap-grid">
+        <article>
+          <h3>SEARCH</h3>
+          <div class="mini-rail"><i>4</i><i class="hit">7</i><i class="muted">2</i><i class="muted">9</i></div>
+          <p>Gặp target tại index 1 → <code>found = True</code> → OUTPUT <strong>CO</strong>.</p>
+        </article>
+        <article>
+          <h3>SORT</h3>
+          <p class="array-change"><code>[5,2,4,1]</code><b>→</b><code>[2,4,1,5]</code></p>
+          <p>Một lượt đưa 5 tới cuối. Lặp các lượt để được <strong>[1, 2, 4, 5]</strong>.</p>
+        </article>
+      </div>
+      <div class="pip-proof">
+        <div><b>PASS</b><span>linear_search_demo.py</span><code>actual CO = expected CO</code></div>
+        <div><b>PASS</b><span>bubble_sort_demo.py</span><code>actual [1,2,4,5] = expected [1,2,4,5]</code></div>
+      </div>
+      <p class="practice-contract">Các list và target đã được gán sẵn; bài này không đọc INPUT từ bên ngoài.</p>
+      <aside class="notes">Nhắc học sinh: node còn dạy tìm vị trí, báo KHONG và đếm số lần đổi chỗ. Slide chỉ chuẩn bị hai cơ chế cốt lõi.</aside>
+    </section>
+  </div></div>
+
+  <script src="vendor/reveal/dist/reveal.js"></script>
+  <script src="vendor/reveal/plugin/notes/notes.js"></script>
+  <script src="node16-lesson.js"></script>
+</body>
+</html>

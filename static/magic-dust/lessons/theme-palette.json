@@ -1,0 +1,28 @@
+{
+  "colors": [
+    { "token": "--paper", "hex": "#fffaf0", "role": "Editor and primary paper surface" },
+    { "token": "--paper-raised", "hex": "#fffdf5", "role": "Buttons and raised cards" },
+    { "token": "--paper-warm", "hex": "#fff0dc", "role": "Notes and warm callouts" },
+    { "token": "--mint-soft", "hex": "#edf7ef", "role": "Secondary surface and console family" },
+    { "token": "--mint-mid", "hex": "#d9eee5", "role": "Headers and control bars" },
+    { "token": "--mint-line", "hex": "#78b2a5", "role": "Borders and separators only" },
+    { "token": "--ink", "hex": "#183f49", "role": "Primary text" },
+    { "token": "--ink-muted", "hex": "#4f6f73", "role": "Secondary text" },
+    { "token": "--honey", "hex": "#f4c85a", "role": "Primary actions and numbered badges" },
+    { "token": "--honey-soft", "hex": "#ffe6a0", "role": "Selected and hover states" },
+    { "token": "--honey-ink", "hex": "#533b00", "role": "Text on honey surfaces" },
+    { "token": "--honey-line", "hex": "#d69a20", "role": "Warm action borders" },
+    { "token": "--success-soft", "hex": "#e3f3dc", "role": "Successful output background" },
+    { "token": "--success-ink", "hex": "#2d6425", "role": "Successful output text" },
+    { "token": "--danger-soft", "hex": "#fde7e5", "role": "Error background" },
+    { "token": "--danger-ink", "hex": "#9b3845", "role": "Error text" }
+  ],
+  "contrastPairs": [
+    { "foreground": "--ink", "background": "--paper", "min": 4.5 },
+    { "foreground": "--ink", "background": "--mint-soft", "min": 4.5 },
+    { "foreground": "--ink-muted", "background": "--paper", "min": 4.5 },
+    { "foreground": "--honey-ink", "background": "--honey", "min": 4.5 },
+    { "foreground": "--success-ink", "background": "--success-soft", "min": 4.5 },
+    { "foreground": "--danger-ink", "background": "--danger-soft", "min": 4.5 }
+  ]
+}

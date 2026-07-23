@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Magic Dust Tracking</title>
+<style>
+:root{color-scheme:light;--ink:#183f49;--muted:#4f6f73;--line:#d9eee5;--bg:#fffaf0;--panel:#fffdf5;--accent:#4f6f73;--ok:#2d6425;--warn:#9b3845}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 22px;border-bottom:1px solid var(--line);background:#fffdf5;position:sticky;top:0;z-index:2}
+h1{font-size:18px;margin:0;font-weight:700}
+main{max-width:1280px;margin:0 auto;padding:18px 18px 32px}
+.toolbar{display:grid;grid-template-columns:minmax(220px,1fr) 180px 100px auto;gap:10px;align-items:end;margin-bottom:16px}
+label{display:grid;gap:5px;color:var(--muted);font-size:12px;font-weight:650}
+input{height:36px;border:1px solid var(--line);border-radius:6px;padding:0 10px;background:#fffdf5;color:var(--ink);font:inherit}
+button{height:36px;border:0;border-radius:6px;padding:0 14px;background:var(--accent);color:#fffdf5;font-weight:700;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+.status{color:var(--muted);font-size:12px}
+.metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.metric{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px}
+.metric b{display:block;font-size:22px;line-height:1.1}
+.metric span{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+section{margin-top:16px}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+h2{font-size:15px;margin:0}
+.table-wrap{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:900px}
+th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{font-size:12px;color:var(--muted);background:#fffdf5;position:sticky;top:0}
+tbody tr:last-child td{border-bottom:0}
+.muted{color:var(--muted)}
+.ok{color:var(--ok);font-weight:700}
+.warn{color:var(--warn);font-weight:700}
+.empty{padding:20px;color:var(--muted)}
+@media(max-width:760px){
+  header{align-items:flex-start;flex-direction:column}
+  main{padding:14px}
+  .toolbar{grid-template-columns:1fr}
+  .metrics{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Magic Dust Tracking</h1>
+  <div class="status" id="status">Chưa tải dữ liệu</div>
+</header>
+<main>
+  <form class="toolbar" id="controls">
+    <label>Token
+      <input id="token" name="token" type="password" autocomplete="off">
+    </label>
+    <label>Lớp
+      <input id="classId" name="classId" placeholder="vd: lop-5a">
+    </label>
+    <label>Limit
+      <input id="limit" name="limit" type="number" min="1" max="500" value="100">
+    </label>
+    <button id="refresh" type="submit">Tải lại</button>
+  </form>
+
+  <div class="metrics">
+    <div class="metric"><b id="mStudents">0</b><span>học sinh</span></div>
+    <div class="metric"><b id="mCourses">0</b><span>course có hoạt động</span></div>
+    <div class="metric"><b id="mDone">0</b><span>course hoàn thành</span></div>
+    <div class="metric"><b id="mTime">0m</b><span>tổng thời gian cell</span></div>
+  </div>
+
+  <section>
+    <div class="section-head"><h2>Học sinh</h2></div>
+    <div class="table-wrap"><table id="students"></table></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Course progress</h2></div>
+    <div class="table-wrap"><table id="courses"></table></div>
+  </section>
+
+  <section>
+    <div class="section-head"><h2>Recent events</h2></div>
+    <div class="table-wrap"><table id="recent"></table></div>
+  </section>
+</main>
+
+<script type="module">
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const tokenFromUrl = params.get('token');
+if (tokenFromUrl) {
+  sessionStorage.setItem('magicdust.telemetry.report.token', tokenFromUrl);
+  params.delete('token');
+  history.replaceState(null, '', `${location.pathname}${params.toString() ? `?${params}` : ''}${location.hash}`);
+}
+
+$('token').value = sessionStorage.getItem('magicdust.telemetry.report.token') || '';
+$('classId').value = params.get('class') || localStorage.getItem('magicdust.telemetry.report.class') || '';
+$('limit').value = params.get('limit') || '100';
+
+function fmtMs(value) {
+  const ms = Number(value) || 0;
+  const total = Math.round(ms / 1000);
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  if (h) return `${h}h ${m}m`;
+  if (m) return `${m}m ${s}s`;
+  return `${s}s`;
+}
+
+function fmtTime(value) {
+  if (!value) return '';
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? value : d.toLocaleString('vi-VN', { hour12: false });
+}
+
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function table(id, headers, rows, cells) {
+  const el = $(id);
+  if (!rows.length) {
+    el.innerHTML = `<tbody><tr><td class="empty">Chưa có dữ liệu</td></tr></tbody>`;
+    return;
+  }
+  el.innerHTML = `<thead><tr>${headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${
+    rows.map(row => `<tr>${cells(row).map(v => `<td>${v}</td>`).join('')}</tr>`).join('')
+  }</tbody>`;
+}
+
+async function load() {
+  const token = $('token').value.trim();
+  const classId = $('classId').value.trim();
+  const limit = Math.min(500, Math.max(1, parseInt($('limit').value, 10) || 100));
+  sessionStorage.setItem('magicdust.telemetry.report.token', token);
+  localStorage.setItem('magicdust.telemetry.report.class', classId);
+
+  if (!token) {
+    $('status').textContent = 'Cần token';
+    return;
+  }
+
+  $('refresh').disabled = true;
+  $('status').textContent = 'Đang tải...';
+  try {
+    const qs = new URLSearchParams({ token, limit: String(limit) });
+    if (classId) qs.set('class', classId);
+    const res = await fetch(`/api/magic-dust/telemetry?${qs}`, { cache: 'no-store' });
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.error || `HTTP ${res.status}`);
+
+    const students = data.students || [];
+    const courses = data.courses || [];
+    const recent = data.recent || [];
+    $('mStudents').textContent = students.length;
+    $('mCourses').textContent = courses.length;
+    $('mDone').textContent = courses.filter(r => Number(r.complete)).length;
+    $('mTime').textContent = fmtMs(courses.reduce((sum, r) => sum + (Number(r.active_cell_ms) || 0), 0));
+
+    table('students',
+      ['Lớp', 'Student ID', 'Tên', 'Last seen', 'Courses', 'Hoàn thành', 'Tổng cell time', 'Avg/cell'],
+      students,
+      r => [
+        esc(r.class_id), esc(r.student_id), esc(r.student_name), esc(fmtTime(r.last_seen)),
+        esc(r.courses_seen), `<span class="${Number(r.courses_completed) ? 'ok' : 'muted'}">${esc(r.courses_completed)}</span>`,
+        esc(fmtMs(r.total_cell_ms)), esc(fmtMs(r.avg_cell_ms)),
+      ]);
+
+    table('courses',
+      ['Lớp', 'Student ID', 'Course', 'Progress', 'Done', 'Cell time', 'Last seen'],
+      courses,
+      r => {
+        const total = Number(r.total_cells) || 0;
+        const done = Number(r.cells_completed) || 0;
+        const frontier = Number(r.frontier) || 0;
+        return [
+          esc(r.class_id), esc(r.student_id), esc(r.course_id || r.node_title),
+          esc(total ? `${done}/${total} cells · frontier ${frontier}` : `${done} cells · frontier ${frontier}`),
+          Number(r.complete) ? '<span class="ok">done</span>' : '<span class="warn">active</span>',
+          esc(fmtMs(r.active_cell_ms)), esc(fmtTime(r.last_seen)),
+        ];
+      });
+
+    table('recent',
+      ['Time', 'Event', 'Student', 'Course', 'Cell', 'Duration', 'Version'],
+      recent,
+      r => [
+        esc(fmtTime(r.received_at)), esc(r.event_type), esc(r.student_id || r.student_name),
+        esc(r.course_id), esc(r.cell_label || r.cell_kind || r.cell_index),
+        r.duration_ms == null ? '<span class="muted">-</span>' : esc(fmtMs(r.duration_ms)),
+        esc(r.version),
+      ]);
+
+    $('status').textContent = `Đã tải ${new Date().toLocaleTimeString('vi-VN', { hour12: false })}`;
+  } catch (err) {
+    $('status').textContent = `Lỗi: ${err.message}`;
+  } finally {
+    $('refresh').disabled = false;
+  }
+}
+
+$('controls').addEventListener('submit', event => {
+  event.preventDefault();
+  load();
+});
+
+if ($('token').value) load();
+</script>
+</body>
+</html>

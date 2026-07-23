@@ -1,0 +1,82 @@
+@import "palette.css";
+@import "fonts.css";
+
+*{box-sizing:border-box}
+html,body{
+  margin:0;min-height:100%;color:var(--paper);
+  background:var(--ink);font:14px/1.5 "Be Vietnam Pro","Segoe UI",sans-serif;
+}
+.mathbg{position:fixed;inset:0;opacity:.42}
+.mathbg::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(color-mix(in srgb,var(--ink) 72%,transparent),var(--ink) 88%);
+}
+.mathbg img{width:100%;height:100%;object-fit:cover}
+.mathhdr{
+  position:fixed;z-index:20;left:0;right:0;top:0;display:flex;align-items:center;gap:18px;
+  min-height:64px;padding:9px 18px;border-bottom:1px solid color-mix(in srgb,var(--mint-line) 35%,transparent);
+  background:color-mix(in srgb,var(--ink) 92%,transparent);backdrop-filter:blur(12px);
+}
+.mathhdr a{color:var(--mint-mid);text-decoration:none;font-weight:800}
+.mathhdr div{display:grid}
+.mathhdr b{color:var(--honey);letter-spacing:2px}
+.mathhdr small{color:var(--mint-mid)}
+.mathhdr span{
+  margin-left:auto;padding:5px 12px;border:1px solid color-mix(in srgb,var(--honey) 45%,transparent);
+  border-radius:99px;color:var(--honey);
+}
+.mathworld{position:relative;z-index:1;height:3200px;max-width:1100px;margin:0 auto;padding-top:70px}
+.mathworld svg{position:absolute;inset:76px 0 0;width:100%;height:calc(100% - 100px);overflow:visible}
+.mathworld path{
+  fill:none;stroke:color-mix(in srgb,var(--honey) 58%,transparent);stroke-width:.45;stroke-dasharray:1.1 1.4;
+  filter:drop-shadow(0 0 2px var(--honey));
+}
+#mathnodes{position:absolute;inset:76px 0 0}
+.mathnode{
+  position:absolute;width:240px;transform:translate(-50%,-50%);text-align:center;cursor:pointer;
+  transition:filter .2s,transform .2s;
+}
+.mathnode:hover{transform:translate(-50%,-53%) scale(1.03)}
+.mathnode img{
+  width:180px;height:135px;object-fit:contain;
+  filter:drop-shadow(0 10px 16px color-mix(in srgb,var(--ink) 72%,transparent));
+}
+.mathpin{
+  position:relative;display:grid;place-items:center;width:42px;height:42px;margin:-27px auto 4px;
+  border:2px solid var(--honey);border-radius:50%;color:var(--honey);background:var(--ink);
+  box-shadow:0 0 18px color-mix(in srgb,var(--honey) 45%,transparent);font-weight:900;
+}
+.mathnode h2{margin:4px 0;color:var(--paper-raised);font-size:17px;text-shadow:0 2px 6px var(--ink)}
+.mathnode p{margin:0;color:var(--mint-mid);font-weight:700}
+.mathnode small{display:block;min-height:34px;margin-top:4px;color:var(--mint-mid)}
+.mathnode.locked{filter:grayscale(1) brightness(.48);cursor:not-allowed}
+.mathnode.locked:hover{transform:translate(-50%,-50%)}
+.mathnode.current .mathpin{animation:pulse 1.8s ease-in-out infinite}
+.mathnode.done .mathpin{
+  border-color:var(--mint-line);color:var(--mint-mid);
+  box-shadow:0 0 22px color-mix(in srgb,var(--mint-line) 55%,transparent);
+}
+.mathtoast{
+  position:fixed;z-index:30;left:50%;bottom:24px;padding:10px 16px;
+  transform:translate(-50%,20px);border:1px solid color-mix(in srgb,var(--honey) 58%,transparent);
+  border-radius:12px;color:var(--paper-raised);background:var(--ink-muted);opacity:0;pointer-events:none;transition:.2s;
+}
+.mathtoast.show{opacity:1;transform:translate(-50%,0)}
+
+@keyframes pulse{
+  50%{box-shadow:0 0 34px color-mix(in srgb,var(--honey) 78%,transparent);transform:scale(1.1)}
+}
+
+@media(max-width:600px){
+  .mathhdr{gap:8px;padding:8px 10px}
+  .mathhdr div small{display:none}
+  .mathhdr span{padding:4px 8px}
+  .mathworld{height:2900px}
+  .mathnode{width:150px}
+  .mathnode img{width:125px;height:96px}
+  .mathnode h2{font-size:13px}
+  .mathnode p{font-size:11px}
+  .mathnode small{font-size:10px}
+  .mathpin{width:34px;height:34px;margin-top:-22px}
+  .mathworld path{stroke-width:.7}
+}

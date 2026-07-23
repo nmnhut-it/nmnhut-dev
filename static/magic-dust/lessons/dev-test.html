@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DEV TEST HARNESS — Magic Dust</title>
+<!-- DEV-ONLY, never shown to students: saga.js's map is a hardcoded NODES
+     list of lesson*.html pages, so this file is unreachable from the game
+     UI — only reachable by typing the URL directly.
+     Loads ONE real node's content (content/<src>.js), keeps ONLY the
+     cell(s) matching ?only=, and auto-skips splash/bundle (nodeDev.toFirst)
+     so the interesting cell is the FIRST and ONLY thing to click through —
+     no replaying npc chatter / earlier exercises / gift reveals to reach it.
+     ?only= matchers (comma-separated, OR'd together):
+       boss              — the cell with a `boss` fight
+       quiz:<title>       — the {quiz:{title,...}} cell with that exact title
+       code:<label>        — the {code:...} cell with that exact `label`
+       widget             — the {widget:...} cell (e.g. node00's anatomy diagram)
+       gift:<name>          — the {gift:{name,...}} cell with that exact `name`
+       cameo               — the {cameo:...} intro cell
+       checkpoint          — the {checkpoint:{text,...}} high-five stamp cell
+       forge               — the {forge:{...}} THỢ RÈN cell
+       ritual              — a special case: drops ALL of N.cells, so the
+                              synthetic ritual cell notebook-runner.js always
+                              appends after the last real cell (buildCells()'s
+                              `{ritual: true}`) becomes the ONLY cell — the
+                              ritual UI itself has no `.ritual`-shaped cell to
+                              match, this is the only way to isolate it
+     Examples:
+       dev-test.html?src=node02&only=boss              (Bug Wraith fight — use the ☝ cheat-panel "🖐 swipe round" button once loaded to skip to the swipe pilot round)
+       dev-test.html?src=node00&only=quiz:Đuổi theo đáp án   (the 'track' pilot quiz)
+       dev-test.html?src=node04&only=code:three_rules.py    (the lighten()/darken() real-camera cell)
+       dev-test.html?src=node03&only=gift:CAMERA CHARM      (a single gift reveal, in isolation)
+       dev-test.html?src=node00&only=ritual                 (just the closing ritual, nothing else)
+     Omit ?only= to load the whole node unfiltered (same as the real lesson page). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css">
+<script type="module">
+const qs = new URLSearchParams(location.search);
+const src = qs.get('src') || 'node00';
+const only = (qs.get('only') || '').split(',').map(s => s.trim()).filter(Boolean);
+const mod = await import(`./content/${src}.js`);
+const N = mod.default;
+if (only.includes('ritual')) {
+  N.cells = [];   // buildCells() always appends a synthetic {ritual:true} cell — an empty N.cells makes THAT the only cell
+} else if (only.length) {
+  const matches = c => only.some(m => {
+    if (m === 'boss') return !!c.boss;
+    if (m === 'widget') return !!c.widget;
+    if (m === 'cameo') return !!c.cameo;
+    if (m === 'checkpoint') return !!c.checkpoint;
+    if (m === 'forge') return !!c.forge;
+    if (m.startsWith('quiz:')) return c.quiz && c.quiz.title === m.slice(5);
+    if (m.startsWith('code:')) return c.label === m.slice(5);
+    if (m.startsWith('gift:')) return c.gift && c.gift.name === m.slice(5);
+    return false;
+  });
+  N.cells = N.cells.filter(matches);
+  if (!N.cells.length) document.body.textContent = `dev-test: no cell in ${src}.js matched only=${only.join(',')} — check the exact quiz title / code label / gift name spelling.`;
+}
+window.NODE = N;
+</script>
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+<script type="module" src="node.js"></script>
+<script type="module">
+// auto-skip splash/bundle the moment node.js's composition root is ready —
+// so whichever cell(s) survived the ?only= filter above are the first thing shown
+const wait = setInterval(() => { if (window.nodeDev) { clearInterval(wait); window.nodeDev.toFirst(); } }, 100);
+</script>
+</head>
+<body></body>
+</html>

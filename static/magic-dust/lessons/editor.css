@@ -1,0 +1,71 @@
+@import "palette.css";
+@import "fonts.css";  /* self-hosted Be Vietnam Pro — Vietnamese-clean bold */
+/* editor.css — hand-editing workbench for lessons/content/node*.js.
+   TEACHER-ONLY tool (see editor.html header note): clarity beats beauty
+   here. Reuses saga.css's dark navy/cyan palette so it feels native to the
+   rest of the app, but the layout is plain forms/cards, not game chrome. */
+:root{--c:var(--honey-line);--c2:var(--honey);--bg:var(--mint-soft);--panel:var(--paper);--panel2:var(--paper-warm);
+  --line:var(--mint-line);--txt:var(--ink);--dim:var(--ink-muted);--ok:var(--success-ink);--warn:var(--honey);--err:var(--danger-ink)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.5 "Be Vietnam Pro","Segoe UI",system-ui,sans-serif;min-height:100%}
+body{padding:16px 20px 60px}
+h1,h2,h3{margin:0 0 8px;color:var(--ink)}
+h1{font-size:20px}
+a{color:var(--c)}
+button{font:inherit;cursor:pointer;background:var(--panel2);color:var(--txt);border:1px solid var(--line);
+       border-radius:6px;padding:6px 12px}
+button:hover{border-color:var(--c)}
+button.primary{background:var(--honey);border-color:var(--honey-line);color:var(--honey-ink);font-weight:700}
+button.danger{border-color:var(--err);color:var(--err)}
+button:disabled{opacity:.4;cursor:not-allowed}
+select,input[type=text],input[type=number],textarea{
+  font:inherit;background:var(--panel);color:var(--txt);border:1px solid var(--line);border-radius:6px;
+  padding:6px 8px;width:100%}
+textarea{font-family:"Cascadia Code","Consolas",monospace;font-size:13px;resize:vertical}
+label{display:block;font-size:12px;color:var(--dim);margin:8px 0 3px;letter-spacing:.3px}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin:0 0 12px}
+legend{padding:0 6px;color:var(--c);font-size:12px;letter-spacing:1px;text-transform:uppercase}
+
+.warnbar{background:var(--honey-soft);border:1px solid var(--honey-line);
+         color:var(--honey-ink);border-radius:8px;padding:8px 12px;margin-bottom:14px;font-size:13px}
+
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px;
+         background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px}
+.toolbar select{width:auto;min-width:160px}
+.spacer{flex:1}
+.status{font-size:12px;color:var(--dim)}
+.status.ok{color:var(--ok)}
+.status.err{color:var(--err)}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0 14px}
+
+.cell-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;margin-bottom:8px}
+.cell-head{display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;user-select:none}
+.cell-head:hover{background:var(--panel2)}
+.badge{font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;
+       border-radius:10px;border:1px solid var(--line);color:var(--c)}
+.badge.npc{color:var(--mint-line);border-color:var(--mint-line)}
+.badge.code{color:var(--mint-line);border-color:var(--mint-line)}
+.badge.quiz{color:var(--honey);border-color:var(--honey)}
+.badge.boss{color:var(--honey-line);border-color:var(--honey-line)}
+.badge.checkpoint{color:var(--mint-mid);border-color:var(--mint-mid)}
+.cell-preview{flex:1;color:var(--dim);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cell-idx{color:var(--dim);font-size:11px;width:24px;text-align:right}
+.cell-ops{display:flex;gap:4px}
+.cell-ops button{padding:3px 8px;font-size:12px}
+.cell-body{padding:4px 12px 12px;border-top:1px solid var(--line)}
+.cell-body[hidden]{display:none}
+
+.qq-block{border:1px dashed var(--line);border-radius:6px;padding:8px;margin:6px 0}
+.qq-answer-row{display:flex;align-items:center;gap:6px;margin:4px 0}
+.qq-answer-row input[type=text]{flex:1}
+
+.insert-row{display:flex;justify-content:center;padding:2px 0}
+.insert-row button{font-size:11px;padding:2px 8px;opacity:.5}
+.insert-row:hover button{opacity:1}
+
+.expectout-editor{border:1px dashed var(--line);border-radius:6px;padding:8px;margin-top:6px}
+.eo-item{border-left:2px solid var(--line);padding-left:8px;margin:6px 0}
+
+small.hint{color:var(--dim);display:block;margin-top:2px}

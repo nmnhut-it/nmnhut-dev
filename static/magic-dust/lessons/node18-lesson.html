@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Định nghĩa và gọi hàm — Magic Dust</title>
+    <link rel="stylesheet" href="vendor/reveal/dist/reset.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/reveal.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css" />
+    <link rel="stylesheet" href="node18-lesson.css" />
+  </head>
+  <body>
+    <a class="back" href="./index.html?noentry">← BẢN ĐỒ</a
+    ><a class="practice" href="./lesson18v2.html">VÀO NODE THỰC HÀNH →</a>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p class="eyebrow">FUNCTIONS · 1/3</p>
+          <h1>Đừng chép cùng một việc nhiều lần</h1>
+          <div class="copies">
+            <pre><code>say("====")
+say("PIP")
+say("====")</code></pre>
+            <pre><code>say("====")
+say("KOTO")
+say("====")</code></pre>
+            <div class="arrow">→</div>
+            <div class="blueprint">
+              <b>show_card(name)</b><span>viền</span><span>name</span
+              ><span>viền</span>
+            </div>
+          </div>
+          <p class="message">Phần giống nhau trở thành một khối việc có tên.</p>
+        </section>
+        <section>
+          <p class="eyebrow">FUNCTIONS · 2/3</p>
+          <h2><code>def</code> ghi cách làm · lời gọi mới chạy</h2>
+          <div class="factory">
+            <pre><code>def show_card(name):
+    say("====")
+    say(name)
+    say("====")</code></pre>
+            <div class="status" id="fnStatus">ĐÃ ĐỊNH NGHĨA · CHƯA CHẠY</div>
+            <div class="screen" id="fnScreen"><i></i><b></b><i></i></div>
+            <button id="callPip">GỌI show_card("PIP")</button>
+          </div>
+          <p class="message" id="fnMessage">
+            Python đã biết cách làm, nhưng chưa có OUTPUT.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">FUNCTIONS · 3/3</p>
+          <h2>Mỗi lời gọi đưa dữ liệu mới vào tham số</h2>
+          <div class="calls">
+            <button data-name="PIP">show_card("PIP")</button
+            ><button data-name="KOTOPIA">show_card("KOTOPIA")</button>
+            <div class="parameter">
+              <small>tham số name</small><strong id="paramValue">?</strong>
+            </div>
+            <div class="card-output" id="cardOutput">
+              <i>====</i><b>?</b><i>====</i>
+            </div>
+          </div>
+          <p class="message" id="callMessage">
+            Chọn một lời gọi để xem một lượt chạy riêng.
+          </p>
+          <div class="contract">
+            <code>show_card("MIRA")</code><span>→ OUTPUT có MIRA</span>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="vendor/reveal/dist/reveal.js"></script>
+    <script src="node18-lesson.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+import { code, makePython50Lesson } from "./python50-template.js";
+export default makePython50Lesson(10, {
+  subtitle: "sắp xếp list nhỏ rồi bỏ bản sao",
+  machineName: "KHO LỌC BẢN SAO", machineBlurb: "xếp tăng dần rồi giữ mỗi giá trị một lần",
+  intro: "Chặng này dùng `sort()`, công cụ đã mở ở saga chính. Bạn sẽ quan sát list trước và sau khi sắp xếp.",
+  prior: ["Đoạn code này thay đổi `values` thành list nào?\n```python\nvalues = [3, 1, 2]\nvalues.sort()\n```", ["`[1, 2, 3]`", "`[3, 2, 1]`", "`[3, 1, 2]`"]],
+  teach: "`values.sort()` thay đổi chính list thành thứ tự tăng dần. Sau đó, chỉ thêm `value` khi nó khác phần tử cuối đã giữ.",
+  demo: { starter: code(["from old_computer import say_num","","values = [4, 1, 3, 2]","values.sort()","","for value in values:","    say_num(value)"]), label: "p50_sort_demo.py", note: "Bạn bấm RUN để kiểm chứng đoạn code. Cho sẵn bốn số; bài này không đọc INPUT. Chương trình sắp xếp tăng dần rồi in từng số, nên OUTPUT là `1, 2, 3, 4`.", expectOut: {all:[{minLines:4},/^1$/, /^2$/, /^3$/, /^4$/]} },
+  fix: { starter: code(["from old_computer import say_num","","values = [3, 1, 3, 2, 1]","values.sort()","unique = []","","for value in values:","    unique.append(value)","","say_num(len(unique))"]), solution: code(["from old_computer import say_num","","values = [3, 1, 3, 2, 1]","values.sort()","unique = []","","for value in values:","    if len(unique) == 0 or value != unique[-1]:","        unique.append(value)","","say_num(len(unique))"]), label: "p50_unique_fix.py", note: "ĐỀ BÀI: Cho sẵn list `[3, 1, 3, 2, 1]`; bài này không đọc INPUT. Thêm điều kiện để `unique` chỉ giữ 1, 2, 3. OUTPUT là số lượng `3`.", expectOut: /^3$/ },
+  check: "Sau khi sắp xếp, các bản sao đứng cạnh nhau. So với phần tử cuối của `unique` để quyết định có thêm giá trị mới hay không.",
+  quiz: ["Sau khi sắp xếp `[2, 1, 2, 3, 1]`, dãy giá trị khác nhau theo thứ tự tăng là gì?", ["`[1, 2, 3]`", "`[1, 1, 2]`", "`[3, 2, 1]`"]],
+  apply: { starter: code(["from old_computer import say_num","","values = [5, 2, 5, 4, 2, 1]","values.sort()","unique = []","","for value in values:","    if len(unique) == 0 or value == unique[-1]:","        unique.append(value)","","for value in unique:","    say_num(value)"]), solution: code(["from old_computer import say_num","","values = [5, 2, 5, 4, 2, 1]","values.sort()","unique = []","","for value in values:","    if len(unique) == 0 or value != unique[-1]:","        unique.append(value)","","for value in unique:","    say_num(value)"]), label: "p50_sort_unique.py", note: "ĐỀ BÀI: Cho sẵn sáu số; bài này không đọc INPUT. Sửa phép so sánh với phần tử cuối của `unique` để bỏ các bản sao liền kề. OUTPUT là `1, 2, 4, 5`.", expectOut: {all:[{minLines:4},/^1$/, /^2$/, /^4$/, /^5$/]} },
+  remember: "Sắp xếp làm các giá trị giống nhau đứng cạnh nhau; khi đó một phép so với phần tử vừa giữ đủ để bỏ bản sao."
+});

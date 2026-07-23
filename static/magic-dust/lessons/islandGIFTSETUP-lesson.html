@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chuẩn bị dữ liệu quà</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="lecture-palette.css">
+  <link rel="stylesheet" href="islandGIFTSETUP-lesson.css">
+  <link rel="stylesheet" href="lecture-components.css">
+</head>
+<body class="lecture-shell">
+  <a class="map" href="./index.html?noentry">← BẢN ĐỒ</a>
+  <a class="cta" href="./islandGIFTSETUP.html">MỞ BÀI THỰC HÀNH →</a>
+  <div class="reveal"><div class="slides">
+    <section class="theory-slide">
+      <p class="lecture-kicker">LÝ THUYẾT 1 · MÓN QUÀ ĐI QUA CÁC BƯỚC</p>
+      <h2 class="lecture-title">Mỗi bước dùng kết quả của bước trước</h2>
+      <p class="lecture-purpose">Mỗi món quà có tên người gửi, điểm và effect. Pipeline lần lượt chuẩn bị các dữ liệu đó; trong mỗi lượt, <code>gift</code> chỉ là món quà hiện tại, không phải cả danh sách <code>gifts</code>.</p>
+      <div class="data-flow concept-visual">
+        <span><small>DỮ LIỆU BAN ĐẦU</small><b>"  mira  "</b></span><i>→</i><span><small>clean_sender</small><b>MIRA</b></span><i>→</i><span><small>effect_for(7)</small><b>GLOW</b></span><i>→</i><span><small>BẢN GHI</small><b>MIRA · 7 · GLOW</b></span>
+      </div>
+      <div class="loop-theory">
+        <div class="list-source"><small><code>gifts</code> · danh sách món quà</small><b>HEART · 3</b><b>COMET · 8</b></div><i>→ mỗi lượt →</i>
+        <div class="current-only"><small><code>gift</code> · món quà hiện tại</small><b>HEART · 3</b><span>lượt sau</span><b>COMET · 8</b></div>
+      </div>
+      <pre class="minimal-code"><code>for gift in gifts:
+    gift["effect"] = effect_for(gift["points"])</code></pre>
+    </section>
+
+    <section class="theory-slide">
+      <p class="lecture-kicker">LÝ THUYẾT 2 · CƠ CHẾ CODE</p>
+      <h1 class="lecture-title">Hàm nhận dữ liệu, xử lý rồi trả kết quả</h1>
+      <p class="lecture-purpose">Argument đi vào parameter của hàm. <code>return</code> đưa kết quả về đúng chỗ đã gọi hàm.</p>
+      <div class="function-flow concept-visual">
+        <div class="flow-value"><small>ARGUMENT</small><b>"  mira  "</b></div><i>→</i>
+        <div class="flow-function"><small>PARAMETER <code>name</code></small><pre><code>def clean_sender(name):
+    clean = name.strip().upper()
+    return clean</code></pre></div><i>→</i>
+        <div class="flow-value"><small>KẾT QUẢ</small><b>"MIRA"</b></div>
+      </div>
+      <div class="call-return"><code>sender = clean_sender("  mira  ")</code><span>→</span><code>sender = "MIRA"</code></div>
+      <p class="observation">Chỗ gọi không nhận các bước bên trong hàm; nó nhận đúng giá trị đứng sau <code>return</code>.</p>
+    </section>
+
+    <section data-station="clean">
+      <p class="eyebrow lecture-kicker">TRẠM 3 · LÀM SẠCH TÊN</p>
+      <h1 class="lecture-title">Mỗi hàm chuẩn bị một phần của bản ghi</h1>
+      <p class="lead lecture-purpose"><code>clean_sender</code> làm sạch tên để các bước sau luôn nhận cùng một dạng dữ liệu.</p>
+      <div class="pipeline concept-visual" aria-label="Dây chuyền clean, effect, loop và find">
+        <span class="station active">clean_sender</span><i>→</i><span class="station">effect_for</span><i>→</i><span class="station">loop</span><i>→</i><span class="station">find</span>
+      </div>
+      <div class="workbench">
+        <div class="record before"><small>TRƯỚC</small><span>sender</span><b id="cleanBefore">"  mira  "</b></div>
+        <div class="transform"><pre><code><mark id="cleanLine1">clean = name.strip()</mark>
+<mark id="cleanLine2">clean = clean.upper()</mark>
+<mark id="cleanLine3">return clean</mark></code></pre><strong>→</strong></div>
+        <div class="record after"><small>SAU</small><span>sender</span><b id="cleanAfter">?</b></div>
+      </div>
+      <p class="predict predict-box">Theo em, sau khi chạy ba dòng trên, tên và biến <code>sender</code> sẽ giữ chuỗi nào?</p>
+      <button class="run-demo" id="cleanSender">CHẠY THỬ — theo dõi từng dòng code</button>
+      <p class="explain observation" id="senderProof">Hãy dự đoán rồi chạy từng bước.</p>
+    </section>
+
+    <section data-station="effect">
+      <p class="eyebrow lecture-kicker">TRẠM 4 · CHỌN EFFECT</p>
+      <h2 class="lecture-title">Nhánh đúng đầu tiên trả kết quả</h2>
+      <p class="lead lecture-purpose">Bản ghi đang có <code>points = 7</code>. Hàm kiểm tra mốc cao trước để chọn đúng nhãn.</p>
+      <div class="pipeline concept-visual"><span class="station done">clean_sender</span><i>→</i><span class="station active">effect_for</span><i>→</i><span class="station">loop</span><i>→</i><span class="station">find</span></div>
+      <div class="workbench">
+        <div class="record before"><small>TRƯỚC</small><span>points</span><b>7</b><span>effect</span><b>?</b></div>
+        <div class="transform"><pre><code><mark id="effectLine1">if points &gt;= 10: return "BURST"</mark>
+<mark id="effectLine2">elif points &gt;= 5: return "GLOW"</mark>
+<mark id="effectLine3">else: return "SPARK"</mark></code></pre><strong>→</strong></div>
+        <div class="record after"><small>SAU</small><span>points</span><b>7</b><span>effect</span><b id="effectAfter">?</b></div>
+      </div>
+      <p class="predict predict-box">Theo em, <code>effect_for(7)</code> dừng ở dòng nào và trả nhãn gì?</p>
+      <button class="run-demo" id="conditionNext">CHẠY THỬ — kiểm tra điều kiện từ trên xuống</button>
+      <p class="explain observation" id="conditionProof">Hãy dự đoán rồi chạy từng phép so sánh.</p>
+    </section>
+
+    <section data-station="loop">
+      <p class="eyebrow lecture-kicker">TRẠM 5 · CẬP NHẬT LIST</p>
+      <h2 class="lecture-title">Mỗi lượt lặp xử lý một <code>gift</code></h2>
+      <p class="lead lecture-purpose">Mỗi lượt lặp đọc điểm của món quà hiện tại, gọi <code>effect_for</code>, rồi ghi kết quả trở lại đúng món quà đó.</p>
+      <div class="pipeline concept-visual"><span class="station done">clean_sender</span><i>→</i><span class="station done">effect_for</span><i>→</i><span class="station active">loop</span><i>→</i><span class="station">find</span></div>
+      <div class="loop-bench">
+        <div class="queue"><span id="heartToken">HEART · 3 · effect ?</span><span id="cometToken">COMET · 8 · effect ?</span></div>
+        <div class="loop-code"><pre><code><mark id="loopLine1">for gift in gifts:</mark>
+<mark id="loopLine2">    gift["effect"] =</mark>
+<mark id="loopLine3">        effect_for(gift["points"])</mark></code></pre><div class="current-record"><small>gift hiện tại</small><b id="currentGift">?</b><i>→</i><b id="currentEffect">?</b></div></div>
+      </div>
+      <p class="predict predict-box">Theo em, HEART 3 điểm và COMET 8 điểm lần lượt nhận effect nào?</p>
+      <button class="run-demo" id="stampNext">CHẠY THỬ — đưa món tiếp theo qua vòng lặp</button>
+      <p class="explain observation" id="giftProof">Hãy dự đoán rồi xử lý HEART trước.</p>
+    </section>
+
+    <section data-station="find">
+      <p class="eyebrow lecture-kicker">TRẠM 6 · TÌM VÀ TRẢ ĐIỂM</p>
+      <h2 class="lecture-title">Tìm đúng <code>gift</code> rồi trả điểm</h2>
+      <p class="lead lecture-purpose">Tên cần tìm là <code>"  comet  "</code>. Hàm làm sạch tên, quét list và trả điểm ngay khi key <code>name</code> trùng khớp.</p>
+      <div class="find-bench">
+        <div class="query"><small>wanted_name</small><b id="wantedName">"  comet  "</b></div><i>→</i>
+        <div class="scan"><pre><code><mark id="findLine1">clean_wanted = wanted_name.strip().upper()</mark>
+<mark id="findLine2">for gift in gifts:</mark>
+<mark id="findLine3">    if gift["name"] == clean_wanted:</mark>
+<mark id="findLine4">        return gift["points"]</mark></code></pre><b id="scanState">chưa quét</b></div><i>→</i>
+        <div class="result"><small>return</small><b id="searchResult">?</b></div>
+      </div>
+      <p class="predict predict-box">Theo em, hàm bỏ qua HEART hay dừng ở HEART? Giá trị cuối được trả về là bao nhiêu?</p>
+      <button class="run-demo" id="searchNext">CHẠY THỬ — theo dõi tên và từng lần so sánh</button>
+      <p class="explain observation" id="searchProof">Hãy dự đoán rồi chạy từng dòng.</p>
+      <div class="final-task practice-brief"><b>Trong bài thực hành, em sẽ:</b><span>trả <code>MIRA</code> · sửa <code>effect_for(7)</code> thành <code>GLOW</code> · tạo <code>HEART:SPARK</code> và <code>COMET:GLOW</code> · tìm COMET và trả <code>8</code>.</span></div>
+    </section>
+  </div></div>
+  <script src="vendor/reveal/dist/reveal.js"></script><script src="vendor/reveal/plugin/notes/notes.js"></script><script src="islandGIFTSETUP-lesson.js"></script>
+</body></html>

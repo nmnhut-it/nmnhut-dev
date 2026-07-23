@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dictionary lưu dữ liệu như thế nào? — Magic Dust</title>
+    <link rel="stylesheet" href="vendor/reveal/dist/reset.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/reveal.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css" />
+    <link rel="stylesheet" href="lecture-palette.css" />
+    <link rel="stylesheet" href="node20-lesson.css" />
+    <link rel="stylesheet" href="lecture-components.css" />
+  </head>
+  <body>
+    <a class="back" href="./index.html?noentry">← BẢN ĐỒ</a>
+    <a class="practice" href="./lesson20v2.html">VÀO NODE THỰC HÀNH →</a>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p class="eyebrow">NHIỀU THUỘC TÍNH · 1/4</p>
+          <h1>Một thẻ Pip có nhiều thuộc tính</h1>
+          <p class="instruction">
+            Cùng một Pip có tên, sức mạnh và màu. Ta cần giữ ba thông tin đi
+            cùng nhau.
+          </p>
+          <div class="dictionary-intro">
+            <div class="single-card" data-card="intro"></div>
+            <pre><code>card = {
+  "name": "Pip",
+  "power": 7,
+  "color": "cyan"
+}</code></pre>
+          </div>
+          <p class="prediction">
+            Theo em, giá trị <code>7</code> mô tả tên, sức mạnh hay màu của Pip?
+          </p>
+          <button id="showPowerPair">CHẠY THỬ</button>
+          <p class="message" id="pairMessage">
+            Mỗi dòng lưu một thông tin: tên của thông tin ở bên trái, dữ liệu ở
+            bên phải.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">ĐỌC MỘT THÔNG TIN · 2/4</p>
+          <h2>Dùng tên <code>power</code> để lấy dữ liệu <code>7</code></h2>
+          <p class="prediction">
+            Theo em, <code>card["power"]</code> trả lại chữ
+            <code>power</code> hay số <code>7</code>?
+          </p>
+          <div class="lookup-stage">
+            <div class="single-card" data-card="lookup"></div>
+            <div class="lookup-code">
+              <code>card["power"]</code
+              ><button id="lookupPower">CHẠY THỬ</button
+              ><output id="lookupResult">?</output>
+            </div>
+          </div>
+          <p class="message" id="lookupMessage">
+            <code>card["power"]</code> có nghĩa là: lấy thông tin tên
+            <code>power</code> trong dictionary <code>card</code>.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">SỬA MỘT THÔNG TIN · 3/4</p>
+          <h2>Dòng gán chỉ đổi dữ liệu của <code>power</code></h2>
+          <p class="prediction">
+            Theo em, sau khi chạy <code>card["power"] = 10</code>, dòng nào thay
+            đổi?
+          </p>
+          <div class="update-stage">
+            <div class="single-card" data-card="update"></div>
+            <div class="update-code">
+              <code>card["power"] = 10</code
+              ><button id="updatePower">CHẠY THỬ</button>
+            </div>
+          </div>
+          <p class="message" id="updateMessage">
+            Trước khi gán: thông tin <code>power</code> đang lưu dữ liệu
+            <code>7</code>.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">BÀI EM SẼ LÀM · 4/4</p>
+          <h2>Đọc trạng thái cổng</h2>
+          <div class="practice-task">
+            <pre><code>portal = {
+  "name": "Moon Gate",
+  "status": "OPEN"
+}
+
+say(portal["name"])</code></pre>
+            <div>
+              <p>
+                <strong>Đề bài:</strong> Đổi tên thông tin trong
+                <code>portal[...]</code> để chương trình đọc
+                <code>status</code>.
+              </p>
+              <p><strong>Kết quả cần thấy:</strong> <code>OPEN</code>.</p>
+              <p>Theo em, cần đổi <code>"name"</code> thành chữ nào?</p>
+              <a class="task-cta" href="./lesson20v2.html"
+                >MỞ BÀI VÀ TỰ LÀM →</a
+              >
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+    <script src="vendor/reveal/dist/reveal.js"></script>
+    <script src="node20-lesson.js"></script>
+  </body>
+</html>

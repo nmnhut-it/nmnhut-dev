@@ -1,0 +1,91 @@
+@import "palette.css";
+@import "fonts.css";  /* self-hosted Be Vietnam Pro — Vietnamese-clean bold */
+/* Shared styles for every lesson page. The markup is rendered by lesson.js; the
+   per-lesson content comes from window.LESSON (see any lessonNN.html). */
+:root{ --c:var(--mint-line); --c2:var(--mint-line); --bg:var(--ink); --panel:var(--ink); --panel2:var(--ink);
+       --line:var(--ink); --txt:var(--mint-mid); --dim:var(--ink-muted); --ok:var(--mint-mid); --warm:var(--honey-line); --err:var(--honey-line); --term:var(--mint-mid); }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:radial-gradient(1200px 700px at 70% -10%,var(--ink) 0%,var(--bg) 60%);
+     color:var(--txt);font:14px/1.5 "Be Vietnam Pro","Segoe UI",system-ui,sans-serif;overflow:hidden}
+.mono{font-family:"Cascadia Code",Consolas,ui-monospace,monospace}
+
+header{height:52px;display:flex;align-items:center;gap:18px;padding:0 18px;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--ink) 70%,transparent)}
+.logo{font-weight:800;letter-spacing:2px;color:var(--c);text-shadow:0 0 14px color-mix(in srgb,var(--c) 60%,transparent);text-decoration:none}
+.logo small{color:var(--dim);font-weight:600;letter-spacing:1px}
+.title{font-size:15px;font-weight:700}.title b{color:var(--c)}
+.steps{margin-left:auto;display:flex;gap:8px;align-items:center}
+.chip{padding:5px 12px;border:1px solid var(--line);border-radius:20px;color:var(--dim);font-size:12px;transition:.25s}
+.chip.on{color:var(--ink);background:var(--c);border-color:var(--c);font-weight:700;box-shadow:0 0 16px color-mix(in srgb,var(--c) 55%,transparent)}
+
+main{display:grid;grid-template-columns:minmax(440px,45%) 1fr;height:calc(100% - 52px)}
+
+.editor{display:flex;flex-direction:column;border-right:1px solid var(--line);background:var(--panel2)}
+.tabs{height:38px;display:flex;align-items:center;padding:0 10px;border-bottom:1px solid var(--line)}
+.tab{padding:7px 14px;border-radius:8px 8px 0 0;color:var(--txt);background:var(--panel);border:1px solid var(--line);border-bottom:none;font-size:12px}
+.tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c);margin-right:7px;box-shadow:0 0 8px var(--c)}
+#code{flex:1;overflow:hidden}
+.toolbar{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;border-top:1px solid var(--line)}
+.run{display:flex;align-items:center;gap:9px;padding:10px 22px;border:none;border-radius:10px;cursor:pointer;font-weight:800;letter-spacing:.5px;color:var(--ink);background:linear-gradient(180deg,var(--mint-mid),var(--c));box-shadow:0 0 22px color-mix(in srgb,var(--c) 55%,transparent)}
+.run[disabled]{filter:grayscale(.7) brightness(.7);cursor:default;box-shadow:none}
+.run .tri{width:0;height:0;border-left:11px solid var(--ink);border-top:7px solid transparent;border-bottom:7px solid transparent}
+.btn2{padding:9px 16px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--dim);cursor:pointer}
+.hint{margin-left:auto;font-size:12px;color:var(--warm)}.hint code{background:var(--ink);padding:1px 6px;border-radius:5px;color:var(--c)}
+
+.stage{position:relative;overflow:hidden;background:var(--ink)}
+
+#terminal{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--ink);padding:16px 18px;transition:.35s}
+#termlog{flex:1;overflow:auto;white-space:pre-wrap;word-break:break-word}
+#termlog .r{padding:1px 0}
+.t-sys{color:var(--dim)}.t-prompt{color:var(--c)}.t-echo{color:var(--mint-mid)}.t-out{color:var(--term);font-weight:700}.t-err{color:var(--err)}
+#termline{display:none;align-items:center;margin-top:2px}
+#termprompt{color:var(--c);white-space:pre}
+#termin{flex:1;background:transparent;border:none;outline:none;color:var(--paper-raised);font:inherit;caret-color:var(--c)}
+.termtitle{color:var(--dim);font-size:11px;letter-spacing:2px;margin-bottom:8px}
+
+#scene{position:absolute;inset:0;opacity:0;pointer-events:none;transition:.4s;background:radial-gradient(900px 620px at 50% 46%,var(--ink) 0%,var(--ink) 70%)}
+.stagelabel{position:absolute;left:16px;top:14px;color:var(--dim);font-size:12px;letter-spacing:2px}
+.camnote{position:absolute;right:16px;bottom:14px;color:var(--dim);font-size:11px;letter-spacing:1px;opacity:.8}
+.vortex{position:absolute;left:50%;top:46%;width:480px;height:480px;transform:translate(-50%,-50%);transition:opacity .4s}
+.ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent,color-mix(in srgb,var(--c) 40%,transparent),transparent 40%,color-mix(in srgb,var(--c2) 30%,transparent) 60%,transparent 78%);
+      -webkit-mask:radial-gradient(circle,transparent 30%,var(--ink) 34%,var(--ink) 60%,transparent 72%);mask:radial-gradient(circle,transparent 30%,var(--ink) 34%,var(--ink) 60%,transparent 72%);animation:spin 7s linear infinite}
+.ring.b{inset:64px;opacity:.7;animation-duration:4.5s;animation-direction:reverse}
+@keyframes spin{to{transform:rotate(360deg)}}
+.result{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}
+.result.show{opacity:1;animation:pop .5s ease}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.6)}60%{transform:translate(-50%,-50%) scale(1.12)}100%{transform:translate(-50%,-50%) scale(1)}}
+.result .big{font-size:104px;font-weight:900;letter-spacing:4px;color:var(--paper-raised);text-shadow:0 0 30px var(--c),0 0 70px var(--c)}
+.result .sub{margin-top:2px;color:var(--dim);letter-spacing:3px;font-size:13px}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:.4;filter:saturate(.85)}
+.hud{position:absolute;top:14px;right:16px;display:flex;flex-direction:column;gap:8px;align-items:flex-end}
+#camstat{padding:6px 12px;border-radius:20px;font-size:11.5px;letter-spacing:1px;color:var(--ink);background:var(--c);font-weight:700;box-shadow:0 0 14px color-mix(in srgb,var(--c) 55%,transparent)}
+#fcount{font-size:40px;font-weight:900;color:var(--paper-raised);text-shadow:0 0 18px var(--c);line-height:1}
+#gatebar{width:150px;height:6px;border-radius:6px;background:var(--ink);overflow:hidden}
+#gatebar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c),var(--paper-raised));box-shadow:0 0 10px var(--c);transition:width .05s linear}
+#sceneask{display:none;align-items:center;gap:8px;padding:9px 13px;border:1px solid var(--line);border-radius:12px;background:color-mix(in srgb,var(--ink) 80%,transparent)}
+#sceneask span{color:var(--warm);font-size:12px}
+#scenein{width:64px;background:var(--ink);border:1px solid var(--line);border-radius:8px;color:var(--paper-raised);padding:6px 8px;font:inherit;text-align:center}
+
+body[data-mode="game"] #scene{opacity:1;pointer-events:auto}
+body[data-mode="game"] #terminal{inset:auto 0 0 0;height:118px;background:color-mix(in srgb,var(--ink) 86%,transparent);border-top:1px solid var(--line);backdrop-filter:blur(3px)}
+body[data-mode="game"] .termtitle{display:none}
+body[data-mode="game"] #termline{display:none!important}
+
+.warn{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:40px;background:var(--ink);color:var(--warm);z-index:5}
+.warn code{background:var(--ink);padding:2px 8px;border-radius:6px;color:var(--c)}
+
+/* Collapsible panels (accordion) — maximize whichever side you're using */
+body.code-collapsed main{grid-template-columns:42px 1fr}
+body.stage-collapsed main{grid-template-columns:1fr 42px}
+.tabs .panex{margin-left:auto}
+.panex{background:transparent;border:1px solid var(--line);border-radius:8px;color:var(--dim);cursor:pointer;padding:3px 9px;font-size:12px;line-height:1}
+.panex:hover{color:var(--c);border-color:var(--c)}
+.stagex{position:absolute;top:12px;right:14px;z-index:6}
+.rail{display:none}
+#railCode,#railStage{cursor:pointer}
+#railCode span,#railStage span{writing-mode:vertical-rl;transform:rotate(180deg);color:var(--dim);letter-spacing:3px;font-size:12px;font-weight:700}
+#railCode:hover span,#railStage:hover span{color:var(--c)}
+body.code-collapsed #paneCode>*{display:none}
+body.code-collapsed #paneCode #railCode{display:flex;align-items:center;justify-content:center;height:100%}
+body.stage-collapsed #paneStage>*{display:none}
+body.stage-collapsed #paneStage #railStage{display:flex;align-items:center;justify-content:center;height:100%}

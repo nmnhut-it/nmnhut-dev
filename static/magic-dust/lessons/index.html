@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Magic Dust — Saga</title>
+<link rel="stylesheet" href="saga.css?v=20260713-224338">
+<link rel="stylesheet" href="entry.css?v=20260713-224338">
+<script defer src="theme.js?v=20260713-224338"></script>
+<script defer src="saga.js?v=20260713-224338"></script>
+<!-- data-manual: onboard.js's own auto-mount stays OFF here — entry.js
+     drives Onboard.mount() itself once the gesture entry seals (see
+     entry.js and onboard.js's bottom "auto-run" comment for the contract). -->
+<script defer src="onboard.js?v=20260713-224338" data-manual></script>
+<script type="module" src="side-rps-gate.js?v=20260713-224338"></script>
+<!-- entry.js must run AFTER saga.js: saga.js replaces document.body.innerHTML
+     wholesale when it boots, which would wipe an overlay appended earlier.
+     type=module defers automatically, and module scripts execute in source
+     order relative to each other and after all defer scripts, so this is
+     safe as written. -->
+<script type="module" src="entry.js?v=20260713-224338"></script>
+</head>
+<body></body>
+</html>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+  <title id="title">Bàn tay ba ngón trong khung camera</title>
+  <desc id="desc">Một bàn tay đơn giản có ba ngón duỗi lên, sẵn sàng được camera chụp.</desc>
+  <defs>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#122749"/><stop offset="1" stop-color="#071020"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect x="24" y="24" width="912" height="492" rx="38" fill="url(#screen)" stroke="#6ae7ff" stroke-width="4"/>
+  <path d="M390 456 L390 325 C390 295 416 278 440 291 L440 162 C440 132 486 132 486 162 L486 276 L500 276 L500 116 C500 82 550 82 550 116 L550 276 L564 276 L564 150 C564 116 614 116 614 150 L614 310 C633 279 676 292 676 326 L676 390 C676 438 640 474 592 474 L454 474 C428 474 408 468 390 456Z" fill="#59dce4" stroke="#b5fbff" stroke-width="6" filter="url(#glow)"/>
+  <g fill="#ffd56a" font-family="system-ui" font-size="28" font-weight="900"><circle cx="463" cy="145" r="24"/><circle cx="525" cy="99" r="24"/><circle cx="589" cy="133" r="24"/><text x="455" y="155">1</text><text x="517" y="109">2</text><text x="581" y="143">3</text></g>
+  <g fill="none" stroke="#b7c8df" stroke-width="5"><path d="M64 116V66h50M846 66h50v50M64 424v50h50M846 474h50v-50"/></g>
+  <g transform="translate(72 78)"><rect width="78" height="52" rx="12" fill="#0a172d" stroke="#ffd56a" stroke-width="4"/><circle cx="39" cy="26" r="15" fill="none" stroke="#ffd56a" stroke-width="4"/><path d="M78 15l30-14v50L78 37Z" fill="#ffd56a"/></g>
+</svg>

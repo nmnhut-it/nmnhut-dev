@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Onboard harness — CODE!</title>
+<!-- Dev harness for the onboarding flow: always replayable (force:true, the
+     magicdust.onboard flag is never written) so there's nothing to clear
+     between runs. serve.py already sends Cache-Control: no-store, so plain
+     reloads pick up fresh JS/CSS. Open: http://localhost:8123/lessons/onboard.html -->
+<link rel="stylesheet" href="saga.css">
+<script defer src="theme.js"></script>
+<script defer src="onboard.js" data-manual></script>
+<style>
+  #obdevbar{position:fixed;left:12px;bottom:12px;z-index:99;display:flex;flex-wrap:wrap;gap:6px;align-items:center;
+            background:#183f49cc;border:1px solid #183f49;border-radius:12px;padding:8px 10px;font:12px/1.4 system-ui}
+  #obdevbar button{background:#183f49;border:1px solid #183f49;color:#d9eee5;border-radius:8px;padding:5px 10px;cursor:pointer}
+  #obdevbar button:hover{border-color:var(--c,#78b2a5);color:var(--c,#78b2a5)}
+  #obdevbar input{background:#183f49;border:1px solid #183f49;color:#d9eee5;border-radius:8px;padding:5px 8px;width:180px}
+  #obdevbar .res{color:#78b2a5;min-width:150px}
+  #obdevbar .res b{color:#d9eee5}
+  #obdevbar .res b.no{color:#d69a20}
+  /* live SR event log — every session start/end, transcript and error, timestamped */
+  #srlog{position:fixed;right:12px;top:12px;z-index:99;width:min(360px,42vw);max-height:60vh;overflow-y:auto;
+         background:#183f49cc;border:1px solid #183f49;border-radius:12px;padding:8px 10px;
+         font:11.5px/1.5 Consolas,monospace;color:#78b2a5;white-space:pre-wrap;word-break:break-word}
+  #srlog .t{color:#4f6f73}
+  #srlog .hit{color:#d9eee5;font-weight:700}
+  #srlog .err{color:#f4c85a}
+  #srlog h4{margin:0 0 4px;font:700 11px system-ui;letter-spacing:1px;color:#d9eee5}
+</style>
+</head>
+<body>
+<div id="obdevbar">
+  <button id="dv-replay">↻ replay</button>
+  <button id="dv-gate">⏭ to gate</button>
+  <button id="dv-five">✋ five</button>
+  <button id="dv-chant">🗣 chant</button>
+  <input id="dv-text" placeholder="thử transcript…" value="khô">
+  <button id="dv-test">match?</button>
+  <span class="res" id="dv-res"></span>
+</div>
+<div id="srlog"><h4>🎤 SR LOG</h4><div id="srlines">(chưa có sự kiện — vào tới gate là mic bắt đầu)</div></div>
+<script>
+  // live SR log panel: onboard.js dispatches 'ob:sr' for every SR event
+  addEventListener('ob:sr', e => {
+    const box = document.getElementById('srlines');
+    if (box.dataset.dirty !== '1') { box.textContent = ''; box.dataset.dirty = '1'; }
+    const line = document.createElement('div');
+    const msg = e.detail, cls = msg.includes('MATCH') ? 'hit' : (msg.includes('⚠') || msg.includes('GIVE UP')) ? 'err' : '';
+    if (cls) line.className = cls;
+    const t = new Date(); line.textContent = `${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')} ${msg}`;
+    box.appendChild(line); while (box.children.length > 80) box.removeChild(box.firstChild);
+    line.scrollIntoView({ block: 'nearest' });
+  });
+</script>
+<script>
+  let inst = null;
+  const start = () => { inst && inst.destroy(); inst = Onboard.mount({ force: true, onDone: () => { inst = null; } }); };
+  addEventListener('DOMContentLoaded', () => {
+    start();
+    const $ = id => document.getElementById(id);
+    $('dv-replay').onclick = start;
+    $('dv-gate').onclick = () => obDev.act(2);
+    $('dv-five').onclick = () => obDev.five();
+    $('dv-chant').onclick = () => obDev.chant($('dv-text').value || null);
+    // live matcher probe — shows WHICH word hit (word-level "CODE!" matcher)
+    $('dv-test').onclick = async () => {
+      const m = await import('./engine/chant-match.js');
+      const t = $('dv-text').value, hits = m.chantHits(t);
+      $('dv-res').innerHTML = hits.length ? `từ trúng: <code>${hits.join(', ')}</code> → <b>MATCH</b>` : `không từ nào khớp "${m.CHANT_WORD}" → <b class="no">no</b>`;
+    };
+  });
+</script>
+</body>
+</html>

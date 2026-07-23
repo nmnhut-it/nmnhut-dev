@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Cấu trúc dữ liệu và Thuật toán — Magic Dust</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css">
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+<script type="module">
+import { DSA_ISLANDS, DSA_MAIN_REQUIRED, DSA_NODES, DSA_TOWERS, dsaIslandCompletionKey, dsaNodeCompletionKey, dsaTowerCompletionKey } from "./content/dsa-curriculum.js";
+const params = new URLSearchParams(location.search);
+const type = params.get("type");
+const rawId = params.get("id");
+const mainProgress = Math.max(0, Number.parseInt(localStorage.getItem("magicdust.saga"), 10) || 0);
+let meta = null; let path = ""; let unlocked = false;
+if (type === "node") {
+  const id = Number(rawId); meta = DSA_NODES[id];
+  unlocked = Boolean(meta) && mainProgress >= DSA_MAIN_REQUIRED && (id === 0 || localStorage.getItem(dsaNodeCompletionKey(id - 1)) === "1");
+  path = `./content/dsanode${String(id).padStart(2, "0")}.js`;
+} else if (type === "island") {
+  meta = DSA_ISLANDS.find(item => item.id === rawId);
+  unlocked = Boolean(meta) && mainProgress >= DSA_MAIN_REQUIRED && localStorage.getItem(dsaNodeCompletionKey(meta?.unlockAfter)) === "1";
+  path = meta ? `./content/dsaisland${meta.module}.js` : "";
+} else if (type === "tower") {
+  meta = DSA_TOWERS.find(item => item.id === rawId);
+  unlocked = Boolean(meta) && mainProgress >= DSA_MAIN_REQUIRED && localStorage.getItem(dsaNodeCompletionKey(meta?.unlockAfter)) === "1";
+  path = meta ? `./content/dsatower${meta.module}.js` : "";
+}
+if (!meta || !unlocked) location.replace("./dsa.html");
+else {
+  const { default: lesson } = await import(path);
+  const expectedKey = type === "node" ? dsaNodeCompletionKey(meta.id) : type === "island" ? dsaIslandCompletionKey(meta.id) : dsaTowerCompletionKey(meta.id);
+  if (lesson.completionKey !== expectedKey) throw new Error("DSA completion key không khớp registry");
+  window.NODE = lesson;
+  await import("./island.js");
+}
+</script>
+</head>
+<body></body>
+</html>
+

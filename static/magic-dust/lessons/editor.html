@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CONTENT EDITOR — Magic Dust (teacher-only)</title>
+<!-- TEACHER-ONLY dev page, same stance as dev-test.html/kickoff.html: no
+     link from the game UI, only reachable by typing the URL directly.
+     Fresh page — does NOT import node.js/lesson runtime, so none of the
+     game's global keyboard handlers (Space/1/2 test hooks, camera gestures)
+     exist here; a form-heavy page needs to be free of those traps. -->
+<link rel="stylesheet" href="editor.css">
+</head>
+<body>
+<h1>🛠 CONTENT EDITOR <small style="color:#78b2a5;font-weight:400">— sửa tay từng node, không cần AI sửa JS</small></h1>
+<div class="warnbar">
+  ⚠ Lưu từ editor sẽ làm mất các COMMENT trong file (chỉ dữ liệu được giữ).
+  Git giữ lịch sử — <strong>commit trước khi sửa lớn</strong>. Mỗi lần lưu server
+  cũng tự tạo <code>&lt;file&gt;.bak</code> làm lưới an toàn tức thời.
+</div>
+
+<div class="toolbar">
+  <label style="margin:0">Node</label>
+  <select id="nodePicker"></select>
+  <button id="reloadBtn" title="Tải lại từ đĩa, bỏ thay đổi chưa lưu">↻ Reload</button>
+  <div class="spacer"></div>
+  <span id="pingStatus" class="status">checking server…</span>
+  <button id="saveBtn" class="primary">💾 Save</button>
+</div>
+
+<div id="app"></div>
+
+<script type="module" src="editor.js"></script>
+</body>
+</html>

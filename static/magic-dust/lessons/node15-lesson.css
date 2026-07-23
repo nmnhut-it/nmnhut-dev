@@ -1,0 +1,366 @@
+@import url("lecture-palette.css");
+
+:root {
+  --ink: var(--lecture-ink-light);
+  --paper: var(--lecture-light-panel);
+  --cyan: #36d5d8;
+  --cyan-soft: #c9f4ef;
+  --gold: var(--lecture-gold);
+  --green: #78b2a5;
+  --muted: var(--lecture-muted-light);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  background: radial-gradient(
+    circle at 50% 20%,
+    #f9f4df 0,
+    #dcebdc 55%,
+    #bfd8d4 100%
+  );
+  color: var(--ink);
+}
+body.reveal-viewport,
+.reveal {
+  background: radial-gradient(
+    circle at 50% 20%,
+    #f9f4df 0,
+    #dcebdc 55%,
+    #bfd8d4 100%
+  );
+}
+.reveal {
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--ink);
+}
+.reveal .slides section {
+  text-align: left;
+  padding: 40px 64px;
+}
+.reveal h1,
+.reveal h2 {
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: -0.035em;
+  margin: 0.05em 0 0.45em;
+  text-shadow: none;
+}
+.reveal h1 {
+  font-size: 2.2em;
+}
+.reveal h2 {
+  font-size: 2em;
+}
+.reveal code {
+  font-family: "Cascadia Code", Consolas, monospace;
+  color: #075c65;
+}
+.eyebrow {
+  font:
+    800 0.36em/1.2 "Cascadia Code",
+    monospace;
+  letter-spacing: 0.17em;
+  color: #48716f;
+  margin: 0 0 8px;
+}
+.map-link,
+.practice-link {
+  position: fixed;
+  z-index: 30;
+  text-decoration: none;
+  font:
+    800 13px/1 "Cascadia Code",
+    monospace;
+  letter-spacing: 0.04em;
+  border-radius: 999px;
+  box-shadow: 0 8px 25px #204b4930;
+}
+.map-link {
+  top: 15px;
+  left: 18px;
+  color: var(--ink);
+  background: #fffaf0dd;
+  padding: 11px 15px;
+  border: 1px solid #78b2a577;
+}
+.practice-link {
+  right: 18px;
+  top: 14px;
+  color: #092f39;
+  background: var(--gold);
+  padding: 14px 20px;
+  border: 2px solid #8d6f14;
+}
+.practice-link:focus-visible,
+.step-button:focus-visible {
+  outline: 4px solid #155d75;
+  outline-offset: 3px;
+}
+.split-stage,
+.task-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.08fr;
+  gap: 44px;
+  align-items: center;
+}
+.code-card,
+.task-card {
+  background: #102f3b;
+  color: #eafbf5;
+  border: 2px solid #315866;
+  border-radius: 18px;
+  padding: 28px;
+  box-shadow: 0 18px 40px #173d4130;
+  font-size: 0.56em;
+  line-height: 1.55;
+  margin: 0;
+}
+.code-card code,
+.task-card code {
+  color: #eafbf5;
+}
+.grid-panel {
+  display: grid;
+  grid-template-columns: 95px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+.grid-labels {
+  display: grid;
+  grid-template-rows: repeat(2, 72px);
+  gap: 8px;
+  font:
+    800 0.35em/1.2 "Cascadia Code",
+    monospace;
+  color: var(--muted);
+  align-items: center;
+  text-align: right;
+}
+.number-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(2, 72px);
+  gap: 8px;
+  width: max-content;
+}
+.cell {
+  display: grid;
+  place-items: center;
+  border: 2px solid #568183;
+  border-radius: 12px;
+  background: #fffaf0;
+  color: var(--ink);
+  font:
+    900 28px/1 "Cascadia Code",
+    monospace;
+  transition:
+    background 0.28s,
+    transform 0.28s,
+    box-shadow 0.28s,
+    border-color 0.28s,
+    opacity 0.28s;
+}
+.cell.row-active {
+  background: var(--cyan-soft);
+  border-color: #22989a;
+  box-shadow: 0 5px 0 #22989a55;
+  transform: translateX(6px);
+}
+.cell.cell-active {
+  background: var(--gold);
+  border-color: #906c0b;
+  box-shadow:
+    0 0 0 6px #f4c85a55,
+    0 8px 0 #906c0b44;
+  transform: scale(1.08);
+}
+.message {
+  min-height: 1.7em;
+  text-align: center;
+  margin: 0.55em 0 0;
+  font-size: 0.52em;
+  color: #355d62;
+}
+.step-button {
+  grid-column: 1/-1;
+  justify-self: center;
+  border: 2px solid #376f70;
+  border-radius: 999px;
+  background: #eaf7ee;
+  color: var(--ink);
+  padding: 12px 20px;
+  font:
+    800 13px/1 "Cascadia Code",
+    monospace;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.address-stage {
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 34px;
+  align-items: center;
+}
+.expression {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #102f3b;
+  color: #f8fffb;
+  border-radius: 18px;
+  padding: 32px;
+  font:
+    900 0.78em/1 "Cascadia Code",
+    monospace;
+}
+.expression b {
+  color: #91ece5;
+  padding: 8px 5px;
+  border-radius: 8px;
+  transition: 0.25s;
+}
+.expression b.active {
+  background: var(--cyan);
+  color: #07343c;
+  transform: translateY(-5px);
+}
+.expression i {
+  font-style: normal;
+  color: var(--gold);
+  margin-left: 12px;
+  opacity: 0;
+}
+.expression i.visible {
+  opacity: 1;
+}
+.axis-grid {
+  display: grid;
+  grid-template-columns: 80px auto;
+  grid-template-rows: 32px auto;
+  gap: 8px;
+}
+.col-head {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  gap: 8px;
+  text-align: center;
+  font:
+    800 12px/1 "Cascadia Code",
+    monospace;
+  color: var(--muted);
+}
+.row-head {
+  grid-row: 2;
+  display: grid;
+  grid-template-rows: repeat(2, 72px);
+  gap: 8px;
+  align-items: center;
+  text-align: right;
+  font:
+    800 12px/1 "Cascadia Code",
+    monospace;
+  color: var(--muted);
+}
+.axis-grid .number-grid {
+  grid-column: 2;
+  grid-row: 2;
+}
+.address-stage .step-button {
+  grid-column: 1/-1;
+}
+.task-card p {
+  margin: 0.1em 0 0.55em;
+  font-size: 0.43em;
+}
+.task-card pre {
+  font-size: 0.9em;
+  margin: 0;
+  white-space: pre-wrap;
+}
+.task-card #taskAddress {
+  color: #ffdd73;
+  font-weight: 900;
+}
+.task-grid-wrap {
+  display: grid;
+  justify-items: center;
+  gap: 15px;
+}
+@media (max-width: 700px) {
+  .reveal .slides section {
+    padding: 48px 22px 84px;
+  }
+  .reveal h1,
+  .reveal h2 {
+    font-size: 1.45em;
+  }
+  .eyebrow {
+    font-size: 0.28em;
+  }
+  .split-stage,
+  .task-layout,
+  .address-stage {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+  .code-card,
+  .task-card {
+    font-size: 0.42em;
+    padding: 15px;
+  }
+  .grid-panel {
+    justify-content: center;
+  }
+  .number-grid {
+    grid-template-columns: repeat(3, 52px);
+    grid-template-rows: repeat(2, 52px);
+    gap: 6px;
+  }
+  .cell {
+    font-size: 20px;
+    border-radius: 9px;
+  }
+  .grid-labels {
+    grid-template-rows: repeat(2, 52px);
+    font-size: 0.27em;
+  }
+  .axis-grid {
+    grid-template-columns: 60px auto;
+    justify-content: center;
+  }
+  .col-head {
+    grid-template-columns: repeat(3, 52px);
+    font-size: 9px;
+  }
+  .row-head {
+    grid-template-rows: repeat(2, 52px);
+    font-size: 9px;
+  }
+  .expression {
+    font-size: 0.5em;
+    padding: 18px;
+  }
+  .message {
+    font-size: 0.35em;
+  }
+  .step-button {
+    margin-top: 3px;
+    padding: 10px 14px;
+  }
+  .map-link {
+    font-size: 10px;
+  }
+  .practice-link {
+    font-size: 10px;
+    padding: 12px 14px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cell,
+  .expression b {
+    transition: none !important;
+  }
+}

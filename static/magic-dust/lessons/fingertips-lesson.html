@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Từ ảnh bàn tay đến bài toán đếm đầu ngón — Magic Dust</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="fingertips-lesson.css">
+</head>
+<body>
+  <a class="deck-back" href="./index.html?noentry">← BẢN ĐỒ</a>
+  <div class="reveal"><div class="slides">
+
+    <section class="camera-slide">
+      <p class="eyebrow">1 · ẢNH CAMERA</p>
+      <h1>Camera vừa chụp được gì?</h1>
+      <div class="camera-stage">
+        <div class="camera-empty"></div>
+        <img class="camera-hand" src="assets/fingertips-lecture/hand-camera.svg" alt="Bàn tay ba ngón trong khung camera">
+        <div class="camera-flash fragment"></div>
+      </div>
+      <p class="question fragment">Em nhìn thấy bao nhiêu đầu ngón đang hướng lên?</p>
+      <aside class="notes">Để học sinh tự chỉ ba đầu ngón. Nhấn mạnh đây vẫn là một bức ảnh, chưa phải ma trận.</aside>
+    </section>
+
+    <section class="pixel-slide">
+      <p class="eyebrow">2 · NHÌN GẦN HƠN</p>
+      <h2>Ảnh được ghép từ những ô rất nhỏ</h2>
+      <div class="pixel-story">
+        <div class="pixel-source"><img src="assets/fingertips-lecture/hand-camera.svg" alt="Ảnh bàn tay"><div class="pixel-overlay fragment"></div><i class="picked-pixel fragment"></i></div>
+        <svg class="magnifier-lines" viewBox="0 0 920 430" aria-hidden="true"><path class="fragment" d="M475 105 C560 80 590 120 650 150"/></svg>
+        <div class="pixel-loupe fragment" id="pixelLoupe" aria-label="Một vùng ảnh phóng lớn thành 16 pixel"></div>
+      </div>
+      <p class="one-message fragment"><strong>pixel</strong> = một ô nhỏ của bức ảnh</p>
+      <aside class="notes">Hỏi học sinh chỉ đúng một pixel. Không nói RGB hoặc giá trị màu.</aside>
+    </section>
+
+    <section class="pipeline-slide">
+      <p class="eyebrow">3 · MÁY CHUẨN BỊ DỮ LIỆU</p>
+      <h2>Từ ảnh camera đến ma trận <code>x/0</code></h2>
+      <figure class="pipeline-figure">
+        <img src="assets/fingertips-lecture/camera-to-binary-matrix-colored.webp" alt="Ảnh camera được chia pixel, phân loại và đổi thành ma trận x 0">
+        <i class="pipe-focus p1 fragment"></i><i class="pipe-focus p2 fragment"></i><i class="pipe-focus p3 fragment"></i><i class="pipe-focus p4 fragment"></i>
+      </figure>
+      <div class="pipeline-labels"><span>ẢNH</span><b>→</b><span>TÁCH NỀN</span><b>→</b><span>PHÂN LOẠI</span><b>→</b><span>MA TRẬN</span></div>
+      <div class="ownership"><strong class="fragment">MÁY LÀM SẴN</strong><strong class="fragment">DỮ LIỆU GIAO CHO EM</strong></div>
+      <aside class="notes">Học sinh cần nói được: máy làm từ ảnh tới ma trận; phần của em bắt đầu sau đó.</aside>
+    </section>
+
+    <section>
+      <p class="eyebrow">4 · ĐỌC MA TRẬN</p>
+      <h2><code>x</code> thuộc bàn tay · <code>0</code> thuộc nền</h2>
+      <div class="matrix-meaning"><div class="hand-grid" data-grid="meaning"></div><div class="meaning-key"><div class="fragment"><i class="key-x">x</i><span>pixel thuộc bàn tay</span></div><div class="fragment"><i class="key-o">0</i><span>pixel thuộc nền</span></div><p class="fragment">Bỏ hình bàn tay đi, bảng vẫn giữ lại thông tin cần thiết.</p></div></div>
+      <aside class="notes">Chỉ ngẫu nhiên một ô và hỏi tay hay nền. Chưa tô đỉnh vàng.</aside>
+    </section>
+
+    <section>
+      <p class="eyebrow">5 · BÀI TOÁN CỦA EM</p>
+      <h2>Ba đầu ngón nằm ở ô nào?</h2>
+      <div class="find-layout"><div class="hand-grid large" data-grid="find"></div><div class="counter"><small>SỐ ĐẦU NGÓN</small><b id="tipCounter">?</b></div></div>
+      <div class="tip-chips"><span class="fragment" data-tip="1:1">[1, 1]</span><span class="fragment" data-tip="1:4">[1, 4]</span><span class="fragment" data-tip="1:7">[1, 7]</span></div>
+      <aside class="notes">Dừng trước khi bấm. Cho học sinh tự chỉ ba ô. Marker xuất hiện lần lượt mới cập nhật số đếm.</aside>
+    </section>
+
+    <section>
+      <p class="eyebrow">6 · PHÓNG LỚN MỘT ĐỈNH</p>
+      <h2>Một ô đỉnh ngón có mẫu gì?</h2>
+      <div class="neighbor-layout"><div class="matrix-crop"><div class="hand-grid compact" data-grid="crop"></div></div><svg class="neighbor-svg" viewBox="0 0 560 430" role="img" aria-label="Trên trái phải là 0, tâm và dưới là x"><defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#ffd56a"/></marker></defs><g class="neighbor-cells"><rect class="empty fragment" x="220" y="10" width="120" height="100"/><rect class="empty fragment" x="80" y="130" width="120" height="100"/><rect class="tip" x="220" y="130" width="120" height="100"/><rect class="empty fragment" x="360" y="130" width="120" height="100"/><rect class="hand fragment" x="220" y="250" width="120" height="100"/></g><g class="neighbor-values"><text x="280" y="72">0</text><text x="140" y="192">0</text><text x="280" y="192">x</text><text x="420" y="192">0</text><text x="280" y="312">x</text></g><g class="direction-labels"><text class="fragment" x="250" y="405">ba phía là nền · phía dưới là bàn tay</text></g></svg></div>
+      <aside class="notes">Đây là quy ước của dữ liệu trong bài này. Không khái quát thành mọi ảnh bàn tay ngoài đời.</aside>
+    </section>
+
+    <section>
+      <p class="eyebrow">7 · CHẶN MỘT HIỂU LẦM</p>
+      <h2>Đầu ngón hay pixel đứng riêng?</h2>
+      <div class="pattern-choice"><button data-choice="valid"><div class="mini-pattern valid-pattern"></div><b>A</b></button><button data-choice="noise"><div class="mini-pattern noise-pattern"></div><b>B</b></button></div>
+      <p id="choiceFeedback" class="choice-feedback">Chọn mẫu là đầu ngón.</p>
+      <aside class="notes">Đáp án A. Học sinh phải nói được: B sai vì phía dưới là 0.</aside>
+    </section>
+
+    <section class="scan-slide">
+      <p class="eyebrow">8 · QUÉT TỪNG Ô</p>
+      <h2>Quan sát <code>count</code> thay đổi</h2>
+      <div class="scan-layout"><div class="indexed-grid"><div class="col-labels" id="colLabels"></div><div class="row-labels" id="rowLabels"></div><div class="hand-grid scan-grid" id="scanGrid" data-grid="scan"></div></div><div class="scan-panel"><div><small>ĐANG KIỂM TRA</small><b id="scanPos">[0, 0]</b></div><div class="neighbor-readout" id="neighborReadout"></div><strong id="scanVerdict">BẮT ĐẦU</strong><p id="scanReason">Máy sẽ đi qua từng ô trong bảng.</p><div class="count-box"><small>count</small><b id="scanCount">0</b></div><button id="scanNext">BƯỚC TIẾP →</button></div></div>
+      <aside class="notes">Ở ô [3,4], hỏi trước khi bấm tiếp: vì sao không tăng count?</aside>
+    </section>
+
+    <section>
+      <p class="eyebrow">9 · CODE VÀ BỘ TEST</p>
+      <h2>Trong đảo thực hành, em sẽ làm gì?</h2>
+      <div class="code-test-layout"><div class="condition-map"><svg class="condition-svg" viewBox="0 0 360 250" role="img" aria-label="Mẫu đỉnh ngón gồm ba ô 0, ô tâm x và ô dưới x"><g><rect x="130" y="5" width="100" height="70"/><rect x="20" y="85" width="100" height="70"/><rect class="tip" x="130" y="85" width="100" height="70"/><rect x="240" y="85" width="100" height="70"/><rect class="hand" x="130" y="165" width="100" height="70"/></g><g><text x="180" y="52">0</text><text x="70" y="132">0</text><text x="180" y="132">x</text><text x="290" y="132">0</text><text x="180" y="212">x</text></g></svg><code class="fragment">above_is_empty</code><code class="fragment">left_is_empty</code><code class="fragment">right_is_empty</code><code class="fragment">continues_below</code><strong class="fragment">cả bốn đúng → count = count + 1</strong></div><div class="test-console"><div class="test-pipeline"><span>test grid</span><b>→</b><span>count_fingertips(grid)</span><b>→</b><span>so với expected</span></div><div class="pip-tests" id="pipTests"></div><button id="runTests">PIP CHẠY TEST →</button></div></div>
+      <div class="test-result" id="testResult">Pip sẽ gọi cùng một hàm với nhiều ma trận.</div>
+      <div class="final-brief"><span><b>1</b> Nhận ma trận <code>x/0</code></span><span><b>2</b> Viết <code>count_fingertips(grid)</code> để trả số đầu ngón</span><span><b>3</b> Bấm RUN để Pip chạy 5 test</span></div>
+      <a class="challenge-link" id="challengeLink" href="./islandFINGERTIPS.html">VÀO ĐẢO THỰC HÀNH →</a>
+      <aside class="notes">Nút vào đảo luôn hoạt động. Bộ test trên slide chỉ minh họa cách Pip chấm, không phải cổng khóa.</aside>
+    </section>
+
+  </div></div>
+  <script src="vendor/reveal/dist/reveal.js"></script>
+  <script src="vendor/reveal/plugin/notes/notes.js"></script>
+  <script type="module" src="fingertips-lesson.js"></script>
+</body>
+</html>

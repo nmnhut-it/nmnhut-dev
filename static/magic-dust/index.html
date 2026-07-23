@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Dust · Hand Gesture Spellcasting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--c:#78b2a5;--g:rgba(120,178,165,.35)}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#183f49}
+body{font-family:'Rajdhani',sans-serif;cursor:none}
+#camlayer{position:fixed;inset:0;z-index:0;overflow:hidden;background:#183f49}
+#camlayer video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#camdark{position:absolute;inset:0;background:rgba(24,63,73,.18);pointer-events:none}
+#camlayer canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1)}
+#cv{position:fixed;inset:0;z-index:2;mix-blend-mode:screen}
+#vig{position:fixed;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at 50% 38%,transparent 68%,rgba(24,63,73,.35) 100%)}
+#screenglow{position:fixed;inset:0;z-index:6;pointer-events:none;box-shadow:inset 0 0 70px var(--g);opacity:.45;transition:box-shadow .45s}
+#flash{position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;transition:opacity .07s}
+#dot{position:fixed;width:7px;height:7px;border-radius:50%;background:var(--c);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 10px 4px var(--g);transition:background .3s,box-shadow .3s;mix-blend-mode:screen}
+#topbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--c);box-shadow:0 0 12px var(--c);z-index:20;transition:background .45s,box-shadow .45s}
+#ui{position:fixed;top:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;padding-top:16px;pointer-events:none;z-index:20}
+.title{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(1.4rem,4vw,2.4rem);letter-spacing:.18em;background:linear-gradient(180deg,#fffdf5 10%,rgba(255,253,245,.32) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hdiv{margin-top:8px;width:clamp(180px,28vw,300px);height:1px;background:linear-gradient(90deg,transparent,rgba(255,253,245,.12),transparent)}
+#sname{margin-top:10px;font-size:clamp(.8rem,2vw,1.15rem);font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--c);text-shadow:0 0 18px var(--g),0 0 42px var(--g);transition:color .45s,text-shadow .45s;min-height:1.3em;text-align:center}
+#f4c85ar{margin-top:11px;display:flex;align-items:center;gap:9px}
+#elbl{font-size:.54rem;font-weight:600;letter-spacing:.18em;color:rgba(255,253,245,.14)}
+#etrack{position:relative;width:clamp(100px,14vw,155px);height:2px;background:rgba(255,253,245,.06);overflow:hidden}
+#efill{position:absolute;inset:0;width:0%;background:var(--c);box-shadow:0 0 8px var(--g);transition:width .8s cubic-bezier(.4,0,.2,1),background .45s,box-shadow .45s}
+#panel{position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:20;pointer-events:none;display:flex;flex-direction:column;align-items:center;padding-bottom:14px}
+#pill{margin-bottom:7px;display:inline-flex;align-items:center;gap:7px;padding:4px 14px;border-radius:99px;border:1px solid rgba(255,253,245,.08);background:rgba(24,63,73,.5);backdrop-filter:blur(6px)}
+#pdot{width:5px;height:5px;border-radius:50%;background:rgba(255,253,245,.18);transition:background .3s,box-shadow .3s}
+#ptxt{font-size:.52rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,245,.18);transition:color .3s}
+#mute{position:fixed;top:12px;right:13px;z-index:30;pointer-events:auto;cursor:pointer;font-size:.6rem;font-weight:600;letter-spacing:.15em;color:rgba(255,253,245,.5);background:rgba(255,253,245,.06);border:1px solid rgba(255,253,245,.12);border-radius:6px;padding:5px 10px}
+#guide{position:fixed;top:56px;right:13px;z-index:20;pointer-events:none;display:flex;flex-direction:column;gap:6px;width:200px}
+.gi{display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,253,245,.08);background:rgba(24,63,73,.45);backdrop-filter:blur(4px);transition:border-color .3s,background .3s,transform .3s}
+.gi.active{border-color:var(--c);background:rgba(24,63,73,.7);box-shadow:0 0 16px var(--g);transform:translateX(-4px)}
+.gi .gl{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,253,245,.7)}
+.gi.active .gl{color:var(--c)}
+.gi .gd{font-size:.5rem;font-weight:500;letter-spacing:.03em;color:rgba(255,253,245,.32)}
+#perf{position:fixed;top:12px;left:13px;z-index:30;pointer-events:none;font-size:.46rem;font-weight:600;letter-spacing:.18em;color:rgba(255,253,245,.08)}
+#testpanel{position:fixed;bottom:14px;left:13px;z-index:30;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
+#testcastbtn{pointer-events:auto;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:rgba(255,253,245,.7);background:rgba(255,253,245,.06);border:1px solid rgba(255,253,245,.15);border-radius:6px;padding:6px 12px}
+#testcastbtn:active{background:rgba(255,253,245,.16)}
+#voicestat{font-size:.46rem;font-weight:600;letter-spacing:.12em;color:rgba(255,253,245,.25)}
+#voicestat.listening{color:#78b2a5}
+#testhelp{font-size:.42rem;font-weight:500;letter-spacing:.06em;color:rgba(255,253,245,.18);max-width:210px;line-height:1.5}
+#loading{position:fixed;inset:0;z-index:500;background:#183f49;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 1s ease}
+.ld-k{font-family:'Cinzel',serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);letter-spacing:.14em;color:rgba(255,253,245,.9);animation:ldp 1.5s ease-in-out infinite alternate}
+@keyframes ldp{from{text-shadow:0 0 16px rgba(120,178,165,.2)}to{text-shadow:0 0 50px rgba(120,178,165,.65),0 0 80px rgba(120,178,165,.2)}}
+.ld-bar{width:170px;height:1px;background:rgba(255,253,245,.05)}
+.ld-fill{height:100%;width:0%;background:#78b2a5;transition:width .18s;box-shadow:0 0 8px #78b2a588}
+.ld-sub{font-size:.52rem;font-weight:600;letter-spacing:.38em;color:rgba(255,253,245,.15)}
+/* Kotopia Storybook shell: keep the camera spell interaction intact while
+   replacing the severe black/neon presentation with warm painted fantasy. */
+:root{--c:#78b2a5;--g:rgba(120,178,165,.32)}
+html,body{background:#183f49}
+#camdark{background:linear-gradient(180deg,rgba(24,63,73,.08),rgba(24,63,73,.28))}
+#vig{background:radial-gradient(ellipse at 50% 38%,transparent 62%,rgba(24,63,73,.48) 100%)}
+#screenglow{box-shadow:inset 0 0 80px rgba(244,200,90,.18)}
+.title{font-family:'Cinzel',serif;background:linear-gradient(180deg,#fffaf0 10%,#f4c85a 100%);-webkit-background-clip:text;
+  filter:drop-shadow(0 3px 0 rgba(45,100,37,.5))}
+#pill,.gi,#mute,#testcastbtn{background:rgba(255,250,240,.82);border-color:rgba(255,240,220,.64);color:#183f49;
+  box-shadow:0 8px 28px rgba(24,63,73,.22);backdrop-filter:blur(10px)}
+.gi .gl{color:#2d6425}.gi .gd,#ptxt{color:#4f6f73}.gi.active{background:rgba(255,250,240,.94);border-color:#f4c85a}
+#loading{background:linear-gradient(rgba(24,63,73,.2),rgba(24,63,73,.72)),url(lessons/assets/storybook/kotopia-world-v2.webp) center/cover}
+.ld-k{color:#fffaf0;text-shadow:0 4px 0 rgba(24,63,73,.55),0 0 38px rgba(244,200,90,.7)}
+.ld-bar{height:4px;border-radius:4px;background:rgba(255,253,245,.25);overflow:hidden}.ld-fill{background:#ffe6a0;box-shadow:0 0 12px #ffe6a0}
+.ld-sub{color:rgba(255,250,240,.78);text-shadow:0 2px 8px rgba(24,63,73,.5)}
+</style>
+
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3.1675466862/camera_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils@0.3.1675466124/drawing_utils.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+<script src="./src/vendor/effekseer/effekseer.min.js"></script>
+</head>
+<body>
+
+<div id="loading">
+  <div class="ld-k">MAGIC DUST</div>
+  <div class="ld-bar"><div class="ld-fill" id="ldf"></div></div>
+  <div class="ld-sub">GATHERING ARCANE ENERGY</div>
+</div>
+
+<div id="camlayer">
+  <video class="input_video" playsinline muted></video>
+  <div id="camdark"></div>
+  <canvas id="ocv"></canvas>
+</div>
+
+<div id="vig"></div>
+<div id="screenglow"></div>
+<div id="flash"></div>
+<div id="dot"></div>
+<div id="topbar"></div>
+<span id="perf">—</span>
+<div id="mute">SOUND: ON</div>
+<div id="guide"></div>
+
+<div id="ui">
+  <div class="title">Magic Dust</div>
+  <div class="hdiv"></div>
+  <div id="sname">NO SPELL ACTIVE</div>
+  <div id="ebar">
+    <span id="elbl">POWER</span>
+    <div id="etrack"><div id="efill"></div></div>
+  </div>
+</div>
+
+<div id="panel">
+  <div id="pill"><div id="pdot"></div><span id="ptxt">NO HAND DETECTED</span></div>
+</div>
+
+<div id="testpanel">
+  <button id="testcastbtn" type="button">TEST CAST</button>
+  <span id="voicestat">voice: say "cast" to trigger</span>
+  <span id="testhelp">Keys: 1/2 = hold to simulate finger count · Space = force-cast current spell</span>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

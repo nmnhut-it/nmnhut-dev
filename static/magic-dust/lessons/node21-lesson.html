@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Ghép hàm xử lý dữ liệu</title>
+    <link rel="stylesheet" href="vendor/reveal/dist/reset.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/reveal.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css" />
+    <link rel="stylesheet" href="node21-lesson.css" />
+    <link rel="stylesheet" href="lecture-components.css" />
+  </head>
+  <body>
+    <a class="back" href="./index.html?noentry">← BẢN ĐỒ</a
+    ><a class="practice" href="./lesson21v2.html">VÀO NODE THỰC HÀNH →</a>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p class="eyebrow">LÀM SẠCH DỮ LIỆU · 1/3</p>
+          <h1>Cùng một tên phải trông giống nhau</h1>
+          <p class="instruction">
+            Tên quà có khoảng trắng và chữ thường sẽ khó so sánh với nhãn
+            <code>FLOWER</code>.
+          </p>
+          <div class="pipeline concept-visual">
+            <div>
+              <small>Dữ liệu nhận được</small
+              ><b>&quot;&nbsp; flower &nbsp;&quot;</b>
+            </div>
+            <span>→</span>
+            <div><small>Nếu làm sạch</small><b id="cleanValue">?</b></div>
+          </div>
+          <p class="prediction">
+            Theo em, bỏ khoảng trắng hai đầu rồi đổi thành chữ hoa sẽ tạo ra
+            chuỗi nào?
+          </p>
+          <button class="run-demo" id="cleanText">CHẠY THỬ</button>
+          <p class="observation" id="cleanObservation">
+            Hãy dự đoán trước, rồi chạy để kiểm tra.
+          </p>
+          <pre><code>def clean_text(text):
+    return text.strip().upper()</code></pre>
+        </section>
+        <section>
+          <p class="eyebrow">TẠO BẢN GHI · 2/3</p>
+          <h2>Điểm quyết định hiệu ứng</h2>
+          <p class="instruction">
+            Luật cho sẵn: từ 8 điểm là <code>BURST</code>, từ 4 đến 7 là
+            <code>GLOW</code>, còn lại là <code>SPARK</code>.
+          </p>
+          <div class="record-lab concept-visual">
+            <div class="inputs">
+              <span>8 trở lên <b>BURST</b></span
+              ><span>4–7 <b>GLOW</b></span
+              ><span>dưới 4 <b>SPARK</b></span
+              ><strong>Điểm của Binh: 9</strong>
+            </div>
+            <div class="record">
+              <div><small>sender</small><b id="rSender">?</b></div>
+              <div><small>gift</small><b id="rGift">?</b></div>
+              <div><small>points</small><b id="rPoints">?</b></div>
+              <div><small>effect</small><b id="rEffect">?</b></div>
+            </div>
+          </div>
+          <p class="prediction">
+            Theo em, 9 điểm nằm trong mốc nào và tạo hiệu ứng gì?
+          </p>
+          <button class="run-demo" id="buildRecord">CHẠY THỬ</button>
+          <p class="observation" id="recordObservation">
+            Hãy dự đoán trước, rồi chạy để kiểm tra.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">TÌM BẢN GHI · 3/3</p>
+          <h2>Thực hành: trả về quà khớp</h2>
+          <p class="instruction">
+            Cần tìm quà <code>FLOWER</code> trong hai bản ghi cho sẵn.
+          </p>
+          <div class="practice-task practice-brief">
+            <div class="gift-data">
+              <code>LAN · FLOWER · GLOW</code><code>BO · CROWN · BURST</code
+              ><strong>target = FLOWER</strong>
+            </div>
+            <pre><code>for item in gifts:
+    if item["gift"] == wanted:
+        <mark id="returnLine">return None</mark></code></pre>
+          </div>
+          <p class="prediction">
+            Theo em, khi <code>item</code> đang là bản ghi của LAN, hàm cần trả
+            về <code>None</code> hay chính <code>item</code>?
+          </p>
+          <button class="run-demo" id="fixReturn">
+            CHẠY THỬ VỚI return item
+          </button>
+          <p class="observation" id="taskObservation">
+            Hãy dự đoán, rồi chạy để kiểm tra.
+          </p>
+          <div class="task-output">
+            <small>OUTPUT sau khi sửa</small><strong id="taskOutput">?</strong>
+          </div>
+          <a class="final-cta" href="./lesson21v2.html">MỞ BÀI THỰC HÀNH →</a>
+        </section>
+      </div>
+    </div>
+    <script src="vendor/reveal/dist/reveal.js"></script>
+    <script src="node21-lesson.js"></script>
+  </body>
+</html>

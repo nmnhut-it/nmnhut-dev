@@ -1,0 +1,106 @@
+@import "palette.css";
+@import "fonts.css";  /* self-hosted Be Vietnam Pro — Vietnamese-clean bold */
+/* lessons/kickoff.css — the kick-off stage's own look. Same design language
+   as saga.css (dark navy + cyan/violet glow) but self-contained: this page
+   is teacher-only (dev-test.html's stance — unreachable from the map), so
+   it doesn't share saga.css directly. Powered by engine/stage-player.js. */
+:root{ --c:var(--mint-line); --c2:var(--mint-line); --bg:var(--ink); --txt:var(--mint-mid); --dim:var(--ink-muted); }
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);
+  color:var(--txt);font:16px/1.5 "Be Vietnam Pro","Segoe UI",system-ui,sans-serif}
+
+.stg-host{position:fixed;inset:0;background:var(--bg);cursor:pointer;user-select:none}
+.stg-host.stg-idle{cursor:none}                                          /* projector backdrop — hide the mouse after a few idle seconds (see IDLE_MS) */
+.stg-scene{position:absolute;inset:0}
+
+/* quick white-flash / crossfade on scene change — matches onboard's ACT
+   transition feel (obflash) but scoped to this file (no cross-page import). */
+.stg-flash{position:fixed;inset:0;background:var(--paper-raised);opacity:0;pointer-events:none;z-index:50}
+.stg-flash.go{animation:stgflash .5s ease-out}
+@keyframes stgflash{0%{opacity:.9}100%{opacity:0}}
+
+.stg-dots{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);
+  display:flex;gap:10px;z-index:20;pointer-events:none}
+.stg-dots i{width:9px;height:9px;border-radius:50%;background:var(--ink);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 30%,transparent);
+  transition:background .3s,box-shadow .3s}
+.stg-dots i.on{background:var(--c);box-shadow:0 0 10px color-mix(in srgb,var(--c) 80%,transparent)}
+
+.stg-hint{position:fixed;left:50%;bottom:52px;transform:translateX(-50%);
+  color:var(--dim);font-size:13px;letter-spacing:2px;z-index:20;
+  animation:stghint 1.8s ease-in-out infinite;transition:opacity .5s;pointer-events:none}
+.stg-hint.gone{opacity:0}
+@keyframes stghint{0%,100%{opacity:.4}50%{opacity:1}}
+
+/* Persistent nav overlay — sits ABOVE any scene content (including an embed
+   iframe's own document) so the teacher can always advance/back/skip even
+   after clicking into the live root-app demo. Kept nearly invisible (a thin
+   edge sliver + tiny corner button) so it never competes with the scene. */
+.stg-nav{position:fixed;z-index:30;border:0;background:transparent;color:var(--dim);
+  cursor:pointer;padding:0;opacity:0;transition:opacity .25s,background .25s}
+.stg-nav:hover,.stg-nav:focus-visible{opacity:1;background:color-mix(in srgb,var(--mint-line) 8%,transparent)}
+.stg-nav-l{left:0;top:0;bottom:0;width:44px}
+.stg-nav-r{right:0;top:0;bottom:0;width:44px}
+.stg-nav-end{right:14px;top:14px;width:34px;height:34px;border-radius:50%;
+  background:color-mix(in srgb,var(--ink) 40%,transparent);font-size:14px;line-height:34px;opacity:.35}
+.stg-nav-end:hover{opacity:1}
+
+/* ── title scene: the money shot ── */
+.stg-title{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(1400px 900px at 50% 30%,var(--ink) 0%,var(--bg) 65%)}
+.stg-title-vfxhost{position:absolute;inset:0}
+.stg-title-fg{position:relative;z-index:2;text-align:center;pointer-events:none}
+.stg-title-fg h1{margin:0;font-size:min(13vw,120px);font-weight:900;letter-spacing:.06em;
+  background:linear-gradient(180deg,var(--paper-raised) 0%,var(--c) 55%,var(--c2) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px color-mix(in srgb,var(--c) 55%,transparent);
+  animation:stgbreath 4.5s ease-in-out infinite}
+@keyframes stgbreath{0%,100%{filter:drop-shadow(0 0 18px color-mix(in srgb,var(--c) 45%,transparent))}
+  50%{filter:drop-shadow(0 0 42px color-mix(in srgb,var(--c) 85%,transparent))}}
+.stg-title-fg p{margin:14px 0 0;font-size:min(4vw,22px);letter-spacing:.35em;
+  text-transform:uppercase;color:var(--c2);text-shadow:0 0 20px color-mix(in srgb,var(--c2) 60%,transparent)}
+
+/* ── embed scene: fullscreen iframe, the ROOT VFX app performs live ── */
+.stg-embed{position:absolute;inset:0;width:100%;height:100%;border:0;background:var(--ink)}
+
+/* ── ritual showcase scene: fullscreen magic circle, breathing forever ── */
+.stg-ritual{position:absolute;inset:0;background:radial-gradient(1200px 800px at 50% 45%,var(--ink) 0%,var(--bg) 70%)}
+.stg-ritual-vfxhost{position:absolute;inset:0}
+.stg-ritual-label{position:absolute;right:22px;top:22px;padding:6px 14px;border-radius:16px;
+  background:color-mix(in srgb,var(--ink) 50%,transparent);border:1px solid color-mix(in srgb,var(--c2) 45%,transparent);
+  color:var(--c2);font-size:12px;letter-spacing:3px;text-transform:uppercase;
+  opacity:1;transition:opacity .8s ease;pointer-events:none}
+.stg-ritual-label.fade{opacity:0}
+
+/* ── gesture-title scene (v2 default): the whole kick-off, one screen.
+   Same title-line language as .stg-title but with a live fullscreen fx
+   canvas over it (fingertip mini-circles + glyph trails) and a hint line
+   that only fades in after several seconds of no hand seen. ── */
+.stg-gtitle{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(1400px 900px at 50% 30%,var(--ink) 0%,var(--bg) 65%)}
+.stg-gtitle-vfxhost{position:absolute;inset:0}
+.stg-gtitle-fx{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.stg-gtitle-fg{position:relative;z-index:2;text-align:center;pointer-events:none}
+.stg-gtitle-fg h1{margin:0;font-size:min(7vw,64px);font-weight:700;letter-spacing:.04em;
+  background:linear-gradient(180deg,var(--paper-raised) 0%,var(--c) 55%,var(--c2) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px color-mix(in srgb,var(--c) 55%,transparent);
+  animation:stgbreath 4.5s ease-in-out infinite}
+.stg-gtitle-hint{margin:18px 0 0;font-size:min(3vw,16px);letter-spacing:.3em;
+  text-transform:uppercase;color:var(--dim);opacity:0;transition:opacity 1.2s ease}
+.stg-gtitle-hint.show{opacity:.85}
+.stg-gtitle.sealed .stg-gtitle-fg{transition:opacity .4s;opacity:0}
+.stg-gflash{position:absolute;inset:0;background:var(--paper-raised);opacity:0;pointer-events:none;z-index:10}
+.stg-gflash.go{animation:stgflash .9s ease-out}
+
+/* ── video scene: fullscreen; freezes (never auto-advances) on end/error/cap ── */
+.stg-video{position:absolute;inset:0;background:var(--ink)}
+.stg-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:filter .6s,opacity .6s}
+.stg-skip{position:absolute;right:22px;bottom:22px;padding:8px 16px;border-radius:20px;
+  background:color-mix(in srgb,var(--ink) 55%,transparent);border:1px solid color-mix(in srgb,var(--c) 40%,transparent);
+  color:var(--txt);font-size:13px;letter-spacing:1px;pointer-events:none;opacity:.85}
+.stg-video.frozen video{filter:brightness(.45) saturate(.7)}
+.stg-video.frozen::after{content:'→';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  font-size:64px;font-weight:900;color:var(--c);text-shadow:0 0 30px color-mix(in srgb,var(--c) 70%,transparent);
+  animation:stgpulsearrow 1.6s ease-in-out infinite;pointer-events:none}
+@keyframes stgpulsearrow{0%,100%{opacity:.35;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.15)}}

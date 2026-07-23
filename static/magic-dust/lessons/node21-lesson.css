@@ -1,0 +1,227 @@
+﻿@import url("lecture-palette.css");
+* {
+  box-sizing: border-box;
+}
+body,
+body.reveal-viewport,
+.reveal {
+  background: radial-gradient(circle at top, var(--lecture-panel-raised), var(--lecture-bg) 70%);
+  color: var(--lecture-ink);
+  font-family: var(--lecture-font-sans);
+}
+.reveal {
+  font-size: 27px;
+}
+.reveal .slides section {
+  text-align: left;
+  padding: 42px 52px 82px;
+}
+.reveal h1,
+.reveal h2 {
+  color: var(--lecture-ink);
+  text-transform: none;
+  letter-spacing: -0.035em;
+  margin: 0.1em 0 0.35em;
+}
+.reveal h1 {
+  font-size: 1.8em;
+}
+.reveal h2 {
+  font-size: 1.55em;
+}
+.reveal code {
+  color: var(--lecture-cyan);
+  font-family: var(--lecture-font-mono);
+}
+.eyebrow {
+  color: var(--lecture-green);
+  font: 800 0.38em var(--lecture-font-mono);
+  letter-spacing: 0.16em;
+}
+.instruction,
+.observation {
+  max-width: 900px;
+  margin: 10px auto;
+  font-size: 0.43em;
+  line-height: 1.55;
+  color: var(--lecture-muted-dark);
+}
+.back,
+.practice {
+  position: fixed;
+  z-index: 50;
+  text-decoration: none;
+  font: 900 12px var(--lecture-font-mono);
+}
+.back {
+  top: 16px;
+  left: 18px;
+  color: var(--lecture-muted);
+}
+.practice {
+  top: 13px;
+  right: 18px;
+  padding: 11px 15px;
+  border-radius: 999px;
+  background: var(--lecture-gold);
+  color: var(--lecture-button-ink);
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+  max-width: 820px;
+  margin: 36px auto;
+}
+.pipeline div,
+.inputs,
+.record div,
+.practice-task {
+  padding: 20px;
+  border: 2px solid var(--lecture-border);
+  border-radius: 15px;
+  background: var(--lecture-panel);
+}
+.pipeline span {
+  color: var(--lecture-gold);
+  font-weight: 900;
+}
+.pipeline small,
+.record small,
+.practice-task small {
+  display: block;
+  color: var(--lecture-muted);
+  font-size: 0.48em;
+}
+.pipeline b,
+.record b {
+  color: var(--lecture-gold);
+}
+button {
+  display: block;
+  margin: 13px auto;
+  border: 2px solid var(--lecture-cyan);
+  border-radius: 999px;
+  padding: 11px 17px;
+  background: var(--lecture-panel-raised);
+  color: var(--lecture-ink);
+  font: 800 13px var(--lecture-font-mono);
+  cursor: pointer;
+}
+.reveal pre {
+  max-width: 850px;
+  margin: 14px auto;
+  padding: 15px;
+  border-left: 4px solid var(--lecture-pink);
+  background: var(--lecture-panel-deep);
+  font-size: 0.48em;
+}
+.record-lab {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 22px;
+  max-width: 900px;
+  margin: 26px auto;
+}
+.inputs {
+  display: grid;
+  gap: 13px;
+  font-size: 0.48em;
+}
+.inputs b {
+  color: var(--lecture-gold);
+}
+.record {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.record div {
+  padding: 13px;
+}
+.practice-task {
+  display: grid;
+  grid-template-columns: 1.4fr 0.6fr;
+  gap: 20px;
+  align-items: center;
+  max-width: 860px;
+  margin: 24px auto;
+}
+.practice-task pre {
+  margin: 0;
+  width: 100%;
+}
+.practice-task div {
+  text-align: center;
+}
+.practice-task strong {
+  display: block;
+  margin-top: 15px;
+  color: var(--lecture-gold);
+  font: 900 0.75em var(--lecture-font-mono);
+}
+.gift-data{display:grid;gap:10px;align-content:center}.gift-data code{display:block}
+mark {
+  padding: 3px 6px;
+  border-radius: 5px;
+  background: var(--lecture-panel-raised);
+  color: var(--lecture-cyan);
+}
+.final-cta {
+  display: block;
+  width: max-content;
+  margin: 15px auto;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: var(--lecture-gold);
+  color: var(--lecture-button-ink);
+  text-decoration: none;
+  font: 900 13px var(--lecture-font-mono);
+}
+@media (max-width: 600px) {
+  .reveal {
+    font-size: 38px;
+  }
+  .reveal .slides section {
+    padding: 48px 12px 75px;
+  }
+  .reveal h1,
+  .reveal h2 {
+    font-size: 1.25em;
+  }
+  .instruction,
+  .observation {
+    font-size: 0.36em;
+  }
+  .pipeline {
+    gap: 7px;
+  }
+  .pipeline div {
+    padding: 10px;
+  }
+  .record-lab,
+  .practice-task {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin: 12px auto;
+  }
+  .inputs {
+    padding: 11px;
+  }
+  .record div {
+    padding: 8px;
+  }
+  .reveal pre {
+    font-size: 0.39em;
+  }
+  .practice {
+    font-size: 9px;
+    padding: 9px;
+  }
+  .back {
+    display: none;
+  }
+}
+
+

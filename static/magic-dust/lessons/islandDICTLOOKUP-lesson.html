@@ -1,0 +1,30 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Đọc và sửa dữ liệu có nhãn</title><link rel="stylesheet" href="vendor/reveal/dist/reset.css"><link rel="stylesheet" href="vendor/reveal/dist/reveal.css"><link rel="stylesheet" href="vendor/reveal/dist/theme/black.css"><link rel="stylesheet" href="lecture-palette.css"><link rel="stylesheet" href="islandDICTLOOKUP-lesson.css"><link rel="stylesheet" href="lecture-components.css"></head><body class="lecture-shell"><a class="map" href="./index.html?noentry">← BẢN ĐỒ</a><a class="cta" href="./islandDICTLOOKUP.html">MỞ BÀI THỰC HÀNH →</a><div class="reveal"><div class="slides">
+<section>
+  <p class="lecture-kicker">CỔNG CÓ NHIỀU THÔNG TIN</p><h1 class="lecture-title">Lấy dữ liệu theo nhãn</h1>
+  <p class="lecture-purpose">Camera gửi cho chương trình một bản ghi về cổng: tên, trạng thái và màu. Khi cần biết cổng có mở hay không, chương trình phải lấy thông tin mang nhãn <code>status</code>.</p>
+  <div class="portal-scene concept-visual"><div class="portal-object"><i></i><b>Moon Gate</b><span id="portalLamp">OPEN</span></div><div class="fact-map"><small>BẢN GHI CỦA CỔNG</small><div class="fact" data-key="name"><b>name</b><span>Moon Gate</span></div><div class="fact" data-key="status"><b>status</b><span>OPEN</span></div><div class="fact" data-key="color"><b>color</b><span>blue</span></div></div></div>
+  <p class="instruction">Python gọi bản ghi gồm các cặp nhãn–giá trị này là <strong>dictionary</strong>. Nhãn là <strong>key</strong>; thông tin đi cùng nhãn là <strong>value</strong>.</p>
+  <p class="predict-box">Theo em, sau khi chạy <code>portal["status"]</code>, chương trình lấy thông tin nào?</p><button class="run-demo" id="openStatus">CHẠY THỬ — theo dõi status tới value</button><p class="observation" id="drawerReadout">Hãy dự đoán rồi chạy phép đọc.</p>
+</section>
+<section>
+  <p class="lecture-kicker">CẬP NHẬT ĐIỂM MÓN QUÀ</p><h2 class="lecture-title">Đổi một thông tin, giữ nguyên các thông tin khác</h2>
+  <p class="lecture-purpose">Món COMET đang có 4 điểm và trạng thái WAIT. Ta cần sửa điểm thành 9 mà không làm mất tên món quà.</p>
+  <div class="gift-record concept-visual"><div class="gift-icon">☄</div><div class="facts"><div class="fact" data-key="name"><b>name</b><span>COMET</span></div><div class="fact" data-key="points"><b>points</b><span id="pointsValue">4</span></div><div class="fact" data-key="status"><b>status</b><span>WAIT</span></div></div><strong>← <code>gift["points"] = 9</code></strong></div>
+  <p class="predict-box">Theo em, sau dòng gán, <code>points</code> và <code>name</code> lần lượt giữ giá trị nào?</p><button class="run-demo" id="updatePoints">CHẠY THỬ — xem đúng thông tin được thay đổi</button><p class="observation" id="updateReadout">Trước khi chạy: points là 4, name là COMET.</p>
+</section>
+<section>
+  <p class="lecture-kicker">KIỂM TRA HỒ SƠ</p><h2 class="lecture-title"><code>in</code> kiểm tra hồ sơ có nhãn nào</h2>
+  <p class="lecture-purpose">Hồ sơ của Bo có tên và sticker. Trước khi đọc sticker, chương trình có thể kiểm tra nhãn đó có tồn tại hay không.</p>
+  <div class="profile-check concept-visual"><div class="person">BO</div><div class="facts"><div class="fact"><b>name</b><span>Bo</span></div><div class="fact" data-key="sticker"><b>sticker</b><span>STAR</span></div></div><output id="membershipResult">?</output></div>
+  <p class="predict-box">Theo em, <code>"sticker" in profile</code> và <code>"STAR" in profile</code> trả kết quả gì?</p><div class="demo-actions"><button class="run-demo" data-check="sticker">CHẠY THỬ với nhãn "sticker"</button><button class="run-demo" data-check="STAR">CHẠY THỬ với giá trị "STAR"</button></div><p class="observation" id="membershipReadout">Hãy dự đoán rồi chọn một phép kiểm tra.</p>
+</section>
+<section>
+  <p class="lecture-kicker">BÀI BẠN SẮP LÀM</p><h2 class="lecture-title">Gom tên và điểm thành một món quà hoàn chỉnh</h2>
+  <p class="lecture-purpose">Một món quà cần giữ cả tên <code>HEART</code> và điểm <code>6</code>. Hàm nhận hai dữ liệu này, đặt chúng vào bản ghi rồi trả bản ghi về chỗ gọi.</p>
+  <div class="gift-builder concept-visual"><div class="ingredients"><span><small>name</small><b>HEART</b></span><span><small>points</small><b>6</b></span></div><i>→</i><pre><code>def make_gift(name, points):
+    gift = {"name": name, "points": points}
+    return gift</code></pre><i>→</i><div class="built-gift"><b>HEART</b><span>6 điểm</span></div></div>
+  <p class="predict-box">Theo em, sau <code>result = make_gift("HEART", 6)</code>, hai thông tin trong <code>result</code> là gì?</p><button class="run-demo" id="makeGift">CHẠY THỬ — xem dữ liệu đi qua hàm</button><p class="observation" id="giftResult">Hãy dự đoán rồi gọi hàm.</p>
+  <div class="practice-brief"><b>Trong bài thực hành, em sẽ:</b><span>đọc trạng thái <code>OPEN</code> · sửa COMET thành <code>9</code> điểm · kiểm tra sticker để lấy <code>STAR</code> · tạo HEART có <code>6</code> điểm.</span></div>
+</section>
+</div></div><script src="vendor/reveal/dist/reveal.js"></script><script src="vendor/reveal/plugin/notes/notes.js"></script><script src="islandDICTLOOKUP-lesson.js"></script></body></html>

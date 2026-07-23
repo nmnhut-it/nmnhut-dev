@@ -1,0 +1,23 @@
+<!doctype html><html lang="vi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hàm tạo particle</title>
+<link rel="stylesheet" href="vendor/reveal/dist/reset.css"><link rel="stylesheet" href="vendor/reveal/dist/reveal.css"><link rel="stylesheet" href="vendor/reveal/dist/theme/black.css"><link rel="stylesheet" href="lecture-palette.css"><link rel="stylesheet" href="emitter-lab-lesson.css"><style>.predict{padding:8px 12px;border-left:4px solid var(--lecture-gold);background:#282231;color:#fff;font-size:.64em}</style></head><body>
+<a class="back" href="./index.html?noentry">← BẢN ĐỒ</a><a class="cta" href="./islandEMITTERLAB.html">MỞ BÀI THỰC HÀNH →</a>
+<div class="reveal"><div class="slides">
+<section><p class="eyebrow">1 · HÀM EMITTER TẠO HẠT</p><h1>Em sẽ viết hàm tạo các <em>dictionary hạt</em></h1>
+<p class="direct-task"><code>emit_burst(x, y, count, spread)</code> tạo <code>count</code> hạt tại cùng một điểm. Mỗi hạt giữ vị trí, vận tốc, tuổi thọ, kích thước và màu.</p>
+<p class="predict">Theo em, khi tăng <code>count</code> hoặc <code>spread</code>, số đường bay và khoảng cách giữa các giá trị <code>vx</code> thay đổi thế nào?</p><div class="burst-console"><div class="knobs"><button class="knob" id="countKnob"><i></i><span>CHẠY THỬ COUNT</span><b id="countValue">5</b></button><button class="knob" id="spreadKnob"><i></i><span>CHẠY THỬ SPREAD</span><b id="spreadValue">2</b></button></div><div class="burst-stage"><svg id="burstSvg" viewBox="0 0 520 300" role="img" aria-label="Các hướng bay của emitter"></svg><div id="velocityReadout">vx: -4 · -2 · 0 · 2 · 4</div></div></div><p class="message" id="burstProof">Hãy dự đoán rồi chọn COUNT hoặc SPREAD.</p></section>
+<section><p class="eyebrow">2 · TẠO HẠT Ở NHIỀU FRAME</p><h2><em>rate</em> là số hạt mới được tạo trong mỗi frame</h2>
+<p class="predict">Theo em, sau bốn frame với <code>rate = 2</code>, chương trình đã tạo tổng cộng bao nhiêu hạt mới?</p><div class="sequencer"><div class="seq-controls"><button data-rate="2" class="active">CHỌN rate = 2</button><button data-rate="3">CHỌN rate = 3</button><button id="playSeq">CHẠY THỬ FRAME TIẾP →</button></div><div class="seq-grid" id="seqGrid"></div><div class="seq-total">SỐ HẠT MỚI ĐÃ TẠO <strong id="seqTotal">0</strong></div></div>
+<p class="message"><span id="rateContract">Bốn frame với rate 2: 2 → 4 → 6 → 8.</span></p></section>
+<section><p class="eyebrow">3 · GIỚI HẠN ĐỘ DÀI LIST</p><h2><code>max_particles</code> giữ <em>năm hạt mới nhất</em></h2>
+<p class="predict">Theo em, <code>particles[-5:]</code> áp dụng lên các ID từ 1 đến 8 sẽ giữ lại năm ID nào?</p><div class="budget-lab"><div class="particle-queue" id="particleQueue"></div><div class="budget-window" id="budgetWindow"><small>max_particles = 5</small></div><button id="applyBudget">CHẠY THỬ particles[-5:] →</button><div class="budget-result">CÒN LẠI <strong id="budgetResult">1 · 2 · 3 · 4 · 5 · 6 · 7 · 8</strong></div></div>
+<p class="message">Hạt cũ nằm ở đầu list; hạt mới nằm ở cuối. Kết quả đúng giữ ID <code>4…8</code>.</p></section>
+<section><p class="eyebrow">4 · BÀI CUỐI CỦA EM</p><h2>Hoàn thiện <code>emit_particles()</code> cho năm điểm đã cho sẵn</h2>
+<div class="final-task"><pre><code>def emit_particles(x, y, rate, palette, pattern):
+    new_particles = []
+    for index in range(rate):
+        # lấy direction và color theo index
+        # tạo dictionary rồi append
+    return new_particles</code></pre><div class="studio-panel"><span>hand_path<strong>5 điểm</strong></span><span>palette<strong>2 màu</strong></span><span>pattern<strong>3 hướng</strong></span><span>rate<strong>2</strong></span><span>max_particles<strong>6</strong></span><p class="predict">Theo em, tạo 2 hạt ở mỗi điểm rồi giới hạn list còn 6 thì sau frame thứ năm còn bao nhiêu hạt?</p><button id="runStudio">CHẠY THỬ FRAME TIẾP →</button><output>FRAME <b id="studioFrame">0</b> / 5 · HẠT <b id="studioCount">0</b></output></div></div>
+<div class="studio-explain"><svg id="trailSvg" viewBox="0 0 560 260" role="img" aria-label="Năm điểm được gán sẵn và các hạt được tạo"></svg><table><thead><tr><th>frame</th><th>hạt mới</th><th>sau UPDATE và giới hạn</th></tr></thead><tbody id="frameTable"></tbody></table></div>
+<p class="message final-proof">Giá trị đã được gán sẵn; bài không đọc camera. Chương trình đúng hiện <strong>5 frame</strong> và in số hạt cuối là <strong>6</strong>.</p></section>
+</div></div><script src="vendor/reveal/dist/reveal.js"></script><script src="vendor/reveal/plugin/notes/notes.js"></script><script src="emitter-lab-lesson.js"></script></body></html>

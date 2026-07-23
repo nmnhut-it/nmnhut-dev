@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bàn Biên Tập Chuỗi — Kotopia</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="node17-lesson.css">
+</head>
+<body>
+  <a class="map-link" href="./index.html?noentry">← BẢN ĐỒ</a>
+  <a class="practice-cta" href="./lesson17v2.html"><span>VÀO NODE 17 THỰC HÀNH</span><b>THỰC HÀNH →</b></a>
+  <div class="reveal"><div class="slides">
+    <section data-stage="index">
+      <p class="eyebrow">1 · ĐỌC MỘT KÝ TỰ</p>
+      <h1>Kim chỉ đang đọc <em>ký tự nào?</em></h1>
+      <div class="ribbon-stage" id="indexStage" aria-label="Dải chữ KOTOPIA với index dương và âm"></div>
+      <div class="readout" id="indexReadout">text[0] → "K"</div>
+      <p class="single-message">Index dương đếm từ trái, bắt đầu ở <code>0</code>. Index âm đếm từ phải, bắt đầu ở <code>-1</code>.</p>
+      <aside class="notes">Hỏi học sinh index dương và âm của chữ P trước khi chuyển slide.</aside>
+    </section>
+
+    <section data-stage="slice">
+      <p class="eyebrow">2 · CẮT MỘT MẢNH</p>
+      <h2>Slice dừng <em>ngay trước</em> stop</h2>
+      <div class="slice-stage" id="sliceStage" aria-label="Dải MAGICDUST được cắt tại index 5"></div>
+      <div class="slice-results">
+        <code class="fragment" data-fragment-index="2">secret[0:5] → "MAGIC"</code>
+        <code class="fragment" data-fragment-index="3">secret[5:] → "DUST"</code>
+      </div>
+      <p class="single-message">Vạch <code>stop = 5</code> nằm giữa C và D; ký tự ở index 5 không thuộc mảnh đầu.</p>
+      <aside class="notes">Cho học sinh đặt vạch stop trước khi Reveal hiện kéo cắt.</aside>
+    </section>
+
+    <section data-stage="tools">
+      <p class="eyebrow">3 · CHỈNH SỬA DẢI CHỮ</p>
+      <h2>Mỗi công cụ trả về một kết quả cụ thể</h2>
+      <div class="editor-bench">
+        <div class="tool-lane clean-lane">
+          <span class="lane-label">LÀM SẠCH</span>
+          <div class="text-strip">··CoDe··</div><b>→</b>
+          <div class="tool fragment" data-fragment-index="0">strip()</div><b class="fragment" data-fragment-index="0">→</b>
+          <div class="text-strip fragment" data-fragment-index="0">CoDe</div><b class="fragment" data-fragment-index="1">→</b>
+          <div class="tool fragment" data-fragment-index="1">lower()</div><b class="fragment" data-fragment-index="1">→</b>
+          <div class="text-strip result fragment" data-fragment-index="1">code</div>
+        </div>
+        <div class="inspect-grid fragment" data-fragment-index="2">
+          <div class="source-strip"><span class="hit">red</span> <span class="hit">red</span> blue</div>
+          <div class="instrument"><strong>count("red")</strong><output>2</output></div>
+          <div class="instrument"><strong>find("blue")</strong><output>8</output></div>
+          <div class="replacement fragment" data-fragment-index="3"><code>replace("blue", "gold")</code><strong>red red gold</strong></div>
+        </div>
+      </div>
+      <p class="single-message">Cần gán lại kết quả nếu muốn dùng chuỗi mới ở bước tiếp theo.</p>
+      <aside class="notes">count và find trả số; strip, lower và replace trả chuỗi mới.</aside>
+    </section>
+
+    <section data-stage="split-join">
+      <p class="eyebrow">4 · THÁO RA RỒI NỐI LẠI</p>
+      <h2>Từ mật thư thô đến OUTPUT đúng</h2>
+      <div class="secret-editor" id="secretEditor">
+        <div class="secret-row raw active"><span>··KOTO-MAGIC-PORTAL··</span><small>raw</small></div>
+        <div class="secret-arrow">↓ <b>strip().lower()</b></div>
+        <div class="secret-row clean"><span>koto-magic-portal</span><small>clean</small></div>
+        <div class="secret-arrow">↓ <b>replace("magic", "dust")</b></div>
+        <div class="secret-row replaced"><span>koto-dust-portal</span><small>replaced</small></div>
+        <div class="secret-arrow">↓ <b>split("-")</b></div>
+        <div class="token-row"><i>koto</i><i>dust</i><i>portal</i></div>
+        <div class="join-row"><b>/</b><b>/</b><code>" / ".join(parts)</code></div>
+        <div class="secret-output">koto / dust / portal</div>
+      </div>
+      <div class="practice-contract">
+        <span>Giá trị đã cho sẵn</span><span>Không có INPUT bên ngoài</span><span>OUTPUT: <code>koto / dust / portal</code></span>
+      </div>
+      <aside class="notes">split tháo tại dấu phân cách; join đặt dấu mới giữa các phần. CTA luôn dùng được.</aside>
+    </section>
+  </div></div>
+  <script src="vendor/reveal/dist/reveal.js"></script>
+  <script src="vendor/reveal/plugin/notes/notes.js"></script>
+  <script src="node17-lesson.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+import { code, makePython50Lesson } from "./python50-template.js";
+export default makePython50Lesson(12, {
+  subtitle: "đóng gói phép tính bằng tham số và return",
+  machineName: "KHUÔN ĐÚC HÀM", machineBlurb: "nhận dữ liệu, tính bên trong và trả kết quả",
+  intro: "Thay vì chép lại cùng phép tính, bạn sẽ đặt nó vào hàm. Mỗi lần gọi có thể đưa dữ liệu khác vào.",
+  prior: ["Đoạn code này gán giá trị nào vào `result`?\n```python\ndef double(number):\n    return number * 2\n\nresult = double(6)\n```", ["`12`", "`6`", "`2`"]],
+  teach: "Tham số nhận dữ liệu khi gọi hàm. `return` gửi kết quả ra ngoài để chương trình gán vào biến hoặc dùng trong phép tính khác.",
+  demo: { starter: code(["from old_computer import say_num","","def rectangle_area(length, width):","    area = length * width","    return area","","result = rectangle_area(8, 5)","say_num(result)"]), label: "p50_function_demo.py", note: "Bạn bấm RUN để kiểm chứng đoạn code. Cho sẵn chiều dài 8 và chiều rộng 5; bài này không đọc INPUT. Hàm nhân hai tham số và `return` kết quả, nên OUTPUT là `40`.", expectOut: /^40$/ },
+  fix: { starter: code(["from old_computer import say_num","","def larger(first, second):","    if first > second:","        return second","    else:","        return first","","say_num(larger(9, 4))"]), solution: code(["from old_computer import say_num","","def larger(first, second):","    if first > second:","        return first","    else:","        return second","","say_num(larger(9, 4))"]), label: "p50_function_return_fix.py", note: "ĐỀ BÀI: Cho sẵn hai giá trị 9 và 4; bài này không đọc INPUT. Sửa giá trị được `return` ở mỗi nhánh để hàm trả số lớn hơn. OUTPUT đúng là `9`.", expectOut: /^9$/ },
+  check: "Tên tham số mô tả dữ liệu đi vào. Mỗi nhánh của hàm phải `return` đúng kết quả mà tên hàm đã hứa.",
+  quiz: ["Đoạn code này in ra giá trị nào?\n```python\ndef fee(price):\n    return price + 5\n\ntotal = fee(20)\nsay_num(total)\n```", ["`25`", "`20`", "`5`"]],
+  apply: { starter: code(["from old_computer import read_num, say_num","","def discount_price(price, discount):","    saved = price * discount / 100","    return saved","","price = read_num(\"Giá: \")","discount = read_num(\"Phần trăm giảm: \")","say_num(discount_price(price, discount))"]), solution: code(["from old_computer import read_num, say_num","","def discount_price(price, discount):","    saved = price * discount / 100","    return price - saved","","price = read_num(\"Giá: \")","discount = read_num(\"Phần trăm giảm: \")","say_num(discount_price(price, discount))"]), label: "p50_function_input.py", note: "ĐỀ BÀI: Chương trình đọc hai INPUT mẫu là giá 200 và mức giảm 15%. Sửa giá trị được `return` để hàm trả giá cuối cùng sau khi giảm. OUTPUT đúng là `170.0`.", sampleInput: ["200","15"], expectOut: /^170\.0$/ },
+  remember: "Một hàm tốt có đầu vào rõ, một nhiệm vụ rõ và giá trị trả về có thể kiểm chứng bằng ví dụ cụ thể."
+});

@@ -1,0 +1,14 @@
+import { code, makePython50Lesson } from "./python50-template.js";
+export default makePython50Lesson(3, {
+  subtitle: "lặp tối đa năm lượt với số đích cố định",
+  machineName: "MÁY ĐẾM LƯỢT", machineBlurb: "lặp cho đến khi đúng hoặc hết lượt",
+  intro: "Máy cho tối đa năm lượt để tìm số đích. Số đích được cho sẵn để bạn nhìn rõ lúc vòng lặp tiếp tục và lúc nó dừng.",
+  prior: ["`attempts` đang là 3. Sau `attempts = attempts + 1`, giá trị mới là gì?", ["`4`", "`3`", "`1`"]],
+  teach: "Vòng lặp tiếp tục khi chưa đoán đúng và vẫn còn lượt. Mỗi lần đọc một dự đoán phải tăng `attempts` đúng một lần.",
+  demo: { starter: code(["from old_computer import say_num","","target = 7","guess = 0","attempts = 0","","while guess != target and attempts < 5:","    guess = target","    attempts = attempts + 1","","say_num(attempts)"]), label: "p50_guess_demo.py", note: "Bạn bấm RUN để kiểm chứng đoạn code. Cho sẵn số đích 7; bài này không đọc INPUT. Máy đoán đúng ở lượt đầu và tăng bộ đếm, nên OUTPUT đúng là `1`.", expectOut: /^1$/ },
+  fix: { starter: code(["from old_computer import say_num","","target = 7","guess = 2","attempts = 0","","while guess != target and attempts < 5:","    attempts = attempts - 1","    guess = target","","say_num(attempts)"]), solution: code(["from old_computer import say_num","","target = 7","guess = 2","attempts = 0","","while guess != target and attempts < 5:","    attempts = attempts + 1","    guess = target","","say_num(attempts)"]), label: "p50_guess_count_fix.py", note: "ĐỀ BÀI: Cho sẵn dự đoán 2 và số đích 7; bài này không đọc INPUT. Sửa cách cập nhật số lượt để OUTPUT đúng là `1`.", expectOut: /^1$/ },
+  check: "`guess != target and attempts < 5` dừng vòng lặp khi đoán đúng hoặc khi đã dùng đủ năm lượt.",
+  quiz: ["Nếu `guess == target` ngay trước khi kiểm tra `while`, thân vòng lặp chạy mấy lần?", ["0 lần", "1 lần", "5 lần"]],
+  apply: { starter: code(["from old_computer import read_num, say, say_num","","target = 7","guess = 0","attempts = 0","","while guess != target and attempts < 5:","    guess = read_num(\"Đoán số: \")","    attempts = attempts","","if guess == target:","    say(\"ĐÚNG\")","else:","    say(\"HẾT LƯỢT\")","say_num(attempts)"]), solution: code(["from old_computer import read_num, say, say_num","","target = 7","guess = 0","attempts = 0","","while guess != target and attempts < 5:","    guess = read_num(\"Đoán số: \")","    attempts = attempts + 1","","if guess == target:","    say(\"ĐÚNG\")","else:","    say(\"HẾT LƯỢT\")","say_num(attempts)"]), label: "p50_guess_input.py", note: "ĐỀ BÀI: Chương trình đọc ba INPUT mẫu là 2, 5, 7 và được phép đọc tối đa năm lượt. Sửa dòng cập nhật `attempts` để máy dừng khi gặp 7, rồi in `ĐÚNG` và số lượt `3`.", sampleInput: ["2","5","7"], expectOut: {all:[{minLines:2},/^ĐÚNG$/, /^3$/]} },
+  remember: "Một vòng lặp có giới hạn cần hai cách dừng rõ ràng: đạt mục tiêu hoặc hết số lượt cho phép."
+});

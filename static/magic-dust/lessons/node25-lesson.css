@@ -1,0 +1,341 @@
+@import url("lecture-palette.css");
+
+:root {
+  --ink: var(--lecture-ink-dark);
+  --green: var(--lecture-green);
+  --gold: var(--lecture-gold);
+  --red: var(--lecture-red);
+  --panel: #102a28;
+}
+* {
+  box-sizing: border-box;
+}
+.reveal {
+  font-family: Inter, system-ui;
+  color: var(--ink);
+  background: radial-gradient(circle at 50% 0, #184c45, #061714 67%);
+}
+.reveal .slides section {
+  padding: 35px 45px;
+}
+.reveal h1,
+.reveal h2 {
+  text-transform: none;
+  letter-spacing: -0.04em;
+}
+.reveal h1 {
+  font-size: 2em;
+}
+.reveal h2 {
+  font-size: 1.4em;
+}
+.reveal em {
+  font-style: normal;
+  color: var(--green);
+}
+.reveal code {
+  color: var(--gold);
+}
+.eyebrow {
+  font-size: 0.32em !important;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+  font-weight: 900;
+}
+.message {
+  font-size: 0.45em !important;
+  color: #c5ddd5;
+}
+.back,
+.cta {
+  position: fixed;
+  z-index: 50;
+  top: 13px;
+  text-decoration: none;
+  font: 800 12px system-ui;
+}
+.back {
+  left: 14px;
+  color: #eafff7;
+}
+.cta {
+  right: 14px;
+  padding: 11px 15px;
+  border-radius: 10px;
+  background: var(--green);
+  color: #061714;
+}
+.local-studio {
+  display: grid;
+  grid-template-columns: 1fr 160px;
+  gap: 25px;
+  max-width: 900px;
+  margin: auto;
+}
+.boundary {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 15px;
+  padding: 35px;
+  border: 3px dashed var(--green);
+  border-radius: 25px;
+  background: #0a2421;
+}
+.boundary > div {
+  display: grid;
+  place-items: center;
+  min-height: 190px;
+  border-radius: 16px;
+  background: var(--panel);
+  font: 900 18px system-ui;
+}
+.gifts {
+  position: relative;
+  grid-template-columns: 1fr !important;
+}
+.gifts i {
+  padding: 6px 13px;
+  border-radius: 999px;
+  background: #284a3e;
+  font: 800 12px system-ui;
+  font-style: normal;
+}
+.gifts small {
+  position: absolute;
+  bottom: 8px;
+  font-size: 9px;
+  color: var(--gold);
+}
+.cloud {
+  display: grid;
+  place-items: center;
+  font-size: 75px;
+  color: #6e8c84;
+}
+.cloud del {
+  display: block;
+  font: 900 11px system-ui;
+  color: var(--red);
+}
+.patchbay {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 13px;
+  max-width: 900px;
+  margin: 15px auto;
+}
+.patchbay > div {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  min-height: 85px;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 2px solid #397064;
+  font: 900 14px system-ui;
+}
+.patchbay .prepared {
+  background: #293b38;
+  color: #b8c5c1;
+}
+.patchbay small {
+  display: block;
+  color: var(--gold);
+  font-size: 9px;
+}
+.patchbay svg {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.patchbay path {
+  fill: none;
+  stroke: var(--green);
+  stroke-width: 5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px #65e6a8);
+  stroke-dasharray: 400;
+  stroke-dashoffset: 400;
+  transition: stroke-dashoffset 0.5s;
+}
+.patchbay path.live {
+  stroke-dashoffset: 0;
+}
+button {
+  padding: 12px 18px;
+  border: 1px solid var(--green);
+  border-radius: 10px;
+  background: #173c35;
+  color: #fff;
+  font-weight: 900;
+}
+.module-lab {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr 1fr;
+  gap: 18px;
+  max-width: 900px;
+  margin: auto;
+}
+.module-lab > div {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--panel);
+}
+.module-lab small {
+  font-size: 0.28em;
+  color: var(--gold);
+}
+.fan svg {
+  width: 100%;
+  height: 220px;
+}
+.fan line {
+  stroke: var(--green);
+  stroke-width: 5;
+  opacity: 0.15;
+  transition: opacity 0.3s;
+}
+.fan line.live {
+  opacity: 1;
+}
+.fan circle {
+  fill: var(--gold);
+}
+.fan code {
+  font-size: 0.35em;
+}
+.state {
+  text-align: left;
+  font: 700 15px monospace;
+}
+.state p {
+  margin: 9px !important;
+  font-size: 1em !important;
+}
+.state b {
+  color: var(--green);
+}
+.raster #rasterGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 38px);
+  gap: 3px;
+  justify-content: center;
+  margin: 18px;
+}
+.raster i {
+  width: 38px;
+  height: 38px;
+  background: #13201f;
+  border: 1px solid #527068;
+}
+.raster i.on {
+  background: var(--gold);
+}
+.raster > b {
+  font-size: 1em;
+  color: var(--gold);
+}
+.mixer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.mixer > div {
+  padding: 18px;
+  border-radius: 17px;
+  background: var(--panel);
+  text-align: left;
+}
+.mixer h3 {
+  font-size: 0.45em;
+  color: var(--gold);
+}
+.mixer span {
+  display: block;
+  margin: 9px;
+  font-size: 0.32em;
+}
+.forbidden {
+  margin-top: 20px;
+  padding: 12px;
+  border: 2px solid var(--red);
+  border-radius: 12px;
+  color: #ffd8df;
+  font-size: 0.3em;
+}
+@media (max-width: 700px) {
+  .reveal .slides section {
+    padding: 45px 9px 12px;
+  }
+  .reveal h1 {
+    font-size: 1.35em;
+  }
+  .reveal h2 {
+    font-size: 1em;
+  }
+  .local-studio {
+    grid-template-columns: 1fr;
+  }
+  .boundary {
+    padding: 12px;
+    gap: 5px;
+  }
+  .boundary > div {
+    min-height: 120px;
+    font-size: 11px;
+  }
+  .cloud {
+    display: none;
+  }
+  .patchbay {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+  .patchbay > div {
+    min-height: 50px;
+    font-size: 9px;
+  }
+  .patchbay svg {
+    display: none;
+  }
+  .module-lab {
+    grid-template-columns: 1fr 1fr;
+    gap: 5px;
+  }
+  .fan svg {
+    height: 130px;
+  }
+  .raster {
+    grid-column: 1/-1;
+  }
+  .raster #rasterGrid {
+    margin: 5px;
+  }
+  .mixer {
+    gap: 4px;
+  }
+  .mixer > div {
+    padding: 7px;
+  }
+  .mixer span {
+    font-size: 0.23em;
+    margin: 5px;
+  }
+  .forbidden {
+    font-size: 0.21em;
+  }
+  .cta {
+    top: 8px;
+    right: 7px;
+  }
+  .back {
+    top: 8px;
+    left: 7px;
+  }
+}

@@ -1,0 +1,695 @@
+{
+  "description": "Vietnamese learner-facing wording guardrails for lessons/content/node*.js and lessons/content/island*.js.",
+  "scanDefaults": [
+    "lessons/content/node*.js",
+    "lessons/content/island*.js"
+  ],
+  "terms": [
+    {
+      "id": "an-tay",
+      "term": "ấn tay",
+      "severity": "error",
+      "suggestion": "Dùng `số ngón`, `1 ngón`, `tín hiệu tay`, hoặc mô tả hành động cụ thể.",
+      "reason": "`ấn tay` nghe như dịch thẳng từ gesture/press, không rõ với trẻ."
+    },
+    {
+      "id": "tu-cham-bien-dem",
+      "term": "tự chăm biến đếm",
+      "severity": "error",
+      "suggestion": "Dùng `tự giữ rồi tự tăng biến đếm` hoặc `biến đếm tự tăng dần`.",
+      "reason": "Cụm này không tự nhiên và khó hiểu trong tiếng Việt."
+    },
+    {
+      "id": "van-rui",
+      "term": "vận rủi",
+      "severity": "error",
+      "suggestion": "Dùng `may rủi` cho khái niệm, hoặc `xúc xắc` cho vật phẩm/quà.",
+      "reason": "`vận rủi` nghiêng về bad luck, không hợp cảm giác trò chơi."
+    },
+    {
+      "id": "doi-phin",
+      "term": "đổi phin",
+      "severity": "error",
+      "suggestion": "Dùng `đổi hiệu ứng`, `đổi màu màn hình`, hoặc `đổi bộ lọc`.",
+      "reason": "`phin`/`đổi phin` không phải cách nói tự nhiên cho filter hình ảnh."
+    },
+    {
+      "id": "phin",
+      "term": "phin",
+      "pattern": "(?<![\\p{L}\\p{N}_])phin(?![\\p{L}\\p{N}_])",
+      "severity": "error",
+      "suggestion": "Dùng `hiệu ứng`, `bộ lọc`, hoặc mô tả màu/ảnh cụ thể.",
+      "reason": "Tránh cách gọi filter là `phin`; regex này không bắt `SPHINX`.",
+      "caseSensitive": false
+    },
+    {
+      "id": "cau-phep",
+      "term": "câu phép",
+      "severity": "error",
+      "suggestion": "Dùng `lệnh` cho callable/kỹ thuật, `đoạn code`/`đoạn mã` cho chương trình, `thần chú` cho lore, hoặc `dòng ...` khi nói về một dòng code.",
+      "reason": "`câu phép` mơ hồ và dễ lẫn giữa một lệnh, một dòng, và cả bài."
+    },
+    {
+      "id": "cau-than-chu",
+      "term": "câu thần chú",
+      "severity": "error",
+      "suggestion": "Dùng `thần chú` cho một callable/lore command, `đoạn code`/`đoạn mã` cho chương trình, hoặc `dòng` khi đang chỉ một dòng cụ thể.",
+      "reason": "`câu thần chú` ghép thừa từ và làm mờ ranh giới giữa dòng lệnh, đoạn code, và thần chú."
+    },
+    {
+      "id": "bai-chu",
+      "term": "bài chú",
+      "severity": "error",
+      "suggestion": "Dùng `đoạn code`, `đoạn mã`, `đoạn chương trình`, hoặc `code` tùy ngữ cảnh.",
+      "reason": "`bài chú` nghe gượng và làm mờ việc học sinh đang đọc/sửa code."
+    },
+    {
+      "id": "cau-lenh",
+      "term": "câu lệnh",
+      "severity": "error",
+      "suggestion": "Dùng `lệnh`, `dòng`, hoặc `dòng lệnh` nếu thật sự cần nhấn mạnh một dòng.",
+      "reason": "Cụm này dài và sách giáo khoa; `lệnh` thường rõ hơn trong bài học."
+    },
+    {
+      "id": "tra-ve-so-ngau-nhien",
+      "term": "trả về một số ngẫu nhiên",
+      "severity": "error",
+      "suggestion": "Dùng `máy tự chọn một số` hoặc mô tả kết quả theo đồ vật trong game.",
+      "reason": "Cụm này quá kỹ thuật khi chưa cần nêu thuật ngữ random."
+    },
+    {
+      "id": "nguon-label",
+      "term": "NGUỒN",
+      "pattern": "(?<![\\p{L}\\p{N}_])NGUỒN(?![\\p{L}\\p{N}_])",
+      "severity": "error",
+      "suggestion": "Viết tự nhiên hơn: `khác ở chỗ...`, `lần này con số đến từ...`.",
+      "reason": "Nhãn all-caps trừu tượng làm câu giống bản dịch hơn lời Pip nói.",
+      "caseSensitive": true
+    },
+    {
+      "id": "nguyen-thuy",
+      "term": "nguyên thủy",
+      "severity": "error",
+      "suggestion": "Dùng `cơ bản`, `ban đầu`, hoặc mô tả trực tiếp cái đang nói.",
+      "reason": "`nguyên thủy` nghe nặng và không hợp văn phong trẻ em."
+    },
+    {
+      "id": "can-niem",
+      "term": "cần niệm",
+      "severity": "error",
+      "suggestion": "Dùng `cần chạy`, `hãy chạy`, hoặc `niệm` khi thuần lore.",
+      "reason": "Khi câu đang nói thao tác RUN, `cần chạy` rõ hơn."
+    },
+    {
+      "id": "duong-phu",
+      "term": "đường phụ",
+      "severity": "error",
+      "suggestion": "Dùng `lối phụ`, `nhánh phụ`, hoặc tên island cụ thể.",
+      "reason": "`đường phụ` nghe khô và không tự nhiên bằng `lối phụ`."
+    },
+    {
+      "id": "lay-ve",
+      "term": "lấy về",
+      "severity": "error",
+      "suggestion": "Dùng `nhận`, `đọc phần bạn gõ`, hoặc mô tả nguồn dữ liệu cụ thể.",
+      "reason": "`lấy về` trong câu về input nghe reverse-translated và không rõ bằng `nhận`/`đọc`."
+    },
+    {
+      "id": "than-chu-moi-callable",
+      "term": "thần chú mới:",
+      "severity": "error",
+      "suggestion": "Trong gift blurb reveal callable, dùng `lệnh mới:`.",
+      "reason": "Callable mới cần rõ kỹ thuật; giữ `thần chú` cho lore khi không cần phân biệt lệnh."
+    },
+    {
+      "id": "than-chu-va",
+      "term": "thần chú vá",
+      "severity": "error",
+      "suggestion": "Dùng `lệnh đổi sang...` hoặc giải thích trực tiếp hành động của callable.",
+      "reason": "Cụm này mơ hồ khi đang dạy một lệnh kỹ thuật như `str(x)`."
+    },
+    {
+      "id": "cau-if",
+      "term": "câu `if`",
+      "severity": "error",
+      "suggestion": "Dùng `khối if`, `dòng if`, hoặc `nhánh if` tùy ngữ cảnh.",
+      "reason": "`câu if` nghe dịch thẳng và dễ lẫn với `câu lệnh`."
+    },
+    {
+      "id": "dau-tay-bi-mat",
+      "term": "dấu tay bí mật",
+      "severity": "error",
+      "suggestion": "Dùng `tín hiệu tay bí mật` hoặc nói rõ `1 ngón/3 ngón`.",
+      "reason": "`dấu tay` dễ bị hiểu thành dấu vân tay/handprint thay vì số ngón."
+    },
+    {
+      "id": "dau-tay",
+      "term": "dấu tay",
+      "severity": "error",
+      "suggestion": "Dùng `số ngón` khi đang đếm finger-count, hoặc `tín hiệu tay` khi nói gesture/lore.",
+      "reason": "`dấu tay` dễ bị hiểu thành dấu vân tay/handprint; các bài camera thường cần `số ngón`."
+    },
+    {
+      "id": "mot-trong-hai-an",
+      "term": "một trong hai ấn",
+      "severity": "error",
+      "suggestion": "Dùng `một trong hai số ngón` hoặc nêu rõ `1 hoặc 3`.",
+      "reason": "`ấn` không tự nhiên cho finger-count gesture."
+    },
+    {
+      "id": "so-dung-truoc",
+      "term": "số dừng trước",
+      "severity": "error",
+      "suggestion": "Dùng `mốc dừng, nhưng máy không in/lấy mốc đó`.",
+      "reason": "Cụm này nghe như dịch literal của stop-before và khó nắm hơn một câu giải thích."
+    },
+    {
+      "id": "moc-dung-truoc",
+      "term": "mốc dừng trước",
+      "severity": "error",
+      "suggestion": "Dùng `mốc dừng`, rồi nói rõ máy không lấy/in mốc đó.",
+      "reason": "`mốc dừng trước` vẫn còn gượng nếu đứng như một danh từ."
+    },
+    {
+      "id": "cau-dung-sai",
+      "term": "câu đúng/sai",
+      "severity": "error",
+      "suggestion": "Dùng `kết quả đúng/sai` hoặc `điều kiện đúng/sai`.",
+      "reason": "`câu đúng/sai` mơ hồ, nhất là khi đang dạy logic boolean."
+    },
+    {
+      "id": "cau-sang",
+      "term": "câu SÁNG",
+      "severity": "error",
+      "suggestion": "Dùng `dòng chữ SÁNG`.",
+      "reason": "`câu SÁNG` không tự nhiên trong tiếng Việt."
+    },
+    {
+      "id": "niem-chu-kiem-tra",
+      "term": "niệm chú kiểm tra",
+      "severity": "error",
+      "suggestion": "Dùng `bấm RUN để kiểm tra` khi đang nói thao tác học tập.",
+      "reason": "Lẫn lore với instruction làm thao tác RUN kém rõ."
+    },
+    {
+      "id": "bai-chu-nut",
+      "term": "bài chú nứt",
+      "severity": "error",
+      "suggestion": "Dùng `đoạn code đang lỗi`, `bài đang lỗi`, hoặc `vết nứt trong code` tùy ngữ cảnh.",
+      "reason": "`bài chú nứt` là cụm ghép không tự nhiên và không nói rõ học sinh cần sửa dòng code nào."
+    },
+    {
+      "id": "bai-chu-bi-nut",
+      "term": "bài chú bị nứt",
+      "severity": "error",
+      "suggestion": "Dùng `đoạn code đang lỗi`, `bài đang lỗi`, hoặc `vết nứt trong code` tùy ngữ cảnh.",
+      "reason": "`bài chú bị nứt` lẫn lore với hướng dẫn kỹ thuật, nghe gượng và mơ hồ."
+    },
+    {
+      "id": "cac-cau-if-elif",
+      "term": "các câu if/elif",
+      "severity": "error",
+      "suggestion": "Dùng `các nhánh if/elif` hoặc `chuỗi if/elif`.",
+      "reason": "`câu if/elif` nghe dịch thẳng; rule branching nên gọi là nhánh/chuỗi."
+    },
+    {
+      "id": "cau-dung-dau-tien",
+      "term": "câu ĐÚNG ĐẦU TIÊN",
+      "severity": "error",
+      "suggestion": "Dùng `nhánh ĐÚNG ĐẦU TIÊN`.",
+      "reason": "Trong if/elif, đơn vị người học cần nhìn là nhánh, không phải câu."
+    },
+    {
+      "id": "may-doi-dap-tay",
+      "term": "máy đợi đập tay",
+      "severity": "error",
+      "suggestion": "Dùng `máy đợi high-five`, `máy đợi dấu high-five`, hoặc nói rõ `đợi ✋ 5 ngón`.",
+      "reason": "`đập tay` dễ bị hiểu thành đập vào màn hình hơn là gesture trước camera."
+    },
+    {
+      "id": "may-than",
+      "term": "máy than",
+      "severity": "error",
+      "suggestion": "Dùng `thông báo lỗi`, `máy báo lỗi gì`, hoặc `đọc thông báo lỗi`.",
+      "reason": "`máy than` nhân cách hóa gượng và dễ thành bản dịch; khi dạy debug, hãy chỉ rõ thông báo lỗi người học cần đọc."
+    },
+    {
+      "id": "than-phien",
+      "term": "than phiền",
+      "severity": "error",
+      "suggestion": "Dùng `báo lỗi`, `hiện thông báo lỗi`, hoặc `cho biết lỗi gì`.",
+      "reason": "`than phiền` làm máy giống người đang phàn nàn; `báo lỗi` rõ hơn cho thao tác học tập."
+    },
+    {
+      "id": "than-loi",
+      "term": "than lỗi",
+      "severity": "error",
+      "suggestion": "Dùng `báo lỗi`, `hiện thông báo lỗi`, hoặc `máy sẽ báo lỗi`.",
+      "reason": "`than lỗi` vẫn là kiểu nhân cách hóa gượng; khi dạy debug, nói thẳng là máy báo lỗi."
+    },
+    {
+      "id": "dau-tung-cau",
+      "term": "đấu từng câu",
+      "severity": "error",
+      "suggestion": "Dùng `qua từng câu hỏi` hoặc `đánh từng vòng` tùy ngữ cảnh boss/quiz.",
+      "reason": "Cụm này mơ hồ: không rõ là câu hỏi, câu lệnh, hay boss round."
+    },
+    {
+      "id": "luot-ban",
+      "term": "lượt bạn",
+      "pattern": "(?<![\\p{L}\\p{N}_])lượt bạn(?=\\s*(?:[:—-]|$))",
+      "severity": "warn",
+      "suggestion": "Dùng `lượt của bạn` nếu là nhãn, hoặc viết thành câu: `Đến lượt bạn rồi.`",
+      "reason": "`lượt bạn` làm nhãn/comment là cách nói tắt theo English `your turn`; để warning vì content hiện tại còn nhiều nợ cũ."
+    },
+    {
+      "id": "your-turn",
+      "term": "your turn",
+      "severity": "error",
+      "suggestion": "Dùng tiếng Việt theo ngữ cảnh: `lượt của bạn`, `đến phần của bạn`, hoặc viết hẳn câu hướng dẫn.",
+      "reason": "Learner-facing comments không nên để nhãn tiếng Anh dịch thô trong bài tiếng Việt."
+    },
+    {
+      "id": "chu-vo",
+      "term": "chú vỡ",
+      "severity": "error",
+      "suggestion": "Dùng `bùa chú đã bị phá bỏ`, `bùa chú bị phá`, hoặc `thần chú bị nứt` nếu đang nói về lỗi code.",
+      "reason": "`chú` đứng một mình dễ bị hiểu lệch, còn `vỡ` không ghép tự nhiên với nghĩa spell bị phá."
+    },
+    {
+      "id": "bua-vo",
+      "term": "bùa vỡ",
+      "severity": "error",
+      "suggestion": "Dùng `bùa chú bị phá` hoặc `bùa chú đã bị phá bỏ`.",
+      "reason": "Cụm này nghe như vật thể bị rơi vỡ; khi nói spell bị vô hiệu hóa, `bị phá` rõ hơn."
+    },
+    {
+      "id": "bua-chu-vo",
+      "term": "bùa chú vỡ",
+      "severity": "error",
+      "suggestion": "Dùng `bùa chú bị phá` hoặc `bùa chú đã bị phá bỏ`.",
+      "reason": "`vỡ` chỉ hợp khi có hình ảnh vật thể nứt vỡ; nghĩa `broken spell` nên diễn đạt bằng `bị phá`."
+    },
+    {
+      "id": "nhan-ve",
+      "term": "nhận về",
+      "severity": "error",
+      "suggestion": "Dùng `nhận`, `đọc được`, hoặc mô tả nguồn: `read_num() nhận một SỐ`, `watch() đọc số ngón`.",
+      "reason": "`nhận về` dễ thành bản dịch của `return/get`; trong bài học nên nói ngắn và rõ nguồn dữ liệu."
+    },
+    {
+      "id": "bat-may-in",
+      "term": "bắt máy in",
+      "severity": "error",
+      "suggestion": "Dùng `để máy in`, `dùng say() để máy in`, hoặc `lệnh này làm máy in`.",
+      "reason": "`bắt máy...` nghe ép và hơi gượng trong phần thưởng/giải thích kỹ thuật."
+    },
+    {
+      "id": "may-chiu-tha",
+      "term": "máy chịu thả",
+      "severity": "error",
+      "suggestion": "Khi nói vòng lặp, dùng `vòng lặp dừng đúng lúc` hoặc `máy dừng sau khi đủ điều kiện`.",
+      "reason": "Cụm này nhân cách hóa gượng; bài while cần nhấn vào điều kiện dừng."
+    },
+    {
+      "id": "may-khong-tha",
+      "term": "máy không thả",
+      "severity": "error",
+      "suggestion": "Dùng `vòng lặp không dừng` hoặc `điều kiện chưa sai`.",
+      "reason": "Khi dạy vòng lặp, `thả` làm mờ quy tắc dừng."
+    },
+    {
+      "id": "buong-tha",
+      "term": "buông tha",
+      "severity": "error",
+      "suggestion": "Dùng `dừng`, `thoát vòng`, hoặc `mở đường` tùy ngữ cảnh.",
+      "reason": "Cụm này nặng lore và không tự nhiên trong hướng dẫn kỹ thuật về vòng lặp."
+    },
+    {
+      "id": "mat-na-that",
+      "term": "mặt nạ thật",
+      "severity": "error",
+      "suggestion": "Trong quiz `type()`, dùng `kiểu thật`; giữ `mặt nạ` cho lore TYPE MIMIC khi không hỏi đáp án kỹ thuật.",
+      "reason": "Quiz về `str/int/bool` cần hỏi trực tiếp kiểu dữ liệu, không dùng ẩn dụ."
+    },
+    {
+      "id": "ca-cau-dieu-kien",
+      "term": "cả câu điều kiện",
+      "severity": "error",
+      "suggestion": "Dùng `toàn bộ điều kiện`.",
+      "reason": "Khi dạy logic, đơn vị cần nói là điều kiện, không phải câu văn."
+    },
+    {
+      "id": "ca-cau-moi-dung",
+      "term": "cả câu mới ĐÚNG",
+      "severity": "error",
+      "suggestion": "Dùng `toàn bộ điều kiện mới ĐÚNG`.",
+      "reason": "Tránh `câu` mơ hồ khi đang dạy `and`/`or`."
+    },
+    {
+      "id": "ca-cau-da-dung",
+      "term": "cả câu đã ĐÚNG",
+      "severity": "error",
+      "suggestion": "Dùng `toàn bộ điều kiện đã ĐÚNG`.",
+      "reason": "Tránh `câu` mơ hồ khi đang dạy `and`/`or`."
+    },
+    {
+      "id": "cau-duoi",
+      "term": "câu dưới",
+      "severity": "error",
+      "suggestion": "Dùng `dòng bên dưới`, `dòng chữ bên dưới`, hoặc nêu rõ dòng code.",
+      "reason": "Trong code/prose, `câu dưới` nghe như dịch thẳng và không chỉ rõ dòng nào."
+    },
+    {
+      "id": "trace-english",
+      "term": "Trace",
+      "severity": "error",
+      "suggestion": "Dùng `Lần theo` trong tiêu đề/quiz tiếng Việt.",
+      "reason": "Không cần giữ nhãn tiếng Anh khi đã có cách nói tiếng Việt tự nhiên."
+    },
+    {
+      "id": "swap-dung",
+      "term": "swap đúng",
+      "severity": "error",
+      "suggestion": "Dùng `đổi chỗ đúng`.",
+      "reason": "Pha English không cần thiết trong lời hướng dẫn trẻ em."
+    },
+    {
+      "id": "tu-memory",
+      "term": "từ memory",
+      "severity": "error",
+      "suggestion": "Dùng `từ ô nhớ` hoặc `từ phần ô nhớ`.",
+      "reason": "Trong câu tiếng Việt learner-facing, dùng thuật ngữ Việt đã dạy là `ô nhớ`."
+    },
+    {
+      "id": "bat-dau-tu-memory",
+      "term": "bắt đầu từ memory",
+      "severity": "error",
+      "suggestion": "Dùng `bắt đầu từ ô nhớ`.",
+      "reason": "Tránh chèn English `memory` vào câu thoại khi khái niệm đã có tên Việt."
+    },
+    {
+      "id": "nhin-cung",
+      "term": "nhìn cứng",
+      "severity": "error",
+      "suggestion": "Dùng `ghi cố định`, `viết cố định`, hoặc `đừng ghi cố định số ...`.",
+      "reason": "`nhìn cứng` không tự nhiên trong tiếng Việt ở ngữ cảnh index/list."
+    },
+    {
+      "id": "tim-co-hay-khong",
+      "term": "tìm có hay không",
+      "severity": "error",
+      "suggestion": "Dùng `kiểm tra có mục tiêu hay không` hoặc `kiểm tra có giá trị đó không`.",
+      "reason": "Cụm này thiếu tân ngữ và nghe cụt."
+    },
+    {
+      "id": "mot-bai-quet-nua",
+      "term": "một bài quét nữa",
+      "severity": "error",
+      "suggestion": "Dùng `làm thêm bài quét` hoặc viết lại câu theo hành động cụ thể.",
+      "reason": "`không còn là một bài quét nữa` nghe dịch và khó hiểu với người học."
+    },
+    {
+      "id": "bai-chu-khong-nut",
+      "term": "bài chú không nứt",
+      "severity": "error",
+      "suggestion": "Dùng `đoạn code chạy đúng`, `code chạy đúng`, hoặc `không lỗi`.",
+      "reason": "Trong hướng dẫn/điều kiện thắng, cần nói rõ code chạy đúng thay vì ẩn dụ nứt."
+    },
+    {
+      "id": "phep-luc",
+      "term": "phép lực",
+      "severity": "error",
+      "suggestion": "Dùng `sức mạnh`.",
+      "reason": "`phép lực` không phải cách gọi tự nhiên trong mạch lesson; `sức mạnh` đã ổn định."
+    },
+    {
+      "id": "lenh-dung-san",
+      "term": "lệnh dựng sẵn",
+      "severity": "error",
+      "suggestion": "Dùng `lệnh có sẵn`.",
+      "reason": "`dựng sẵn` không tự nhiên bằng `có sẵn` khi nói về built-in helper."
+    },
+    {
+      "id": "lenh-xep-san",
+      "term": "lệnh xếp sẵn",
+      "severity": "error",
+      "suggestion": "Dùng `lệnh sắp xếp có sẵn`.",
+      "reason": "`xếp sẵn` dễ hiểu thành list đã được xếp từ trước, không phải built-in sort."
+    },
+    {
+      "id": "day-so-cung",
+      "term": "dãy số cứng",
+      "severity": "error",
+      "suggestion": "Dùng `dãy số nằm yên` hoặc mô tả trực tiếp list có thể được dò/xếp.",
+      "reason": "`cứng` không tự nhiên ở đây và không làm rõ hành vi dữ liệu."
+    },
+    {
+      "id": "khoe-ket-qua",
+      "term": "khoe kết quả",
+      "severity": "error",
+      "suggestion": "Dùng `hiện kết quả`, `hiện chữ`, hoặc `display() hiện...`.",
+      "reason": "`khoe` hơi suồng sã và mơ hồ trong hướng dẫn display/AR."
+    },
+    {
+      "id": "cau-hoi-cua-luat",
+      "term": "câu hỏi của luật",
+      "severity": "error",
+      "suggestion": "Dùng `điều kiện của luật`.",
+      "reason": "Khi dạy `if`, khái niệm chính là điều kiện, không phải câu hỏi văn nói."
+    },
+    {
+      "id": "mot-cau-hoi-va-viec",
+      "term": "một câu hỏi, và việc",
+      "severity": "error",
+      "suggestion": "Dùng `một điều kiện, và việc... khi điều kiện đó đúng`.",
+      "reason": "Cụm này diễn đạt gượng và kém chính xác hơn `điều kiện`."
+    },
+    {
+      "id": "nhin-lien-tuc",
+      "term": "nhìn liên tục",
+      "severity": "error",
+      "suggestion": "Dùng `đọc camera liên tục` khi nói về `watch()`/camera.",
+      "reason": "Máy/camera không nên bị nhân cách hóa là `nhìn`; người học cần thấy hành động đọc camera."
+    },
+    {
+      "id": "gio-lan-ascii",
+      "term": "gio lan",
+      "severity": "error",
+      "suggestion": "Dùng tiếng Việt có dấu trong learner-facing comments: `giơ lần`.",
+      "reason": "Comment học sinh đọc được nên giữ tiếng Việt có dấu."
+    },
+    {
+      "id": "neu-ascii",
+      "term": "neu",
+      "pattern": "(?<![\\p{L}\\p{N}_])neu(?![\\p{L}\\p{N}_])",
+      "severity": "error",
+      "suggestion": "Dùng tiếng Việt có dấu: `nếu`.",
+      "reason": "Comment học sinh đọc được nên giữ tiếng Việt có dấu.",
+      "caseSensitive": false
+    },
+    {
+      "id": "so-lat",
+      "term": "số lật",
+      "severity": "error",
+      "suggestion": "Dùng `số sau khi đảo thứ tự chữ số` hoặc nói rõ biến kết quả như `reversed_number` đang giữ gì.",
+      "reason": "`số lật` là cụm thuật toán dịch sát; từng từ hợp lệ nhưng ghép lại không phải tiếng Việt tự nhiên cho học sinh."
+    },
+    {
+      "id": "so-goc",
+      "term": "số gốc",
+      "severity": "error",
+      "suggestion": "Dùng `số ban đầu` hoặc `giá trị ban đầu trong `number``.",
+      "reason": "`gốc` là calque của original/base và mơ hồ trong bài học nhập môn."
+    },
+    {
+      "id": "lat-nguoc-so",
+      "term": "lật ngược số",
+      "severity": "error",
+      "suggestion": "Nói rõ thao tác: lấy chữ số cuối bằng `n % 10`, ghi vào biến kết quả, rồi bỏ chữ số cuối bằng `n = n // 10`.",
+      "reason": "Không dùng động từ vật lý nếu học sinh cần hiểu thao tác trên giá trị số."
+    },
+    {
+      "id": "lat-nguoc-so-variable",
+      "term": "lật ngược `so`",
+      "severity": "error",
+      "suggestion": "Viết `tạo reversed_number từ giá trị ban đầu trong `number`` rồi nêu từng bước `% 10` và `// 10`.",
+      "reason": "Biến `number` không phải vật để lật; cần nói rõ thao tác trên giá trị đang nằm trong biến."
+    },
+    {
+      "id": "lat-nguoc-so-variable-no-backtick",
+      "term": "lật ngược so",
+      "severity": "error",
+      "suggestion": "Viết `tạo reversed_number từ giá trị ban đầu trong `number`` rồi nêu từng bước `% 10` và `// 10`.",
+      "reason": "Biến `number` không phải vật để lật; cần nói rõ thao tác trên giá trị đang nằm trong biến."
+    },
+    {
+      "id": "lat-luat",
+      "term": "lật luật",
+      "severity": "error",
+      "suggestion": "Dùng `đổi luật`, `đổi điều kiện`, hoặc nêu chính xác điều kiện được đổi.",
+      "reason": "Động từ vật lý gắn với khái niệm trừu tượng làm câu vui nhưng khó hiểu."
+    },
+    {
+      "id": "lat-nguoc-luat",
+      "term": "lật ngược luật",
+      "severity": "error",
+      "suggestion": "Dùng `đổi luật`, `đổi điều kiện`, hoặc nêu chính xác điều kiện được đổi.",
+      "reason": "Động từ vật lý gắn với khái niệm trừu tượng làm câu vui nhưng khó hiểu."
+    },
+    {
+      "id": "chu-so-moi",
+      "term": "chữ số mới",
+      "severity": "error",
+      "suggestion": "Dùng `chữ số vừa bóc ra` hoặc `phần dư vừa lấy`, tùy bài.",
+      "reason": "`chữ số mới` giấu nguồn gốc của giá trị; học sinh cần biết chữ số đến từ đâu."
+    },
+    {
+      "id": "thanh-mot-so-moi",
+      "term": "thành một số mới",
+      "severity": "error",
+      "suggestion": "Nói rõ số đó đại diện cho gì, ví dụ `tạo reversed_number để giữ số sau khi đảo thứ tự chữ số`.",
+      "reason": "`số mới` là nhãn rỗng; bài học cần nêu kết quả cụ thể của thao tác."
+    },
+    {
+      "id": "do-sang-assignment",
+      "term": "đổ ... sang ...",
+      "pattern": "(?<![\\p{L}\\p{N}_])đổ\\s+[^\\n.!?]{1,40}\\s+sang\\s+[^\\n.!?]{1,40}",
+      "severity": "warn",
+      "suggestion": "Nếu đang nói về assignment, dùng `gán a = b`, `chép giá trị hiện tại của a vào b`, hoặc nêu giá trị cũ nào bị mất.",
+      "reason": "`đổ ... sang ...` là ẩn dụ vật lý; với biến/ô nhớ, học sinh cần thấy thao tác gán và ghi đè."
+    },
+    {
+      "id": "bien-con",
+      "term": "biến con",
+      "severity": "error",
+      "suggestion": "Dùng `một ô/phần tử trong list` hoặc `một chỗ nhớ riêng có index`.",
+      "reason": "`biến con` không phải cụm tự nhiên cho beginner và dễ làm học sinh tưởng có một loại biến mới."
+    },
+    {
+      "id": "be-hang",
+      "term": "bẻ hàng",
+      "severity": "error",
+      "suggestion": "Dùng `mở rộng hàng ô thành bảng` hoặc `từ list một hàng sang bảng nhiều hàng, nhiều cột`.",
+      "reason": "`bẻ hàng` là ẩn dụ vật lý không chỉ ra thao tác dữ liệu."
+    },
+    {
+      "id": "co-bat",
+      "term": "cờ bật",
+      "severity": "error",
+      "suggestion": "Nói rõ biến bool đổi giá trị: `found đổi thành True`.",
+      "reason": "Với biến bool, nói trực tiếp giá trị True/False rõ hơn ẩn dụ bật/tắt."
+    },
+    {
+      "id": "ha-co",
+      "term": "hạ cờ",
+      "severity": "error",
+      "suggestion": "Nói rõ biến bool được gán lại: `is_symmetric = False`.",
+      "reason": "Với biến bool, nói thao tác gán rõ hơn ẩn dụ hạ cờ."
+    },
+    {
+      "id": "ha-xuong-false",
+      "term": "hạ xuống `False`",
+      "pattern": "(?<![\\p{L}\\p{N}_])hạ\\s+(?:nó\\s+)?xuống\\s+`?False`?",
+      "severity": "error",
+      "suggestion": "Dùng `gán ... = False` hoặc `đổi ... thành False`.",
+      "reason": "Học sinh cần thấy thao tác bool cụ thể, không phải ẩn dụ hướng lên/xuống."
+    },
+    {
+      "id": "thao-while-for",
+      "term": "tháo while/for",
+      "pattern": "(?<![\\p{L}\\p{N}_])tháo\\s+`?(?:while|for)`?",
+      "severity": "warn",
+      "suggestion": "Dùng `viết lại while/for bằng các bước nhỏ`.",
+      "reason": "`tháo` là ẩn dụ; bài cần mô hình vận hành từng bước."
+    },
+    {
+      "id": "lat-cheo-bang",
+      "term": "lật chéo bảng",
+      "severity": "error",
+      "suggestion": "Dùng `đổi chỗ hàng-cột` hoặc nêu công thức index như `moi[cot][hang]`.",
+      "reason": "Grid transforms nên nói bằng mapping hàng/cột cụ thể."
+    },
+    {
+      "id": "o-lay-guong",
+      "term": "ô lấy gương",
+      "severity": "error",
+      "suggestion": "Nêu ô cụ thể, ví dụ `grid[cot][hang]` hoặc `grid[so_hang - 1 - hang][cot]`.",
+      "reason": "`ô lấy gương` mơ hồ; học sinh cần biết index nào được đọc."
+    },
+    {
+      "id": "cau-dieu-kien-code",
+      "term": "câu/câu hỏi + điều kiện code",
+      "pattern": "(?<![\\p{L}\\p{N}_])câu(?:\\s+hỏi)?\\s+`(?![^`\\n]*<[\\p{L}_][\\p{L}\\p{N}_]*>)[^`\\n]*(?:==|!=|>=|<=|>|<)[^`\\n]*`",
+      "severity": "error",
+      "suggestion": "Dùng `điều kiện ... cho kết quả gì?` hoặc `máy đi vào nhánh nào?`.",
+      "reason": "Gọi một biểu thức so sánh là `câu`/`câu hỏi` nghe dịch thẳng và làm mờ khái niệm điều kiện."
+    },
+    {
+      "id": "nhan-don",
+      "term": "nhân dồn",
+      "severity": "error",
+      "suggestion": "Dùng `tính tích`, hoặc nêu rõ `cập nhật product bằng phép nhân trong mỗi vòng`.",
+      "reason": "`nhân dồn` là nhãn thuật toán rút gọn; học sinh cần biết đang tính tích của nhiều giá trị."
+    },
+    {
+      "id": "con-so-o-moc",
+      "term": "con số ở mốc",
+      "severity": "error",
+      "suggestion": "Dùng `giá trị mốc`, `giá trị bằng đúng mốc`, hoặc nêu số cụ thể cần thử.",
+      "reason": "Cụm này dài và lặp nghĩa; bài kiểm tra ranh giới cần gọi chính xác giá trị đang được thử."
+    },
+    {
+      "id": "sua-mot-doan-that",
+      "term": "sửa một đoạn thật",
+      "severity": "error",
+      "suggestion": "Dùng `sửa một đoạn code` hoặc nói rõ đoạn code đang sai điều kiện nào.",
+      "reason": "`đoạn thật` là bản dịch thiếu danh từ, không cho học sinh biết mình đang sửa code."
+    },
+    {
+      "id": "mot-phat-an-ngay",
+      "term": "một phát ăn ngay",
+      "severity": "error",
+      "suggestion": "Nói thẳng hành động và kết quả, ví dụ `phóng bom để phong ấn golem`.",
+      "reason": "Cụm khẩu ngữ này không nêu thao tác và làm giọng bài học thô hơn giọng Pip."
+    },
+    {
+      "id": "dau-nguoc-dung-chieu",
+      "term": "dấu ngược/dấu đúng chiều",
+      "pattern": "(?<![\\p{L}\\p{N}_])dấu\\s+(?:ngược|đúng\\s+chiều)(?![\\p{L}\\p{N}_])",
+      "severity": "warn",
+      "suggestion": "Dùng `dùng sai dấu so sánh`, `đổi điều kiện`, hoặc nêu chính xác dấu cần kiểm tra.",
+      "reason": "Ẩn dụ hướng/chiều không cho học sinh biết thao tác code nào cần thay đổi."
+    },
+    {
+      "id": "loi-tron",
+      "term": "bug/lỗi trốn",
+      "pattern": "(?<![\\p{L}\\p{N}_])(?:bug|lỗi)[^\\n.!?]{0,40}trốn(?![\\p{L}\\p{N}_])",
+      "severity": "warn",
+      "suggestion": "Trong phần kỹ thuật, dùng `lỗi xuất hiện khi...` và nêu đúng giá trị/điều kiện; chỉ giữ nhân hóa trong thoại lore thật ngắn.",
+      "reason": "Nhân hóa `lỗi trốn` dễ thay thế cho lời giải thích kỹ thuật về nơi và lúc lỗi xuất hiện."
+    },
+    {
+      "id": "khop-chinh-xac",
+      "term": "khớp chính xác",
+      "severity": "warn",
+      "suggestion": "Khi dạy `==`, dùng `hai giá trị bằng nhau`; ở ngữ cảnh khác, nói rõ thứ gì khớp với thứ gì.",
+      "reason": "Cụm này thường là calque của `match exactly` và có thể che mất quan hệ bằng nhau đang được dạy."
+    },
+    {
+      "id": "chia-het-number-dao-nguoc",
+      "term": "chia hết number",
+      "pattern": "chia\\s+hết\\s+(?:cho\\s+)?`?number`?",
+      "severity": "error",
+      "suggestion": "Với `number % factor == 0`, viết: khi chia `number` cho `factor`, phần dư bằng 0; `factor` là một ước của `number`.",
+      "reason": "Đặt `number` sau `chia hết` đảo ngược số bị chia và ước số, khiến học sinh hiểu sai phép `%`."
+    },
+    {
+      "id": "ngau-nhien",
+      "term": "ngẫu nhiên",
+      "severity": "warn",
+      "suggestion": "Ở thoại kid-facing, cân nhắc `máy tự chọn`, `may rủi`, hoặc `xúc xắc`.",
+      "reason": "Không cấm tuyệt đối, nhưng cần kiểm tra xem thuật ngữ này có quá khô ở ngữ cảnh đó không."
+    }
+  ]
+}

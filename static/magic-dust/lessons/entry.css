@@ -1,0 +1,34 @@
+@import "palette.css";
+@import "fonts.css";  /* self-hosted Be Vietnam Pro — Vietnamese-clean bold */
+/* lessons/entry.css — the saga homepage's entry-funnel overlay (entry.js).
+   Styles borrowed from kickoff.css's .stg-gtitle scene (same look — the
+   breathing title over the living magic circle) but scoped under #entry
+   and copied rather than imported, per KICKOFF-PLAN.md's split: kickoff.css
+   stays teacher-stage-only, this file is the map's own entry layer. DOM:
+   #entry (this file's host div) > .stg-gtitle (mountGestureTitle's own
+   wrap, reused as-is from stage-player.js) > vfx host / fx canvas / fg / flash.
+   z-index: saga.css's map header is 10, #cheat is 60, #ob (onboard) is 40 —
+   #entry sits at 90 so it's above the map from first paint, and never
+   fights onboard's z since it tears itself down before Onboard.mount ever
+   runs (sequential handoff, never stacked at the same time). */
+#entry{position:fixed;inset:0;z-index:90;overflow:hidden;cursor:pointer;
+  color:var(--mint-mid);font:16px/1.5 "Be Vietnam Pro","Segoe UI",system-ui,sans-serif}
+#entry .stg-gtitle{position:absolute;inset:0;display:grid;place-items:center;overflow:hidden;
+  background:radial-gradient(1400px 900px at 50% 30%,var(--ink) 0%,var(--ink) 65%)}
+#entry .stg-gtitle-vfxhost{position:absolute;inset:0}
+#entry .stg-gtitle-fx{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+#entry .stg-gtitle-fg{position:relative;z-index:2;text-align:center;pointer-events:none}
+#entry .stg-gtitle-fg h1{margin:0;font-size:min(7vw,64px);font-weight:700;letter-spacing:.04em;
+  background:linear-gradient(180deg,var(--paper-raised) 0%,var(--mint-line) 55%,var(--mint-line) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 0 60px color-mix(in srgb,var(--mint-line) 55%,transparent);
+  animation:entrybreath 4.5s ease-in-out infinite}
+@keyframes entrybreath{0%,100%{filter:drop-shadow(0 0 18px color-mix(in srgb,var(--mint-line) 45%,transparent))}
+  50%{filter:drop-shadow(0 0 42px color-mix(in srgb,var(--mint-line) 85%,transparent))}}
+#entry .stg-gtitle-hint{margin:18px 0 0;font-size:min(3vw,16px);letter-spacing:.3em;
+  text-transform:uppercase;color:var(--ink-muted);opacity:0;transition:opacity 1.2s ease}
+#entry .stg-gtitle-hint.show{opacity:.85}
+#entry .stg-gtitle.sealed .stg-gtitle-fg{transition:opacity .4s;opacity:0}
+#entry .stg-gflash{position:absolute;inset:0;background:var(--paper-raised);opacity:0;pointer-events:none;z-index:10}
+#entry .stg-gflash.go{animation:entryflash .9s ease-out}
+@keyframes entryflash{0%{opacity:.9}100%{opacity:0}}

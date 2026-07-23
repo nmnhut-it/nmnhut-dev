@@ -1,0 +1,250 @@
+@import url("lecture-palette.css");
+
+:root {
+  --ink: var(--lecture-ink-light);
+  --gold: var(--lecture-gold);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  background: radial-gradient(circle at 50% 20%, #fff8df, #d7eadd 62%, #b8d6d2);
+  color: var(--ink);
+}
+body.reveal-viewport,
+.reveal {
+  background: radial-gradient(circle at 50% 20%, #fff8df, #d7eadd 62%, #b8d6d2);
+}
+.reveal {
+  font-family: Inter, "Segoe UI", sans-serif;
+  color: var(--ink);
+}
+.reveal .slides section {
+  text-align: left;
+  padding: 48px 65px 80px;
+}
+.reveal h1,
+.reveal h2 {
+  color: var(--ink);
+  text-transform: none;
+  letter-spacing: -0.04em;
+  text-shadow: none;
+  margin: 0.1em 0 0.5em;
+}
+.reveal h1 {
+  font-size: 2em;
+}
+.reveal h2 {
+  font-size: 1.7em;
+}
+.reveal code {
+  font-family: "Cascadia Code", monospace;
+  color: inherit;
+}
+.eyebrow {
+  font: 800 0.34em/1 monospace;
+  letter-spacing: 0.18em;
+  color: #47706f;
+}
+.back,
+.practice {
+  position: fixed;
+  z-index: 30;
+  text-decoration: none;
+  font: 800 12px/1 monospace;
+  border-radius: 999px;
+}
+.back {
+  top: 16px;
+  left: 18px;
+  padding: 11px 15px;
+  color: var(--ink);
+  background: #fffaf0dd;
+}
+.practice {
+  right: 18px;
+  top: 14px;
+  padding: 14px 20px;
+  background: var(--gold);
+  color: #14343a;
+  border: 2px solid #8d6e10;
+}
+.copies {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: center;
+}
+.copies pre,
+.factory pre {
+  background: #102f3b;
+  color: #e9fff8;
+  border-radius: 16px;
+  padding: 22px;
+  font-size: 0.42em;
+  line-height: 1.45;
+  margin: 0;
+  white-space: pre-wrap;
+}
+.arrow {
+  display: none;
+}
+.blueprint {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  background: #eaf6ed;
+  border: 3px dashed #548d89;
+  border-radius: 18px;
+  padding: 22px;
+  text-align: center;
+}
+.blueprint b {
+  grid-column: 1/-1;
+  font: 0.5em monospace;
+}
+.blueprint span {
+  background: #fffaf0;
+  border-radius: 8px;
+  padding: 7px;
+  font-size: 0.34em;
+}
+.message {
+  text-align: center;
+  font-size: 0.48em;
+  color: #3d6063;
+}
+.factory {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 22px;
+  align-items: center;
+}
+.status {
+  background: #d9e3dd;
+  color: #526a6b;
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+  font: 800 0.34em monospace;
+}
+.screen {
+  grid-column: 2;
+  display: grid;
+  gap: 3px;
+  background: #102f3b;
+  border-radius: 15px;
+  padding: 18px;
+  text-align: center;
+  color: #e9fff8;
+  min-height: 120px;
+  align-content: center;
+}
+.screen i,
+.screen b {
+  font: 800 0.44em monospace;
+}
+.screen.active {
+  box-shadow: 0 0 0 6px #53d7d277;
+}
+.factory button,
+.calls button {
+  border: 2px solid #47817f;
+  background: #ecf8ef;
+  color: var(--ink);
+  border-radius: 999px;
+  padding: 12px 16px;
+  font: 800 13px monospace;
+  cursor: pointer;
+}
+.factory button {
+  grid-column: 1/-1;
+  justify-self: center;
+}
+.calls {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  align-items: center;
+}
+.parameter,
+.card-output {
+  border-radius: 18px;
+  padding: 20px;
+  text-align: center;
+}
+.parameter {
+  background: #d8f4ee;
+  border: 2px solid #4faaa7;
+}
+.parameter small {
+  display: block;
+  font: 700 0.32em monospace;
+}
+.parameter strong {
+  font: 900 0.8em monospace;
+}
+.card-output {
+  background: #102f3b;
+  color: #effff9;
+  display: grid;
+  gap: 5px;
+}
+.card-output i,
+.card-output b {
+  font: 800 0.45em monospace;
+}
+.contract {
+  margin: 18px auto 0;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  font-size: 0.4em;
+}
+.contract code {
+  background: #102f3b;
+  color: white;
+  padding: 10px;
+  border-radius: 8px;
+}
+@media (max-width: 700px) {
+  .reveal .slides section {
+    padding: 48px 22px 82px;
+  }
+  .reveal h1,
+  .reveal h2 {
+    font-size: 1.35em;
+  }
+  .copies {
+    grid-template-columns: 1fr 1fr;
+  }
+  .copies .arrow {
+    display: none;
+  }
+  .blueprint {
+    grid-column: 1/-1;
+  }
+  .copies pre,
+  .factory pre {
+    font-size: 0.32em;
+    padding: 12px;
+  }
+  .factory {
+    grid-template-columns: 1fr;
+  }
+  .factory .status,
+  .factory .screen {
+    grid-column: 1;
+  }
+  .message {
+    font-size: 0.34em;
+  }
+  .practice,
+  .back {
+    font-size: 10px;
+  }
+  .practice {
+    padding: 12px;
+  }
+}

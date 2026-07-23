@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nhánh học Python — Magic Dust</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css">
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+<script type="module">
+const branchFiles = {
+  standardio: './content/branchSTANDARDIO.js',
+  operators: './content/branchOPERATORS.js',
+  loopcontrol: './content/branchLOOPCONTROL.js',
+  collections: './content/branchCOLLECTIONS.js',
+  dictionaries: './content/branchDICTIONARIES.js',
+  errors: './content/branchERRORS.js',
+};
+const requested = new URLSearchParams(location.search).get('course') || '';
+if (!Object.hasOwn(branchFiles, requested)) location.replace('./index.html');
+else {
+  const { default: branch } = await import(branchFiles[requested]);
+  window.NODE = branch;
+  document.title = `${branch.title} — Magic Dust`;
+  await import('./island.js');
+}
+</script>
+</head>
+<body></body>
+</html>

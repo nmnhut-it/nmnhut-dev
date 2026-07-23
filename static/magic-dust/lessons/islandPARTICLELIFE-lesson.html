@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Particle thay đổi qua từng frame</title>
+    <link rel="stylesheet" href="vendor/reveal/dist/reset.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/reveal.css" />
+    <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css" />
+    <link rel="stylesheet" href="islandPARTICLELIFE-lesson.css" />
+    <link rel="stylesheet" href="lecture-components.css" />
+  </head>
+  <body>
+    <a class="map" href="./index.html?noentry">← BẢN ĐỒ</a
+    ><a class="cta" href="./islandPARTICLELIFE.html">MỞ BÀI THỰC HÀNH →</a>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <p class="eyebrow">PARTICLE · 1/6</p>
+          <h1>Particle là một hạt nhìn thấy</h1>
+          <p class="instruction">
+            Mỗi hạt có vị trí, vận tốc, kích thước, độ rõ và thời gian tồn tại.
+          </p>
+          <div class="state-map concept-visual">
+            <svg
+              viewBox="0 0 900 430"
+              role="img"
+              aria-label="Một particle và năm nhóm thuộc tính của hạt"
+            >
+              <path
+                d="M450 215L180 80M450 215L450 55M450 215L720 80M450 215L155 260M450 215L745 260"
+              />
+              <circle cx="450" cy="215" r="47" />
+              <text class="particle-symbol" x="450" y="231">✦</text>
+              <g transform="translate(80 35)">
+                <rect width="200" height="76" />
+                <text x="100" y="29">VỊ TRÍ</text>
+                <text class="attr-note" x="100" y="56">x, y</text>
+              </g>
+              <g transform="translate(350 10)">
+                <rect width="200" height="76" />
+                <text x="100" y="29">VẬN TỐC</text>
+                <text class="attr-note" x="100" y="56">vx, vy</text>
+              </g>
+              <g transform="translate(620 35)">
+                <rect width="200" height="76" />
+                <text x="100" y="29">KÍCH THƯỚC</text>
+                <text class="attr-note" x="100" y="56">size</text>
+              </g>
+              <g transform="translate(55 225)">
+                <rect width="200" height="76" />
+                <text x="100" y="29">ĐỘ RÕ</text>
+                <text class="attr-note" x="100" y="56">alpha</text>
+              </g>
+              <g transform="translate(645 225)">
+                <rect width="200" height="76" />
+                <text x="100" y="29">TỒN TẠI</text>
+                <text class="attr-note" x="100" y="56">life</text>
+              </g>
+            </svg>
+          </div>
+          <p class="observation">
+            Trong Python, ta sẽ lưu các giá trị thuộc tính này trong một
+            dictionary.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">PARTICLE · 2/6</p>
+          <h2>UPDATE đổi trạng thái, RENDER vẽ frame</h2>
+          <p class="instruction">
+            <code>state</code> là trạng thái hiện tại của hạt. UPDATE đổi giá
+            trị thuộc tính; RENDER đọc các giá trị đó.
+          </p>
+          <div class="update-render concept-visual">
+            <div class="state-card">
+              <small>STATE F0</small><b>x 30 · y 70</b><i></i>
+            </div>
+            <div class="process update">
+              <b>UPDATE</b><code>x += vx<br />y += vy</code
+              ><span>đổi thuộc tính</span>
+            </div>
+            <div class="state-card">
+              <small>STATE F1</small><b>x 33 · y 66</b><i class="moved"></i>
+            </div>
+            <div class="process render">
+              <b>RENDER</b><code>draw_particle_frame(...)</code
+              ><span>đọc state</span>
+            </div>
+            <div class="rendered-frame"><small>FRAME 1</small><i></i></div>
+          </div>
+          <p class="observation">
+            <strong>RENDER không tự di chuyển hạt.</strong> Nếu UPDATE không đổi
+            <code>x/y</code>, frame sau vẫn vẽ hạt ở chỗ cũ.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">PARTICLE · 3/6</p>
+          <h2>RENDER biến trạng thái thành hình</h2>
+          <p class="instruction">
+            Dictionary lưu vị trí, vận tốc, kích thước, độ rõ và thời gian tồn
+            tại của một hình.
+          </p>
+          <div class="single-state concept-visual">
+            <svg
+              viewBox="0 0 500 210"
+              role="img"
+              aria-label="Một particle ở vị trí x 30 y 70"
+            >
+              <path
+                class="grid"
+                d="M40 30H460M40 75H460M40 120H460M40 165H460M90 15V195M180 15V195M270 15V195M360 15V195M450 15V195"
+              />
+              <circle
+                id="renderedParticle"
+                class="not-rendered"
+                cx="180"
+                cy="120"
+                r="18"
+              />
+              <text x="205" y="112">x = 30 · y = 70</text>
+              <text x="205" y="140">size = 2 · alpha = 255 · life = 5</text>
+            </svg>
+            <pre><code>particle = {
+  "x": 30, "y": 70,
+  "vx": 3, "vy": -4,
+  "size": 2, "alpha": 255, "life": 5
+}</code></pre>
+          </div>
+          <p class="prediction">
+            Theo em, chỉ tạo dictionary mà chưa gọi hàm vẽ thì hình đã xuất hiện
+            chưa?
+          </p>
+          <button class="run-demo" id="renderOne">CHẠY THỬ</button>
+          <p class="observation" id="renderProof">
+            Hãy dự đoán trước khi chạy.
+          </p>
+        </section>
+        <section>
+          <p class="eyebrow">PARTICLE · 4/6</p>
+          <h2>Vận tốc đổi vị trí mỗi frame</h2>
+          <p class="instruction">
+            <code>vx = 3</code> và <code>vy = -4</code>. Cùng một particle được
+            vẽ lại ở vị trí mới.
+          </p>
+          <div class="frame-strip movement concept-visual" id="moveStrip">
+            <div class="frame visible">
+              <small>FRAME 0</small><i style="--x: 30%; --y: 70%"></i
+              ><b>(30, 70)</b>
+            </div>
+            <span>x += vx<br />y += vy</span>
+            <div class="frame">
+              <small>FRAME 1</small><i style="--x: 33%; --y: 66%"></i
+              ><b>(33, 66)</b>
+            </div>
+            <span>x += vx<br />y += vy</span>
+            <div class="frame">
+              <small>FRAME 2</small><i style="--x: 36%; --y: 62%"></i
+              ><b>(36, 62)</b>
+            </div>
+          </div>
+          <div class="code-lines" id="moveCode">
+            <code>particle["x"] = particle["x"] + particle["vx"]</code
+            ><code>particle["y"] = particle["y"] + particle["vy"]</code>
+          </div>
+          <p class="prediction">
+            Theo em, sau hai lần UPDATE, particle sẽ ở <code>(36, 62)</code> hay
+            vẫn ở <code>(30, 70)</code>?
+          </p>
+          <button class="run-demo" id="runMove">CHẠY THỬ</button>
+          <p class="observation" id="moveProof">Hãy dự đoán trước khi chạy.</p>
+        </section>
+        <section>
+          <p class="eyebrow">PARTICLE · 5/6</p>
+          <h2>Mỗi frame sửa cùng một particle</h2>
+          <p class="instruction">
+            <code>size</code> làm hình nhỏ dần, <code>alpha</code> làm hình mờ
+            dần, còn <code>life</code> đếm số lần UPDATE còn lại.
+          </p>
+          <div
+            class="frame-strip lifecycle concept-visual"
+            id="lifeStrip"
+          ></div>
+          <div class="code-lines lifecycle-code" id="lifeCode">
+            <code data-line="position">x += vx · y += vy</code
+            ><code data-line="size">size = max(0.25, size - 0.2)</code
+            ><code data-line="alpha">alpha = max(0, alpha - 50)</code
+            ><code data-line="life">life = life - 1</code>
+          </div>
+          <p class="prediction">
+            Theo em, sau năm lần UPDATE, <code>size</code>,
+            <code>alpha</code> và <code>life</code> còn bao nhiêu?
+          </p>
+          <button class="run-demo" id="runLife">CHẠY THỬ</button>
+          <p class="observation" id="lifeProof">Hãy dự đoán trước khi chạy.</p>
+        </section>
+        <section>
+          <p class="eyebrow">PARTICLE · 6/6</p>
+          <h2>Thực hành: cập nhật tám particle</h2>
+          <p class="instruction">
+            Tám hạt, sáu frame và hàm <code>update_particle</code> đã được gán
+            sẵn. Trong vòng lặp bên trong, thay <code>pass</code> bằng lời gọi
+            cập nhật từng hạt.
+          </p>
+          <div class="practice-layout practice-brief">
+            <pre><code>for frame in range(6):
+    draw_particle_frame(particles)
+    delay(0.3)
+    for particle in particles:
+        <mark id="practiceLine">pass</mark>
+
+say_num(particles[0]["life"])</code></pre>
+            <svg
+              class="burst"
+              viewBox="0 0 280 220"
+              aria-label="Tám particle tách ra từ cùng một điểm"
+            >
+              <g id="burstParticles">
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+                <circle cx="140" cy="110" r="9" />
+              </g>
+              <text x="140" y="205" text-anchor="middle" id="practiceOutput">
+                OUTPUT sau khi chạy: ?
+              </text>
+            </svg>
+          </div>
+          <p class="prediction">
+            Theo em, nếu vẫn để <code>pass</code>, tám hạt sẽ tách ra hay đứng
+            yên?
+          </p>
+          <button class="run-demo" id="runPractice">CHẠY THỬ</button>
+          <p class="observation" id="practiceProof">
+            Hãy dự đoán trước khi chạy.
+          </p>
+          <a class="run-demo final-cta" href="./islandPARTICLELIFE.html"
+            >MỞ BÀI THỰC HÀNH →</a
+          >
+        </section>
+      </div>
+    </div>
+    <script src="vendor/reveal/dist/reveal.js"></script>
+    <script src="islandPARTICLELIFE-lesson.js"></script>
+  </body>
+</html>

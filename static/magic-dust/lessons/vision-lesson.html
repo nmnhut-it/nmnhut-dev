@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bài học Mắt Máy · Magic Dust</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css?v=20260714-101425">
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+</head>
+<body><script type="module">
+import { VISION_NODES, visionCompletionKey } from "./content/vision-curriculum.js?v=20260714-101425";
+import { previousReadyVisionNode } from "./vision-state.js?v=20260714-101425";
+
+const id = Number.parseInt(new URLSearchParams(location.search).get("node"), 10);
+const meta = VISION_NODES.find(node => node.id === id);
+const mainProgress = Math.max(0, Number.parseInt(localStorage.getItem("magicdust.saga"), 10) || 0);
+const previous = previousReadyVisionNode(id);
+const previousDone = !previous || localStorage.getItem(visionCompletionKey(previous.id)) === "1";
+
+if (!meta?.ready || mainProgress < meta.mainRequired || !previousDone) {
+  location.replace("./vision.html");
+} else {
+  const path = `./content/visionnode${String(id).padStart(2, "0")}.js?v=20260714-101425`;
+  const { default: lesson } = await import(path);
+  window.NODE = lesson;
+  await import("./island.js?v=20260714-101425");
+}
+</script></body>
+</html>

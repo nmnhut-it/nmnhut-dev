@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Đảo Kiểu Dữ Liệu — Magic Dust</title>
+<!-- Bonus side-island page (island.js, not node.js) — see lessons/CLAUDE.md
+     "Side islands" note. Not part of saga.js's linear NODES trail; reached
+     via its own map pin, gated on progress()>=9 (after node08 — primitive
+     data types — is done). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css">
+<script type="module">
+import N from './content/islandTYPES.js';
+window.NODE = N;
+</script>
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+<script type="module" src="island.js"></script>
+</head>
+<body></body>
+</html>

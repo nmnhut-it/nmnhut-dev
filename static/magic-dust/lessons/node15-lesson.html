@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Hàng trước, cột sau — Magic Dust</title>
+  <link rel="stylesheet" href="vendor/reveal/dist/reset.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/reveal.css">
+  <link rel="stylesheet" href="vendor/reveal/dist/theme/black.css">
+  <link rel="stylesheet" href="node15-lesson.css">
+</head>
+<body>
+  <a class="map-link" href="./index.html?noentry">← BẢN ĐỒ</a>
+  <a class="practice-link" href="./lesson15v2.html">VÀO NODE THỰC HÀNH →</a>
+
+  <div class="reveal"><div class="slides">
+    <section data-slide="rows">
+      <p class="eyebrow">GRID MEMORY · 1/3</p>
+      <h1>Mỗi hàng là một <code>list</code></h1>
+      <div class="split-stage">
+        <pre class="code-card"><code>grid = [
+    [7, 8, 9],
+    [10, 11, 12]
+]</code></pre>
+        <div class="grid-panel">
+          <div class="grid-labels"><span>grid[0]</span><span>grid[1]</span></div>
+          <div class="number-grid" data-grid="rows" aria-label="Grid có hàng 0 gồm 7 8 9 và hàng 1 gồm 10 11 12"></div>
+          <button class="step-button" id="rowsNext">XEM TỪNG HÀNG</button>
+        </div>
+      </div>
+      <p class="message" id="rowsMessage">Bấm để lấy từng hàng ra khỏi <code>grid</code>.</p>
+      <aside class="notes">Cho học sinh nói cả hàng mà không đọc từng ô rời rạc. Chưa chọn cột ở slide này.</aside>
+    </section>
+
+    <section data-slide="address">
+      <p class="eyebrow">GRID MEMORY · 2/3</p>
+      <h2><strong>Hàng trước</strong>, cột sau</h2>
+      <div class="address-stage">
+        <div class="expression" aria-live="polite"><span>grid</span><b id="rowToken">[1]</b><b id="colToken">[0]</b><i id="addressValue">?</i></div>
+        <div class="axis-grid">
+          <div class="col-head"><span>cột 0</span><span>cột 1</span><span>cột 2</span></div>
+          <div class="row-head"><span>hàng 0</span><span>hàng 1</span></div>
+          <div class="number-grid" data-grid="address"></div>
+        </div>
+        <button class="step-button" id="addressNext">CHỌN HÀNG 1</button>
+      </div>
+      <p class="message" id="addressMessage"><code>[1]</code> đầu tiên sẽ chọn cả một hàng.</p>
+      <aside class="notes">Bắt buộc làm sáng cả hàng 1 trước. Chỉ sau click tiếp theo mới khoanh ô cột 0.</aside>
+    </section>
+
+    <section data-slide="task">
+      <p class="eyebrow">GRID MEMORY · 3/3</p>
+      <h2>Sửa đúng địa chỉ của ô</h2>
+      <div class="task-layout">
+        <div class="task-card">
+          <p><strong>CẦN ĐỌC:</strong> hàng 1, cột 0</p>
+          <p><strong>OUTPUT:</strong> <code>10</code></p>
+          <pre><code>grid = [
+    [7, 8, 9],
+    [10, 11, 12]
+]
+
+say_num(grid<span id="taskAddress">[0][1]</span>)</code></pre>
+        </div>
+        <div class="task-grid-wrap">
+          <div class="number-grid" data-grid="task"></div>
+          <button class="step-button" id="taskNext">TÌM Ô CẦN ĐỌC</button>
+        </div>
+      </div>
+      <p class="message" id="taskMessage">Đề cho hàng trước, rồi mới cho cột.</p>
+      <aside class="notes">Đây là đúng hợp đồng của row_col_fix.py. Grid được gán sẵn, không phải INPUT đọc từ bên ngoài.</aside>
+    </section>
+  </div></div>
+
+  <script src="vendor/reveal/dist/reveal.js"></script>
+  <script src="node15-lesson.js"></script>
+</body>
+</html>

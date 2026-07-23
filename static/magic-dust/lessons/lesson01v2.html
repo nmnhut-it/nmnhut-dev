@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Node 1 — Magic Dust</title>
+<!-- EXPERIMENT: pedagogy-V2 clone of lesson01.html, pointing at content/node01v2.js.
+     Not linked from saga.js's NODES — reachable only by URL. See
+     lessons/PEDAGOGY-V2-PLAN.md. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+<!-- same three.js import map as the root app — spell-vfx.js (the real WebGL cast engine) imports against it -->
+<script type="importmap">
+{"imports":{"three":"https://unpkg.com/three@0.160.0/build/three.module.js","three/addons/":"https://unpkg.com/three@0.160.0/examples/jsm/"}}
+</script>
+<link rel="stylesheet" href="node.css">
+<script type="module">
+import N from './content/node01v2.js';
+window.NODE = N;
+</script>
+<script defer src="theme.js"></script>
+<script defer src="cell-validation.js"></script>
+<script defer src="progress-versioning.js"></script>
+<script type="module" src="node.js"></script>
+</head>
+<body></body>
+</html>
