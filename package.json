@@ -3,7 +3,7 @@
   "private": true,
   "description": "Personal blog by Minh-Nhut Nguyen (Hugo + PaperMod)",
   "scripts": {
-    "build": "hugo --minify",
+    "build": "hugo --minify --cleanDestinationDir",
     "preview": "hugo server -D",
     "deploy": "npm run build && wrangler pages deploy public --project-name=nmnhut-dev --branch=master --commit-dirty=true"
   },
