@@ -4,6 +4,9 @@
 import { CAPTURE_W, CAPTURE_H } from './camera-engine.js';
 import { coverMap } from './gesture-math.js';
 import { alignWalkthrough } from './walkthrough-cell.js';
+import { buildImageLab } from './image-lab.js';
+import { startVoiceGate } from './voice-gate.js';
+import { wordHits } from './chant-match.js';
 
 const MOTIONS = new Set(['orbit', 'spiral-in', 'rain', 'pulse', 'comet']);
 const PHOTO_LIGHT_MODES = new Set(['steady', 'off', 'shift']);
@@ -14,6 +17,24 @@ const DEFAULT_STYLE = { color: '#78b2a5', symbols: '', motion: 'orbit', size: 1,
 const CAMERA_START_MS = 6000;
 const HAND_READ_MS = 1500, PARTICLE_FRAME_CAP = 120, IMAGE_FRAME_MAX_W = 64, IMAGE_FRAME_MAX_H = 48;
 const IMAGE_GRID_MIN = 8, IMAGE_GRID_MAX = 24, IMAGE_GRID_SAMPLE = 'assets/pixel-art-magic-owl.webp';
+// Named still plates for the FX-compositing island: two glowing effect layers
+// shot on black (so adding them to a scene is literally adding light) plus one
+// night background. Stills, not the .mp4 overlays, because a lesson grid must
+// be the same numbers on every run.
+const IMAGE_PLATES = {
+  stag: 'assets/camera-effects/plates/fx-stag.webp',
+  boss: 'assets/camera-effects/plates/fx-boss.webp',
+  scene: 'assets/camera-effects/plates/bg-lighthouse.webp',
+  // "Done at full resolution" counterparts, produced offline with the very
+  // flip / add-and-clamp the learner writes. A lesson pairs each coarse result
+  // with one of these so a grid is never the only thing on screen: the pixels
+  // are there to be understood, these show what the same maths really looks
+  // like. `goal` also opens the island as the puzzle to solve.
+  goal: 'assets/camera-effects/plates/goal-stag-over-boss.webp',
+  flipped: 'assets/camera-effects/plates/full-stag-flipped.webp',
+  stagscene: 'assets/camera-effects/plates/full-stag-over-scene.webp',
+  bossscene: 'assets/camera-effects/plates/full-boss-over-scene.webp',
+};
 
 const clamp = (value, min, max, fallback) => { const n = Number(value); return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback; };
 const shortText = (value, max, fallback = '') => { const chars = [...String(value ?? fallback)]; return chars.slice(0, max).join(''); };
@@ -172,6 +193,9 @@ export class InteractiveStudio {
     if (cfg.action === 'photo_upload') return this.#uploadPhoto();
     if (cfg.action === 'image_pick_grid') return this.#readImageGrid(cfg, true);
     if (cfg.action === 'image_sample_grid') return this.#readImageGrid(cfg, false);
+    if (cfg.action === 'image_plate_grid') return this.#readPlateGrid(cfg);
+    if (cfg.action === 'frame_compare') return this.#compareFrames(cfg);
+    if (cfg.action === 'voice_listen') return this.#listenForWord(cfg);
     if (cfg.action === 'light_board_start') return this.#startLightBoard();
     if (cfg.action === 'light_board_clear') return this.#clearLightBulbs();
     if (cfg.action === 'light_board_bulb') return this.#placeLightBulb(cfg);
@@ -237,6 +261,79 @@ export class InteractiveStudio {
     const stat = this.#scenePanel.querySelector('#scstat');
     if (stat) stat.textContent = picked ? `đã đọc ảnh thành bảng ${side}×${side}` : `đang dùng ảnh mẫu ${side}×${side}`;
     if (shouldPick && !picked) this.#outLine('bạn chưa chọn ảnh — máy dùng tranh cú phép thuật để bài vẫn chạy được');
+    return JSON.stringify(Array.isArray(grid) ? grid : []);
+  }
+  // voice_listen — real spoken INPUT for py/voice_charm.listen(). Matches the
+  // utterance against the lesson's own small vocabulary with wordHits (the same
+  // fold/accept/skeleton tiers the ritual gates use), and ALWAYS renders the
+  // words as buttons too: a blocked mic, a silent room or a browser with no
+  // SpeechRecognition must degrade to a tap, never to a dead lesson. Resolves
+  // to the matched word, or '' on timeout — so if/elif/else still needs else.
+  #listenForWord(cfg) {
+    const words = (Array.isArray(cfg.words) ? cfg.words : []).map(w => shortText(w, 24)).filter(Boolean);
+    const seconds = clamp(cfg.seconds, 2, 30, 8);
+    this.stop(); this.#active = true; this.#mountPhotoProject();
+    const host = this.#scenePanel;
+    const panel = document.createElement('div'); panel.className = 'vcharm';
+    panel.innerHTML = `<div class="vcharm-state">🎤 gương đang lắng nghe…</div>
+      <div class="vcharm-words"></div>
+      <div class="vcharm-heard"></div>
+      <i class="vcharm-bar"><b></b></i>`;
+    const wordsEl = panel.querySelector('.vcharm-words');
+    host.appendChild(panel);
+
+    return new Promise(resolve => {
+      let settled = false, gate = null, timer = null;
+      const finish = word => {
+        if (settled) return; settled = true;
+        clearTimeout(timer); if (gate) try { gate.stop(); } catch { /* already down */ }
+        panel.querySelector('.vcharm-state').textContent = word ? `✦ nghe được: ${word}` : '… không nghe được từ nào';
+        setTimeout(() => { panel.remove(); resolve(word); }, 700);
+      };
+      for (const word of words) {
+        const button = document.createElement('button');
+        button.type = 'button'; button.className = 'vcharm-word'; button.textContent = word;
+        button.onclick = () => finish(word);
+        wordsEl.appendChild(button);
+      }
+      panel.querySelector('.vcharm-bar').style.setProperty('--vcsec', `${seconds}s`);
+      timer = setTimeout(() => finish(''), seconds * 1000);
+      try {
+        gate = startVoiceGate({
+          onHear: utterance => {
+            panel.querySelector('.vcharm-heard').textContent = utterance ? `“${utterance}”` : '';
+            const hit = words.find(w => wordHits(utterance, w).length);
+            if (hit) finish(hit);
+          },
+          onDown: why => { panel.querySelector('.vcharm-state').textContent = `🎤 ${why} — chạm vào một từ bên dưới`; },
+        });
+      } catch { panel.querySelector('.vcharm-state').textContent = '🎤 chưa mở được mic — chạm vào một từ bên dưới'; }
+    });
+  }
+  // Blocks the learner's program until the lab is dismissed, so a comparison
+  // stays up as long as they want to look instead of racing a fixed delay.
+  async #compareFrames(cfg) {
+    // Naming a plate attaches that plate's real artwork. A frame may carry a
+    // grid AND a plate name, and then the lab pairs the picture with the cells
+    // it decoded to — pixels on their own are unreadable.
+    const frames = (Array.isArray(cfg.frames) ? cfg.frames : []).map(f => {
+      const src = f && typeof f.plate === 'string' ? IMAGE_PLATES[shortText(f.plate, 12)] : null;
+      return src ? { label: f.label, image: f.image, src } : f;
+    });
+    const lab = buildImageLab(frames, { title: cfg.title, numbers: cfg.numbers });
+    document.body.appendChild(lab.el);
+    return lab.done;
+  }
+  // A named plate always decodes to the same grid, so a lesson can assert on
+  // exact pixel numbers; an unknown name falls back to the sample owl.
+  async #readPlateGrid(cfg) {
+    this.stop(); this.#active = true;
+    this.#photoSrc = IMAGE_PLATES[shortText(cfg.name, 12)] || IMAGE_GRID_SAMPLE;
+    const side = Math.round(clamp(cfg.size, IMAGE_GRID_MIN, IMAGE_GRID_MAX, 16));
+    const grid = await this.#decodePhoto(this.#photoSrc, side);
+    this.#mountPhotoProject();
+    const stat = this.#scenePanel.querySelector('#scstat');
+    if (stat) stat.textContent = `đã đọc tấm ${shortText(cfg.name, 12)} thành bảng ${side}×${side}`;
     return JSON.stringify(Array.isArray(grid) ? grid : []);
   }
   #finishPhotoStart(result) {

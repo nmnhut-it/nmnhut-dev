@@ -112,8 +112,17 @@ function finishFactory() {
   const challengeSaga = N.kind === 'python-challenge-saga';
   const visionSaga = N.kind === 'vision-saga';
   const dsaSaga = N.kind?.startsWith('dsa-');
+  // N.finish lets an island replace the generic "về bản đồ" card — used when
+  // the payoff is somewhere other than the map (the FX island hands the
+  // learner the real camera app they just rebuilt in Python).
+  const custom = N.finish || null;
   const el = document.createElement('div'); el.className = 'islandfinish';
-  el.innerHTML = `
+  if (custom) el.innerHTML = `
+    <div class="iftitle">${custom.title || '✦ XONG RỒI! ✦'}</div>
+    <div class="ifsub">${custom.sub || ''}</div>
+    <button class="ifbtn"><i class="iffill"></i><span>${cameraFree ? '' : '✋ '}${custom.button || 'ĐI TIẾP'}</span></button>
+    <div class="bcam"><video playsinline muted></video><div class="bgauge"><i></i></div></div>`;
+  else el.innerHTML = `
     <div class="iftitle">${learningBranch ? '✦ HOÀN THÀNH NHÁNH HỌC! ✦' : mathSaga ? '✦ HOÀN THÀNH BÀI TOÁN! ✦' : challengeSaga ? '✦ HOÀN THÀNH THỬ THÁCH! ✦' : visionSaga ? '✦ HOÀN THÀNH TRẠM MẮT MÁY! ✦' : dsaSaga ? '✦ HOÀN THÀNH CHẶNG DSA! ✦' : '✦ XONG RỒI! ✦'}</div>
     <div class="ifsub">${learningBranch ? 'Bạn đã học xong cú pháp mới. Tháp luyện tập của nhánh này đã mở trên bản đồ.' : mathSaga ? 'Bạn đã dùng Python để giải xong một nhóm bài Toán 6. Bài tiếp theo đã sáng trên bản đồ Toán.' : challengeSaga ? 'Bạn đã giải xong một nhóm bài Python. Chặng tiếp theo đã sáng trên bản đồ.' : visionSaga ? 'Bạn đã tự tính được một cơ chế thị giác máy. Trạm này đã sáng trên bản đồ Mắt Máy.' : dsaSaga ? 'Bạn đã hoàn thành một chặng cấu trúc dữ liệu và giải thuật. Đường tiếp theo đã sáng trên bản đồ.' : 'Bạn vừa luyện thêm một mẻ Mật Ngữ mới. Về lại bản đồ nào!'}</div>
     <button class="ifbtn"><i class="iffill"></i><span>${cameraFree ? 'VỀ BẢN ĐỒ' : '✋ VỀ BẢN ĐỒ'}</span></button>
@@ -124,6 +133,14 @@ function finishFactory() {
     let award = null;
     if (N.reward) try { award = awardSagaXp(localStorage, N.reward); } catch { /* storage may be unavailable */ }
     if (SIDE_KEY) try { localStorage.setItem(SIDE_KEY, '1'); } catch { /* storage may be unavailable */ }
+    // `sealsSagaNode` is the ONE sanctioned way an island.js page advances the
+    // main counter: the final project (node 25, GƯƠNG VÔ CỰC) sits on the main
+    // trail but ends in a handoff card rather than the vortex/seal ritual, so
+    // nothing else would ever mark it done. Monotonic — never rewinds progress.
+    if (typeof N.sealsSagaNode === 'number') try {
+      const key = 'magicdust.saga', at = Math.max(+localStorage.getItem(key) || 0, N.sealsSagaNode + 1);
+      localStorage.setItem(key, String(at));
+    } catch { /* storage may be unavailable */ }
     if (N.sideIslandId) try { sessionStorage.setItem(N.justSolvedKey || SIDE_SOLVED_FLAG, N.sideIslandId); } catch { /* storage may be unavailable */ }
     if (award?.awarded) try {
       sessionStorage.setItem('magicdust.collectible.justAwarded', JSON.stringify({
@@ -134,7 +151,7 @@ function finishFactory() {
     gestureDispatcher.disarmActGate(); el.querySelector('.bcam').classList.remove('on');
     progressStore.clear();
     telemetry.courseComplete(N, { completion: learningBranch ? 'learning-branch' : mathSaga ? 'math-saga' : challengeSaga ? 'python-challenge-saga' : visionSaga ? 'vision-saga' : dsaSaga ? N.kind : 'side-island' });
-    location.href = N.returnPage || './index.html';
+    location.href = custom?.page || N.returnPage || './index.html';
   };
   el.querySelector('.ifbtn').onclick = finish;
   el._arm = () => {

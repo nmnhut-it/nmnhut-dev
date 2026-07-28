@@ -83,77 +83,83 @@ else:
   }),
   2: project({
     deck: "rgb",
-    subtitle: "biểu diễn ảnh bằng ma trận RGB và tự xây phép đổi sang grayscale",
-    machineName: "BÀN TÁCH KÊNH RGB",
-    machineBlurb: "một lưới pixel có ba phép đo màu tại mỗi tọa độ",
-    sourceTitle: "OpenCV · Color Space Conversions",
-    sourceUrl: "https://docs.opencv.org/4.x/d8/d01/group__imgproc__color__conversions.html",
-    premise: "Với máy tính, ảnh là dữ liệu có chỉ số hàng, cột và kênh. Ma trận 3×3 đủ nhỏ để bạn kiểm tra từng phép tính nhưng vẫn giữ đúng cấu trúc của một bộ xử lý ảnh.",
-    label: "vision_project_02_rgb_to_gray.py",
-    note: "PROJECT 02 · BỘ CHUYỂN RGB SANG ẢNH XÁM\nẢnh RGB 3×3 đã nằm trong `image`; mỗi pixel là bộ `(R, G, B)`, không có dữ liệu nhập từ bàn phím hay camera. Hãy duyệt từng hàng, tính `round(0.299 * R + 0.587 * G + 0.114 * B)`, tạo `gray`, rồi tìm pixel sáng nhất. Kết quả đúng in ba hàng `[76, 150, 29]`, `[255, 0, 141]`, `[50, 118, 36]` và dòng `BRIGHTEST 255 AT 1 0`.",
-    starter: String.raw`image = [
-    [(255, 0, 0), (0, 255, 0), (0, 0, 255)],
-    [(255, 255, 255), (0, 0, 0), (100, 150, 200)],
-    [(50, 50, 50), (200, 100, 0), (20, 40, 60)],
+    subtitle: "đọc ảnh màu như ma trận RGB và thay đổi hình bằng chính các cường độ 0–255",
+    machineName: "BÀN ĐIỀU KHIỂN PIXEL RGB",
+    machineBlurb: "một hình chữ nhật màu được tạo từ các pixel có ba cường độ red, green và blue",
+    sourceTitle: "OpenCV · Basic Operations on Images",
+    sourceUrl: "https://docs.opencv.org/4.x/d3/df2/tutorial_py_basic_ops.html",
+    premise: "Ảnh mẫu có sáu hàng và tám cột. Mỗi pixel là một bộ ba `(red, green, blue)` trong khoảng 0–255. Bạn sẽ đổi màu cả hình chữ nhật, sửa một pixel cụ thể rồi dùng vòng lặp đổi toàn bộ vùng có cùng màu.",
+    label: "vision_project_02_rgb_rectangle.py",
+    note: "PROJECT 02 · ĐỔI HÌNH BẰNG MA TRẬN RGB\nCho sẵn ảnh 6×8 có hình chữ nhật đỏ trên nền xanh; chương trình không đọc dữ liệu bên ngoài. Hãy đổi pixel ở hàng 2, cột 3 thành vàng; sau đó duyệt toàn ảnh và đổi mọi pixel còn bằng `RED` thành `ORANGE`. Bản đúng phải in `PIXEL 2 3 (255, 255, 0)`, `ORANGE COUNT 15`, `BACKGROUND COUNT 32` và `SHAPE 6 8 3`.",
+    starter: String.raw`BLUE = (30, 80, 180)
+RED = (255, 40, 40)
+YELLOW = (255, 255, 0)
+ORANGE = (255, 150, 20)
+
+image = [
+    [BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE],
 ]
 
-gray = []
-for row in image:
-    gray_row = []
-    for red, green, blue in row:
-        value = 0
-        gray_row.append(value)
-    gray.append(gray_row)
+image[2][3] = (0, 0, 0)
 
-best_value = -1
-best_row = -1
-best_column = -1
-for row_index in range(len(gray)):
-    for column_index in range(len(gray[row_index])):
-        value = gray[row_index][column_index]
-        if value > best_value:
-            best_value = value
-            best_row = row_index
-            best_column = column_index
+orange_count = 0
+background_count = 0
+for row in range(len(image)):
+    for column in range(len(image[row])):
+        if image[row][column] == RED:
+            image[row][column] = RED
+        if image[row][column] == ORANGE:
+            orange_count += 1
+        if image[row][column] == BLUE:
+            background_count += 1
 
-for row in gray:
-    print(row)
-print("BRIGHTEST", best_value, "AT", best_row, best_column)`,
-    solution: String.raw`image = [
-    [(255, 0, 0), (0, 255, 0), (0, 0, 255)],
-    [(255, 255, 255), (0, 0, 0), (100, 150, 200)],
-    [(50, 50, 50), (200, 100, 0), (20, 40, 60)],
+print("PIXEL", 2, 3, image[2][3])
+print("ORANGE COUNT", orange_count)
+print("BACKGROUND COUNT", background_count)
+print("SHAPE", len(image), len(image[0]), len(image[0][0]))`,
+    solution: String.raw`BLUE = (30, 80, 180)
+RED = (255, 40, 40)
+YELLOW = (255, 255, 0)
+ORANGE = (255, 150, 20)
+
+image = [
+    [BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, RED,  RED,  RED,  RED,  BLUE, BLUE],
+    [BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE, BLUE],
 ]
 
-gray = []
-for row in image:
-    gray_row = []
-    for red, green, blue in row:
-        value = round(0.299 * red + 0.587 * green + 0.114 * blue)
-        gray_row.append(value)
-    gray.append(gray_row)
+image[2][3] = YELLOW
 
-best_value = -1
-best_row = -1
-best_column = -1
-for row_index in range(len(gray)):
-    for column_index in range(len(gray[row_index])):
-        value = gray[row_index][column_index]
-        if value > best_value:
-            best_value = value
-            best_row = row_index
-            best_column = column_index
+orange_count = 0
+background_count = 0
+for row in range(len(image)):
+    for column in range(len(image[row])):
+        if image[row][column] == RED:
+            image[row][column] = ORANGE
+        if image[row][column] == ORANGE:
+            orange_count += 1
+        if image[row][column] == BLUE:
+            background_count += 1
 
-for row in gray:
-    print(row)
-print("BRIGHTEST", best_value, "AT", best_row, best_column)`,
-    expectOut: { all: [/^\[76, 150, 29\]$/, /^\[255, 0, 141\]$/, /^\[50, 118, 36\]$/, /^BRIGHTEST 255 AT 1 0$/] },
-    checkpoint: "Pixel RGB chứa ba cường độ tại cùng một tọa độ. Ảnh xám là ma trận hai chiều; phép đổi có trọng số giữ một ước lượng độ sáng và bỏ thông tin màu.",
+print("PIXEL", 2, 3, image[2][3])
+print("ORANGE COUNT", orange_count)
+print("BACKGROUND COUNT", background_count)
+print("SHAPE", len(image), len(image[0]), len(image[0][0]))`,
+    expectOut: { all: [/^PIXEL 2 3 \(255, 255, 0\)$/, /^ORANGE COUNT 15$/, /^BACKGROUND COUNT 32$/, /^SHAPE 6 8 3$/] },
+    checkpoint: "Ảnh màu là ma trận hàng-cột; mỗi pixel giữ ba cường độ RGB từ 0 đến 255. Gán `image[row][column]` đổi một pixel. Duyệt toàn ma trận và so với một màu preset cho phép đổi cả vùng có cùng màu.",
     questions: [
-      { q: "Hai pixel `(255, 0, 0)` và `(0, 255, 0)` có cùng tổng kênh 255. Vì sao công thức trong lab vẫn cho hai mức xám khác nhau?", a: ["Trọng số ba kênh khác nhau, trong đó G lớn hơn R", "Hàm round luôn ưu tiên màu lục", "Ma trận lưu G trước R"], correct: 0 },
-      { q: "Sau khi đổi ảnh RGB 3×3 thành grayscale, shape hợp lý nhất là gì?", a: ["3 hàng × 3 cột, mỗi ô là một số", "3 hàng × 3 cột × 3 kênh", "1 hàng gồm 27 số"], correct: 0 },
+      { q: "Lệnh `image[2][3] = YELLOW` thay đổi phần nào?", a: ["Một pixel ở hàng 2, cột 3", "Toàn bộ hàng 2", "Mọi pixel màu vàng"], correct: 0 },
+      { q: "Vì sao vòng lặp đổi được 15 pixel đỏ thành cam mà không đổi nền?", a: ["Điều kiện chỉ khớp pixel bằng `RED`", "Màu nền không có ba kênh", "Vòng lặp bỏ qua mọi cột nền"], correct: 0 },
     ],
-    remember: ["Tọa độ pixel thường được đọc theo (row, column).", "RGB có ba kênh; grayscale có một mức sáng tại mỗi pixel.", "Phép đổi grayscale là một mô hình đo độ sáng, không phải cách khôi phục màu."],
+    remember: ["Đọc tọa độ ma trận theo `image[row][column]`.", "Mỗi pixel RGB có ba cường độ trong khoảng 0–255.", "Đổi một giá trị làm đổi một pixel; vòng lặp và điều kiện có thể đổi cả một vùng."],
   }),
   3: project({
     deck: "kernel",
@@ -1181,6 +1187,118 @@ direction = "RIGHT" if valid[-1][1] > valid[0][1] else "OTHER"
 print("TRACK", direction)
 print("FAILED CASE REJECTED", detections[-1] is None)`,
     expectOut: { all: [/^FRAME 0 BOX 0 0 SCORE 1\.00$/, /^FRAME 1 BOX 0 1 SCORE 1\.00$/, /^FRAME 2 NO DETECTION$/, /^TRACK RIGHT$/, /^FAILED CASE REJECTED True$/] },
+    extensionCells: [
+      {
+        npc: "Pipeline vừa tìm vị trí qua nhiều frame. Thử thách cuối thêm hướng bàn tay: cổ tay và gốc ngón giữa tạo một vector; `atan2` đổi vector thành góc. Muốn xoay ảnh mà không tạo lỗ trống, mỗi pixel đích phải truy ngược về một pixel nguồn.",
+      },
+      {
+        code: String.raw`from math import atan2, cos, sin, pi
+
+wrist = (2, 4)
+middle_base = (5, 1)
+dx = middle_base[0] - wrist[0]
+dy = middle_base[1] - wrist[1]
+angle = atan2(dy, dx)
+
+target_x = 3
+target_y = 1
+center_x = 2
+center_y = 2
+offset_x = target_x - center_x
+offset_y = target_y - center_y
+
+source_x = 0
+source_y = 0
+
+print("VECTOR", dx, dy)
+print("ANGLE", round(angle * 180 / pi))
+print("SOURCE", source_x, source_y)`,
+        label: "vision_capstone_hand_rotation.py",
+        note: "THỬ THÁCH TỐI THƯỢNG · XOAY THEO BÀN TAY\n`wrist`, `middle_base`, pixel đích và tâm ảnh đã cho sẵn; cell này không đọc camera. Hãy tính `dx`, `dy`, góc bằng `atan2`; sau đó dùng ánh xạ ngược `source_x = round(cos(angle) * offset_x + sin(angle) * offset_y + center_x)` và `source_y = round(-sin(angle) * offset_x + cos(angle) * offset_y + center_y)`. Bản đúng in `VECTOR 3 -3`, `ANGLE -45`, `SOURCE 3 2`.",
+        expectOut: { all: [/^VECTOR 3 -3$/, /^ANGLE -45$/, /^SOURCE 3 2$/] },
+        solution: String.raw`from math import atan2, cos, sin, pi
+
+wrist = (2, 4)
+middle_base = (5, 1)
+dx = middle_base[0] - wrist[0]
+dy = middle_base[1] - wrist[1]
+angle = atan2(dy, dx)
+
+target_x = 3
+target_y = 1
+center_x = 2
+center_y = 2
+offset_x = target_x - center_x
+offset_y = target_y - center_y
+
+source_x = round(cos(angle) * offset_x + sin(angle) * offset_y + center_x)
+source_y = round(-sin(angle) * offset_x + cos(angle) * offset_y + center_y)
+
+print("VECTOR", dx, dy)
+print("ANGLE", round(angle * 180 / pi))
+print("SOURCE", source_x, source_y)`,
+      },
+      {
+        npc: "Camera trực tiếp không trả về tên phép. Nó trả về các điểm mốc của bàn tay. Chương trình dùng các điểm này để kiểm tra từng ngón đang giơ hay đang gập, đếm số bàn tay rồi chọn VFX. Đây là thuật toán nối dữ liệu camera với hiệu ứng trên sân khấu.",
+      },
+      {
+        code: String.raw`def has_fingers(hand, expected):
+    return hand["raised"] == expected
+
+def choose_spell(hands):
+    if len(hands) == 1:
+        hand = hands[0]
+        if has_fingers(hand, ["thumb", "index"]):
+            return "..."
+        if has_fingers(hand, ["index", "little"]):
+            return "..."
+        if has_fingers(hand, ["thumb", "little"]):
+            return "..."
+        if has_fingers(hand, ["index"]) and hand["tip_zone"] == "top_left":
+            return "blur"
+
+    return "none"
+
+thumb_index = [{"raised": ["thumb", "index"], "tip_zone": "center"}]
+index_little = [{"raised": ["index", "little"], "tip_zone": "center"}]
+thumb_little = [{"raised": ["thumb", "little"], "tip_zone": "center"}]
+index_in_zone = [{"raised": ["index"], "tip_zone": "top_left"}]
+
+print("THUMB INDEX", choose_spell(thumb_index))
+print("INDEX LITTLE", choose_spell(index_little))
+print("THUMB LITTLE", choose_spell(thumb_little))
+print("INDEX IN ZONE", choose_spell(index_in_zone))`,
+        label: "vision_capstone_gesture_spell.py",
+        note: "THỬ THÁCH BIỂU DIỄN · TỪ NGÓN TAY ĐẾN VFX\nCác dictionary là dữ liệu preset mô phỏng kết quả camera; cell này không đọc camera thật. `raised` cho biết chính xác ngón nào đang giơ. `tip_zone` cho biết đầu ngón trỏ đang ở vùng nào trên màn hình. Hãy thay ba chuỗi `\"...\"`: cái + trỏ trả về `\"lightning\"`, trỏ + út trả về `\"swords\"`, cái + út trả về `\"lotus\"`. Một ngón trỏ đặt trong vùng `top_left` đã được cho sẵn để trả về `\"blur\"`.",
+        expectOut: { all: [/^THUMB INDEX lightning$/, /^INDEX LITTLE swords$/, /^THUMB LITTLE lotus$/, /^INDEX IN ZONE blur$/] },
+        solution: String.raw`def has_fingers(hand, expected):
+    return hand["raised"] == expected
+
+def choose_spell(hands):
+    if len(hands) == 1:
+        hand = hands[0]
+        if has_fingers(hand, ["thumb", "index"]):
+            return "lightning"
+        if has_fingers(hand, ["index", "little"]):
+            return "swords"
+        if has_fingers(hand, ["thumb", "little"]):
+            return "lotus"
+        if has_fingers(hand, ["index"]) and hand["tip_zone"] == "top_left":
+            return "blur"
+
+    return "none"
+
+thumb_index = [{"raised": ["thumb", "index"], "tip_zone": "center"}]
+index_little = [{"raised": ["index", "little"], "tip_zone": "center"}]
+thumb_little = [{"raised": ["thumb", "little"], "tip_zone": "center"}]
+index_in_zone = [{"raised": ["index"], "tip_zone": "top_left"}]
+
+print("THUMB INDEX", choose_spell(thumb_index))
+print("INDEX LITTLE", choose_spell(index_little))
+print("THUMB LITTLE", choose_spell(thumb_little))
+print("INDEX IN ZONE", choose_spell(index_in_zone))`,
+      },
+    ],
     checkpoint: "Pipeline capstone để lại bằng chứng ở từng bước: grayscale và blur tạo dữ liệu chuẩn hóa; ZNCC tạo response; threshold cho quyền từ chối; detection theo thời gian tạo track. Một hệ thống đáng tin không ép mọi frame phải có vật.",
     questions: [
       { q: "Frame cuối có best ZNCC = 0.00 và ngưỡng là 0.80. Báo cáo nào đúng?", a: ["NO DETECTION", "Vẫn lấy box có score lớn nhất", "Hạ ngưỡng về 0 mà không kiểm tra"], correct: 0 },

@@ -22,6 +22,14 @@ The charm SEES your hand and does what your rules say:
     choose_image() -> opens a local image picker and returns a small 2D RGB list;
                       cancelling uses the built-in magic-owl sample
     load_sample_image() -> returns that generated sample as a small 2D RGB list
+    load_plate(name, size) -> reads a named lesson plate ("stag", "boss",
+                     "scene", "goal") into a 2D RGB list; same numbers each run
+    compare_frames(labelled, title, numbers) -> opens the big side-by-side
+                     viewer and WAITS until the learner closes it; each entry is
+                     (label, grid) to draw cells or (label, plate_name) to show
+                     that artwork full size
+    show_photos(labelled, title) -> compare_frames for plate artwork only
+    show_numbers(image, title) -> one image plus its brightness digits
     blank_grid(rows, cols) -> makes a 2D list filled with one preset value
     start_photo_lights() -> waits for the learner to press the centered start button
     show_photo_lights(colors, mode, step) -> draws a repeated color list
@@ -37,6 +45,9 @@ The charm SEES your hand and does what your rules say:
     invert()      -> every color on screen flips to its opposite
     grayscale()   -> the screen loses all color, black-and-white only
     flip_mirror() -> un-mirrors the screen back to your TRUE left/right
+    blur()        -> softens the live camera image
+    sharpen()     -> increases local contrast on the live camera image
+    rotate_with_hand() -> rotates the live image with the wrist-to-middle-finger angle
     shake_screen()-> the screen shakes once, like a small earthquake
     photo_booth() -> a magic photo booth: pour dust with an open palm,
                      whirl it with one finger, SNAP with two. It keeps
@@ -124,6 +135,18 @@ def flip_mirror():
     bridge.tell("screen", "mirror")
 
 
+def blur():
+    bridge.tell("screen", "blur")
+
+
+def sharpen():
+    bridge.tell("screen", "sharpen")
+
+
+def rotate_with_hand():
+    bridge.tell("screen", "rotate")
+
+
 def shake_screen():
     bridge.tell("screen", "shake")
 
@@ -138,9 +161,12 @@ def upload_photo():
     return bridge.ask("studio_start", payload) == "uploaded"
 
 
-def _read_image_grid(action, size=16):
+def _read_image_grid(action, size=16, name=None):
     side = max(8, min(24, int(size)))
-    payload = json.dumps({"action": action, "size": side}, ensure_ascii=False)
+    request = {"action": action, "size": side}
+    if name is not None:
+        request["name"] = str(name)
+    payload = json.dumps(request, ensure_ascii=False)
     try:
         image = json.loads(bridge.ask("studio_start", payload))
     except (TypeError, ValueError):
@@ -156,6 +182,61 @@ def choose_image(size=16):
 
 def load_sample_image(size=16):
     return _read_image_grid("image_sample_grid", size)
+
+
+def load_plate(name="stag", size=16):
+    """Read a named lesson plate into a 2D RGB grid.
+
+    name: "stag" or "boss" (glowing effect layers shot on black) or "scene"
+    (a night background). Returns image[row][col] == [red, green, blue].
+    Same numbers on every run, so a lesson can check exact values.
+    Related: lessons/engine/interactive-studio.js IMAGE_PLATES.
+    """
+    return _read_image_grid("image_plate_grid", size, name)
+
+
+def compare_frames(labelled, title="", numbers=True):
+    """Open a large side-by-side viewer and wait until the learner closes it.
+
+    labelled: list of (label, image) pairs, image[row][col] == [r, g, b].
+    numbers: show each cell's brightness digit on its own shade. On by
+    default whenever the grid is small enough to read; pass False to hide.
+    Use it to put a BEFORE frame next to an AFTER frame; the program pauses
+    on the viewer, so nothing scrolls away before it has been looked at.
+    Related: lessons/engine/image-lab.js.
+    """
+    frames = []
+    for entry in labelled:
+        # (label, plate_name)        -> that artwork at full size
+        # (label, grid)              -> the cells the learner's code built
+        # (label, grid, plate_name)  -> both, paired: picture beside its pixels
+        label, image = entry[0], entry[1]
+        plate = entry[2] if len(entry) > 2 else (image if isinstance(image, str) else None)
+        frame = {"label": str(label)}
+        if plate is not None:
+            frame["plate"] = str(plate)
+        if not isinstance(image, str):
+            frame["image"] = image
+        frames.append(frame)
+    payload = json.dumps(
+        {"action": "frame_compare", "title": str(title), "numbers": bool(numbers), "frames": frames},
+        ensure_ascii=False,
+    )
+    return bridge.ask("studio_start", payload) == "closed"
+
+
+def show_photos(labelled, title=""):
+    """Open the viewer on plate ARTWORK at full size.
+
+    labelled: list of (label, plate_name) pairs, e.g. [("HUOU", "stag")].
+    Plate names: "stag", "boss", "scene", "goal".
+    """
+    return compare_frames(labelled, title)
+
+
+def show_numbers(image, title=""):
+    """Open the viewer on one image with its brightness digits shown."""
+    return compare_frames([(title or "ANH", image)], title, True)
 
 
 def blank_grid(rows, cols, value=0):

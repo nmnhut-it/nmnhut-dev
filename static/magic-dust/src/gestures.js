@@ -30,6 +30,115 @@ function thumbExtended(lm){
   return dTip>dMcp*THUMB_EXT_RATIO;
 }
 
+export function fingerStates(lm){
+  return{
+    thumb:thumbExtended(lm),
+    index:ext(lm,6,8)>EXT_THRESHOLD,
+    middle:ext(lm,10,12)>EXT_THRESHOLD,
+    ring:ext(lm,14,16)>EXT_THRESHOLD,
+    pinky:ext(lm,18,20)>EXT_THRESHOLD,
+  };
+}
+
+const matches=(state,open)=>Object.entries(state).every(([finger,value])=>value===open.includes(finger));
+
+export function classifySpellGesture(lm){
+  const state=fingerStates(lm);
+  if(matches(state,['thumb','index']))return'fireball';
+  if(matches(state,['index','pinky']))return'lightning';
+  return null;
+}
+
+export function isIndexWand(lm){
+  const state=fingerStates(lm);
+  return matches(state,['index']);
+}
+
 // Open palm = all four fingers extended AND the thumb splayed → the "true 5"
 // summon gesture, kept distinct from the thumb-excluded spell count above.
+// PINCH: thumb tip against index tip. Measured as a distance between two
+// landmarks rather than a curl estimate, which is why it survives a classroom
+// webcam when finger-count reads wobble. Normalised by handSize so it does not
+// become easier the closer a learner leans in.
+//
+// A pinched hand reads as zero or one extended finger, so any classifier that
+// also counts fingers MUST check this first or the two signs fight.
+export const PINCH_RATIO=.42;
+export function isPinch(lm){
+  if(!lm||lm.length<21)return false;
+  return Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)<handSize(lm)*PINCH_RATIO;
+}
+
 export function isOpenPalm(lm){return countExtendedFingers(lm)===4&&thumbExtended(lm);}
+
+export function isHorizontalOpenPalm(lm){
+  const wrist=lm[0];
+  const extended=[[6,8],[10,12],[14,16],[18,20]].every(([pip,tip])=>{
+    const pipDistance=Math.hypot(lm[pip].x-wrist.x,lm[pip].y-wrist.y);
+    const tipDistance=Math.hypot(lm[tip].x-wrist.x,lm[tip].y-wrist.y);
+    return tipDistance>pipDistance*1.12;
+  });
+  if(!extended||!thumbExtended(lm))return false;
+  const dx=lm[9].x-lm[0].x;
+  const dy=lm[9].y-lm[0].y;
+  return Math.abs(dx)>Math.abs(dy)*1.15;
+}
+
+export function heartGestureMetrics(hands=[]){
+  let best={active:false,score:Infinity};
+  for(let i=0;i<hands.length;i++)for(let j=i+1;j<hands.length;j++){
+    const a=hands[i],b=hands[j],scale=(handSize(a)+handSize(b))*.5;
+    const distance=(p,q)=>Math.hypot(p.x-q.x,p.y-q.y)/scale;
+    const indexDistance=distance(a[8],b[8]),thumbDistance=distance(a[4],b[4]);
+    const indexMidY=(a[8].y+b[8].y)*.5,thumbMidY=(a[4].y+b[4].y)*.5;
+    const candidate={
+      active:indexDistance<.42&&thumbDistance<.48&&indexMidY<thumbMidY,
+      indexDistance,thumbDistance,pair:[i,j],score:indexDistance+thumbDistance,
+    };
+    if(candidate.active&&candidate.score<best.score)best=candidate;
+  }
+  return best;
+}
+
+export function classifyStudioGesture(hands=[]){
+  if(heartGestureMetrics(hands).active)return'photo';
+  if(hands.some(isHorizontalOpenPalm))return'lotus';
+  const hand=hands[0];
+  if(!hand||isOpenPalm(hand))return null;
+  const state=fingerStates(hand);
+  if(matches(state,[]))return'blur';
+  if(matches(state,['index','ring','pinky']))return'rain';
+  return null;
+}
+
+// holdMs may be a NUMBER (every gesture waits the same) or a MAP of kind -> ms
+// with an optional `default`. The map exists because a heavy spell should be
+// visibly slower to bring up than a cheap one - the wait is the weight - and
+// that only works if one gate can hold several durations at once.
+export class StableGestureTrigger{
+  constructor({holdMs=700,releaseMs=220}={}){
+    this.holdMs=holdMs;this.releaseMs=releaseMs;
+    this.candidate=null;this.since=0;this.latched=null;this.neutralSince=0;
+  }
+  holdFor(kind){
+    if(typeof this.holdMs==='number')return this.holdMs;
+    return this.holdMs?.[kind]??this.holdMs?.default??700;
+  }
+  sample(kind,now=performance.now()){
+    if(!kind){
+      this.candidate=null;this.since=0;
+      if(!this.neutralSince)this.neutralSince=now;
+      if(now-this.neutralSince>=this.releaseMs)this.latched=null;
+      return null;
+    }
+    this.neutralSince=0;
+    if(this.latched)return null;
+    if(kind!==this.candidate){this.candidate=kind;this.since=now;return null;}
+    if(now-this.since<this.holdFor(kind))return null;
+    this.latched=kind;
+    return kind;
+  }
+  progress(now=performance.now()){
+    return{kind:this.candidate,value:this.candidate?Math.min(1,(now-this.since)/this.holdFor(this.candidate)):0,latched:this.latched};
+  }
+}

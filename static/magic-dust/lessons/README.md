@@ -772,6 +772,83 @@ number represents and what the operation does. Do not label starter assignments
 as INPUT; call them given/preset values unless the value is read from the
 learner, camera, or another real input source.
 
+## Image lab — big BEFORE/AFTER viewer (`engine/image-lab.js`)
+
+`#scenepanel` is a 480px 4:3 box that holds ONE frame, which is too small to
+compare versions of an image and cannot show the numbers behind a picture.
+`buildImageLab(frames, {title, numbers})` is a full-screen overlay instead:
+
+- Each frame is `{label, image}` (draws the grid as an upscaled pixelated
+  canvas) **or** `{label, src}` (shows real artwork at full resolution). Coarse
+  grids look nothing like the plate they came from, so lessons should keep the
+  real image on screen next to them — that mismatch was the first thing testers
+  complained about.
+- `numbers: true` adds a digit table: each cell shows its own brightness on a
+  swatch of its own shade, so "an image is a grid of light" is visible at a
+  glance. It is laid out with **CSS grid, never printed text** — printed rows
+  wrap at the terminal width and destroy the alignment.
+- The lab **blocks the learner's program until dismissed**, so a comparison
+  stays up as long as they want instead of racing a fixed `delay()`.
+
+Python side (`py/camera_charm`), via the `frame_compare` studio action:
+
+```python
+compare_frames([("TRUOC", before), ("SAU", after)], "LAT ANH", True)
+show_photos([("CON HUOU", "stag"), ("CON QUAI", "boss")], "HAI TAM ANH")
+show_numbers(grid, "DO SANG TUNG O")
+```
+
+Named plates live in `assets/camera-effects/plates/` and are mapped by
+`IMAGE_PLATES` in `engine/interactive-studio.js`: `stag`, `boss`, `scene`, and
+`goal` (the finished stag-over-boss shot, produced offline with the same
+add-and-clamp the learner writes). `load_plate(name, size)` reads one into a
+grid; a named plate always decodes to the same numbers, so a lesson can assert
+on them.
+
+**GƯƠNG VÔ CỰC (`content/islandFXFORGE.js`)** is the saga's **final project —
+`NODES[25]` on the main trail** (promoted from a side island 2026-07-28), the
+capstone where the learner banishes Chúa tể Vô Định. It opens with
+the goal as a PUZZLE (stag, boss, then stag-over-boss — "how would you do
+that?") before any theory, then: image as a grid of light → hand-paint a region
+of cells → write the flip → write the add-and-clamp blend → reproduce the hero
+shot → route a spoken command with `if`/`elif`/`else`. Its `finish` block
+(supported by `island.js`) replaces the generic "về bản đồ" card and sends the
+learner to `../ar-boss/index.html` — the AR fight against Chúa tể Vô Định, whose
+MAGIC / FLIP / BLUR spells are the very functions they just wrote.
+
+It is served by `islandFXFORGE.html` (still `island.js`, not `node.js`) because
+the capstone ends in that handoff rather than the vortex/seal ritual every other
+node ends with. `island.js` normally never touches the main counter; the ONE
+sanctioned exception is the content field **`sealsSagaNode: 25`**, which makes
+the finish card advance `magicdust.saga` monotonically — without it nothing
+would ever mark node 25 done. The live-broadcast project that used to hold the
+node-25 slot (`content/node25.js`, `node25-lesson.html`) is still reachable as
+the side island `islandBROADCAST`.
+
+## Voice charm — spoken INPUT (`py/voice_charm`)
+
+`listen(words)` opens the mic and returns whichever word of `words` was heard,
+or `""` when it caught nothing — so an `if`/`elif`/`else` chain always needs its
+`else`. It rides the existing `studio_start` channel as the `voice_listen`
+action (`interactive-studio.js#listenForWord`), matching with `chant-match.js`'s
+`wordHits` (the same fold/accept/skeleton tiers the ritual gates use) over a
+`voice-gate.js` session.
+
+The vocabulary is **always rendered as buttons as well as listened for**: a
+blocked mic, a silent room, or a browser without `SpeechRecognition` must
+degrade to a tap, never to a dead lesson. Headless runs answer with the first
+word offered, so solution tests stay deterministic.
+
+Paired with `camera_charm.watch()` this gives a lesson two real input sources at
+once — voice picks the spell, the hand sets its power — which is how
+`islandFXFORGE` lets a learner rehearse the root app's controls before entering
+it.
+
+Code cells assert **properties**, not magic pixel numbers (flip round-trips and
+actually changes the image; blend never overflows 255 and never darkens), so the
+same `expectOut` holds for both the real browser decode and the headless stub in
+`test-content-solutions.mjs`.
+
 ## Thợ Rèn & Bom Mật Ngữ (reward economy — additive only)
 
 Design doc: `lessons/FORGE-PLAN.md`. The loop: lesson badges → forge into a

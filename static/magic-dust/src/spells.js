@@ -54,8 +54,19 @@ export const FINGER_TO_SPELL={1:'fireball',2:'lightning'};
 
 // Order here also defines the on-screen gesture-guide list order.
 export const GUIDE=[
-  {key:'fireball',  label:'1 Finger',  desc:'Hold up your index finger and wait for it to charge'},
-  {key:'lightning', label:'2 Fingers', desc:'Hold up index + middle finger and wait for it to charge'},
+  {key:'fireball',  label:'Index + “Fireball”',desc:'Point one index finger, then say “fireball”'},
+  {key:'lightning', label:'Index + “Lightning”',desc:'Point one index finger, then say “lightning”'},
+  {key:'summon',    label:'Index + “Summon”',desc:'Summon continuous dust and draw a glowing ribbon with the fingertip'},
+  {key:'stop',      label:'Say “Stop”',desc:'Stop continuous dust and clear the current atmosphere'},
+  {key:'rain',      label:'Index + “Rain”',desc:'Summon a cinematic storm plate across the camera'},
+  {key:'blur',      label:'Index + “Blur”',desc:'Point one index finger, then say “blur”'},
+  {key:'flip',      label:'Index + “Flip”',desc:'Point one index finger, then say “flip” to mirror the camera'},
+  {key:'flower',    label:'Index + “Flower”',desc:'Loop a full-frame atmosphere of floating pink flower petals'},
+  {key:'magic',     label:'Index + “Magic”',desc:'Loop a separate atmosphere of luminous magical symbols'},
+  {key:'koto',      label:'Index + “Koto”',desc:'Summon the glowing spirit stag video spell'},
+  {key:'smoke',     label:'Index + “Smoke”',desc:'Fill the stage with a looping blue smoke overlay'},
+  {key:'photo',     label:'Heart Hands',desc:'Make a heart and hold to take a magic photo'},
+  {key:'lighting',  label:'Index + “Lumos / Nox”',desc:'Point one index finger; Lumos brightens and Nox darkens'},
 ];
 
 export const ROT={

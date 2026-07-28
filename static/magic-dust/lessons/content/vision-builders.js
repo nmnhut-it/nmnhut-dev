@@ -72,6 +72,7 @@ export function buildVisionProjectLesson(id) {
       expectOut: config.expectOut,
       solution: config.solution,
     },
+    ...(config.extensionCells || []),
     { checkpoint: { text: config.checkpoint } },
     { quiz: { title: `Kiểm tra dự án ${String(id).padStart(2, "0")}`, questions: config.questions } },
     { remember: config.remember },

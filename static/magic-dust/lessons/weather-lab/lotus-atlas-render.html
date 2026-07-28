@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <style>
+    html,body{margin:0;width:256px;height:256px;background:transparent;overflow:hidden}
+    #stage{position:relative;width:256px;height:256px;background:transparent}
+    canvas{position:absolute!important;inset:0!important;width:256px!important;height:256px!important;opacity:1!important}
+  </style>
+</head>
+<body>
+  <div id="stage"></div>
+  <script type="module">
+    import { Magic3DEngine } from "./lotus-3d.js";
+    const engine = new Magic3DEngine(document.querySelector("#stage"), { autoStart: false });
+    window.lotusAtlas = {
+      canvas: engine.canvas,
+      render(age, yaw) {
+        engine.renderLotusFrame(age, yaw);
+        return true;
+      },
+    };
+  </script>
+</body>
+</html>

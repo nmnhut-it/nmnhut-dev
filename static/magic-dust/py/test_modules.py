@@ -197,9 +197,15 @@ def test_camera_charm_fx():
     assert bridge.told[-1] == ("screen", "lighten"), bridge.told
     mod.darken()
     assert bridge.told[-1] == ("screen", "darken"), bridge.told
+    mod.blur()
+    assert bridge.told[-1] == ("screen", "blur"), bridge.told
+    mod.sharpen()
+    assert bridge.told[-1] == ("screen", "sharpen"), bridge.told
+    mod.rotate_with_hand()
+    assert bridge.told[-1] == ("screen", "rotate"), bridge.told
 
 
-t("camera_charm.fire_vortex()/freeze()/lighten()/darken() tell the right (kind, value) pairs", test_camera_charm_fx)
+t("camera_charm spell, light, blur, sharpen, and rotate helpers keep the bridge contract", test_camera_charm_fx)
 
 
 def test_camera_charm_display():

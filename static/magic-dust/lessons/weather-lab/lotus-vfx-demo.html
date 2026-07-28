@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Liên Hoa Vũ · VFX Demo</title>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020710;color:#dffcff;font-family:Inter,system-ui,sans-serif}
+    .stage{position:relative;width:100%;height:100%;isolation:isolate;background:
+      radial-gradient(circle at 50% 44%,rgba(26,91,132,.2),transparent 34%),
+      radial-gradient(circle at 22% 70%,rgba(26,42,112,.18),transparent 35%),
+      linear-gradient(180deg,#030a13,#01040a)}
+    .stage::before{content:"";position:absolute;inset:0;z-index:-1;background:
+      linear-gradient(rgba(123,230,255,.025) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(123,230,255,.025) 1px,transparent 1px);
+      background-size:56px 56px;mask-image:linear-gradient(to bottom,black,transparent)}
+    #lotus-vfx{position:absolute;inset:0;width:100%;height:100%}
+    .mist{position:absolute;inset:-15%;pointer-events:none;background:
+      radial-gradient(ellipse at 50% 80%,rgba(60,142,184,.16),transparent 45%),
+      radial-gradient(ellipse at 25% 45%,rgba(66,76,180,.08),transparent 36%);
+      filter:blur(26px);animation:breathe 7s ease-in-out infinite alternate}
+    .hud{position:absolute;left:24px;top:22px;padding:14px 18px;border:1px solid rgba(111,235,255,.2);
+      border-radius:14px;background:rgba(2,12,21,.68);backdrop-filter:blur(16px);box-shadow:0 16px 60px rgba(0,0,0,.3)}
+    .hud small{display:block;color:#62ddec;letter-spacing:.22em;font-size:10px;font-weight:800}
+    .hud h1{margin:5px 0 3px;font-family:Georgia,serif;font-size:25px;font-weight:500}
+    .hud p{margin:0;color:#87aeb8;font-size:12px}
+    .controls{position:absolute;right:22px;top:22px;display:flex;gap:8px;align-items:center}
+    .palette{display:flex;gap:5px;padding:7px;border:1px solid rgba(111,235,255,.18);border-radius:14px;background:rgba(3,18,29,.68)}
+    .swatch{width:23px;height:23px;padding:0;border-radius:50%;background:var(--color);border:2px solid rgba(255,255,255,.22)}
+    .swatch.active{box-shadow:0 0 0 2px #06131d,0 0 0 4px var(--color)}
+    button{border:1px solid rgba(111,235,255,.24);border-radius:12px;background:rgba(3,18,29,.76);
+      color:#bcf9ff;padding:11px 15px;cursor:pointer;backdrop-filter:blur(12px);font-weight:700}
+    button:hover{background:rgba(17,62,80,.84);border-color:rgba(111,235,255,.5)}
+    .hint{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);color:#6f929d;font-size:11px;letter-spacing:.08em}
+    @keyframes breathe{to{transform:translate3d(2%,-2%,0) scale(1.08);opacity:.72}}
+    @media(max-width:640px){.hud{left:12px;top:12px}.controls{right:12px;top:auto;bottom:12px}.hint{display:none}}
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage">
+    <canvas id="lotus-vfx" aria-label="Hiệu ứng Liên Hoa Vũ"></canvas>
+    <div class="mist"></div>
+    <section class="hud">
+      <small>WEBGL SPRITE ATLAS DEMO</small>
+      <h1>Liên Hoa Vũ</h1>
+      <p>Thanh Liên 3D → atlas RGBA 20×4 · 80 frame → hoa rơi đa lớp</p>
+    </section>
+    <nav class="controls">
+      <div class="palette" aria-label="Màu hoa sen">
+        <button class="swatch" data-color="0" style="--color:#f8fcff" title="Trắng"></button>
+        <button class="swatch" data-color="1" style="--color:#ff76b8" title="Hồng"></button>
+        <button class="swatch" data-color="2" style="--color:#ff4f55" title="Đỏ"></button>
+        <button class="swatch" data-color="3" style="--color:#ffc84f" title="Vàng"></button>
+        <button class="swatch" data-color="4" style="--color:#62e58c" title="Lục"></button>
+        <button class="swatch" data-color="5" style="--color:#4ddfff" title="Lam"></button>
+        <button class="swatch" data-color="6" style="--color:#a978ff" title="Tím"></button>
+        <button class="swatch active" data-color="rainbow" style="--color:conic-gradient(#ff76b8,#ffc84f,#62e58c,#4ddfff,#a978ff,#ff76b8)" title="Bảy màu"></button>
+      </div>
+      <button id="replay" type="button">Phát lại</button>
+      <button id="fullscreen" type="button">Toàn màn hình</button>
+    </nav>
+    <div class="hint">20 phase khép–nở mượt × 4 góc nhìn · thời lượng 60 giây</div>
+  </main>
+  <script type="module">
+    import { CinematicVfxEngine } from "./cinematic-vfx.js";
+
+    const stage = document.querySelector("#stage");
+    const engine = new CinematicVfxEngine(document.querySelector("#lotus-vfx"), {
+      assetRoot: "../assets/camera-effects/brackeys-runtime/",
+      quality: "cinematic",
+    });
+    const play = () => engine.cast("flowers_blue", {
+      anchor: { x: .5, y: .5 },
+      aim: { x: .55, y: .45 },
+      duration: 60000,
+    });
+    play();
+    document.querySelector("#replay").addEventListener("click", play);
+    document.querySelectorAll("[data-color]").forEach(button => button.addEventListener("click", () => {
+      const value = button.dataset.color;
+      engine.lotusColorIndex = value === "rainbow" ? null : Number(value);
+      document.querySelectorAll("[data-color]").forEach(item => item.classList.toggle("active", item === button));
+    }));
+    document.querySelector("#fullscreen").addEventListener("click", async () => {
+      if (!document.fullscreenElement) await stage.requestFullscreen?.();
+      else await document.exitFullscreen?.();
+    });
+    window.lotusVfxDemo = { engine, play };
+  </script>
+</body>
+</html>

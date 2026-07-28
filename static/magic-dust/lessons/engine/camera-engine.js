@@ -43,6 +43,9 @@ function loadScript(src) {
 // does this hand look to the camera" metric pickClosestHand uses (bigger
 // apparent hand = physically closer to the lens, all else equal).
 export function handSize(lm) { return Math.hypot(lm[0].x - lm[9].x, lm[0].y - lm[9].y) || .001; }
+export function handAngleDegrees(lm) {
+  return Math.atan2(lm[9].y - lm[0].y, lm[9].x - lm[0].x) * 180 / Math.PI + 90;
+}
 function extFinger(lm, pip, tip) { const h = handSize(lm); return Math.max(0, Math.min(1, ((lm[pip].y - lm[tip].y) / h) * 4.5)); }
 // thumbUp(lm) — BUG FIX (owner: "giơ 1 nó không nhận" — holding just the
 // index finger for a node06 exercise wasn't registering as count===1). Root
@@ -137,6 +140,7 @@ export class CameraEngine {
   #videoEl; #onFrame; #watchdogActive;
   #ready = false; #stream = null; #hands = null; #raf = 0; #sending = false; #starting = null;
   #lastResult = 0; #restartAt = 0;
+  #handAngle = 0;
   constructor(videoEl, { onFrame, watchdogActive }) {
     this.#videoEl = videoEl; this.#onFrame = onFrame; this.#watchdogActive = watchdogActive;
   }
@@ -146,6 +150,17 @@ export class CameraEngine {
 
   #onResults = res => {
     this.#lastResult = performance.now();               // the watchdog's heartbeat
+    const hand = pickClosestHand(res.multiHandLandmarks || []);
+    if (hand) {
+      const raw = handAngleDegrees(hand);
+      let delta = raw - this.#handAngle;
+      while (delta > 180) delta -= 360;
+      while (delta < -180) delta += 360;
+      this.#handAngle += delta * .18;
+      this.#videoEl.style.setProperty('--hand-angle', `${this.#handAngle}deg`);
+      const still = document.getElementById('camstill');
+      if (still) still.style.setProperty('--hand-angle', `${this.#handAngle}deg`);
+    }
     this.#onFrame(res);
   };
 

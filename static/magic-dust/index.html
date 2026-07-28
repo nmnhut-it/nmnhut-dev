@@ -12,13 +12,39 @@
 html,body{width:100%;height:100%;overflow:hidden;background:#183f49}
 body{font-family:'Rajdhani',sans-serif;cursor:none}
 #camlayer{position:fixed;inset:0;z-index:0;overflow:hidden;background:#183f49}
-#camlayer video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#camlayer video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1) scale(1.02);
+  filter:blur(var(--studio-blur,0px)) brightness(var(--studio-light,1)) contrast(var(--studio-contrast,1)) saturate(var(--studio-saturation,1));
+  transition:filter .55s}
+#camlayer video.studio-blur{--studio-blur:12px}
+body.studio-flip #camlayer video{transform:scaleX(1) scale(1.02)}
+body.studio-flip #camlayer canvas{transform:scaleX(1)}
+body.studio-lumos{--studio-light:1.34;--studio-contrast:1.07;--studio-saturation:1.08}
+body.studio-nox{--studio-light:.46;--studio-contrast:1.12;--studio-saturation:.76}
+body.studio-lumos #camlayer{box-shadow:inset 0 0 120px rgba(255,236,176,.2)}
+body.studio-nox #camlayer{box-shadow:inset 0 0 180px rgba(2,8,20,.58)}
 #camdark{position:absolute;inset:0;background:rgba(24,63,73,.18);pointer-events:none}
 #camlayer canvas{position:absolute;inset:0;width:100%;height:100%;transform:scaleX(-1)}
 #cv{position:fixed;inset:0;z-index:2;mix-blend-mode:screen}
+.spell-video-overlay{position:fixed;inset:0;z-index:3;width:100%;height:100%;object-fit:cover;pointer-events:none;
+  opacity:0;mix-blend-mode:screen;filter:contrast(1.28) brightness(1.06) saturate(1.2);
+  transition:opacity .28s;background:transparent}
+.spell-video-overlay.visible{opacity:.92}
+.spell-video-overlay[data-spell="smoke"]{opacity:0;filter:contrast(1.42) brightness(.92) saturate(1.18)}
+.spell-video-overlay[data-spell="smoke"].visible{opacity:.78}
+.spell-video-overlay[data-spell="rain"]{mix-blend-mode:normal;filter:contrast(1.08) brightness(.88) saturate(.82)}
+.spell-video-overlay[data-spell="rain"].visible{opacity:.66}
+.spell-video-overlay[data-spell="flower"].visible{opacity:.9}
+.magic-3d-layer{position:fixed;inset:0;z-index:4;width:100%;height:100%;pointer-events:none;opacity:0;transition:opacity .3s}
+.magic-3d-layer.visible{opacity:1}
 #vig{position:fixed;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse at 50% 38%,transparent 68%,rgba(24,63,73,.35) 100%)}
 #screenglow{position:fixed;inset:0;z-index:6;pointer-events:none;box-shadow:inset 0 0 70px var(--g);opacity:.45;transition:box-shadow .45s}
 #flash{position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;transition:opacity .07s}
+#photoCountdown{position:fixed;left:50%;top:50%;z-index:80;transform:translate(-50%,-50%) scale(.7);opacity:0;
+  width:112px;height:112px;border-radius:50%;display:grid;place-items:center;font:900 48px 'Cinzel',serif;color:#fffdf5;
+  border:2px solid rgba(255,253,245,.7);background:rgba(24,63,73,.5);box-shadow:0 0 38px var(--g),inset 0 0 30px var(--g);
+  backdrop-filter:blur(8px);pointer-events:none;transition:opacity .18s,transform .18s}
+#photoCountdown.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+#photoCountdown.flash{background:#fff;color:#183f49;box-shadow:0 0 0 100vmax rgba(255,255,255,.32)}
 #dot{position:fixed;width:7px;height:7px;border-radius:50%;background:var(--c);z-index:9999;pointer-events:none;transform:translate(-50%,-50%);box-shadow:0 0 10px 4px var(--g);transition:background .3s,box-shadow .3s;mix-blend-mode:screen}
 #topbar{position:fixed;top:0;left:0;right:0;height:2px;background:var(--c);box-shadow:0 0 12px var(--c);z-index:20;transition:background .45s,box-shadow .45s}
 #ui{position:fixed;top:0;left:0;right:0;display:flex;flex-direction:column;align-items:center;padding-top:16px;pointer-events:none;z-index:20}
@@ -44,7 +70,7 @@ body{font-family:'Rajdhani',sans-serif;cursor:none}
 #testpanel{position:fixed;bottom:14px;left:13px;z-index:30;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 #testcastbtn{pointer-events:auto;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:rgba(255,253,245,.7);background:rgba(255,253,245,.06);border:1px solid rgba(255,253,245,.15);border-radius:6px;padding:6px 12px}
 #testcastbtn:active{background:rgba(255,253,245,.16)}
-#voicestat{font-size:.46rem;font-weight:600;letter-spacing:.12em;color:rgba(255,253,245,.25)}
+#voicestat{font-size:.46rem;font-weight:600;letter-spacing:.12em;color:rgba(255,253,245,.25);pointer-events:auto;cursor:pointer}
 #voicestat.listening{color:#78b2a5}
 #testhelp{font-size:.42rem;font-weight:500;letter-spacing:.06em;color:rgba(255,253,245,.18);max-width:210px;line-height:1.5}
 #loading{position:fixed;inset:0;z-index:500;background:#183f49;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 1s ease}
@@ -96,6 +122,7 @@ html,body{background:#183f49}
 <div id="vig"></div>
 <div id="screenglow"></div>
 <div id="flash"></div>
+<div id="photoCountdown">3</div>
 <div id="dot"></div>
 <div id="topbar"></div>
 <span id="perf">—</span>
@@ -118,7 +145,7 @@ html,body{background:#183f49}
 
 <div id="testpanel">
   <button id="testcastbtn" type="button">TEST CAST</button>
-  <span id="voicestat">voice: say "cast" to trigger</span>
+  <span id="voicestat" title="Bấm để bật lại microphone">voice: show index finger, then say a spell</span>
   <span id="testhelp">Keys: 1/2 = hold to simulate finger count · Space = force-cast current spell</span>
 </div>
 

@@ -537,6 +537,7 @@ present_image_frame(image)
     },
     {
       code: `from camera_charm import start_studio, watch, read_hand_position, present_image_frame, delay
+from camera_charm import blur, sharpen, flip_mirror, rotate_with_hand
 
 def blank_image(height, width):
     # TODO: dùng hai vòng lặp để tạo framebuffer RGBA trong suốt
@@ -563,7 +564,8 @@ sticker_mask = [[0, 1, 0], [1, 1, 1], [0, 1, 0]]
 sticker_color = [255, 230, 80, 230]
 gifts = {
     1: {"name": "Star", "message": "Ánh sáng bắt đầu!", "count": 5, "spread": 2, "color": [80, 220, 255]},
-    3: {"name": "Heart", "message": "Cảm ơn bạn!", "count": 7, "spread": 2, "color": [255, 90, 180]},
+    2: {"name": "Crystal", "message": "Đường nét thức tỉnh!", "count": 6, "spread": 2, "color": [120, 255, 180]},
+    3: {"name": "Heart", "message": "Khung hình đổi chiều!", "count": 7, "spread": 2, "color": [255, 90, 180]},
     4: {"name": "Crown", "message": "Khoảnh khắc đặc biệt!", "count": 9, "spread": 1, "color": [255, 200, 60]},
 }
 
@@ -572,7 +574,8 @@ start_studio(title)
 finger = watch()
 point = read_hand_position("palm")
 
-# TODO: nếu finger có trong gifts và tay hiện rõ, chọn gift rồi gọi bộ phát hạt
+# TODO: gọi blur/sharpen/flip_mirror/rotate_with_hand theo các mốc 1/2/3/4.
+# Sau đó, nếu finger có trong gifts và tay hiện rõ, chọn gift rồi gọi bộ phát hạt.
 
 for frame in range(8):
     point = read_hand_position("palm")
@@ -582,9 +585,10 @@ for frame in range(8):
     delay(0.3)
 `,
       label: "final_interactive_broadcast.py",
-      note: "DỰ ÁN SÁNG TẠO\nINPUT thật: số ngón tay và vị trí lòng bàn tay từ camera. Dữ liệu gán sẵn: ba quà mẫu, tên studio, mask và màu sticker.\nPROCESS bắt buộc: tự hoàn thiện framebuffer; bộ phát dùng vòng lặp cùng count/spread; UPDATE thay đổi x/y/vy/life/size/color/alpha; phần RENDER tự tô hạt; hàm mask tự phóng hình và kiểm tra biên; luật cử chỉ chọn ít nhất ba quà. Không dùng hàm hiệu ứng cấp cao.\nOUTPUT: ít nhất tám `image_frame` được giữ 0,3 giây mỗi frame, sticker theo tay và đợt hạt phù hợp với cử chỉ.\nCÁ NHÂN HÓA: đổi tên, mask, ba quà, bảng màu, lời nhắn và ít nhất một công thức chuyển động. Viết hai câu giải thích lựa chọn của bạn cho giáo viên.",
+      note: "DỰ ÁN SÁNG TẠO\nINPUT thật: số ngón tay, vị trí lòng bàn tay và hướng bàn tay từ camera. Dữ liệu preset: bốn quà mẫu, tên studio, mask và màu sticker.\nPROCESS bắt buộc: 1 ngón làm mờ, 2 ngón làm nét, 3 ngón lật ảnh, 4 ngón xoay ảnh theo tay; cùng cử chỉ chọn quà và phát particle. Tự hoàn thiện framebuffer; emitter dùng count/spread; UPDATE thay đổi x/y/vy/life/size/color/alpha; RENDER tự tô hạt; hàm mask tự phóng hình và kiểm tra biên.\nOUTPUT: hiệu ứng camera đúng cử chỉ, ít nhất tám `image_frame`, sticker theo tay và đợt particle phù hợp.\nKIẾN THỨC MỚI CHO ROTATE: hướng cổ tay tới gốc ngón giữa tạo vector; `atan2` đổi vector thành góc; góc được làm mượt; ảnh dùng ánh xạ ngược để tránh pixel đích bị bỏ trống.\nCÁ NHÂN HÓA: đổi tên, mask, bốn quà, bảng màu, lời nhắn và ít nhất một công thức chuyển động.",
       expectOut: { all: [/hand_position/i, { kind: "image_frame", minCount: 8, text: /"image"\s*:\s*\[\[/ }] },
       solution: `from camera_charm import start_studio, watch, read_hand_position, present_image_frame, delay
+from camera_charm import blur, sharpen, flip_mirror, rotate_with_hand
 
 def blank_image(height, width):
     image = []
@@ -659,13 +663,22 @@ sticker_mask = [[0, 1, 0], [1, 1, 1], [0, 1, 0]]
 sticker_color = [255, 230, 80, 230]
 gifts = {
     1: {"name": "Star", "message": "Ánh sáng bắt đầu!", "count": 5, "spread": 2, "color": [80, 220, 255]},
-    3: {"name": "Heart", "message": "Cảm ơn bạn!", "count": 7, "spread": 2, "color": [255, 90, 180]},
+    2: {"name": "Crystal", "message": "Đường nét thức tỉnh!", "count": 6, "spread": 2, "color": [120, 255, 180]},
+    3: {"name": "Heart", "message": "Khung hình đổi chiều!", "count": 7, "spread": 2, "color": [255, 90, 180]},
     4: {"name": "Crown", "message": "Khoảnh khắc đặc biệt!", "count": 9, "spread": 1, "color": [255, 200, 60]},
 }
 particles = []
 start_studio(title)
 finger = watch()
 point = read_hand_position("palm")
+if finger == 1:
+    blur()
+elif finger == 2:
+    sharpen()
+elif finger == 3:
+    flip_mirror()
+elif finger == 4:
+    rotate_with_hand()
 if finger in gifts and point["visible"] == True:
     selected_gift = gifts[finger]
     particles = particles + emit_particles(point["x"], point["y"], selected_gift)

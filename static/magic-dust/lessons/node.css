@@ -623,6 +623,9 @@ canvas.fxscreendot{position:fixed;inset:0;width:100vw;height:100vh;pointer-event
 #scenepanel.fx-invert #cam,#scenepanel.fx-invert #camstill{filter:invert(1) hue-rotate(180deg)}
 #scenepanel.fx-gray #cam,#scenepanel.fx-gray #camstill{filter:grayscale(1) contrast(1.1)}
 #scenepanel.fx-mirror #cam,#scenepanel.fx-mirror #camstill{transform:scaleX(1)}  /* baseline #cam/#camstill are pre-mirrored for selfie view; this UN-mirrors them */
+#scenepanel.fx-blur #cam,#scenepanel.fx-blur #camstill{filter:blur(5px)}
+#scenepanel.fx-sharpen #cam,#scenepanel.fx-sharpen #camstill{filter:url(#camera-sharpen-filter)}
+#scenepanel.fx-rotate #cam,#scenepanel.fx-rotate #camstill{transform:scaleX(-1) rotate(var(--hand-angle,0deg)) scale(1.18)}
 /* shake_screen(): one-shot, reuses the existing `shake` keyframe (line 214) */
 #scenepanel.fx-shake{animation:shake .5s ease}
 
@@ -1361,3 +1364,74 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;ba
   .coutput{min-height:150px;max-height:none}
   .creset,.csolution,.cexplain,.crun{min-height:48px}
 }
+
+/* ── image lab (engine/image-lab.js) ───────────────────────────────────────
+   Full-screen interactive BEFORE/AFTER viewer. #scenepanel is a 480px box
+   holding one frame; comparing versions, reading the numbers behind a picture,
+   and seeing a coarse grid next to the artwork it came from all need far more
+   room. The digit table is CSS grid, never printed text, so rows cannot wrap. */
+.ilab{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:16px;
+      background:color-mix(in srgb,var(--ink) 88%,transparent);backdrop-filter:blur(6px);animation:ilabin .22s ease}
+@keyframes ilabin{from{opacity:0}to{opacity:1}}
+.ilab-box{max-width:min(1240px,97vw);max-height:95vh;overflow:auto;padding:16px 18px 18px;border-radius:16px;
+          background:var(--paper);border:1px solid var(--mint-line);box-shadow:0 18px 60px color-mix(in srgb,var(--ink) 55%,transparent);text-align:center}
+.ilab-title{font-size:18px;font-weight:900;letter-spacing:1px;color:var(--ink);margin-bottom:12px}
+.ilab-title:empty{display:none}
+.ilab-row{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:flex-start}
+.ilab-panel{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.ilab-cap{font-size:13px;font-weight:800;letter-spacing:1.2px;color:var(--ink);
+          padding:4px 12px;border-radius:20px;background:color-mix(in srgb,var(--mint-line) 30%,transparent)}
+/* the picture and the pixels it became, always together */
+.ilab-pair{display:flex;gap:8px;align-items:flex-start}
+.ilab-stage{position:relative;line-height:0}
+.ilab-stage.ilab-live{cursor:crosshair}
+.ilab-tag{display:block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--ink);opacity:.62;line-height:1.2}
+.ilab-art{width:clamp(120px,17vw,208px);height:auto;aspect-ratio:1;image-rendering:pixelated;
+          border-radius:9px;border:1px solid var(--mint-line);background:var(--ink);display:block}
+.ilab-photo{image-rendering:auto}
+.ilab-mark{position:absolute;pointer-events:none;opacity:0;box-sizing:border-box;
+           border:2px solid var(--paper-raised);box-shadow:0 0 0 1px var(--ink),0 0 10px var(--paper-raised);border-radius:2px}
+.ilab-nums{display:grid;grid-template-columns:repeat(var(--ilab-cols),var(--ilab-size));
+           gap:1px;padding:5px;border-radius:9px;background:var(--ink);border:1px solid var(--mint-line);max-width:100%;overflow:auto}
+.ilab-nums i{display:flex;align-items:center;justify-content:center;width:var(--ilab-size);height:var(--ilab-size);
+             font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-style:normal;
+             font-size:calc(var(--ilab-size) * .42);line-height:1;border-radius:2px}
+.ilab-nums i.on{outline:2px solid var(--paper-raised);outline-offset:-2px;font-weight:900}
+/* readout: the SAME cell across every panel, which is how before/after is read */
+.ilab-read{margin-top:12px;min-height:44px;font-size:12px;color:var(--ink)}
+.ilab-read-hint{display:block;opacity:.7;margin-bottom:5px}
+.ilab-read-cells{display:flex;flex-wrap:wrap;gap:7px;justify-content:center}
+.ilab-chip{display:inline-flex;align-items:center;gap:7px;padding:4px 10px;border-radius:16px;
+           background:color-mix(in srgb,var(--mint-line) 22%,transparent);border:1px solid var(--mint-line)}
+.ilab-chip::before{content:'';width:12px;height:12px;border-radius:3px;background:var(--chip);border:1px solid var(--mint-line)}
+.ilab-chip b{font-weight:800;letter-spacing:.6px}
+.ilab-chip em{font-style:normal;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;opacity:.85}
+.ilab-foot{margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ilab-nums-btn,.ilab-go{padding:10px 22px;border-radius:22px;border:0;cursor:pointer;
+         font-size:13px;font-weight:900;letter-spacing:1.2px}
+.ilab-nums-btn{color:var(--ink);background:color-mix(in srgb,var(--mint-line) 34%,transparent);border:1px solid var(--mint-line)}
+.ilab-go{color:var(--ink);background:linear-gradient(180deg,color-mix(in srgb,var(--c) 55%,var(--paper-raised)),var(--c))}
+.ilab-nums-btn:hover,.ilab-go:hover{filter:brightness(1.08)}
+@media(max-width:760px){
+  .ilab-art{width:min(30vw,132px)}
+  .ilab-with-nums .ilab-row{flex-direction:column;flex-wrap:nowrap}
+}
+
+/* ── voice charm (py/voice_charm + interactive-studio #listenForWord) ───────
+   Real spoken INPUT. The spell words are ALWAYS rendered as buttons as well as
+   listened for: a blocked mic, a silent room, or a browser without
+   SpeechRecognition must degrade to a tap, never to a dead lesson. */
+.vcharm{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+        padding:14px;text-align:center;background:color-mix(in srgb,var(--ink) 78%,transparent);backdrop-filter:blur(3px)}
+.vcharm-state{font-size:14px;font-weight:800;letter-spacing:.6px;color:var(--paper-raised)}
+.vcharm-words{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.vcharm-word{padding:8px 16px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:900;letter-spacing:1px;
+             color:var(--ink);border:1px solid var(--mint-line);
+             background:linear-gradient(180deg,color-mix(in srgb,var(--c) 50%,var(--paper-raised)),var(--c))}
+.vcharm-word:hover{filter:brightness(1.1)}
+.vcharm-heard{min-height:18px;font-size:12px;font-style:italic;color:var(--paper-raised);opacity:.8}
+.vcharm-bar{display:block;width:min(220px,70%);height:4px;border-radius:3px;overflow:hidden;
+            background:color-mix(in srgb,var(--paper-raised) 25%,transparent)}
+.vcharm-bar b{display:block;height:100%;width:100%;background:var(--c);transform-origin:left;
+              animation:vcdrain var(--vcsec,8s) linear forwards}
+@keyframes vcdrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}

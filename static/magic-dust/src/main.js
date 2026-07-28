@@ -6,9 +6,11 @@ import { Pass }           from 'three/addons/postprocessing/Pass.js';
 import { ShaderPass }     from 'three/addons/postprocessing/ShaderPass.js';
 import { CopyShader }     from 'three/addons/shaders/CopyShader.js';
 import { SPELLS, ROT, ENERGY, GUIDE, FINGER_TO_SPELL } from './spells.js';
-import { FINGERTIPS, handSize, countExtendedFingers, isOpenPalm } from './gestures.js';
+import { FINGERTIPS, handSize, countExtendedFingers, heartGestureMetrics, isIndexWand, StableGestureTrigger } from './gestures.js';
 import { AudioManager } from './audio.js';
 import { Efk } from './effekseer.js';
+import { StudioEffects } from './studio-effects.js';
+import { Lotus3DEngine } from '../lessons/weather-lab/lotus-3d.js';
 
 const $=id=>document.getElementById(id);
 // Saga theme bridge: the teaching platform's picker (localStorage 'magicdust.theme', see lessons/theme.js) recolors the ambient dust + neutral HUD here too; BLOOM also renders motes as hard pixel squares.
@@ -63,7 +65,7 @@ document.body.addEventListener('pointerdown',()=>audio.unlock(),{once:true});
 const scene=new THREE.Scene();
 const cam3=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.1,1000);
 cam3.position.z=55;
-const renderer=new THREE.WebGLRenderer({antialias:tier>=2,alpha:true,powerPreference:tier===0?'low-power':'high-performance'});
+const renderer=new THREE.WebGLRenderer({antialias:tier>=2,alpha:true,preserveDrawingBuffer:true,powerPreference:tier===0?'low-power':'high-performance'});
 renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(PR);renderer.domElement.id='cv';
 document.body.appendChild(renderer.domElement);
 const composer=new EffectComposer(renderer);
@@ -162,10 +164,76 @@ const motesMat=new THREE.ShaderMaterial({
 });
 const motes=new THREE.Points(mGeo,motesMat);
 scene.add(motes);
+const TRAIL_MAX=360;
+const trailPositions=new Float32Array(TRAIL_MAX*2*3),trailColors=new Float32Array(TRAIL_MAX*2*3);
+const trailAlpha=new Float32Array(TRAIL_MAX*2),trailSide=new Float32Array(TRAIL_MAX*2);
+const trailIndices=new Uint16Array((TRAIL_MAX-1)*6);
+for(let i=0;i<TRAIL_MAX-1;i++){
+  const v=i*2,o=i*6;
+  trailIndices[o]=v;trailIndices[o+1]=v+1;trailIndices[o+2]=v+2;
+  trailIndices[o+3]=v+1;trailIndices[o+4]=v+3;trailIndices[o+5]=v+2;
+}
+const trailGeo=new THREE.BufferGeometry();
+trailGeo.setAttribute('position',new THREE.BufferAttribute(trailPositions,3));
+trailGeo.setAttribute('color',new THREE.BufferAttribute(trailColors,3));
+trailGeo.setAttribute('trailAlpha',new THREE.BufferAttribute(trailAlpha,1));
+trailGeo.setAttribute('trailSide',new THREE.BufferAttribute(trailSide,1));
+trailGeo.setIndex(new THREE.BufferAttribute(trailIndices,1));trailGeo.setDrawRange(0,0);
+const trailMat=new THREE.ShaderMaterial({
+  uniforms:{uOpacity:{value:.9}},
+  vertexShader:`attribute vec3 color;attribute float trailAlpha;attribute float trailSide;
+    varying vec3 vColor;varying float vAlpha;varying float vSide;
+    void main(){vColor=color;vAlpha=trailAlpha;vSide=trailSide;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`varying vec3 vColor;varying float vAlpha;varying float vSide;uniform float uOpacity;
+    void main(){float edge=1.0-smoothstep(.2,1.0,abs(vSide));float core=1.0-smoothstep(0.0,.34,abs(vSide));
+    float alpha=(edge*.42+core*.58)*vAlpha*uOpacity;if(alpha<.01)discard;gl_FragColor=vec4(vColor*(1.0+core*.55),alpha);}`,
+  transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide,toneMapped:false,
+});
+const magicRibbon=new THREE.Mesh(trailGeo,trailMat);scene.add(magicRibbon);
+const TRAIL_LIFE=5200,trailPoints=[];let trailLastAt=0,trailFading=false;
+function fadeMagicRibbon(){trailFading=true;}
+function updateMagicRibbon(dt,now,tip,summoning,collapse=0){
+  if(summoning&&tip){
+    trailFading=false;trailMat.uniforms.uOpacity.value=Math.min(.94,trailMat.uniforms.uOpacity.value+dt*2.4);
+    const last=trailPoints[trailPoints.length-1];
+    if(!last||Math.hypot(tip.x-last.x,tip.y-last.y)>.7||now-trailLastAt>55){
+      trailPoints.push({x:tip.x,y:tip.y,z:(Math.random()-.5)*.45,born:now});
+      if(trailPoints.length>TRAIL_MAX)trailPoints.shift();
+      trailLastAt=now;
+    }
+  }else if(trailFading){
+    trailMat.uniforms.uOpacity.value=Math.max(0,trailMat.uniforms.uOpacity.value-dt*.72);
+    if(trailMat.uniforms.uOpacity.value<=.01){trailPoints.length=0;trailFading=false;}
+  }
+  while(trailPoints.length&&now-trailPoints[0].born>TRAIL_LIFE)trailPoints.shift();
+  const count=trailPoints.length;
+  for(let i=0;i<count;i++){
+    const point=trailPoints[i],prev=trailPoints[Math.max(0,i-1)],next=trailPoints[Math.min(count-1,i+1)];
+    const dx=next.x-prev.x,dy=next.y-prev.y,length=Math.hypot(dx,dy)||1,nx=-dy/length,ny=dx/length;
+    const t=count<=1?1:i/(count-1),pull=collapse*collapse*(3-2*collapse);
+    const smoothX=i===count-1?point.x:(prev.x+point.x*2+next.x)*.25;
+    const smoothY=i===count-1?point.y:(prev.y+point.y*2+next.y)*.25;
+    const x=smoothX+(tip?smoothX*-1+tip.x:0)*pull,y=smoothY+(tip?smoothY*-1+tip.y:0)*pull,width=(.16+.58*t)*(1-pull*.72);
+    for(let side=0;side<2;side++){
+      const sign=side?1:-1,vertex=i*2+side,o=vertex*3,edge=side?.88:1;
+      trailPositions[o]=x+nx*width*sign;trailPositions[o+1]=y+ny*width*sign;trailPositions[o+2]=point.z*(1-pull);
+      const wave=.5+.5*Math.sin(t*Math.PI*2+now*.0025);
+      trailColors[o]=(.16+.68*wave+.28*t)*edge;
+      trailColors[o+1]=(.58+.64*t)*edge;
+      trailColors[o+2]=(1.15+.52*t+.22*wave)*edge;
+      const life=Math.max(0,1-(now-point.born)/TRAIL_LIFE);
+      trailAlpha[vertex]=Math.min(1,t*4)*Math.min(1,life*3.2);
+      trailSide[vertex]=sign;
+    }
+  }
+  trailGeo.setDrawRange(0,Math.max(0,count-1)*6);
+  trailGeo.attributes.position.needsUpdate=true;trailGeo.attributes.color.needsUpdate=true;
+  trailGeo.attributes.trailAlpha.needsUpdate=true;trailGeo.attributes.trailSide.needsUpdate=true;
+}
 let motesFocus=0,motesBurst=0,chargeCaptured=false;
 let emitAccum=0,emitPtr=0,summonRamp=0; // open-palm summon emitter: fractional-mote accumulator + round-robin pointer; summonRamp 0→1 powers up birth size/speed the longer the palm is held
 const GRAV=7;
-const EMIT_RATE=2600,PALM_JIT=7,MOTE_LIFE=1.6,MOTE_LIFE_SPAN=2.6,MIN_BURST=420; // motes/sec conjured while the palm is open, spawn scatter, lifespan range (they die out → keep summoning or re-summon), and the floor of embers a cast always scatters
+const EMIT_RATE=3400,PALM_JIT=5.5,MOTE_LIFE=3.2,MOTE_LIFE_SPAN=3.8,MIN_BURST=620; // dense continuous fingertip summon; long life lets drawn dust linger until the next spell consumes it
 const EMIT_SPEED_MIN=44,EMIT_SPEED_MAX=108,BIRTH_SIZE_MIN=1.8,BIRTH_SIZE_MAX=3.6,SUMMON_RAMP_SEC=2.2; // hold-to-power-up: as summonRamp climbs 0→1 over SUMMON_RAMP_SEC, conjured motes' outward birth speed grows toward MAX (travel further) and their birth-size flash toward MAX
 const BIRTH_SEC=.4,BIRTH_GLOW=.9,DEATH_FRAC=.3; // conjure flash: a freshly summoned mote bursts out big (birth-size, now ramped) and bright (×1+BIRTH_GLOW), settling to normal over BIRTH_SEC; DEATH_FRAC = tail fraction of life spent fading out
 // Whirlpool params. VORTEX_AT splits charge into GATHER (below) and VORTEX
@@ -264,7 +332,7 @@ function updateMotes(dt,time,attract,focus,charging,intensity,summoning){
 function landmarkToWorld(lm){
   const vh=2*Math.tan(THREE.MathUtils.degToRad(cam3.fov/2))*cam3.position.z;
   const vw=vh*cam3.aspect;
-  return{x:(0.5-lm.x)*vw,y:(0.5-lm.y)*vh};
+  return{x:(studio.flip?lm.x-0.5:0.5-lm.x)*vw,y:(0.5-lm.y)*vh};
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -317,16 +385,24 @@ function applyCharge(key,intensity){
 // first, it fades back out instead.
 const STILL_SEC=0.22,CHARGE_SEC=1.0,DECAY_SEC=0.5,CAST_DURATION_MS=2400,STILL_I=.14; // snappier: steadying + full charge ~1.2s total (was 0.35+1.6). STILL_I: dust intensity reached during the steadying window — motes spawn + glow (barely spinning) before the vortex, then this value carries into confidence so there's no pop
 let heldKey=null,confidence=0,casting=false,castTimer=null;
-let lastFingerCount=0,manualFingerOverride=null,handOpenPalm=false,manualSummon=false; // handOpenPalm: live open-palm summon; manualSummon: test-hook override
+let lastFingerCount=0,wandActive=false,manualFingerOverride=null,handOpenPalm=false,manualSummon=false;
+let voiceCharge=null;
 let holdTimer=0;
 let motesCharging=false,chargeI=0; // drives the dust swirl-in during charge
 
 function triggerCast(key){
+  if(key==='lightning'){
+    voiceCharge=null;manualSummon=false;fadeMagicRibbon();
+    studio.clear();studio.playOverlay('lightning');setActiveGuide('lightning');
+    return;
+  }
+  voiceCharge=null;
   casting=true;confidence=0;motesCharging=false; // stop charging so the burst embers scatter+die instead of being re-vortexed during the cast
   const s=SPELLS[key];
   applyCharge(key,1);
   const p=fingerWorld||{x:0,y:0};
   burstMotes(p.x,p.y); // dying-flame ember burst from the dust itself
+  fadeMagicRibbon();
   flashEl.style.background='#fffdf5';flashEl.style.opacity='.85';setTimeout(()=>flashEl.style.opacity='0',110);
   shakeAmt=s.bloom*.11;
   audio.play(key);
@@ -339,10 +415,29 @@ function triggerCast(key){
   },CAST_DURATION_MS);
 }
 
+function startVoiceCast(key){
+  if(key!=='fireball'){triggerCast(key);return;}
+  if(voiceCharge||casting)return;
+  manualSummon=false;
+  voiceCharge={key,startedAt:performance.now(),duration:1150};
+  heldKey=key;confidence=0;
+  setActiveGuide(key);
+}
+
+function updateVoiceCharge(now){
+  if(!voiceCharge)return 0;
+  const progress=Math.min(1,(now-voiceCharge.startedAt)/voiceCharge.duration);
+  confidence=progress;motesCharging=true;chargeI=progress;
+  applyCharge(voiceCharge.key,progress);
+  ptxtEl.textContent=`FIREBALL · HÚT BỤI ${Math.round(progress*100)}%`;
+  if(progress>=1)triggerCast(voiceCharge.key);
+  return progress;
+}
+
 function updateCasting(dt){
   if(casting)return;
   const fingerCount=manualFingerOverride!=null?manualFingerOverride:lastFingerCount;
-  const target=FINGER_TO_SPELL[fingerCount];
+  const target=manualFingerOverride!=null?FINGER_TO_SPELL[fingerCount]:null;
   // Simulated finger input has no real hand landmark to anchor VFX to — pin a
   // fixed on-screen point so keyboard/API-driven testing shows the effect
   // without a camera. Pinned unconditionally (not just when fingerWorld is
@@ -396,6 +491,31 @@ function updatePresence(){
 
 // ── Gesture detection ─────────────────────────────────────────────────────────
 const videoEl=document.querySelector('.input_video'),ocv=$('ocv'),ctx2d=ocv.getContext('2d');
+const studio=new StudioEffects({THREE,scene,camera:cam3,renderer,video:videoEl,handCanvas:ocv,statusEl:ptxtEl});
+const lotus3d=new Lotus3DEngine(document.body);
+const studioGestureTrigger=new StableGestureTrigger({holdMs:700,releaseMs:220});
+let pendingStudioSpell=null,lotusClearTimer=null;
+
+function armLotus(){
+  pendingStudioSpell='lotus';
+  setActiveGuide('lotus');
+  ptxtEl.textContent='THANH LIÊN ĐÃ KHÓA · SAY “LOTUS”';
+}
+
+function summonLotus(){
+  if(pendingStudioSpell!=='lotus'&&!wandActive)return false;
+  pendingStudioSpell=null;
+  studio.clear();
+  lotus3d.cast('lotus');
+  ptxtEl.textContent='THANH LIÊN · SUMMONED';
+  setActiveGuide('lotus');
+  clearTimeout(lotusClearTimer);
+  lotusClearTimer=setTimeout(()=>{
+    lotus3d.release();
+    lotusClearTimer=setTimeout(()=>{lotus3d.clear();setActiveGuide(null);},1700);
+  },14000);
+  return true;
+}
 let smoothed=null;
 const ALPHA=0.40;
 function lerp3(a,b,t){return a.map((p,i)=>({x:p.x+(b[i].x-p.x)*t,y:p.y+(b[i].y-p.y)*t,z:p.z+(b[i].z-p.z)*t}));}
@@ -411,34 +531,48 @@ function drawFingertips(lm){
 }
 
 const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`});
-hands.setOptions({maxNumHands:1,modelComplexity:MCX,minDetectionConfidence:0.72,minTrackingConfidence:0.62,selfieMode:false});
+hands.setOptions({maxNumHands:4,modelComplexity:MCX,minDetectionConfidence:0.72,minTrackingConfidence:0.62,selfieMode:false});
 
 hands.onResults(res=>{
   ocv.width=videoEl.videoWidth||CAM_W;ocv.height=videoEl.videoHeight||CAM_H;
   ctx2d.clearRect(0,0,ocv.width,ocv.height);
-  if(res.multiHandLandmarks&&res.multiHandLandmarks.length>0){
-    const raw=res.multiHandLandmarks[0];
+  const rawHands=res.multiHandLandmarks||[];
+  const studioKind=heartGestureMetrics(rawHands).active?'photo':null;
+  const studioAction=studioGestureTrigger.sample(studioKind,performance.now());
+  if(studioAction){
+    setActiveGuide(studioAction);
+    if(studioAction==='photo')studio.capture();
+    else studio.activate(studioAction);
+  }
+  if(rawHands.length>0){
+    const raw=rawHands.find(isIndexWand)||rawHands[0];
     try{
-      drawConnectors(ctx2d,raw,HAND_CONNECTIONS,{color:gColor+'cc',lineWidth:3.5});
-      drawLandmarks(ctx2d,raw,{color:'#fffdf5',lineWidth:1,radius:2.5});
-      drawFingertips(raw);
+      for(const visibleHand of rawHands){
+        drawConnectors(ctx2d,visibleHand,HAND_CONNECTIONS,{color:gColor+'cc',lineWidth:3.5});
+        drawLandmarks(ctx2d,visibleHand,{color:'#fffdf5',lineWidth:1,radius:2.5});
+        drawFingertips(visibleHand);
+      }
     }catch{ /* overlay drawing is cosmetic only — never let it block finger counting below */ }
     if(!smoothed)smoothed=raw.map(p=>({...p}));else smoothed=lerp3(smoothed,raw,ALPHA);
-    lastFingerCount=countExtendedFingers(smoothed);
-    handOpenPalm=isOpenPalm(smoothed); // true 5 → summon dust
+    const studioOwnsHands=Boolean(studioKind);
+    lastFingerCount=studioOwnsHands?0:countExtendedFingers(smoothed);
+    wandActive=!studioOwnsHands&&isIndexWand(smoothed);
+    handOpenPalm=false;
     // Anchor point: palm centre while summoning (dust emanates from the hand);
     // otherwise the index fingertip, or the index+middle midpoint for 2 fingers.
     const tip=smoothed[8];
-    if(handOpenPalm)fingerWorld=landmarkToWorld(smoothed[9]);
-    else if(lastFingerCount>=2){const mid=smoothed[12];fingerWorld=landmarkToWorld({x:(tip.x+mid.x)/2,y:(tip.y+mid.y)/2});}
-    else fingerWorld=landmarkToWorld(tip);
+    fingerWorld=landmarkToWorld(tip);
+    if(wandActive)lotus3d.setTracking({anchor:{x:tip.x,y:tip.y}});
     handProxTarget=Math.max(0,Math.min(1,(handSize(smoothed)-PROX_FAR)/(PROX_NEAR-PROX_FAR)));
     pdotEl.style.background=gColor;pdotEl.style.boxShadow=`0 0 6px 2px ${gColor}88`;
     ptxtEl.style.color=gColor+'ee';
-    if(handOpenPalm)ptxtEl.textContent='SUMMONING…';
-    else if(!FINGER_TO_SPELL[lastFingerCount])ptxtEl.textContent='READY';
+    const studioProgress=studioGestureTrigger.progress(performance.now());
+    if(studioKind&&!studioAction)ptxtEl.textContent=`${studioKind.toUpperCase()} · HOLD ${Math.round(studioProgress.value*100)}%`;
+    else if(wandActive)ptxtEl.textContent='WAND READY · SAY A SPELL';
+    else ptxtEl.textContent='SHOW ONE INDEX FINGER';
   } else {
-    smoothed=null;fingerWorld=null;handProxTarget=0;lastFingerCount=0;handOpenPalm=false;
+    studioGestureTrigger.sample(null,performance.now());
+    smoothed=null;fingerWorld=null;handProxTarget=0;lastFingerCount=0;wandActive=false;handOpenPalm=false;
     pdotEl.style.background='rgba(255,253,245,.18)';pdotEl.style.boxShadow='none';
     ptxtEl.style.color='rgba(255,253,245,.18)';ptxtEl.textContent='NO HAND DETECTED';
   }
@@ -454,6 +588,7 @@ const R=Math.random;
 function animate(ts){
   requestAnimationFrame(animate);if(ts-lastTs<FMS*.85)return;lastTs=ts;time+=.016;
   updateCasting(.016);
+  const ribbonCollapse=updateVoiceCharge(ts);
   if(shakeAmt>.005){const s=shakeAmt*18;renderer.domElement.style.transform=`translate(${(R()-.5)*s}px,${(R()-.5)*s}px)`;shakeAmt*=.93;}
   else{renderer.domElement.style.transform='';shakeAmt=0;}
   for(let i=0;i<COUNT*3;i++){pos[i]+=(tPos[i]-pos[i])*LERP;col[i]+=(tCol[i]-col[i])*LERP;}
@@ -466,7 +601,9 @@ function animate(ts){
   }
   if(manualSummon&&!fingerWorld)fingerWorld={x:0,y:0}; // headless test summon (no camera) → pin the palm to centre
   motesFocus+=((fingerWorld?1:0)-motesFocus)*.06; // ease dust cluster→hand / spread when gone
+  updateMagicRibbon(.016,ts,fingerWorld,manualSummon,ribbonCollapse);
   updateMotes(.016,time,fingerWorld,motesFocus,motesCharging,chargeI,handOpenPalm||manualSummon);
+  studio.update(.016,ts);
   updatePresence();
   efk.update(.016);        // advance Effekseer sim; the EffekseerPass draws it inside composer.render()
   composer.render();
@@ -484,27 +621,122 @@ window.addEventListener('keydown',e=>{
   if(e.repeat)return;
   if(e.key==='1')manualFingerOverride=1;
   else if(e.key==='2')manualFingerOverride=2;
-  else if(e.code==='Space'){e.preventDefault();triggerCast(heldKey||FINGER_TO_SPELL[manualFingerOverride]||'fireball');}
+  else if(e.key==='3')studio.activate('rain');
+  else if(e.key.toLowerCase()==='b')studio.activate('blur');
+  else if(e.key.toLowerCase()==='l')armLotus();
+  else if(e.key.toLowerCase()==='p')studio.capture();
+  else if(e.key.toLowerCase()==='u')studio.setLighting('lumos');
+  else if(e.key.toLowerCase()==='n')studio.setLighting('nox');
+  else if(e.key.toLowerCase()==='f'){studio.toggleFlip();lotus3d.mirrorInput=!studio.flip;}
+  else if(e.key==='Escape'){studio.clear();studio.setLighting('normal');}
+  else if(e.code==='Space'){
+    e.preventDefault();
+    if(!summonLotus())triggerCast(heldKey||FINGER_TO_SPELL[manualFingerOverride]||'fireball');
+  }
 });
 window.addEventListener('keyup',e=>{
   if((e.key==='1'&&manualFingerOverride===1)||(e.key==='2'&&manualFingerOverride===2))manualFingerOverride=null;
 });
 
-testCastBtn.addEventListener('click',()=>triggerCast(heldKey||'fireball'));
+testCastBtn.addEventListener('click',()=>{
+  if(!summonLotus())triggerCast(heldKey||'fireball');
+});
 
 const SpeechRecognitionImpl=window.SpeechRecognition||window.webkitSpeechRecognition;
 if(SpeechRecognitionImpl){
   const rec=new SpeechRecognitionImpl();
-  rec.continuous=true;rec.interimResults=false;rec.lang='en-US';
-  rec.onresult=e=>{
-    const said=e.results[e.results.length-1][0].transcript.toLowerCase();
-    if(said.includes('cast'))triggerCast(heldKey||'fireball');
+  let voiceWanted=false,voiceRunning=false,restartTimer=null,lastVoiceActionAt=-Infinity;
+  const normalizeVoice=text=>text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z]/g,'');
+  const voiceSpell=text=>{
+    const heard=normalizeVoice(text);
+    if(['lumos','lumous','luminous','lumas'].some(word=>heard.includes(word)))return'lumos';
+    if(['nox','knox','knocks','nocks'].some(word=>heard.includes(word)))return'nox';
+    if(['flower','flowers','flour'].some(word=>heard.includes(word)))return'flower';
+    if(heard==='magic'||heard==='magik')return'magic';
+    if(['fireball','firebol','firebal'].some(word=>heard.includes(word)))return'fireball';
+    if(['lightning','lightening','lighting'].some(word=>heard.includes(word)))return'lightning';
+    if(['rain','reign','rane'].some(word=>heard.includes(word)))return'rain';
+    if(['blur','blurr','bler'].some(word=>heard.includes(word)))return'blur';
+    if(['flip','flipped','fliping'].some(word=>heard.includes(word)))return'flip';
+    if(['koto','kodo','coto','photo'].some(word=>heard===word||heard.startsWith(word)))return'koto';
+    if(['smoke','smok','smoked'].some(word=>heard.includes(word)))return'smoke';
+    if(['summon','summons','someone'].some(word=>heard.includes(word)))return'dust';
+    if(['stop','stopp','stap','top'].some(word=>heard===word||heard.startsWith(word)))return'stop';
+    return null;
   };
-  rec.onerror=()=>{voiceStatEl.textContent='voice: unavailable (mic blocked?)';voiceStatEl.classList.remove('listening');};
-  rec.onend=()=>{try{rec.start();}catch{/* recognizer already stopped for good, e.g. permission revoked */}};
+  const runVoiceSpell=spell=>{
+    if(spell==='stop'){
+      manualSummon=false;
+      voiceCharge=null;
+      fadeMagicRibbon();
+      pendingStudioSpell=null;
+      studio.clear();
+      lotus3d.clear();
+      setActiveGuide(null);
+      ptxtEl.textContent='STOP · SPELL CLEARED';
+      return true;
+    }
+    if(!wandActive){
+      voiceStatEl.textContent=`voice: heard “${spell}” · show one index finger`;
+      return false;
+    }
+    if(spell!=='dust'){
+      manualSummon=false;
+      if(spell!=='fireball')fadeMagicRibbon();
+    }
+    if(!['koto','smoke','rain','flower','magic'].includes(spell))studio.stopOverlay();
+    lotus3d.clear();
+    if(spell==='lumos'||spell==='nox'){studio.setLighting(spell);setActiveGuide('lighting');}
+    else if(spell==='fireball'||spell==='lightning')startVoiceCast(spell);
+    else if(spell==='blur')studio.activate(spell);
+    else if(spell==='flip'){studio.toggleFlip();lotus3d.mirrorInput=!studio.flip;}
+    else if(['koto','smoke','rain','flower','magic'].includes(spell)){studio.clear();studio.playOverlay(spell);}
+    else if(spell==='dust'){manualSummon=true;ptxtEl.textContent='MAGIC DUST · CONTINUOUS';}
+    setActiveGuide(spell==='dust'?'summon':spell);
+    return true;
+  };
+  const startVoice=()=>{
+    if(!voiceWanted||voiceRunning)return;
+    try{rec.start();}catch{/* the browser may still be closing the previous session */}
+  };
+  rec.continuous=true;rec.interimResults=true;rec.lang='en-US';rec.maxAlternatives=5;
+  rec.onstart=()=>{
+    voiceRunning=true;
+    voiceStatEl.textContent='voice: listening · show index finger + say spell';
+    voiceStatEl.classList.add('listening');
+  };
+  rec.onresult=e=>{
+    const result=e.results[e.results.length-1];
+    const alternatives=Array.from(result,entry=>entry.transcript);
+    voiceStatEl.textContent=`voice: heard “${alternatives[0].trim()}”`;
+    const now=performance.now();
+    if(now-lastVoiceActionAt<1200)return;
+    const spokenSpell=alternatives.map(voiceSpell).find(Boolean);
+    if(spokenSpell){
+      lastVoiceActionAt=now;
+      runVoiceSpell(spokenSpell);
+    }
+  };
+  rec.onerror=event=>{
+    voiceRunning=false;
+    voiceStatEl.textContent=event.error==='not-allowed'?'voice: microphone permission blocked':`voice: ${event.error} · tap once to retry`;
+    voiceStatEl.classList.remove('listening');
+    if(event.error==='not-allowed'||event.error==='service-not-allowed')voiceWanted=false;
+  };
+  rec.onend=()=>{
+    voiceRunning=false;
+    clearTimeout(restartTimer);
+    if(voiceWanted)restartTimer=setTimeout(startVoice,180);
+  };
   document.body.addEventListener('pointerdown',()=>{
-    try{rec.start();voiceStatEl.textContent='voice: listening for "cast"';voiceStatEl.classList.add('listening');}catch{/* already started */}
-  },{once:true});
+    voiceWanted=true;
+    startVoice();
+  });
+  voiceStatEl.addEventListener('click',()=>{
+    voiceWanted=true;
+    voiceStatEl.textContent='voice: starting microphone…';
+    startVoice();
+  });
 }else{
   voiceStatEl.textContent='voice: not supported in this browser';
 }
@@ -514,10 +746,24 @@ if(SpeechRecognitionImpl){
 //   magicDust.forceCast('lightning');
 window.magicDust={
   simulateFingers(n){manualFingerOverride=n;},
+  simulateWand(on=true){wandActive=!!on;if(on&&!fingerWorld)fingerWorld={x:0,y:0};},
+  moveWand(x,y){wandActive=true;fingerWorld={x,y};},
   release(){manualFingerOverride=null;},
   summon(on=true){manualSummon=!!on;},                 // test hook: emit dust from the pinned centre without a camera
-  forceCast(key){triggerCast(key||heldKey||'fireball');},
-  getState(){return{heldKey,confidence,casting,lastFingerCount,manualFingerOverride,summoning:handOpenPalm||manualSummon,efkReady};},
+  forceCast(key){
+    if(key==='flower'||key==='magic'){lotus3d.clear();studio.clear();return studio.playOverlay(key);}
+    if(key==='lotus'){armLotus();return summonLotus();}
+    triggerCast(key||heldKey||'fireball');return true;
+  },
+  armLotus,
+  summonLotus,
+  activateEffect(kind){studio.activate(kind);},
+  playOverlay(kind){lotus3d.clear();studio.clear();return studio.playOverlay(kind);},
+  clearEffect(){studio.clear();},
+  setLighting(kind){studio.setLighting(kind);},
+  flip(){const value=studio.toggleFlip();lotus3d.mirrorInput=!value;return value;},
+  snapshot(){return studio.capture();},
+  getState(){return{heldKey,confidence,casting,lastFingerCount,wandActive,manualFingerOverride,summoning:manualSummon,trailPoints:trailPoints.length,voiceCharge:voiceCharge?.key||null,pendingStudioSpell,lotus3d:{visible:lotus3d.visible,mode:lotus3d.mode},studio:studio.getState(),efkReady};},
   // Play an Effekseer effect key (charge/fireball/lightning/ring — see EFFECTS
   // in effekseer.js) at world coords/scale, for eyeballing VFX in isolation.
   playEfk(key,x=0,y=0,z=0,scale=3,speed=1,rx=0){const h=efk.play(key,x,y,z);if(h){h.setScale(scale,scale,scale);if(rx)h.setRotation(rx,0,0);if(speed!==1)h.setSpeed(speed);}return!!h;},

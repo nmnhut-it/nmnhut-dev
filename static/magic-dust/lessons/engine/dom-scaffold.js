@@ -82,6 +82,11 @@ export function sparkBurst(host, target, n = QUIZ_SPARKS, cls = '') {
 
 export function scenePanelHtml({ cameraFree = false } = {}) {
   return `
+  <svg width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="camera-sharpen-filter" color-interpolation-filters="sRGB">
+      <feConvolveMatrix order="3" kernelMatrix="0 -1 0 -1 5 -1 0 -1 0" preserveAlpha="true"/>
+    </filter>
+  </svg>
   <video id="cam" playsinline muted></video>
   <div class="vortex"><div class="ring"></div><div class="ring b"></div></div>
   <div class="result" id="scres"><div class="big">—</div><div class="sub"></div></div>

@@ -54,7 +54,11 @@ const NODES = [
   { title: 'Particle: Vị Trí, Vận Tốc và Tuổi Thọ', art: 'assets/future-machine.webp', page: 'node22-lesson.html', island: { unlit: 'assets/world/node-islands/node22-particle-lab-unlit.png', lit: 'assets/world/node-islands/node22-particle-lab-lit.png' } },
   { title: 'Framebuffer và Lớp Ảnh AR',            art: 'assets/future-machine.webp', page: 'node23-lesson.html', island: { unlit: 'assets/world/node-islands/node23-hand-ar-unlit.png', lit: 'assets/world/node-islands/node23-hand-ar-lit.png' } },
   { title: 'Vòng Lặp INPUT–UPDATE–RENDER',         art: 'assets/future-machine.webp', page: 'node24-lesson.html', island: { unlit: 'assets/world/node-islands/node24-interaction-loop-unlit.png', lit: 'assets/world/node-islands/node24-interaction-loop-lit.png' } },
-  { title: 'Dự Án Tương Tác Trực Tiếp',           art: 'assets/future-machine.webp', page: 'node25-lesson.html', island: { unlit: 'assets/world/node-islands/node25-live-studio-unlit.png', lit: 'assets/world/node-islands/node25-live-studio-lit.png' } },
+  // Final project: GƯƠNG VÔ CỰC. Served by islandFXFORGE.html (island.js, not
+  // node.js) because the capstone ends by handing the learner the real AR
+  // fight instead of a seal ritual — island.js's finish card is that handoff.
+  // It still seals node 25 via the content's `sealsSagaNode`.
+  { title: 'Gương Vô Cực — Trục Xuất Chúa Tể Vô Định', art: 'assets/future-machine.webp', page: 'islandFXFORGE.html', island: { unlit: 'assets/world/node-islands/node25-live-studio-unlit.png', lit: 'assets/world/node-islands/node25-live-studio-lit.png' } },
   { title: '? ? ?',                              art: null,                        page: null },
 ];
 const STARS = 90, SPARKS = 14;
@@ -158,6 +162,10 @@ const SIDE_ISLANDS = [
   { id: 'islandPIXELART', title: 'Đảo Tranh Điểm Ảnh', page: 'islandPIXELART.html', unlockAt: 16, art: 'assets/world/side-islands/island-pixel-art-unlit.png', litArt: 'assets/world/side-islands/island-pixel-art-lit.png', pos: { x: 4, y: 24 } },
   { id: 'islandEDGE', title: 'Đảo Viền Ảnh', page: 'islandEDGE.html', unlockAt: 16, art: 'assets/world/side-islands/island-edge-unlit.png', litArt: 'assets/world/side-islands/island-edge-lit.png', pos: { x: 97, y: -5 }, mapPos: { x: 97, y: 30.16 } },
   { id: 'islandIMAGEOPS', title: 'Đảo Xử Lý Ảnh RGB', page: 'islandIMAGEOPS.html', unlockAt: 16, art: 'assets/world/side-islands/island-image-ops-unlit.png', litArt: 'assets/world/side-islands/island-image-ops-lit.png', pos: { x: 78, y: -9 }, mapPos: { x: 100, y: 24.30 } },
+  // GƯƠNG VÔ CỰC was a side island until 2026-07-28; it is now the main-trail
+  // final project (NODES[25]). The live-broadcast project that used to hold
+  // that slot moved here so its lesson stays reachable as bonus practice.
+  { id: 'islandBROADCAST', title: 'Phòng Phát Sóng Tương Tác', page: 'node25-lesson.html', unlockAt: 25, storybook: false, art: 'assets/world/node-islands/node25-live-studio-lit.png', pos: { x: 12, y: 5 } },
   { id: 'islandLISTTOOLS', title: 'Đảo Dụng Cụ List', page: 'islandLISTTOOLS.html', unlockAt: 18, branchFrom: 17, art: 'assets/world/side-islands/island-list-tools-unlit.png', litArt: 'assets/world/side-islands/island-list-tools-lit.png', pos: { x: 96, y: 17 } },
   { id: 'islandSTRINGCHECKS', title: 'Đảo Soi Chuỗi', page: 'islandSTRINGCHECKS.html', unlockAt: 18, art: 'assets/world/side-islands/island-string-checks-unlit.png', litArt: 'assets/world/side-islands/island-string-checks-lit.png', pos: { x: 58, y: -8 }, mapPos: { x: 44, y: 25.98 } },
   { id: 'branchSTANDARDIO', title: 'Nhánh Python Chuẩn', page: 'branch.html?course=standardio', unlockAt: 9, branchFrom: 8, featured: true, gate: false, kind: 'learning-branch', art: 'assets/storybook/branches/branch-standard-io.webp', storybook: false, pos: { x: 76, y: 76 }, mapPos: { x: 76, y: 76.4 } },

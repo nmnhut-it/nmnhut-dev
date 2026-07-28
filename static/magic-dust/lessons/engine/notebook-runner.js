@@ -472,7 +472,7 @@ export class NotebookRunner {
   }
   #resetScreenFx() {
     const l = this.#scenePanel.querySelector('#sclight'); if (l) l.className = '';
-    this.#scenePanel.classList.remove('fx-sepia', 'fx-invert', 'fx-gray', 'fx-mirror', 'fx-shake');
+    this.#scenePanel.classList.remove('fx-sepia', 'fx-invert', 'fx-gray', 'fx-mirror', 'fx-blur', 'fx-sharpen', 'fx-rotate', 'fx-shake');
   }
   // Inline prompt in the running cell's output (the terminal, Jupyter-style).
   cellAsk(prompt) {

@@ -76,9 +76,12 @@ const SCREEN_FX = {
   invert: { kind: 'cam', cls: 'fx-invert', label: '🌀 màu sắc đảo ngược hết' },
   grayscale: { kind: 'cam', cls: 'fx-gray', label: '⚫⚪ màn hình về đen trắng' },
   mirror: { kind: 'cam', cls: 'fx-mirror', label: '🪞 hình ảnh lật lại đúng chiều thật' },
+  blur: { kind: 'cam', cls: 'fx-blur', label: '🌫 hình ảnh được làm mờ' },
+  sharpen: { kind: 'cam', cls: 'fx-sharpen', label: '🔎 đường nét được tăng tương phản' },
+  rotate: { kind: 'cam', cls: 'fx-rotate', label: '🖐 hình ảnh xoay theo hướng bàn tay' },
   shake: { kind: 'shake', label: '💥 màn hình rung lên' },
 };
-const CAM_FX_CLASSES = ['fx-sepia', 'fx-invert', 'fx-gray', 'fx-mirror'];
+const CAM_FX_CLASSES = ['fx-sepia', 'fx-invert', 'fx-gray', 'fx-mirror', 'fx-blur', 'fx-sharpen', 'fx-rotate'];
 
 export function screenFx(scenePanel, mode, outLine) {
   const cfg = SCREEN_FX[mode] || SCREEN_FX.lighten;

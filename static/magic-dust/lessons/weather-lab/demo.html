@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Arcane Camera · Rune Studio</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./demo-redesign.css">
+</head>
+<body class="demo-page arcane-demo">
+  <main class="ritual-app">
+    <header class="ritual-topbar">
+      <div class="brand-mark"><i>✦</i><div><small>MAGIC DUST LAB</small><b>Rune Studio</b></div></div>
+      <div class="stage-state"><i></i><span>CAMERA XỬ LÝ TẠI THIẾT BỊ</span></div>
+      <div class="topbar-actions">
+        <button class="icon-button" id="seal-guide-button" title="Cách biểu diễn">?</button>
+        <button class="icon-button performance-button" id="performance-mode" title="Toàn màn hình">⛶</button>
+      </div>
+    </header>
+
+    <section class="ritual-workspace">
+      <aside class="rune-library" aria-label="Thư viện bùa">
+        <div class="panel-heading"><small>THƯ VIỆN ATMOSPHERE</small><b>Giữ tay trong vùng</b></div>
+        <div class="rune-list">
+          <button class="rune-card active" data-rune-card="summon_dust" type="button">
+            <div class="rune-symbol rune-circle"><i></i></div>
+            <div><b>Fire Ritual</b><span>5 Summon → 1 Vortex</span></div><em>◉</em>
+          </button>
+          <button class="rune-card" data-rune-card="lightning" type="button">
+            <div class="rune-symbol rune-vee"><i></i></div>
+            <div><b>Weather</b><span>2 Sét · 3 Mưa · 4 Tuyết</span></div><em>ϟ</em>
+          </button>
+          <button class="rune-card" data-rune-card="filter_cartoon" type="button">
+            <div class="rune-symbol rune-zigzag"><i></i></div>
+            <div><b>Camera Filters</b><span>6 Blur · 7 Toon · 8 Flip</span></div><em>✎</em>
+          </button>
+          <button class="rune-card" data-rune-card="reset" type="button">
+            <div class="rune-symbol rune-vertical"><i></i></div>
+            <div><b>Studio Actions</b><span>9 Reset · ♡ Chụp ảnh</span></div><em>♡</em>
+          </button>
+        </div>
+        <div class="library-tip"><b>01</b><span>Giơ đúng số ngón<br>theo bảng hướng dẫn</span></div>
+        <div class="library-tip"><b>02</b><span>Giữ khoảng 1 giây<br>để tự kích hoạt</span></div>
+      </aside>
+
+      <article class="camera-card ritual-camera">
+        <div class="camera-stage" id="camera-stage" data-filter="normal">
+          <video id="camera" muted playsinline></video>
+          <canvas id="camera-filter-layer"></canvas>
+          <div class="weather" id="weather" data-weather="clear"></div>
+          <canvas id="environment-layer"></canvas>
+          <canvas id="particle-layer"></canvas>
+          <canvas id="environment-foreground-layer"></canvas>
+          <i class="hand-dot" id="hand-dot"></i>
+          <div class="camera-sheen"></div>
+          <div class="cinema-grain"></div>
+          <div class="photo-countdown" id="photo-countdown" aria-live="polite"><i>♡</i><b>3</b><span>GIỮ HÌNH TRÁI TIM</span></div>
+
+          <div class="camera-corners" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+          <div class="finger-count-guide" id="ritual-start-zone" aria-label="Bảng số ngón tay kích hoạt hiệu ứng">
+            <small>GIỮ SỐ NGÓN TAY</small>
+            <div><b>5</b>✦ SUMMON → <b>1</b>◉ FIRE</div>
+            <span><b>2</b> Sét · <b>3</b> Mưa · <b>4</b> Tuyết</span>
+            <span><b>6</b> Blur · <b>7</b> Toon · <b>8</b> Flip · <b>9</b> Reset · <b>♡</b> Chụp</span>
+          </div>
+
+          <section class="rune-match-panel" id="rune-match-panel" data-state="waiting">
+            <div class="match-orb" id="rune-match-symbol">○</div>
+            <div class="match-copy">
+              <small>VÙNG ĐANG GIỮ</small>
+              <b id="rune-match-name">Chưa chọn atmosphere</b>
+              <span id="rune-match-hint">Giơ đúng số ngón tay và giữ đến khi thanh thời gian đầy.</span>
+            </div>
+            <div class="match-score"><strong id="rune-match-score">0%</strong><span>THỜI GIAN GIỮ</span></div>
+            <i class="match-meter"><em id="rune-match-bar"></em></i>
+          </section>
+
+          <div class="gesture-legend">
+            <span><b>1–5</b> Một bàn tay</span>
+            <span><b>6–9</b> Tổng hai bàn tay</span>
+          </div>
+          <div class="camera-hud">
+            <span class="camera-status" id="camera-status">Sân khấu sẵn sàng. Mở camera để bắt đầu.</span>
+            <button class="primary camera-launch" id="start-camera"><i>◉</i> Mở camera</button>
+          </div>
+        </div>
+
+        <div class="ritual-controlbar">
+          <button class="control-main" id="mist-preview"><i>⌁</i><span><small>DEMO VÙNG GIỮ</small><b>Neon Nebulus</b></span></button>
+          <div class="color-control">
+            <span><small>MÀU PHÉP</small><b id="mist-color-name">Tinh vân</b></span>
+            <button class="color-dot auto active" data-mist-palette="auto" title="Tự đổi màu"></button>
+            <button class="color-dot pink" data-mist-palette="pink" title="Hồng pha lê"></button>
+            <button class="color-dot blue" data-mist-palette="blue" title="Xanh tinh vân"></button>
+            <label class="color-dot custom" title="Chọn màu khác"><input id="mist-color" type="color" value="#72e4ff" aria-label="Chọn màu Nebulus"></label>
+          </div>
+          <button class="control-icon record-button" id="record-performance" title="Quay màn phép">●</button>
+          <button class="control-icon clear-stage" data-weather="clear" title="Xóa sân khấu">×</button>
+        </div>
+      </article>
+
+      <aside class="spell-inspector">
+        <section class="inspector-card active-spell">
+          <div class="panel-heading"><small>PHÉP ĐANG CHỜ</small><b id="inspector-spell">Summon Dust</b></div>
+          <div class="spell-sigil"><i></i><b id="inspector-symbol">✦</b></div>
+          <p id="inspector-hint">Xòe năm ngón tay để phát bụi phép từ lòng bàn tay.</p>
+          <div class="spell-property"><span>INPUT</span><b>Vị trí đầu ngón trỏ</b></div>
+          <div class="spell-property"><span>PROCESS</span><b>Đếm thời gian giữ</b></div>
+          <div class="spell-property"><span>OUTPUT</span><b id="inspector-output">Bụi phép sống, sẵn sàng bị Fire Vortex hút vào</b></div>
+        </section>
+        <section class="inspector-card lotus-guide">
+          <div class="lotus-mini">♡</div>
+          <div><small>MAGIC PHOTO</small><b>Hai tay tạo trái tim</b><span>Chạm ngón trỏ và ngón cái hai tay, giữ 0,7 giây rồi tạo dáng.</span></div>
+        </section>
+        <section class="privacy-note"><i>⌾</i><span><b>Không gửi hình ảnh</b>Camera chỉ được xử lý trong trình duyệt này.</span></section>
+      </aside>
+    </section>
+
+    <details class="learning-drawer">
+      <summary><span>HỌC THÊM</span> Ma trận RGB 0–255 tạo ra hình ảnh như thế nào?</summary>
+      <div class="learning-grid">
+        <div><div class="matrix-grid" id="matrix-grid"></div><canvas id="pixel-preview" aria-label="Ảnh tạo bởi ma trận"></canvas></div>
+        <div class="channels">
+          <label><b>R</b><input data-channel="red" type="range" min="0" max="255"><span>0–255</span></label>
+          <label><b>G</b><input data-channel="green" type="range" min="0" max="255"><span>0–255</span></label>
+          <label><b>B</b><input data-channel="blue" type="range" min="0" max="255"><span>0–255</span></label>
+          <p class="matrix-status" id="matrix-status"></p>
+        </div>
+      </div>
+    </details>
+  </main>
+  <script type="module">
+    import { startWeatherLab } from "./weather-core.js";
+    startWeatherLab({ demo: true });
+  </script>
+</body>
+</html>

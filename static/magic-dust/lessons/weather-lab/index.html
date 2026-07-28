@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Thực hành · Xưởng VFX Camera</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">Project thực hành trên trình duyệt</div>
+        <h1>Tự hoàn thành Xưởng VFX</h1>
+        <p>Quan sát sản phẩm đang chạy, sửa ma trận RGB, rồi điền phần còn thiếu phù hợp với trình độ của bạn. Mỗi bài đều nói rõ giá trị cho sẵn, INPUT, PROCESS và OUTPUT cần đạt.</p>
+      </div>
+      <a class="mode-badge" href="./demo.html">Xem bản demo hoàn chỉnh →</a>
+    </header>
+
+    <section class="grid">
+      <div>
+        <article class="card camera-card">
+          <div class="camera-stage" id="camera-stage" data-filter="normal">
+            <video id="camera" muted playsinline></video>
+            <canvas id="camera-filter-layer"></canvas>
+            <div class="weather" id="weather" data-weather="clear"></div>
+            <canvas id="environment-layer"></canvas>
+            <canvas id="particle-layer"></canvas>
+            <canvas id="environment-foreground-layer"></canvas>
+            <i class="hand-dot" id="hand-dot"></i>
+            <div class="camera-sheen"></div>
+            <div class="ritual-start-zone" id="ritual-start-zone"><b>CHẠM ĐỂ VẼ</b><span>☝ đặt đầu ngón trỏ tại đây</span></div>
+            <div class="camera-hud">
+              <span class="camera-status" id="camera-status">Mở camera hoặc dùng nút mô phỏng để kiểm tra OUTPUT.</span>
+              <button class="primary" id="start-camera">Mở camera</button>
+            </div>
+          </div>
+          <div class="toolbar">
+            <button class="chip" id="mist-preview">☝ Mô phỏng nét bùa</button>
+            <button class="chip active" data-mist-palette="auto">Tự đổi màu</button>
+            <button class="chip" data-mist-palette="pink">Hồng</button>
+            <button class="chip" data-mist-palette="blue">Xanh</button>
+            <label class="mist-color-picker">Màu bùa <input id="mist-color" type="color" value="#72e4ff" aria-label="Chọn màu Nebulus"></label>
+            <button class="chip" data-weather="lotus">✺ Thử Hỏa Liên · Hoa Vũ</button>
+            <button class="chip voice-release" id="lotus-release" disabled>🎙 Kích nổ</button>
+            <button class="chip" data-weather="clear">Xóa hiệu ứng</button>
+            <button class="chip record-button" id="record-performance">● Quay màn phép</button>
+            <button class="chip performance-button" id="performance-mode">⛶ Trình diễn</button>
+            <button class="chip" id="seal-guide-button">◇ Học tổ hợp ngón</button>
+          </div>
+        </article>
+
+        <article class="card exercise-card">
+          <div class="card-kicker">Bước 3 · Chọn thử thách vừa sức</div>
+          <h2>Điền phần còn thiếu</h2>
+          <div class="level-tabs">
+            <button class="level-button active" data-level="junior">Lớp 5–6</button>
+            <button class="level-button" data-level="senior">Nhóm lớn hơn</button>
+          </div>
+
+          <section data-level-panel="junior">
+            <p class="task-copy"><b>Giá trị cho sẵn:</b> mỗi kênh RGB nằm trong khoảng 0–255. <b>INPUT:</b> ba ô bạn điền. <b>PROCESS:</b> chương trình ghép ba cường độ màu và chọn tên hiệu ứng. <b>OUTPUT:</b> nút KIỂM TRA tạo màu cam sáng và gọi Hỏa Liên.</p>
+            <div class="code-task">
+rectangle_color = [<input id="blank-red" inputmode="numeric" aria-label="Giá trị màu đỏ">, 116, 72]<br>
+lotus_color = [255, 80, <input id="blank-blue" inputmode="numeric" aria-label="Cường độ màu xanh dương của lửa">]<br>
+lotus_action = "<select id="blank-action" aria-label="Hiệu ứng của Hỏa Liên"><option value="">chọn…</option><option value="lightning">lightning</option><option value="lotus">lotus</option></select>"
+            </div>
+            <p><button class="primary" id="check-junior">Kiểm tra OUTPUT</button></p>
+            <p class="result" id="junior-result" aria-live="polite"></p>
+          </section>
+
+          <section data-level-panel="senior" hidden>
+            <p class="task-copy"><b>Giá trị cho sẵn:</b> camera đã lưu các điểm trên nét bùa. <b>INPUT:</b> chiều rộng, chiều cao và việc điểm cuối có gần điểm đầu hay không. <b>PROCESS:</b> so sánh hình dạng của đường vẽ. <b>OUTPUT:</b> chương trình chọn <code>mist</code> cho vòng khép kín.</p>
+            <div class="code-task">
+pathClosed = <select id="blank-index"><option value="">chọn…</option><option value="true">true</option><option value="false">false</option></select><br>
+pathLongEnough = <select id="blank-little"><option value="">chọn…</option><option value="true">true</option><option value="false">false</option></select><br>
+spellOutput = "<select id="blank-effect" aria-label="Hiệu ứng của vòng bùa khép kín"><option value="">chọn…</option><option value="mist">mist</option><option value="lotus">lotus</option><option value="blur">blur</option></select>"
+            </div>
+            <p><button class="primary" id="check-senior">Kiểm tra thuật toán</button></p>
+            <p class="result" id="senior-result" aria-live="polite"></p>
+          </section>
+        </article>
+      </div>
+
+      <aside class="side">
+        <article class="card matrix-card">
+          <div class="card-kicker">Bước 1 · Chạm vào một pixel</div>
+          <h2>Đổi số, nhìn ảnh đổi</h2>
+          <div class="matrix-layout">
+            <div class="matrix-grid" id="matrix-grid"></div>
+            <canvas id="pixel-preview" aria-label="Ảnh tạo bởi ma trận"></canvas>
+          </div>
+          <div class="channels">
+            <label><b>R</b><input data-channel="red" type="range" min="0" max="255"><span>đỏ</span></label>
+            <label><b>G</b><input data-channel="green" type="range" min="0" max="255"><span>lục</span></label>
+            <label><b>B</b><input data-channel="blue" type="range" min="0" max="255"><span>lam</span></label>
+          </div>
+          <p class="matrix-status" id="matrix-status"></p>
+        </article>
+        <article class="card guide-card">
+          <div class="card-kicker">Bước 2 · Thử bằng tay thật</div>
+          <h2>Cách chơi</h2>
+          <div class="guide-list">
+            <div class="guide-step"><div class="guide-icon">1</div><div><b>Mở camera</b><span>Đây là INPUT thật từ bên ngoài chương trình.</span></div></div>
+            <div class="guide-step"><div class="guide-icon">2</div><div><b>Vẽ từ vùng bắt đầu</b><span>Chỉ giơ ngón trỏ, chạm vùng sáng rồi kéo một nét bùa liền mạch.</span></div></div>
+            <div class="guide-step"><div class="guide-icon">3</div><div><b>Hoàn tất nét</b><span>Khép ngón để chương trình phân loại vòng, nét ngang, chữ V, nét dọc hoặc zigzag.</span></div></div>
+            <div class="guide-step"><div class="guide-icon">4</div><div><b>Triệu hồi sen</b><span>Mở hai lòng bàn tay cạnh nhau; đây là gesture riêng, không xung đột với bàn vẽ bùa.</span></div></div>
+          </div>
+        </article>
+      </aside>
+    </section>
+    <p class="footer-note">Không có camera? Dùng nút MÔ PHỎNG NÉT BÙA và THỬ HỎA LIÊN · HOA VŨ để quan sát OUTPUT.</p>
+  </main>
+  <script type="module">
+    import { startWeatherLab } from "./weather-core.js";
+    startWeatherLab();
+  </script>
+</body>
+</html>
