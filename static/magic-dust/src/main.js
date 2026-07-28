@@ -5,7 +5,7 @@ import { UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { Pass }           from 'three/addons/postprocessing/Pass.js';
 import { ShaderPass }     from 'three/addons/postprocessing/ShaderPass.js';
 import { CopyShader }     from 'three/addons/shaders/CopyShader.js';
-import { SPELLS, ROT, ENERGY, GUIDE, FINGER_TO_SPELL } from './spells.js';
+import { SPELLS, ROT, ENERGY, GUIDE, FINGER_TO_SPELL, OVERLAY_SPELLS, SPELL_KEYS } from './spells.js';
 import { FINGERTIPS, handSize, countExtendedFingers, heartGestureMetrics, isIndexWand, StableGestureTrigger } from './gestures.js';
 import { AudioManager } from './audio.js';
 import { Efk } from './effekseer.js';
@@ -26,13 +26,19 @@ const testCastBtn=$('testcastbtn'),voiceStatEl=$('voicestat');
 document.addEventListener('mousemove',e=>{dotEl.style.left=e.clientX+'px';dotEl.style.top=e.clientY+'px';});
 
 // ── Gesture guide panel ────────────────────────────────────────────────────────
+// Sixteen spells at one card each ran the full height of the screen and buried
+// the camera. Each row is now a single compact line — hotkey badge + short
+// name, two per row — and only the ACTIVE spell expands to explain itself.
+// 'g' collapses the whole panel for a clean stage.
 const guideItems={};
 for(const g of GUIDE){
   const el=document.createElement('div');
   el.className='gi';
-  const label=document.createElement('span');label.className='gl';label.textContent=g.label;
+  if(g.hotkey){const k=document.createElement('b');k.className='gk';k.textContent=g.hotkey;el.appendChild(k);}
+  const name=document.createElement('span');name.className='gn';name.textContent=g.name||g.label;
   const desc=document.createElement('span');desc.className='gd';desc.textContent=g.desc;
-  el.append(label,desc);
+  el.append(name,desc);
+  el.title=`${g.label} — ${g.desc}`;
   guideEl.appendChild(el);
   guideItems[g.key]=el;
 }
@@ -615,13 +621,51 @@ window.addEventListener('resize',()=>{
   renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);
 });
 
+// fromKey: a number-key press is its own deliberate act, so it skips the
+// "show one index finger" gate that stops stray speech from firing spells.
+function runVoiceSpell(spell,fromKey=false){
+  if(spell==='stop'){
+    manualSummon=false;
+    voiceCharge=null;
+    fadeMagicRibbon();
+    pendingStudioSpell=null;
+    studio.clear();
+    lotus3d.clear();
+    setActiveGuide(null);
+    ptxtEl.textContent='STOP · SPELL CLEARED';
+    return true;
+  }
+  if(!wandActive&&!fromKey){
+    voiceStatEl.textContent=`voice: heard “${spell}” · show one index finger`;
+    return false;
+  }
+  if(spell!=='dust'){
+    manualSummon=false;
+    if(spell!=='fireball')fadeMagicRibbon();
+  }
+  if(!OVERLAY_SPELLS.includes(spell))studio.stopOverlay();
+  lotus3d.clear();
+  if(spell==='lumos'||spell==='nox'){studio.setLighting(spell);setActiveGuide('lighting');}
+  else if(spell==='fireball'||spell==='lightning')startVoiceCast(spell);
+  else if(spell==='blur')studio.activate(spell);
+  else if(spell==='flip'){studio.toggleFlip();lotus3d.mirrorInput=!studio.flip;}
+  else if(OVERLAY_SPELLS.includes(spell)){studio.clear();studio.playOverlay(spell);}
+  else if(spell==='dust'){manualSummon=true;ptxtEl.textContent='MAGIC DUST · CONTINUOUS';}
+  setActiveGuide(spell==='dust'?'summon':spell);
+  return true;
+}
+
 // ── Manual test triggers: keyboard, button, voice, and a scriptable API ───────
 // These let the spell system be exercised without a webcam/hand in frame.
 window.addEventListener('keydown',e=>{
   if(e.repeat)return;
   if(e.key==='1')manualFingerOverride=1;
   else if(e.key==='2')manualFingerOverride=2;
-  else if(e.key==='3')studio.activate('rain');
+  // Number keys are the no-mic path to the spoken spells: same routine voice
+  // runs, minus the one-index-finger gate. Lets the whole set be demoed in a
+  // noisy room, or on a browser with no SpeechRecognition at all.
+  else if(SPELL_KEYS[e.key])runVoiceSpell(SPELL_KEYS[e.key],true);
+  else if(e.key.toLowerCase()==='g')guideEl.classList.toggle('hidden');
   else if(e.key.toLowerCase()==='b')studio.activate('blur');
   else if(e.key.toLowerCase()==='l')armLotus();
   else if(e.key.toLowerCase()==='p')studio.capture();
@@ -659,41 +703,13 @@ if(SpeechRecognitionImpl){
     if(['blur','blurr','bler'].some(word=>heard.includes(word)))return'blur';
     if(['flip','flipped','fliping'].some(word=>heard.includes(word)))return'flip';
     if(['koto','kodo','coto','photo'].some(word=>heard===word||heard.startsWith(word)))return'koto';
+    if(['phoenix','phenix','feenix','fenix'].some(word=>heard.includes(word)))return'phoenix';
+    if(['butterfly','butterflies','butter fly'].some(word=>heard.includes(word)))return'butterfly';
+    if(['sakura','sacura','sakawa','blossom'].some(word=>heard.includes(word)))return'sakura';
     if(['smoke','smok','smoked'].some(word=>heard.includes(word)))return'smoke';
     if(['summon','summons','someone'].some(word=>heard.includes(word)))return'dust';
     if(['stop','stopp','stap','top'].some(word=>heard===word||heard.startsWith(word)))return'stop';
     return null;
-  };
-  const runVoiceSpell=spell=>{
-    if(spell==='stop'){
-      manualSummon=false;
-      voiceCharge=null;
-      fadeMagicRibbon();
-      pendingStudioSpell=null;
-      studio.clear();
-      lotus3d.clear();
-      setActiveGuide(null);
-      ptxtEl.textContent='STOP · SPELL CLEARED';
-      return true;
-    }
-    if(!wandActive){
-      voiceStatEl.textContent=`voice: heard “${spell}” · show one index finger`;
-      return false;
-    }
-    if(spell!=='dust'){
-      manualSummon=false;
-      if(spell!=='fireball')fadeMagicRibbon();
-    }
-    if(!['koto','smoke','rain','flower','magic'].includes(spell))studio.stopOverlay();
-    lotus3d.clear();
-    if(spell==='lumos'||spell==='nox'){studio.setLighting(spell);setActiveGuide('lighting');}
-    else if(spell==='fireball'||spell==='lightning')startVoiceCast(spell);
-    else if(spell==='blur')studio.activate(spell);
-    else if(spell==='flip'){studio.toggleFlip();lotus3d.mirrorInput=!studio.flip;}
-    else if(['koto','smoke','rain','flower','magic'].includes(spell)){studio.clear();studio.playOverlay(spell);}
-    else if(spell==='dust'){manualSummon=true;ptxtEl.textContent='MAGIC DUST · CONTINUOUS';}
-    setActiveGuide(spell==='dust'?'summon':spell);
-    return true;
   };
   const startVoice=()=>{
     if(!voiceWanted||voiceRunning)return;

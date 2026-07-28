@@ -15,6 +15,9 @@ export class StudioEffects{
   buildVideoOverlays(){
     const sources={
       koto:'./lessons/assets/camera-effects/overlays/koto-stag.mp4',
+      phoenix:'./lessons/assets/camera-effects/overlays/spirit-phoenix.mp4',
+      butterfly:'./lessons/assets/camera-effects/overlays/crystal-butterflies.mp4',
+      sakura:'./lessons/assets/camera-effects/overlays/sakura-bloom.mp4',
       smoke:'./lessons/assets/camera-effects/overlays/smoke-blue.mp4',
       lightning:'./lessons/assets/camera-effects/overlays/lightning-ground.mp4',
       rain:'./lessons/assets/camera-effects/overlays/rain-storm.mp4',
@@ -25,7 +28,9 @@ export class StudioEffects{
     for(const [kind,src] of Object.entries(sources)){
       const video=document.createElement('video');
       video.className='spell-video-overlay';video.dataset.spell=kind;
-      const loops=kind==='smoke'||kind==='flower'||kind==='magic';
+      // ambient atmospheres loop; a creature that makes ONE entrance (the stag,
+      // the phoenix rising) plays through and clears itself
+      const loops=kind==='smoke'||kind==='flower'||kind==='magic'||kind==='butterfly'||kind==='sakura';
       video.src=src;video.muted=true;video.playsInline=true;video.preload='auto';video.loop=loops;
       document.body.appendChild(video);this.videoOverlays[kind]=video;
       if(!loops)video.addEventListener('ended',()=>this.stopOverlay());
@@ -252,11 +257,20 @@ export class StudioEffects{
     ctx.filter=`${this.blur?'blur(12px) ':''}${lighting}`;
     ctx.drawImage(this.video,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,width,height);
     ctx.restore();ctx.filter='none';
+    // The dust canvas (#cv) is composited on screen with mix-blend-mode:screen,
+    // because the bloom composer writes an OPAQUE BLACK background. Drawing it
+    // source-over here painted that black straight over the camera and the
+    // photo came out black — the capture has to repeat the CSS blend.
+    ctx.save();ctx.globalCompositeOperation='screen';
     ctx.drawImage(this.renderer.domElement,0,0,this.renderer.domElement.width,this.renderer.domElement.height,0,0,width,height);
+    ctx.restore();
     const overlay=this.activeOverlay&&this.videoOverlays[this.activeOverlay];
     if(overlay&&overlay.readyState>=2){
       ctx.save();ctx.globalCompositeOperation=this.activeOverlay==='rain'?'source-over':'screen';
       ctx.globalAlpha=this.activeOverlay==='rain'?.66:this.activeOverlay==='smoke'?.78:this.activeOverlay==='flower'?.9:.92;
+      // same grade the CSS puts on .spell-video-overlay, so the saved frame
+      // matches what was on screen instead of a flatter version of it
+      ctx.filter=this.activeOverlay==='rain'?'contrast(1.08) brightness(.88) saturate(.82)':'contrast(1.28) brightness(1.06) saturate(1.2)';
       const ow=overlay.videoWidth||1280,oh=overlay.videoHeight||720;
       const overlayScale=Math.max(width/ow,height/oh),sourceW=width/overlayScale,sourceH=height/overlayScale;
       ctx.drawImage(overlay,(ow-sourceW)/2,(oh-sourceH)/2,sourceW,sourceH,0,0,width,height);ctx.restore();

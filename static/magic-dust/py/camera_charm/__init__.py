@@ -30,6 +30,10 @@ The charm SEES your hand and does what your rules say:
                      that artwork full size
     show_photos(labelled, title) -> compare_frames for plate artwork only
     show_numbers(image, title) -> one image plus its brightness digits
+    play_effect(name) -> fires a full-size moving plate ("stag", "phoenix",
+                     "butterfly", "sakura", "smoke", "lightning") over the live
+                     camera, screen-blended — the add-and-clamp at full size
+    play_my_effect() -> same, but plays a video file you pick from this device
     blank_grid(rows, cols) -> makes a 2D list filled with one preset value
     start_photo_lights() -> waits for the learner to press the centered start button
     show_photo_lights(colors, mode, step) -> draws a repeated color list
@@ -237,6 +241,29 @@ def show_photos(labelled, title=""):
 def show_numbers(image, title=""):
     """Open the viewer on one image with its brightness digits shown."""
     return compare_frames([(title or "ANH", image)], title, True)
+
+
+def play_effect(name="stag"):
+    """Fire a full-size moving effect over the live camera and wait for it.
+
+    name: "stag", "phoenix", "butterfly", "sakura", "smoke", "lightning".
+    The clip is glowing light on black and is screen-blended over the camera —
+    the same add-and-clamp you wrote by hand, running at full size.
+    Related: lessons/engine/interactive-studio.js EFFECT_CLIPS.
+    """
+    payload = json.dumps({"action": "effect_play", "name": str(name)}, ensure_ascii=False)
+    return bridge.ask("studio_start", payload) == "played"
+
+
+def play_my_effect():
+    """Pick a video file from this device and blend it over the camera.
+
+    Use it to watch a clip you generated yourself. Any footage of bright light
+    on a black background will composite well, because the blend keeps light
+    and drops black. The file is read in the browser and never uploaded.
+    """
+    payload = json.dumps({"action": "effect_play", "own": True}, ensure_ascii=False)
+    return bridge.ask("studio_start", payload) == "played"
 
 
 def blank_grid(rows, cols, value=0):

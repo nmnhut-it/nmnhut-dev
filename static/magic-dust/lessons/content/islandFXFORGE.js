@@ -370,6 +370,26 @@ export default {
       },
     },
     {
+      npc: "Tới lúc thả thần chú ra khỏi lưới 16 ô rồi. `play_effect(name)` chiếu lớp hiệu ứng cỡ thật lên hình bạn trong camera, vẫn bằng đúng phép cộng ánh sáng bạn vừa viết.",
+    },
+    {
+      code: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import play_effect\n\nspells = ["phoenix", "butterfly", "sakura"]\ncommand = listen(spells)\n\nif command == "phoenix":\n    say("PHOENIX RISES")\n    play_effect("phoenix")\nelif command == "butterfly":\n    say("BUTTERFLY SWARM")\n    play_effect("butterfly")\nelif command == "sakura":\n    say("SAKURA BLOOM")\n    play_effect("sakura")\nelse:\n    say("UNKNOWN WORD")\n',
+      label: "tha_than_chu_co_that.py",
+      note: "RUN KIỂM CHỨNG\nINPUT là thần chú bạn niệm ra tiếng. PROCESS vẫn là chuỗi `if`/`elif`/`else` quen thuộc. OUTPUT lần này là lớp hiệu ứng cỡ thật chiếu đè lên hình camera của bạn: phượng hoàng bung cánh, đàn bướm pha lê, hoặc trận mưa hoa anh đào. Chỗ nào lớp hiệu ứng tối thì hình bạn giữ nguyên, chỗ nào nó sáng thì sáng bừng lên — đúng luật cộng ánh sáng bạn vừa viết.",
+      expectOut: { all: [/PHOENIX RISES/] },
+      solution: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import play_effect\n\nspells = ["phoenix", "butterfly", "sakura"]\ncommand = listen(spells)\n\nif command == "phoenix":\n    say("PHOENIX RISES")\n    play_effect("phoenix")\nelif command == "butterfly":\n    say("BUTTERFLY SWARM")\n    play_effect("butterfly")\nelif command == "sakura":\n    say("SAKURA BLOOM")\n    play_effect("sakura")\nelse:\n    say("UNKNOWN WORD")\n',
+    },
+    {
+      npc: "Và bạn không bị bó trong mấy lớp Pip đưa đâu. Tự làm một đoạn video sáng trên nền đen — vẽ, quay, hay nhờ máy dựng đều được — rồi `play_my_effect()` sẽ chiếu chính nó lên hình bạn.",
+    },
+    {
+      code: 'from old_computer import say\nfrom camera_charm import play_my_effect\n\n# Chọn một tệp video từ máy của bạn; tệp chỉ được đọc trong trình duyệt\nsay("CHON MOT DOAN VIDEO")\nplay_my_effect()\nsay("DA CHIEU XONG")\n',
+      label: "lop_hieu_ung_cua_ban.py",
+      note: "XƯỞNG CỦA BẠN — không chấm điểm. INPUT là một tệp video bạn chọn từ thiết bị; nếu bấm hủy thì bài dùng lớp có sẵn để không bị ngắt. Đoạn video càng đúng kiểu SÁNG TRÊN NỀN ĐEN thì ghép càng đẹp, vì phép cộng giữ phần sáng và bỏ qua phần đen. OUTPUT là chính đoạn video đó nằm trên hình camera của bạn.",
+      expectOut: null,
+      solution: 'from old_computer import say\nfrom camera_charm import play_my_effect\n\nsay("CHON MOT DOAN VIDEO")\nplay_my_effect()\nsay("DA CHIEU XONG")\n',
+    },
+    {
       npc: "Một mình giọng nói thì chưa đủ. Gương còn nhìn được bàn tay bạn nữa: `listen()` chọn thần chú nào, còn `watch()` đếm số ngón tay để biết niệm mạnh tới đâu.",
     },
     {

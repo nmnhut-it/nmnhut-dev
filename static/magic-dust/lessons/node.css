@@ -1435,3 +1435,11 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 .vcharm-bar b{display:block;height:100%;width:100%;background:var(--c);transform-origin:left;
               animation:vcdrain var(--vcsec,8s) linear forwards}
 @keyframes vcdrain{from{transform:scaleX(1)}to{transform:scaleX(0)}}
+
+/* Full-size moving FX plate over the lesson camera (interactive-studio
+   #playEffectClip). mix-blend-mode:screen IS the add-and-clamp blend the
+   learner writes by hand — the clips are glowing light on black, so screen
+   drops the black and keeps the light. */
+.studio-effect-clip{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+                    z-index:4;pointer-events:none;mix-blend-mode:screen;
+                    filter:contrast(1.28) brightness(1.06) saturate(1.2)}

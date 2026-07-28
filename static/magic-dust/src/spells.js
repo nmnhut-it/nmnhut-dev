@@ -52,21 +52,40 @@ export const SPELLS={
 // Live gesture input: hold up N fingers to charge the matching spell.
 export const FINGER_TO_SPELL={1:'fireball',2:'lightning'};
 
+// Spells that play a full-frame video plate rather than a particle cast. The
+// router treats these as one group (they don't stop each other's overlay the
+// way a particle cast does), so the list lives here once instead of being
+// re-typed at every branch in main.js.
+export const OVERLAY_SPELLS=['koto','phoenix','butterfly','sakura','smoke','rain','flower','magic'];
+
+// Number-key side channel for every spoken spell. Speech recognition needs a
+// mic, a quiet room and a cooperative browser; a demo in a noisy classroom
+// needs none of that, so each spell also has a digit that fires the exact same
+// routine. 1 and 2 stay reserved for the finger-count override (see
+// CLAUDE.md's testing section) and 3 keeps the 'rain' binding it already had.
+export const SPELL_KEYS={
+  '3':'rain', '4':'koto', '5':'phoenix', '6':'butterfly',
+  '7':'sakura', '8':'smoke', '9':'flower', '0':'magic',
+};
+
 // Order here also defines the on-screen gesture-guide list order.
 export const GUIDE=[
-  {key:'fireball',  label:'Index + “Fireball”',desc:'Point one index finger, then say “fireball”'},
-  {key:'lightning', label:'Index + “Lightning”',desc:'Point one index finger, then say “lightning”'},
-  {key:'summon',    label:'Index + “Summon”',desc:'Summon continuous dust and draw a glowing ribbon with the fingertip'},
-  {key:'stop',      label:'Say “Stop”',desc:'Stop continuous dust and clear the current atmosphere'},
-  {key:'rain',      label:'Index + “Rain”',desc:'Summon a cinematic storm plate across the camera'},
-  {key:'blur',      label:'Index + “Blur”',desc:'Point one index finger, then say “blur”'},
-  {key:'flip',      label:'Index + “Flip”',desc:'Point one index finger, then say “flip” to mirror the camera'},
-  {key:'flower',    label:'Index + “Flower”',desc:'Loop a full-frame atmosphere of floating pink flower petals'},
-  {key:'magic',     label:'Index + “Magic”',desc:'Loop a separate atmosphere of luminous magical symbols'},
-  {key:'koto',      label:'Index + “Koto”',desc:'Summon the glowing spirit stag video spell'},
-  {key:'smoke',     label:'Index + “Smoke”',desc:'Fill the stage with a looping blue smoke overlay'},
-  {key:'photo',     label:'Heart Hands',desc:'Make a heart and hold to take a magic photo'},
-  {key:'lighting',  label:'Index + “Lumos / Nox”',desc:'Point one index finger; Lumos brightens and Nox darkens'},
+  {key:'fireball', name:'Fireball',  label:'Index + “Fireball”',desc:'Point one index finger, then say “fireball”'},
+  {key:'lightning', name:'Lightning', label:'Index + “Lightning”',desc:'Point one index finger, then say “lightning”'},
+  {key:'summon', name:'Summon',    label:'Index + “Summon”',desc:'Summon continuous dust and draw a glowing ribbon with the fingertip'},
+  {key:'stop', name:'Stop',      label:'Say “Stop”',desc:'Stop continuous dust and clear the current atmosphere'},
+  {key:'rain', name:'Rain',      hotkey:'3', label:'Index + “Rain”',desc:'Summon a cinematic storm plate across the camera'},
+  {key:'blur', name:'Blur',      label:'Index + “Blur”',desc:'Point one index finger, then say “blur”'},
+  {key:'flip', name:'Flip',      label:'Index + “Flip”',desc:'Point one index finger, then say “flip” to mirror the camera'},
+  {key:'flower', name:'Flower',    hotkey:'9', label:'Index + “Flower”',desc:'Loop a full-frame atmosphere of floating pink flower petals'},
+  {key:'magic', name:'Glyphs',     hotkey:'0', label:'Index + “Magic”',desc:'Loop a separate atmosphere of luminous magical symbols'},
+  {key:'koto', name:'Stag',      hotkey:'4', label:'Index + “Koto”',desc:'Summon the glowing spirit stag video spell'},
+  {key:'phoenix', name:'Phoenix',   hotkey:'5', label:'Index + “Phoenix”',desc:'Summon a spirit phoenix that spreads its wings in a burst of embers'},
+  {key:'butterfly', name:'Butterfly', hotkey:'6', label:'Index + “Butterfly”',desc:'Release a drifting swarm of glowing crystal butterflies'},
+  {key:'sakura', name:'Sakura',    hotkey:'7', label:'Index + “Sakura”',desc:'Scatter a warm swirl of glowing cherry-blossom petals'},
+  {key:'smoke', name:'Smoke',     hotkey:'8', label:'Index + “Smoke”',desc:'Fill the stage with a looping blue smoke overlay'},
+  {key:'photo', name:'Photo',     label:'Heart Hands',desc:'Make a heart and hold to take a magic photo'},
+  {key:'lighting', name:'Lumos/Nox',  label:'Index + “Lumos / Nox”',desc:'Point one index finger; Lumos brightens and Nox darkens'},
 ];
 
 export const ROT={

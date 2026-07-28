@@ -60,12 +60,19 @@ body.studio-nox #camlayer{box-shadow:inset 0 0 180px rgba(2,8,20,.58)}
 #pdot{width:5px;height:5px;border-radius:50%;background:rgba(255,253,245,.18);transition:background .3s,box-shadow .3s}
 #ptxt{font-size:.52rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,253,245,.18);transition:color .3s}
 #mute{position:fixed;top:12px;right:13px;z-index:30;pointer-events:auto;cursor:pointer;font-size:.6rem;font-weight:600;letter-spacing:.15em;color:rgba(255,253,245,.5);background:rgba(255,253,245,.06);border:1px solid rgba(255,253,245,.12);border-radius:6px;padding:5px 10px}
-#guide{position:fixed;top:56px;right:13px;z-index:20;pointer-events:none;display:flex;flex-direction:column;gap:6px;width:200px}
-.gi{display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,253,245,.08);background:rgba(24,63,73,.45);backdrop-filter:blur(4px);transition:border-color .3s,background .3s,transform .3s}
-.gi.active{border-color:var(--c);background:rgba(24,63,73,.7);box-shadow:0 0 16px var(--g);transform:translateX(-4px)}
-.gi .gl{font-size:.62rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,253,245,.7)}
-.gi.active .gl{color:var(--c)}
-.gi .gd{font-size:.5rem;font-weight:500;letter-spacing:.03em;color:rgba(255,253,245,.32)}
+/* Compact spell legend: two columns of one-line chips instead of 16 tall
+   cards, which used to run the whole screen height and bury the camera. Only
+   the active spell expands to show its description. 'g' hides it entirely. */
+#guide{position:fixed;top:46px;right:13px;z-index:20;pointer-events:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;width:236px;transition:opacity .25s,transform .25s}
+#guide.hidden{opacity:0;transform:translateX(12px);pointer-events:none}
+.gi{display:flex;align-items:center;gap:5px;padding:3px 7px;border-radius:6px;border:1px solid rgba(255,253,245,.07);background:rgba(24,63,73,.4);backdrop-filter:blur(4px);transition:border-color .3s,background .3s;min-width:0}
+.gi .gk{flex:none;font-size:.5rem;font-weight:800;line-height:1;padding:2px 4px;border-radius:3px;color:rgba(255,253,245,.55);background:rgba(255,253,245,.1)}
+.gi.active .gk{color:#183f49;background:var(--c)}
+.gi .gn{font-size:.55rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,253,245,.62);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gi.active .gn{color:var(--c)}
+.gi.active{border-color:var(--c);background:rgba(24,63,73,.72);box-shadow:0 0 14px var(--g);grid-column:1/-1;flex-wrap:wrap}
+.gi .gd{display:none;font-size:.47rem;font-weight:500;letter-spacing:.03em;line-height:1.4;color:rgba(255,253,245,.45);flex-basis:100%}
+.gi.active .gd{display:block}
 #perf{position:fixed;top:12px;left:13px;z-index:30;pointer-events:none;font-size:.46rem;font-weight:600;letter-spacing:.18em;color:rgba(255,253,245,.08)}
 #testpanel{position:fixed;bottom:14px;left:13px;z-index:30;display:flex;flex-direction:column;gap:6px;align-items:flex-start}
 #testcastbtn{pointer-events:auto;cursor:pointer;font-family:'Rajdhani',sans-serif;font-size:.6rem;font-weight:700;letter-spacing:.15em;color:rgba(255,253,245,.7);background:rgba(255,253,245,.06);border:1px solid rgba(255,253,245,.15);border-radius:6px;padding:6px 12px}
@@ -146,7 +153,7 @@ html,body{background:#183f49}
 <div id="testpanel">
   <button id="testcastbtn" type="button">TEST CAST</button>
   <span id="voicestat" title="Bấm để bật lại microphone">voice: show index finger, then say a spell</span>
-  <span id="testhelp">Keys: 1/2 = hold to simulate finger count · Space = force-cast current spell</span>
+  <span id="testhelp">1/2 hold = finger count · Space = cast · 3-0 = spells · G = hide list · P = photo</span>
 </div>
 
 <script type="module" src="./src/main.js"></script>

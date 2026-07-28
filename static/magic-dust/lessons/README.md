@@ -844,6 +844,22 @@ once — voice picks the spell, the hand sets its power — which is how
 `islandFXFORGE` lets a learner rehearse the root app's controls before entering
 it.
 
+## Moving FX plates in a lesson (`play_effect` / `play_my_effect`)
+
+`camera_charm.play_effect(name)` fires a full-size overlay clip over the live
+camera and waits for it; `play_my_effect()` opens a file picker so a learner can
+watch **their own** video composite (read in-browser, never uploaded). Names come
+from `EFFECT_CLIPS` in `interactive-studio.js`: `stag`, `phoenix`, `butterfly`,
+`sakura`, `smoke`, `lightning`.
+
+The clips are glowing light on pure black and are blended with
+`mix-blend-mode: screen` (`.studio-effect-clip`) — that CSS *is* the
+add-and-clamp the learner just wrote by hand, which is the whole point of firing
+them at the end of the island: same maths, 16x16 grid vs 1280x720 frame.
+
+Any bright-on-black footage composites well, which is what makes the
+bring-your-own-clip cell work.
+
 Code cells assert **properties**, not magic pixel numbers (flip round-trips and
 actually changes the image; blend never overflows 255 and never darkens), so the
 same `expectOut` holds for both the real browser decode and the headless stub in

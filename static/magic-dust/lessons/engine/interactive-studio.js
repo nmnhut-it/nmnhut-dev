@@ -35,6 +35,19 @@ const IMAGE_PLATES = {
   stagscene: 'assets/camera-effects/plates/full-stag-over-scene.webp',
   bossscene: 'assets/camera-effects/plates/full-boss-over-scene.webp',
 };
+// The real moving plates the root camera app summons. A learner who has just
+// written the add-and-clamp blend on a 16x16 grid gets to fire the full-size
+// version of the same idea over their own camera: each clip is glowing light
+// on black, screen-blended, i.e. the blend they wrote, at 1280x720x24fps.
+const EFFECT_CLIPS = {
+  stag: 'assets/camera-effects/overlays/koto-stag.mp4',
+  phoenix: 'assets/camera-effects/overlays/spirit-phoenix.mp4',
+  butterfly: 'assets/camera-effects/overlays/crystal-butterflies.mp4',
+  sakura: 'assets/camera-effects/overlays/sakura-bloom.mp4',
+  smoke: 'assets/camera-effects/overlays/smoke-blue.mp4',
+  lightning: 'assets/camera-effects/overlays/lightning-ground.mp4',
+};
+const EFFECT_MAX_MS = 12000;
 
 const clamp = (value, min, max, fallback) => { const n = Number(value); return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback; };
 const shortText = (value, max, fallback = '') => { const chars = [...String(value ?? fallback)]; return chars.slice(0, max).join(''); };
@@ -196,6 +209,7 @@ export class InteractiveStudio {
     if (cfg.action === 'image_plate_grid') return this.#readPlateGrid(cfg);
     if (cfg.action === 'frame_compare') return this.#compareFrames(cfg);
     if (cfg.action === 'voice_listen') return this.#listenForWord(cfg);
+    if (cfg.action === 'effect_play') return this.#playEffectClip(cfg);
     if (cfg.action === 'light_board_start') return this.#startLightBoard();
     if (cfg.action === 'light_board_clear') return this.#clearLightBulbs();
     if (cfg.action === 'light_board_bulb') return this.#placeLightBulb(cfg);
@@ -262,6 +276,59 @@ export class InteractiveStudio {
     if (stat) stat.textContent = picked ? `đã đọc ảnh thành bảng ${side}×${side}` : `đang dùng ảnh mẫu ${side}×${side}`;
     if (shouldPick && !picked) this.#outLine('bạn chưa chọn ảnh — máy dùng tranh cú phép thuật để bài vẫn chạy được');
     return JSON.stringify(Array.isArray(grid) ? grid : []);
+  }
+  // effect_play — fires a full-size moving plate over the live camera, blended
+  // with mix-blend-mode:screen (CSS does the very add-and-clamp the learner
+  // wrote by hand). `own:true` opens a file picker instead of using a bundled
+  // clip, so a learner can bring a video they generated themselves and watch
+  // their own footage composite. Waits for the clip, capped so a looping or
+  // broken file can never wedge the lesson.
+  async #playEffectClip(cfg) {
+    this.stop(); this.#active = true;
+    let src = EFFECT_CLIPS[shortText(cfg.name, 16)] || EFFECT_CLIPS.stag, revoke = null;
+    if (cfg.own) {
+      const picked = await this.#pickClip();
+      if (!picked) { this.#outLine('bạn chưa chọn tệp — máy dùng lớp hiệu ứng có sẵn để bài vẫn chạy được'); }
+      else { src = picked; revoke = picked; }
+    }
+    // best-effort camera behind the plate; the clip still plays without one
+    let camTimer = null;
+    try {
+      const opened = this.#cameraEngine.ensure().then(() => true, () => false);
+      this.#cameraAvailable = await Promise.race([opened, new Promise(r => { camTimer = setTimeout(() => r(false), CAMERA_START_MS); })]);
+    } catch { this.#cameraAvailable = false; }
+    if (camTimer) clearTimeout(camTimer);
+    const clip = document.createElement('video');
+    clip.className = 'studio-effect-clip';
+    clip.src = src; clip.muted = true; clip.playsInline = true; clip.autoplay = true;
+    this.#scenePanel.appendChild(clip);
+    const stat = this.#scenePanel.querySelector('#scstat');
+    if (stat) stat.textContent = cfg.own ? 'đang chiếu lớp hiệu ứng của bạn' : `đang chiếu lớp ${shortText(cfg.name, 16)}`;
+    await new Promise(resolve => {
+      let settled = false;
+      const finish = () => { if (settled) return; settled = true; clearTimeout(timer); resolve(); };
+      const timer = setTimeout(finish, EFFECT_MAX_MS);
+      clip.addEventListener('ended', finish);
+      clip.addEventListener('error', finish);
+      clip.play().catch(finish);
+    });
+    clip.remove();
+    if (revoke) URL.revokeObjectURL(revoke);
+    return 'played';
+  }
+  #pickClip() {
+    return new Promise(resolve => {
+      const input = document.createElement('input'); input.type = 'file'; input.accept = 'video/*';
+      let done = false;
+      const finish = value => { if (done) return; done = true; input.remove(); resolve(value); };
+      input.onchange = () => {
+        const file = input.files && input.files[0];
+        if (!file || !String(file.type || '').startsWith('video/') || file.size > 40 * 1024 * 1024) { finish(null); return; }
+        finish(URL.createObjectURL(file));
+      };
+      input.oncancel = () => finish(null);
+      input.style.display = 'none'; document.body.appendChild(input); input.click();
+    });
   }
   // voice_listen — real spoken INPUT for py/voice_charm.listen(). Matches the
   // utterance against the lesson's own small vocabulary with wordHits (the same
