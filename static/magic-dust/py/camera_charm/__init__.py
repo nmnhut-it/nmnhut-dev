@@ -34,6 +34,9 @@ The charm SEES your hand and does what your rules say:
                      "butterfly", "sakura", "smoke", "lightning") over the live
                      camera, screen-blended — the add-and-clamp at full size
     play_my_effect() -> same, but plays a video file you pick from this device
+    find_human(scene, behind, front) -> THE HUMAN CHARM: finds your outline and
+                     stacks backdrop / effect-behind / you / effect-in-front, so
+                     a creature can pass BEHIND you while petals fall in FRONT
     blank_grid(rows, cols) -> makes a 2D list filled with one preset value
     start_photo_lights() -> waits for the learner to press the centered start button
     show_photo_lights(colors, mode, step) -> draws a repeated color list
@@ -243,6 +246,17 @@ def show_numbers(image, title=""):
     return compare_frames([(title or "ANH", image)], title, True)
 
 
+def show_effect_source(name="stag"):
+    """Play the effect file on its own, with nothing under it and nothing over.
+
+    No camera, no blending — just the video as it sits on disk. Use it to see
+    what a "spell" really is: glowing light on a plain black rectangle. Putting
+    it onto a camera frame is the add-and-clamp you already wrote by hand.
+    """
+    payload = json.dumps({"action": "effect_play", "name": str(name), "raw": True}, ensure_ascii=False)
+    return bridge.ask("studio_start", payload) == "played"
+
+
 def play_effect(name="stag"):
     """Fire a full-size moving effect over the live camera and wait for it.
 
@@ -263,6 +277,32 @@ def play_my_effect():
     and drops black. The file is read in the browser and never uploaded.
     """
     payload = json.dumps({"action": "effect_play", "own": True}, ensure_ascii=False)
+    return bridge.ask("studio_start", payload) == "played"
+
+
+def find_human(scene=None, behind=None, front=None):
+    """THE HUMAN CHARM. Find the person, then stack the layers around them.
+
+    scene:  a backdrop that replaces the room  ("forest")
+    behind: an effect BETWEEN the backdrop and you ("stag", "phoenix",
+            "butterfly", "smoke", "lightning")
+    front:  an effect IN FRONT of you, near the lens ("sakura", "flower")
+
+    Everything else in this island lays one picture flat over another. The
+    charm finds your outline, so the order finally means something: a creature
+    can walk BEHIND you while petals fall in FRONT. Each effect is still light
+    on black added to what is underneath — only its place in the stack is new.
+
+    Needs the camera. Related: lessons/engine/human-layers.js.
+    """
+    request = {"action": "human_layers"}
+    if scene is not None:
+        request["scene"] = str(scene)
+    if behind is not None:
+        request["behind"] = str(behind)
+    if front is not None:
+        request["front"] = str(front)
+    payload = json.dumps(request, ensure_ascii=False)
     return bridge.ask("studio_start", payload) == "played"
 
 

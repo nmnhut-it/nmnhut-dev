@@ -6,6 +6,8 @@ export class StudioEffects{
     this.THREE=THREE;this.scene=scene;this.camera=camera;this.renderer=renderer;
     this.video=video;this.handCanvas=handCanvas;this.statusEl=statusEl;
     this.mode='clear';this.blur=false;this.flip=false;this.lighting='normal';this.until=0;this.photoPending=false;
+    this.segmentation=null;   // set by main.js; capture() must mirror its layers
+    this.activeOverlayFront=false;
     this.activeOverlay=null;this.overlayTimer=null;
     this.buildVideoOverlays();
     this.buildWeather();
@@ -37,9 +39,12 @@ export class StudioEffects{
     }
   }
 
-  playOverlay(kind){
+  // front: draw this plate ABOVE the cut-out person (petals/dust near the lens)
+  // instead of behind them. See FRONT_SPELLS in spells.js.
+  playOverlay(kind,front=false){
     const video=this.videoOverlays[kind];if(!video)return false;
-    this.stopOverlay();this.activeOverlay=kind;
+    this.stopOverlay();this.activeOverlay=kind;this.activeOverlayFront=front;
+    video.classList.toggle('front',!!front);
     video.currentTime=kind==='lightning'?1.35:0;video.classList.add('visible');
     void video.play().catch(()=>this.status(`${kind.toUpperCase()} · tap once to allow video playback`));
     clearTimeout(this.overlayTimer);
@@ -257,6 +262,11 @@ export class StudioEffects{
     ctx.filter=`${this.blur?'blur(12px) ':''}${lighting}`;
     ctx.drawImage(this.video,(vw-sw)/2,(vh-sh)/2,sw,sh,0,0,width,height);
     ctx.restore();ctx.filter='none';
+    // Segmentation splits the frame into layers on screen, so the photo has to
+    // be built the same way or it silently saves the pre-segmentation look:
+    // blurred backdrop over the camera, then FX, then the sharp person on top.
+    const seg=this.segmentation&&this.segmentation.layers;
+    if(seg)ctx.drawImage(seg.backdrop,0,0,seg.backdrop.width,seg.backdrop.height,0,0,width,height);
     // The dust canvas (#cv) is composited on screen with mix-blend-mode:screen,
     // because the bloom composer writes an OPAQUE BLACK background. Drawing it
     // source-over here painted that black straight over the camera and the
@@ -265,7 +275,9 @@ export class StudioEffects{
     ctx.drawImage(this.renderer.domElement,0,0,this.renderer.domElement.width,this.renderer.domElement.height,0,0,width,height);
     ctx.restore();
     const overlay=this.activeOverlay&&this.videoOverlays[this.activeOverlay];
-    if(overlay&&overlay.readyState>=2){
+    const front=!!this.activeOverlayFront;
+    const drawPlate=()=>{
+      if(!overlay||overlay.readyState<2)return;
       ctx.save();ctx.globalCompositeOperation=this.activeOverlay==='rain'?'source-over':'screen';
       ctx.globalAlpha=this.activeOverlay==='rain'?.66:this.activeOverlay==='smoke'?.78:this.activeOverlay==='flower'?.9:.92;
       // same grade the CSS puts on .spell-video-overlay, so the saved frame
@@ -274,7 +286,18 @@ export class StudioEffects{
       const ow=overlay.videoWidth||1280,oh=overlay.videoHeight||720;
       const overlayScale=Math.max(width/ow,height/oh),sourceW=width/overlayScale,sourceH=height/overlayScale;
       ctx.drawImage(overlay,(ow-sourceW)/2,(oh-sourceH)/2,sourceW,sourceH,0,0,width,height);ctx.restore();
+    };
+    // Depth order, and it has to match the screen exactly: a BEHIND plate goes
+    // under the caster, a FRONT plate (petals, dust) goes over them. Drawing
+    // every plate before the person flattens near-camera weather into the
+    // backdrop and loses the whole point of the mask.
+    if(!front)drawPlate();
+    if(seg){
+      ctx.drawImage(seg.person,0,0,seg.person.width,seg.person.height,0,0,width,height);
+      ctx.save();ctx.globalCompositeOperation='screen';
+      ctx.drawImage(seg.rim,0,0,seg.rim.width,seg.rim.height,0,0,width,height);ctx.restore();
     }
+    if(front)drawPlate();
     const link=document.createElement('a');
     link.download=`magic-dust-${new Date().toISOString().replace(/[:.]/g,'-')}.png`;
     link.href=canvas.toDataURL('image/png');link.click();

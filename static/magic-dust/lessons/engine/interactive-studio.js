@@ -7,6 +7,8 @@ import { alignWalkthrough } from './walkthrough-cell.js';
 import { buildImageLab } from './image-lab.js';
 import { startVoiceGate } from './voice-gate.js';
 import { wordHits } from './chant-match.js';
+import { HumanLayers } from './human-layers.js';
+import { mountMicMeter } from './mic-meter.js';
 
 const MOTIONS = new Set(['orbit', 'spiral-in', 'rain', 'pulse', 'comet']);
 const PHOTO_LIGHT_MODES = new Set(['steady', 'off', 'shift']);
@@ -34,6 +36,13 @@ const IMAGE_PLATES = {
   flipped: 'assets/camera-effects/plates/full-stag-flipped.webp',
   stagscene: 'assets/camera-effects/plates/full-stag-over-scene.webp',
   bossscene: 'assets/camera-effects/plates/full-boss-over-scene.webp',
+  // Four real frames lifted out of koto-stag.mp4. A video IS a list of
+  // pictures, and the island says so with the actual frames rather than a
+  // diagram: blend one, then let a for loop do the rest.
+  frame0: 'assets/camera-effects/plates/frame-stag-0.webp',
+  frame1: 'assets/camera-effects/plates/frame-stag-1.webp',
+  frame2: 'assets/camera-effects/plates/frame-stag-2.webp',
+  frame3: 'assets/camera-effects/plates/frame-stag-3.webp',
 };
 // The real moving plates the root camera app summons. A learner who has just
 // written the add-and-clamp blend on a 16x16 grid gets to fire the full-size
@@ -48,6 +57,15 @@ const EFFECT_CLIPS = {
   lightning: 'assets/camera-effects/overlays/lightning-ground.mp4',
 };
 const EFFECT_MAX_MS = 12000;
+// Backdrop plates: a whole scene to stand BEHIND the learner once the human
+// charm has found them. Same family as EFFECT_CLIPS, different job.
+const SCENE_CLIPS = {
+  forest: 'assets/camera-effects/overlays/bg-enchanted-forest.mp4',
+};
+// Which plates read as NEAR the lens. Petals and dust belong in front of the
+// caster; a creature or an atmosphere belongs behind. This near/far split is
+// the whole point of finding the human, so it lives next to the clips.
+const FRONT_CLIPS = new Set(['sakura', 'flower', 'dust']);
 
 const clamp = (value, min, max, fallback) => { const n = Number(value); return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback; };
 const shortText = (value, max, fallback = '') => { const chars = [...String(value ?? fallback)]; return chars.slice(0, max).join(''); };
@@ -277,6 +295,50 @@ export class InteractiveStudio {
     if (shouldPick && !picked) this.#outLine('bạn chưa chọn ảnh — máy dùng tranh cú phép thuật để bài vẫn chạy được');
     return JSON.stringify(Array.isArray(grid) ? grid : []);
   }
+  // human_layers — the payoff of the whole island: find the person, then stack
+  // scene / behind / person / front so the FX has actual DEPTH instead of
+  // washing over the learner's face. Everything else in the island composites
+  // flat; this is the same add-the-light rule with a place in the order.
+  async #setHumanLayers(cfg) {
+    this.stop(); this.#active = true;
+    let camTimer = null;
+    try {
+      const opened = this.#cameraEngine.ensure().then(() => true, () => false);
+      this.#cameraAvailable = await Promise.race([opened, new Promise(r => { camTimer = setTimeout(() => r(false), CAMERA_START_MS); })]);
+    } catch { this.#cameraAvailable = false; }
+    if (camTimer) clearTimeout(camTimer);
+    const video = this.#scenePanel.querySelector('#cam');
+    if (!this.#cameraAvailable || !video) { this.#outLine('chưa mở được camera — bài này cần thấy bạn thì mới xếp lớp được'); return 'no-camera'; }
+
+    const clip = (name, table) => {
+      const src = table[shortText(name, 16)];
+      if (!src) return null;
+      const v = document.createElement('video');
+      v.src = src; v.muted = true; v.playsInline = true; v.loop = true;
+      v.play().catch(() => {});
+      return v;
+    };
+    const scene = cfg.scene ? clip(cfg.scene, SCENE_CLIPS) : null;
+    const behind = cfg.behind ? clip(cfg.behind, EFFECT_CLIPS) : null;
+    const front = cfg.front ? clip(cfg.front, EFFECT_CLIPS) : null;
+
+    const layers = new HumanLayers(this.#scenePanel, video);
+    try { await layers.init(); } catch { this.#outLine('chưa tải được bùa tìm người'); layers.stop(); return 'no-charm'; }
+    const stat = this.#scenePanel.querySelector('#scstat');
+    if (stat) stat.textContent = 'bùa đang tìm người trong khung hình…';
+    const result = await layers.play({ scene, behind, front });
+    // Always say what the charm actually did. A silent no-op is the worst
+    // outcome for a learner: the program printed its lines, the stage stayed
+    // empty, and nothing said which of the two had gone wrong.
+    this.#outLine(`bùa tìm người: ${layers.masks} lần thấy người · ${layers.frames} khung đã vẽ`
+      + `${layers.errors ? ` · ${layers.errors} khung lỗi` : ''}`
+      + `${layers.ready ? '' : ' · KHÔNG thấy người — đang chiếu phẳng, hãy lùi ra cho camera thấy bạn'}`);
+    layers.stop();
+    for (const v of [scene, behind, front]) if (v) v.pause();
+    this.stop();
+    return result;
+  }
+
   // effect_play — fires a full-size moving plate over the live camera, blended
   // with mix-blend-mode:screen (CSS does the very add-and-clamp the learner
   // wrote by hand). `own:true` opens a file picker instead of using a bundled
@@ -285,21 +347,27 @@ export class InteractiveStudio {
   // broken file can never wedge the lesson.
   async #playEffectClip(cfg) {
     this.stop(); this.#active = true;
+    // raw: show the plate exactly as it sits on disk — no camera under it,
+    // no screen blend over it. The point is that an 'effect' is an ordinary
+    // video on a black background, and the magic is entirely in the blend.
+    const raw = !!cfg.raw;
     let src = EFFECT_CLIPS[shortText(cfg.name, 16)] || EFFECT_CLIPS.stag, revoke = null;
     if (cfg.own) {
       const picked = await this.#pickClip();
       if (!picked) { this.#outLine('bạn chưa chọn tệp — máy dùng lớp hiệu ứng có sẵn để bài vẫn chạy được'); }
       else { src = picked; revoke = picked; }
     }
-    // best-effort camera behind the plate; the clip still plays without one
+    // best-effort camera behind the plate; the clip still plays without one.
+    // A raw view deliberately skips it — there is nothing to composite onto.
     let camTimer = null;
+    if (raw) { /* no camera for a raw view */ } else
     try {
       const opened = this.#cameraEngine.ensure().then(() => true, () => false);
       this.#cameraAvailable = await Promise.race([opened, new Promise(r => { camTimer = setTimeout(() => r(false), CAMERA_START_MS); })]);
     } catch { this.#cameraAvailable = false; }
     if (camTimer) clearTimeout(camTimer);
     const clip = document.createElement('video');
-    clip.className = 'studio-effect-clip';
+    clip.className = raw ? 'studio-effect-clip studio-effect-raw' : 'studio-effect-clip';
     clip.src = src; clip.muted = true; clip.playsInline = true; clip.autoplay = true;
     this.#scenePanel.appendChild(clip);
     const stat = this.#scenePanel.querySelector('#scstat');
@@ -314,6 +382,9 @@ export class InteractiveStudio {
     });
     clip.remove();
     if (revoke) URL.revokeObjectURL(revoke);
+    // tear the project frame back down — mountPhotoProject() darkens the panel
+    // and only stop() removes it; without this the black frame never clears
+    this.stop();
     return 'played';
   }
   #pickClip() {
@@ -338,24 +409,28 @@ export class InteractiveStudio {
   // to the matched word, or '' on timeout — so if/elif/else still needs else.
   #listenForWord(cfg) {
     const words = (Array.isArray(cfg.words) ? cfg.words : []).map(w => shortText(w, 24)).filter(Boolean);
-    const seconds = clamp(cfg.seconds, 2, 30, 8);
-    this.stop(); this.#active = true; this.#mountPhotoProject();
+    const seconds = clamp(cfg.seconds, 2, 30, 12);
+    this.#active = true;                 // deliberately NOT stop(): keep the stage up
     const host = this.#scenePanel;
     const panel = document.createElement('div'); panel.className = 'vcharm';
     panel.innerHTML = `<div class="vcharm-state">🎤 gương đang lắng nghe…</div>
+      <canvas class="vcharm-meter" width="260" height="34"></canvas>
+      <div class="vcharm-heard">…</div>
+      <div class="vcharm-or">niệm to một từ, hoặc chạm thẳng vào từ đó</div>
       <div class="vcharm-words"></div>
-      <div class="vcharm-heard"></div>
       <i class="vcharm-bar"><b></b></i>`;
     const wordsEl = panel.querySelector('.vcharm-words');
     host.appendChild(panel);
 
     return new Promise(resolve => {
-      let settled = false, gate = null, timer = null;
+      let settled = false, gate = null, timer = null, meter = null;
       const finish = word => {
         if (settled) return; settled = true;
-        clearTimeout(timer); if (gate) try { gate.stop(); } catch { /* already down */ }
-        panel.querySelector('.vcharm-state').textContent = word ? `✦ nghe được: ${word}` : '… không nghe được từ nào';
-        setTimeout(() => { panel.remove(); resolve(word); }, 700);
+        clearTimeout(timer);
+        if (gate) try { gate.stop(); } catch { /* already down */ }
+        if (meter) try { meter.stop(); } catch { /* already down */ }
+        panel.querySelector('.vcharm-state').textContent = word ? `✦ nghe được: ${word}` : '… không nghe ra từ nào — nhánh else sẽ chạy';
+        setTimeout(() => { panel.remove(); resolve(word); }, 900);   // leave the stage alone
       };
       for (const word of words) {
         const button = document.createElement('button');
@@ -365,10 +440,19 @@ export class InteractiveStudio {
       }
       panel.querySelector('.vcharm-bar').style.setProperty('--vcsec', `${seconds}s`);
       timer = setTimeout(() => finish(''), seconds * 1000);
+      // A live level meter is the difference between "the machine is not
+      // listening" and "it hears me but has not matched a word yet". Without
+      // one a quiet panel looks exactly like a broken mic, which is how this
+      // charm earned its reputation.
+      mountMicMeter(panel.querySelector('.vcharm-meter'))
+        .then(m => { meter = m; })
+        .catch(() => { panel.querySelector('.vcharm-meter').style.display = 'none'; });
       try {
         gate = startVoiceGate({
           onHear: utterance => {
-            panel.querySelector('.vcharm-heard').textContent = utterance ? `“${utterance}”` : '';
+            // show the raw transcript whether or not it matched, so a learner
+            // can see what the machine THOUGHT they said and adjust
+            if (utterance) panel.querySelector('.vcharm-heard').textContent = `nghe thành: “${utterance}”`;
             const hit = words.find(w => wordHits(utterance, w).length);
             if (hit) finish(hit);
           },

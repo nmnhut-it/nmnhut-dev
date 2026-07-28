@@ -5,11 +5,12 @@ import { UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { Pass }           from 'three/addons/postprocessing/Pass.js';
 import { ShaderPass }     from 'three/addons/postprocessing/ShaderPass.js';
 import { CopyShader }     from 'three/addons/shaders/CopyShader.js';
-import { SPELLS, ROT, ENERGY, GUIDE, FINGER_TO_SPELL, OVERLAY_SPELLS, SPELL_KEYS } from './spells.js';
+import { SPELLS, ROT, ENERGY, GUIDE, FINGER_TO_SPELL, OVERLAY_SPELLS, SPELL_KEYS, FRONT_SPELLS } from './spells.js';
 import { FINGERTIPS, handSize, countExtendedFingers, heartGestureMetrics, isIndexWand, StableGestureTrigger } from './gestures.js';
 import { AudioManager } from './audio.js';
 import { Efk } from './effekseer.js';
 import { StudioEffects } from './studio-effects.js';
+import { Segmentation } from './segmentation.js';
 import { Lotus3DEngine } from '../lessons/weather-lab/lotus-3d.js';
 
 const $=id=>document.getElementById(id);
@@ -584,6 +585,16 @@ hands.onResults(res=>{
   }
 });
 
+// ── Person segmentation ───────────────────────────────────────────────────────
+// MediaPipe Hands gives 21 landmarks and no silhouette, so without a mask the
+// dust and the video plates can only ever draw ACROSS the caster's face.
+// SelfieSegmentation buys the three things this stage actually needed: the room
+// dimmed, the caster bright and readable, and the FX behind them.
+const segmentation=new Segmentation(videoEl);
+segmentation.init().catch(e=>console.warn('segmentation off:',e));
+const showSeg=()=>{ptxtEl.textContent=`DEPTH: ${segmentation.mode.toUpperCase()}`;};
+window.segmentation=segmentation;   // console hook: inspect/drive the mask layer
+studio.segmentation=segmentation;   // so capture() composites the same layers the screen shows
 const camUtil=new Camera(videoEl,{onFrame:async()=>{await hands.send({image:videoEl});},width:CAM_W,height:CAM_H});
 camUtil.start();
 
@@ -610,6 +621,8 @@ function animate(ts){
   updateMagicRibbon(.016,ts,fingerWorld,manualSummon,ribbonCollapse);
   updateMotes(.016,time,fingerWorld,motesFocus,motesCharging,chargeI,handOpenPalm||manualSummon);
   studio.update(.016,ts);
+  segmentation.send();                          // fire-and-forget; the mask graph runs off the render loop
+  segmentation.draw(gColor,casting?1:chargeI);  // rim light tracks charge and peaks on the cast
   updatePresence();
   efk.update(.016);        // advance Effekseer sim; the EffekseerPass draws it inside composer.render()
   composer.render();
@@ -649,7 +662,7 @@ function runVoiceSpell(spell,fromKey=false){
   else if(spell==='fireball'||spell==='lightning')startVoiceCast(spell);
   else if(spell==='blur')studio.activate(spell);
   else if(spell==='flip'){studio.toggleFlip();lotus3d.mirrorInput=!studio.flip;}
-  else if(OVERLAY_SPELLS.includes(spell)){studio.clear();studio.playOverlay(spell);}
+  else if(OVERLAY_SPELLS.includes(spell)){studio.clear();studio.playOverlay(spell,FRONT_SPELLS.includes(spell));}
   else if(spell==='dust'){manualSummon=true;ptxtEl.textContent='MAGIC DUST · CONTINUOUS';}
   setActiveGuide(spell==='dust'?'summon':spell);
   return true;
@@ -666,6 +679,8 @@ window.addEventListener('keydown',e=>{
   // noisy room, or on a browser with no SpeechRecognition at all.
   else if(SPELL_KEYS[e.key])runVoiceSpell(SPELL_KEYS[e.key],true);
   else if(e.key.toLowerCase()==='g')guideEl.classList.toggle('hidden');
+  else if(e.key.toLowerCase()==='m'){segmentation.cycleMode();showSeg();}
+  else if(e.key.toLowerCase()==='k'){segmentation.useScene=!segmentation.useScene;ptxtEl.textContent=segmentation.useScene?'BACKDROP: ENCHANTED FOREST':'BACKDROP: BLURRED ROOM';}
   else if(e.key.toLowerCase()==='b')studio.activate('blur');
   else if(e.key.toLowerCase()==='l')armLotus();
   else if(e.key.toLowerCase()==='p')studio.capture();

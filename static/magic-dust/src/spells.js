@@ -58,6 +58,13 @@ export const FINGER_TO_SPELL={1:'fireball',2:'lightning'};
 // re-typed at every branch in main.js.
 export const OVERLAY_SPELLS=['koto','phoenix','butterfly','sakura','smoke','rain','flower','magic'];
 
+// Plates that belong IN FRONT of the caster rather than behind them. Petals,
+// blossom and dust are near-camera weather: they should drift between the
+// viewer and the person. A creature or an atmosphere (stag, phoenix, smoke,
+// rain) belongs behind, where the segmentation mask puts the caster on top.
+// Anything listed here gets .front (z 5) instead of the default z 3.
+export const FRONT_SPELLS=['sakura','flower','dust'];
+
 // Number-key side channel for every spoken spell. Speech recognition needs a
 // mic, a quiet room and a cooperative browser; a demo in a noisy classroom
 // needs none of that, so each spell also has a digit that fires the exact same

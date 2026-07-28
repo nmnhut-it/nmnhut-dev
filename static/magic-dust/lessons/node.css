@@ -1421,8 +1421,13 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;ba
    Real spoken INPUT. The spell words are ALWAYS rendered as buttons as well as
    listened for: a blocked mic, a silent room, or a browser without
    SpeechRecognition must degrade to a tap, never to a dead lesson. */
-.vcharm{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
-        padding:14px;text-align:center;background:color-mix(in srgb,var(--ink) 78%,transparent);backdrop-filter:blur(3px)}
+/* A STRIP, not a curtain. Listening happens while the show keeps playing —
+   inside a while-True stage the old full-panel overlay tore the performance
+   down on every lap and the flow never felt continuous. */
+.vcharm{position:absolute;left:0;right:0;bottom:0;z-index:7;display:flex;flex-direction:column;align-items:center;
+        gap:6px;padding:8px 10px 10px;text-align:center;
+        background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--ink) 88%,transparent) 38%);
+        backdrop-filter:blur(2px)}
 .vcharm-state{font-size:14px;font-weight:800;letter-spacing:.6px;color:var(--paper-raised)}
 .vcharm-words{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .vcharm-word{padding:8px 16px;border-radius:20px;cursor:pointer;font-size:13px;font-weight:900;letter-spacing:1px;
@@ -1443,3 +1448,17 @@ body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 .studio-effect-clip{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
                     z-index:4;pointer-events:none;mix-blend-mode:screen;
                     filter:contrast(1.28) brightness(1.06) saturate(1.2)}
+
+/* The human charm's composite (engine/human-layers.js). It draws the WHOLE
+   stack itself — backdrop, behind-FX, cut-out person, front-FX — so it sits
+   above the raw camera and hides it completely. */
+.human-layers{position:absolute;inset:0;width:100%;height:100%;z-index:5;pointer-events:none}
+/* live mic level + raw transcript: a quiet panel must never be mistaken for a
+   dead mic, and a learner needs to see what the machine THOUGHT they said */
+.vcharm-meter{display:block;width:min(220px,70%);height:22px;border-radius:6px;
+              background:color-mix(in srgb,var(--ink) 55%,transparent)}
+.vcharm-or{font-size:11px;letter-spacing:.4px;color:var(--paper-raised);opacity:.7}
+/* A RAW plate view: the video exactly as it is on disk, no screen blend, so a
+   learner sees it is glowing light on a plain black rectangle — and that the
+   "effect" is entirely the blend they wrote. */
+.studio-effect-clip.studio-effect-raw{mix-blend-mode:normal;filter:none;background:#000}

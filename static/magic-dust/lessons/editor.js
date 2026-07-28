@@ -8,6 +8,9 @@ const NODES = ['node00', 'node01', 'node02', 'node03', 'node04', 'node05', 'node
   'node08', 'node09', 'node10', 'node11', 'node12', 'node13', 'node14', 'node15',
   'node00v2', 'node01v2', 'node02v2', 'node03v2', 'node04v2', 'node05v2', 'node06v2', 'node07v2',
   'node08v2', 'node09v2', 'node10v2',
+  // Side islands are authored the same way and are just as hand-edited, so
+  // they belong in the picker too. islandFXFORGE is the node-25 final project.
+  'islandFXFORGE', 'islandIMAGEOPS', 'islandGRIDOPS', 'islandEFFECTSTAGE',
   'TEMPLATE'];   // v2 = pedagogy experiment clones (PEDAGOGY-V2-PLAN.md)
 const GESTURE_VERBS_FOR_QUIZ = [['', '(mặc định — giơ ngón tay/tap)'], ['track', 'track (đuổi theo)']];
 const GESTURE_VERBS_FOR_BOSS = [['', '(mặc định — giơ ngón tay/tap)'], ['swipe', 'swipe (quẹt trái/phải)'], ['track', 'track (đuổi theo)']];
