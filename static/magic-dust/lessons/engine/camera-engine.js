@@ -140,16 +140,29 @@ export class CameraEngine {
   #videoEl; #onFrame; #watchdogActive;
   #ready = false; #stream = null; #hands = null; #raf = 0; #sending = false; #starting = null;
   #lastResult = 0; #restartAt = 0;
+  // MediaPipe's legacy solutions share one global emscripten `Module`, so a
+  // SelfieSegmentation built while Hands is still fetching its wasm resolves
+  // through Hands' locateFile, 404s, and aborts BOTH graphs — hand tracking
+  // dies silently. Anything that loads a second solution (human-layers.js)
+  // must await this first. Root toy: same guard in src/main.js.
+  #handsFirstFrame = null;
+  #handsUp = null;
   #handAngle = 0;
   constructor(videoEl, { onFrame, watchdogActive }) {
     this.#videoEl = videoEl; this.#onFrame = onFrame; this.#watchdogActive = watchdogActive;
   }
   get isReady() { return this.#ready; }
+  /** Resolves once MediaPipe Hands has delivered a frame — see #handsFirstFrame. */
+  handsRunning() {
+    if (!this.#handsUp) this.#handsUp = new Promise(resolve => { this.#handsFirstFrame = resolve; });
+    return this.#handsUp;
+  }
   get stream() { return this.#stream; }
   get videoEl() { return this.#videoEl; }
 
   #onResults = res => {
     this.#lastResult = performance.now();               // the watchdog's heartbeat
+    if (this.#handsFirstFrame) { this.#handsFirstFrame(); this.#handsFirstFrame = null; }
     const hand = pickClosestHand(res.multiHandLandmarks || []);
     if (hand) {
       const raw = handAngleDegrees(hand);

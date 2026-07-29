@@ -20,6 +20,7 @@ const PHOTO_LIGHT_LABELS = { green: 'XANH LÁ', red: 'ĐỎ', yellow: 'VÀNG', b
 const ANCHOR_INDEX = { wrist: 0, palm: 9, index_tip: 8 };
 const DEFAULT_STYLE = { color: '#78b2a5', symbols: '', motion: 'orbit', size: 1, density: 1, glow: 1 };
 const CAMERA_START_MS = 6000;
+const HANDS_WARMUP_MS = 4000;      // cap on waiting for MediaPipe Hands' first frame
 const HAND_READ_MS = 1500, PARTICLE_FRAME_CAP = 120, IMAGE_FRAME_MAX_W = 64, IMAGE_FRAME_MAX_H = 48;
 // A grid is two different things at two different moments. Up to ~16 cells a
 // side it is a TEACHING object: every cell is a readable number. Past that it
@@ -346,6 +347,12 @@ export class InteractiveStudio {
     const video = this.#scenePanel.querySelector('#cam');
     if (!this.#cameraAvailable || !video) { this.#outLine('chưa mở được camera'); return '[]'; }
     const layers = new HumanLayers(this.#scenePanel, video);
+    // Wait for Hands to be running before a second MediaPipe solution loads —
+    // see camera-engine.js#handsRunning for why loading both at once kills
+    // hand tracking outright. Capped: if Hands never reports (a camera that
+    // opened but sees nothing), the mask must still get its chance rather than
+    // leaving the learner's cell hanging on a promise that never settles.
+    await Promise.race([this.#cameraEngine.handsRunning(), this.#wait(HANDS_WARMUP_MS)]);
     try { await layers.init(); } catch { layers.stop(); this.#outLine('chưa tải được bùa tìm người'); return '[]'; }
     const grid = await layers.maskGrid(side);
     layers.stop(); this.stop();
@@ -383,6 +390,12 @@ export class InteractiveStudio {
     this.#clearResultStill();
     this.#enterStage('Pip đang chạy đoạn code của bạn…');
     const layers = new HumanLayers(this.#scenePanel, video);
+    // Wait for Hands to be running before a second MediaPipe solution loads —
+    // see camera-engine.js#handsRunning for why loading both at once kills
+    // hand tracking outright. Capped: if Hands never reports (a camera that
+    // opened but sees nothing), the mask must still get its chance rather than
+    // leaving the learner's cell hanging on a promise that never settles.
+    await Promise.race([this.#cameraEngine.handsRunning(), this.#wait(HANDS_WARMUP_MS)]);
     try { await layers.init(); } catch { this.#outLine('chưa tải được bùa tìm người'); layers.stop(); this.#exitStage(); return 'no-charm'; }
     const stat = this.#scenePanel.querySelector('#scstat');
     if (stat) stat.textContent = 'bùa đang tìm người trong khung hình…';

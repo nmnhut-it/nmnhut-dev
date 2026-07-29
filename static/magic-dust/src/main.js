@@ -540,7 +540,17 @@ function drawFingertips(lm){
 const hands=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`});
 hands.setOptions({maxNumHands:4,modelComplexity:MCX,minDetectionConfidence:0.72,minTrackingConfidence:0.62,selfieMode:false});
 
+// MediaPipe's legacy solutions share ONE global emscripten `Module`. Building
+// SelfieSegmentation while Hands is still fetching its wasm makes the selfie
+// glue resolve through Hands' locateFile — it asks for
+// hands@…/selfie_segmentation_solution_simd_wasm_bin.wasm (404) and aborts BOTH
+// graphs. The page then looks perfectly fine and never sees a hand (measured:
+// dead on 6 of 6 loads). Hands must be up and delivering frames before the mask
+// is allowed to load.
+let handsFirstFrame=null;const handsUp=new Promise(r=>{handsFirstFrame=r;});
+
 hands.onResults(res=>{
+  if(handsFirstFrame){handsFirstFrame();handsFirstFrame=null;}
   ocv.width=videoEl.videoWidth||CAM_W;ocv.height=videoEl.videoHeight||CAM_H;
   ctx2d.clearRect(0,0,ocv.width,ocv.height);
   const rawHands=res.multiHandLandmarks||[];
@@ -591,7 +601,10 @@ hands.onResults(res=>{
 // SelfieSegmentation buys the three things this stage actually needed: the room
 // dimmed, the caster bright and readable, and the FX behind them.
 const segmentation=new Segmentation(videoEl);
-segmentation.init().catch(e=>console.warn('segmentation off:',e));
+// Deliberately serialised behind hands — see handsUp above. Without a camera
+// Hands never reports, and a mask with no video is useless anyway, so leaving
+// this pending forever is the correct behaviour rather than a missing fallback.
+handsUp.then(()=>segmentation.init()).catch(e=>console.warn('segmentation off:',e));
 const showSeg=()=>{ptxtEl.textContent=`DEPTH: ${segmentation.mode.toUpperCase()}`;};
 window.segmentation=segmentation;   // console hook: inspect/drive the mask layer
 studio.segmentation=segmentation;   // so capture() composites the same layers the screen shows
