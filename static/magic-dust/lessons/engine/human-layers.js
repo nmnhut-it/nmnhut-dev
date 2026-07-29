@@ -85,7 +85,37 @@ export class HumanLayers {
     });
   }
 
+  // maskGrid(side) — the mask as PLAIN DATA for camera_charm.human_mask():
+  // grid[row][col] is 1 when that cell sits on the person and 0 when it does
+  // not. Waits for the model to settle, since the first inferences arrive
+  // half-formed and a learner looping over a half-mask sees nonsense.
+  async maskGrid(side = 16) {
+    for (let tries = 0; tries < 60 && !this.#have; tries++) {
+      this.#pump();
+      await new Promise(r => setTimeout(r, 100));
+    }
+    if (!this.#have) return [];
+    const a = this.#accum, small = document.createElement('canvas');
+    small.width = side; small.height = side;
+    const x = small.getContext('2d', { willReadFrequently: true });
+    // mirror it, so a cell on the learner's right is on the right of the grid
+    x.setTransform(-1, 0, 0, 1, side, 0);
+    x.drawImage(a, 0, 0, side, side);
+    const data = x.getImageData(0, 0, side, side).data, grid = [];
+    for (let r = 0; r < side; r++) {
+      const line = [];
+      for (let c = 0; c < side; c++) line.push(data[(r * side + c) * 4 + 3] > 110 ? 1 : 0);
+      grid.push(line);
+    }
+    return grid;
+  }
+
+  // stop() removes the canvas; freeze() only halts the loop and leaves the last
+  // composite sitting there. A run that ends by deleting its own output leaves
+  // the learner staring at a bare camera feed, which reads as "my effect never
+  // happened" — the result has to outlive the cell that made it.
   stop() { this.#stop = true; this.#cv.remove(); }
+  freeze() { this.#stop = true; this.#cv.classList.add('result-frozen'); }
 
   async #pump() {
     if (!this.#seg || this.#busy) return;

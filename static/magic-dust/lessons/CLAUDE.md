@@ -57,6 +57,15 @@ node lessons/validate-content.mjs lessons/content/<file>.js
 node lessons/test-content-solutions.mjs
 ```
 
+For the image lessons (`content/island*` using `load_plate`/`compare_frames`),
+also run the real-image guard — it needs `python serve.py 8123`:
+
+```powershell
+node lessons/test-fxforge-real-image-browser.mjs
+node lessons/test-pixel-board.mjs
+node lessons/test-pixel-board-browser.mjs
+```
+
 For Computer Vision infrastructure:
 
 ```powershell

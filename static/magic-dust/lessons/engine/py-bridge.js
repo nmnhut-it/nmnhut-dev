@@ -6,6 +6,11 @@ import { RUN_HANG_MS } from './constants.js';
 
 const WORKER_URL = './worker.js?v=20260714-165347';
 export const BOOT_RETRY_DELAYS_MS = [1000, 3000, 8000];
+// Reply size for one bridge.ask(), and the hard ceiling on anything the page
+// hands back to Python — respond() truncates past it. 64KB only fitted a
+// 24x24 image grid, which forced the image lessons to work on pixel mush; a
+// real plate a learner can actually transform is ~100-250KB of JSON.
+export const ASK_REPLY_MAX = 4 * 1024 * 1024;
 
 export class PyBridge {
   #worker = null; #header = null; #dataU8 = null; #up = false;
@@ -40,7 +45,7 @@ export class PyBridge {
   // #sab() — the SharedArrayBuffer backing #header/#dataU8, (re)allocated once
   // per spawned worker (a fresh worker needs a fresh buffer to hand `boot`).
   #sab() {
-    const sab = new SharedArrayBuffer(8 + 65536);
+    const sab = new SharedArrayBuffer(8 + ASK_REPLY_MAX);
     this.#header = new Int32Array(sab, 0, 2); this.#dataU8 = new Uint8Array(sab, 8);
     return sab;
   }

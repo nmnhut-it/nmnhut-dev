@@ -22,7 +22,7 @@ The charm SEES your hand and does what your rules say:
     choose_image() -> opens a local image picker and returns a small 2D RGB list;
                       cancelling uses the built-in magic-owl sample
     load_sample_image() -> returns that generated sample as a small 2D RGB list
-    load_plate(name, size) -> reads a named lesson plate ("stag", "boss",
+    load_plate(name, size) -> reads a named lesson plate ("dragon", "boss",
                      "scene", "goal") into a 2D RGB list; same numbers each run
     compare_frames(labelled, title, numbers) -> opens the big side-by-side
                      viewer and WAITS until the learner closes it; each entry is
@@ -30,10 +30,11 @@ The charm SEES your hand and does what your rules say:
                      that artwork full size
     show_photos(labelled, title) -> compare_frames for plate artwork only
     show_numbers(image, title) -> one image plus its brightness digits
-    play_effect(name) -> fires a full-size moving plate ("stag", "phoenix",
+    play_effect(name) -> fires a full-size moving plate ("dragon", "phoenix",
                      "butterfly", "sakura", "smoke", "lightning") over the live
                      camera, screen-blended — the add-and-clamp at full size
     play_my_effect() -> same, but plays a video file you pick from this device
+    human_mask(size) -> the person as a grid of 1/0 you can loop over
     find_human(scene, behind, front) -> THE HUMAN CHARM: finds your outline and
                      stacks backdrop / effect-behind / you / effect-in-front, so
                      a creature can pass BEHIND you while petals fall in FRONT
@@ -168,8 +169,19 @@ def upload_photo():
     return bridge.ask("studio_start", payload) == "uploaded"
 
 
+# Up to ~16 cells a side a grid is a teaching object — every cell is a number
+# a learner can read. Past that it is the picture itself, which is what the
+# transform exercises work on. The ceiling matches IMAGE_GRID_MAX in
+# lessons/engine/interactive-studio.js.
+GRID_MIN = 8
+GRID_MAX = 512
+
+# Marks a compare_frames panel as the learner's own output (see compare_frames).
+RESULT = "result"
+
+
 def _read_image_grid(action, size=16, name=None):
-    side = max(8, min(24, int(size)))
+    side = max(GRID_MIN, min(GRID_MAX, int(size)))
     request = {"action": action, "size": side}
     if name is not None:
         request["name"] = str(name)
@@ -177,10 +189,15 @@ def _read_image_grid(action, size=16, name=None):
     try:
         image = json.loads(bridge.ask("studio_start", payload))
     except (TypeError, ValueError):
-        return []
-    if not isinstance(image, list):
-        return []
-    return image
+        image = None
+    if isinstance(image, list) and image:
+        return image
+    # No camera (or an unreadable source) used to return [], and the very next
+    # line a lesson writes is len(image[0]) — so a blocked webcam showed the
+    # learner "IndexError: list index out of range" instead of the reason.
+    # A same-sized all-zero grid keeps their loop running and says why.
+    print("chưa đọc được ảnh (camera chưa mở?) — lưới trả về toàn 0")
+    return [[[0, 0, 0] for _ in range(side)] for _ in range(side)]
 
 
 def choose_image(size=16):
@@ -191,12 +208,15 @@ def load_sample_image(size=16):
     return _read_image_grid("image_sample_grid", size)
 
 
-def load_plate(name="stag", size=16):
+def load_plate(name="dragon", size=16):
     """Read a named lesson plate into a 2D RGB grid.
 
-    name: "stag" or "boss" (glowing effect layers shot on black) or "scene"
+    name: "dragon" or "boss" (glowing effect layers shot on black) or "scene"
     (a night background). Returns image[row][col] == [red, green, blue].
     Same numbers on every run, so a lesson can check exact values.
+    size: 8..GRID_MAX cells a side. Use 8-16 while the lesson is still teaching
+    what a pixel is (the viewer shows readable digits), and ~96 once the
+    learner is transforming the picture for real.
     Related: lessons/engine/interactive-studio.js IMAGE_PLATES.
     """
     return _read_image_grid("image_plate_grid", size, name)
@@ -210,17 +230,25 @@ def compare_frames(labelled, title="", numbers=True):
     default whenever the grid is small enough to read; pass False to hide.
     Use it to put a BEFORE frame next to an AFTER frame; the program pauses
     on the viewer, so nothing scrolls away before it has been looked at.
+    Naming a plate on a frame the learner BUILT is wrong: the plate is shipped
+    artwork and would stay correct next to their broken result. Pass their grid
+    with "result" instead — the panel then tells them it is their own output.
     Related: lessons/engine/image-lab.js.
     """
     frames = []
     for entry in labelled:
         # (label, plate_name)        -> that artwork at full size
-        # (label, grid)              -> the cells the learner's code built
+        # (label, grid)              -> a grid the program is holding
         # (label, grid, plate_name)  -> both, paired: picture beside its pixels
+        # (label, grid, "result")    -> a grid the LEARNER's code built; the
+        #                              viewer says so, so a panel is never
+        #                              mistaken for one the machine handed in
         label, image = entry[0], entry[1]
         plate = entry[2] if len(entry) > 2 else (image if isinstance(image, str) else None)
         frame = {"label": str(label)}
-        if plate is not None:
+        if plate == RESULT:
+            frame["role"] = RESULT
+        elif plate is not None:
             frame["plate"] = str(plate)
         if not isinstance(image, str):
             frame["image"] = image
@@ -235,8 +263,8 @@ def compare_frames(labelled, title="", numbers=True):
 def show_photos(labelled, title=""):
     """Open the viewer on plate ARTWORK at full size.
 
-    labelled: list of (label, plate_name) pairs, e.g. [("HUOU", "stag")].
-    Plate names: "stag", "boss", "scene", "goal".
+    labelled: list of (label, plate_name) pairs, e.g. [("RONG", "dragon")].
+    Plate names: "dragon", "boss", "scene", "goal".
     """
     return compare_frames(labelled, title)
 
@@ -246,7 +274,7 @@ def show_numbers(image, title=""):
     return compare_frames([(title or "ANH", image)], title, True)
 
 
-def show_effect_source(name="stag"):
+def show_effect_source(name="dragon"):
     """Play the effect file on its own, with nothing under it and nothing over.
 
     No camera, no blending — just the video as it sits on disk. Use it to see
@@ -257,10 +285,10 @@ def show_effect_source(name="stag"):
     return bridge.ask("studio_start", payload) == "played"
 
 
-def play_effect(name="stag"):
+def play_effect(name="dragon"):
     """Fire a full-size moving effect over the live camera and wait for it.
 
-    name: "stag", "phoenix", "butterfly", "sakura", "smoke", "lightning".
+    name: "dragon", "rose", "stag", "phoenix", "butterfly", "sakura", "smoke", "lightning".
     The clip is glowing light on black and is screen-blended over the camera —
     the same add-and-clamp you wrote by hand, running at full size.
     Related: lessons/engine/interactive-studio.js EFFECT_CLIPS.
@@ -280,11 +308,22 @@ def play_my_effect():
     return bridge.ask("studio_start", payload) == "played"
 
 
+def human_mask(size=16):
+    """Return the person as PLAIN DATA: grid[row][col] is 1 or 0.
+
+    1 means that cell sits on a person, 0 means it does not. This is exactly
+    what find_human() uses internally to decide which cells are you — here you
+    get the same answer as a grid, so you can loop over it yourself.
+    Needs the camera. Returns [] if nobody is found.
+    """
+    return _read_image_grid("human_mask", size)
+
+
 def find_human(scene=None, behind=None, front=None):
     """THE HUMAN CHARM. Find the person, then stack the layers around them.
 
     scene:  a backdrop that replaces the room  ("forest")
-    behind: an effect BETWEEN the backdrop and you ("stag", "phoenix",
+    behind: an effect BETWEEN the backdrop and you ("dragon", "rose", "stag",
             "butterfly", "smoke", "lightning")
     front:  an effect IN FRONT of you, near the lens ("sakura", "flower")
 
@@ -307,8 +346,11 @@ def find_human(scene=None, behind=None, front=None):
 
 
 def blank_grid(rows, cols, value=0):
-    row_count = max(0, min(48, int(rows)))
-    col_count = max(0, min(64, int(cols)))
+    # The cap has to clear a full-resolution plate (GRID_MAX a side); it used
+    # to sit at 48x64, which silently produced a grid too small for the image
+    # being transformed and blew up on the first write past the end.
+    row_count = max(0, min(GRID_MAX, int(rows)))
+    col_count = max(0, min(GRID_MAX, int(cols)))
     return [[value for col in range(col_count)] for row in range(row_count)]
 
 

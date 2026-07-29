@@ -7,6 +7,7 @@ import { quizCell } from './quiz-cell.js';
 import { giftCell } from './gift-cell.js';
 import { forgeCell } from './forge-cell.js';
 import { checkpointCell } from './checkpoint-cell.js';
+import { pixelBoardCell } from './pixel-board-cell.js';
 import { widgetCell } from './widget-cell.js?v=20260714-101425';
 import { bossCell } from './boss-fight.js';
 import { codeCell, ensureMonaco, mountEditor } from './code-cells.js?v=20260714-165347';
@@ -36,7 +37,7 @@ function npcCell(c) {
   el.innerHTML = `<div class="avatar"><i></i></div><div class="bubble"><b>${NPC_NAME}</b><span class="txt"></span></div>`;
   return el;
 }
-const isBlocking = c => !!(c.npc || c.code || c.walkthrough || c.programCounter || c.execution || c.widget || c.gift || c.quiz || c.boss || c.ritual || c.cameo || c.checkpoint || c.forge || c.intro);
+const isBlocking = c => !!(c.npc || c.code || c.walkthrough || c.programCounter || c.execution || c.widget || c.gift || c.quiz || c.boss || c.ritual || c.cameo || c.checkpoint || c.forge || c.intro || c.pixelBoard);
 
 export function classroomInstructionCell(cell) {
   if (!cell || typeof cell !== 'object' || cell.code === undefined) return cell;
@@ -154,7 +155,7 @@ export class NotebookRunner {
     // that used to silently fall through to the ritual-cell factory and
     // render as a broken/blank cell with no clue why (see validate-content.mjs's
     // matching check). Loud + additive: known types are untouched below.
-    const isKnownType = c => !!(c.npc !== undefined || c.code !== undefined || c.walkthrough || c.programCounter || c.execution || c.widget || c.gift || c.quiz || c.boss || c.cameo || c.remember || c.ritual || c.checkpoint || c.forge || c.intro);
+    const isKnownType = c => !!(c.npc !== undefined || c.code !== undefined || c.walkthrough || c.programCounter || c.execution || c.widget || c.gift || c.quiz || c.boss || c.cameo || c.remember || c.ritual || c.checkpoint || c.forge || c.intro || c.pixelBoard);
     cfgs.forEach((c, i) => {
       if (!isKnownType(c)) {
         console.error(`notebook-runner: unknown cell type at index ${i} (keys: ${Object.keys(c).join(', ') || 'none'})`, c);
@@ -170,6 +171,7 @@ export class NotebookRunner {
         : c.cameo ? cameoCell(c, deps)
         : c.intro ? introCell(c, deps)
         : c.checkpoint ? checkpointCell(c, deps)
+        : c.pixelBoard ? pixelBoardCell(c, deps)
         : c.forge ? forgeCell(c, deps)
         : c.remember ? rememberCell(c) : this.#ritualCellFactory();
       el.classList.add('cell', 'veiled'); this.#bookEl.appendChild(el); this.#seq.push({ cfg: c, el, done: false });
@@ -316,11 +318,40 @@ export class NotebookRunner {
   }
 
   // ── camera/fx scene panel mount (shared; mounted into the running cell) ──
+  // The camera output is a panel in the notebook flow, and a learner running a
+  // cell is looking at their CODE — so the effect plays perfectly somewhere
+  // below the fold and they report that nothing happened. Bring it into view
+  // the moment it moves to a new cell, and flash the frame so the eye lands on
+  // it. Deliberately NOT on every mountScene(): that fires on every camera ask
+  // (a watch() inside a loop calls it each iteration) and would yank the page
+  // out from under anyone trying to read.
+  #revealScene() {
+    const panel = this.#scenePanel;
+    setTimeout(() => {
+      // Inside the fullscreen overlay the page does not scroll at all, so the
+      // pane has to be scrolled instead — scrollIntoView on the document would
+      // do nothing and the camera would look missing.
+      const pane = panel.closest('.coutput');
+      const overlay = panel.closest('.codecell.cell-full');
+      if (overlay && pane) pane.scrollTop = Math.max(0, panel.offsetTop - 8);
+      else {
+        const r = panel.getBoundingClientRect();
+        const showing = r.top >= 0 && r.bottom <= (innerHeight || 0);
+        if (!showing) panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      panel.classList.remove('scene-ping');
+      void panel.offsetWidth;                    // restart the animation
+      panel.classList.add('scene-ping');
+      setTimeout(() => panel.classList.remove('scene-ping'), 1400);
+    }, 60);
+  }
+
   #mountScene() {
     if (!this.#running) return;
     const out = this.#running.querySelector('.cout');
     this.#scenePanel.classList.remove('devstage');            // a real run reclaims the panel from the cheat stage
-    if (this.#scenePanel.parentElement !== out) out.appendChild(this.#scenePanel);
+    const moved = this.#scenePanel.parentElement !== out;
+    if (moved) { out.appendChild(this.#scenePanel); this.#revealScene(); }
     this.#scenePanel.classList.remove('frozen');
     const b = this.#scenePanel.querySelector('.burst'); if (b) b.remove();
     // NOTE: lighten()/darken()/sepia() etc. must PERSIST across mountScene()

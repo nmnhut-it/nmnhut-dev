@@ -13,7 +13,7 @@
 // shared engine file.
 import { $, mountPage, warnIfNotIsolated, scenePanelHtml } from './engine/dom-scaffold.js';
 import { ProgressStore } from './engine/progress-store.js';
-import { castSpell, showValue, screenFx, createFxQueue } from './engine/casting.js';
+import { castSpell, showValue, screenFx, showPixels, createFxQueue } from './engine/casting.js';
 import { CameraEngine } from './engine/camera-engine.js';
 import { GestureDispatcher } from './engine/gesture-dispatcher.js';
 import { PyBridge } from './engine/py-bridge.js?v=20260714-165347';
@@ -77,6 +77,7 @@ const castingApi = {
   castSpell: name => castSpell(name, { scenePanel, fxQueue, vortexShare: photoBooth.vortexShare, loadVortex }),
   showValue: (sp, v) => showValue(sp, v),
   screenFx: (sp, mode, outLine) => screenFx(sp, mode, outLine),
+  showPixels: (sp, text) => showPixels(sp, text),
 };
 
 photoBooth = new PhotoBooth(scenePanel, {
@@ -224,6 +225,7 @@ window.nodeDev = {
   skip: () => notebookRunner.devForce(notebookRunner.seq[notebookRunner.frontier]),
   toFirst: () => notebookRunner.devTo(() => true, () => { enterNode(); openGift(); }),
   toCell: label => notebookRunner.devTo(c => c.label === label, () => { enterNode(); openGift(); }),
+  toPixelBoard: () => notebookRunner.devTo(c => !!c.pixelBoard, () => { enterNode(); openGift(); }),
   toRitual: () => notebookRunner.devTo(c => !!c.ritual, () => { enterNode(); openGift(); }),
   cast: (k = 'fire') => { notebookRunner.devScene($('book').classList.contains('gone')); castingApi.castSpell(k); },
   screen: m => { notebookRunner.devScene($('book').classList.contains('gone')); screenFx(scenePanel, m || 'lighten', t => notebookRunner.outLine('t-sys', t)); },

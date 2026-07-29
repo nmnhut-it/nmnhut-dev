@@ -23,6 +23,7 @@ export default {
     old_computer: "../py/old_computer/__init__.py",
     camera_charm: "../py/camera_charm/__init__.py",
     voice_charm: "../py/voice_charm/__init__.py",
+    pip_test: "../py/pip_test/__init__.py",
   },
   cells: [
     {
@@ -41,39 +42,39 @@ from camera_charm import show_photos
 
 # Hai lớp ảnh rời nhau, chưa dính gì tới nhau
 
-show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss")], "TWO SEPARATE LAYERS")
+show_photos([("SPIRIT DRAGON", "dragon"), ("ERROR BEAST", "boss")], "TWO SEPARATE LAYERS")
 `,
       label: "xem_hai_tam_anh.py",
       note: `RUN KIỂM CHỨNG
-INPUT là hai tấm ảnh có sẵn trong bài. OUTPUT là cửa sổ lớn đặt hai tấm cạnh nhau ở đúng kích thước gốc: con hươu ánh sáng trên nền đen, và con quái khói tím cũng trên nền đen. Cửa sổ đứng yên tới khi bạn bấm TIẾP TỤC.`,
+INPUT là hai tấm ảnh có sẵn trong bài. OUTPUT là cửa sổ lớn đặt hai tấm cạnh nhau ở đúng kích thước gốc: con rồng ánh sáng trên nền đen, và con quái khói tím cũng trên nền đen. Cửa sổ đứng yên tới khi bạn bấm TIẾP TỤC.`,
       expectOut: {
         kind: "studio_start",
         minCount: 1,
       },
       solution: `from camera_charm import show_photos
 
-show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss")], "TWO SEPARATE LAYERS")
+show_photos([("SPIRIT DRAGON", "dragon"), ("ERROR BEAST", "boss")], "TWO SEPARATE LAYERS")
 `,
     },
     {
-      npc: "Đây là câu đố Pip đặt ra cho bạn: làm sao đưa con hươu lao thẳng vào con quái trong CÙNG một khung hình? Bạn đoán thử xem gương phải làm gì với hai hình đó.",
+      npc: "Đây là câu đố Pip đặt ra cho bạn: làm sao đưa con rồng lao thẳng vào con quái trong CÙNG một khung hình? Bạn đoán thử xem gương phải làm gì với hai hình đó.",
     },
     {
       code: `from camera_charm import show_photos
 
 # Đây là mục tiêu: 
-show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss"), ("STAG OVER BEAST", "goal")], "THE GOAL: ONE SINGLE FRAME")
+show_photos([("SPIRIT DRAGON", "dragon"), ("ERROR BEAST", "boss"), ("DRAGON OVER BEAST", "goal")], "THE GOAL: ONE SINGLE FRAME")
 `,
       label: "xem_dich_toi.py",
       note: `RUN KIỂM CHỨNG
-INPUT vẫn là hai tấm ảnh cũ, cộng thêm tấm kết quả đã dựng sẵn. OUTPUT là cửa sổ ba tấm: con hươu, con quái, và khung hình cuối cùng có con hươu lao qua làn khói tím. Tấm thứ ba chính là thứ bạn sẽ tự dựng được ở cuối đảo — nhìn kỹ xem chỗ nào sáng lên, chỗ nào giữ nguyên.`,
+INPUT vẫn là hai tấm ảnh cũ, cộng thêm tấm kết quả đã dựng sẵn. OUTPUT là cửa sổ ba tấm: con rồng, con quái, và khung hình cuối cùng có con rồng lao qua làn khói tím. Tấm thứ ba chính là thứ bạn sẽ tự dựng được ở cuối đảo — nhìn kỹ xem chỗ nào sáng lên, chỗ nào giữ nguyên.`,
       expectOut: {
         kind: "studio_start",
         minCount: 1,
       },
       solution: `from camera_charm import show_photos
 
-show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss"), ("STAG OVER BEAST", "goal")], "THE GOAL: ONE SINGLE FRAME")
+show_photos([("SPIRIT DRAGON", "dragon"), ("ERROR BEAST", "boss"), ("DRAGON OVER BEAST", "goal")], "THE GOAL: ONE SINGLE FRAME")
 `,
     },
     {
@@ -81,11 +82,11 @@ show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss"), ("STAG OVER BEAST
         title: "Đoán cách đè hai tấm ảnh",
         questions: [
           {
-            q: "Cả hai tấm ảnh đều được quay trên nền đen, và trong khung hình cuối cùng bạn thấy CẢ con hươu lẫn làn khói tím, không tấm nào che mất tấm nào. Cách xử lý nào hợp lý nhất?",
+            q: "Cả hai tấm ảnh đều được quay trên nền đen, và trong khung hình cuối cùng bạn thấy CẢ con rồng lẫn làn khói tím, không tấm nào che mất tấm nào. Cách xử lý nào hợp lý nhất?",
             a: [
               "Cộng ánh sáng của hai tấm tại từng ô, vì nền đen cộng vào gần như không thêm gì",
               "Lấy tấm thứ hai đặt chồng lên và xóa hẳn tấm thứ nhất",
-              "Cắt đôi khung hình, để con hươu một nửa và con quái một nửa",
+              "Cắt đôi khung hình, để con rồng một nửa và con quái một nửa",
             ],
             correct: 0,
           },
@@ -111,24 +112,24 @@ show_photos([("SPIRIT STAG", "stag"), ("ERROR BEAST", "boss"), ("STAG OVER BEAST
       code: `from camera_charm import load_plate, compare_frames
 
 # Ảnh gốc, rồi chính nó đọc thành lưới ở hai độ mịn
-fine = load_plate("stag", 24)
-coarse = load_plate("stag", 8)
+fine = load_plate("dragon", 24)
+coarse = load_plate("dragon", 8)
 
-compare_frames([("GRID 24", fine, "stag"), ("GRID 8", coarse, "stag")], "FROM PICTURE TO NUMBERS", False)
+compare_frames([("GRID 24", fine, "dragon"), ("GRID 8", coarse, "dragon")], "FROM PICTURE TO NUMBERS", False)
 `,
       label: "so_anh_that_voi_luoi.py",
       note: `RUN KIỂM CHỨNG
-INPUT là tấm hiệu ứng con hươu có sẵn trong bài. OUTPUT là cửa sổ hai khung, mỗi khung đặt ảnh gốc sắc nét ngay cạnh lưới ô của chính nó: một khung chia 24 ô mỗi chiều, một khung chỉ còn 8 ô. Càng ít ô thì mỗi ô càng phải gánh một mảng rộng, nên lưới càng thô so với ảnh gốc bên cạnh — nhưng lưới mới là dạng mà vòng lặp Python duyệt được.`,
+INPUT là tấm hiệu ứng con rồng có sẵn trong bài. OUTPUT là cửa sổ hai khung, mỗi khung đặt ảnh gốc sắc nét ngay cạnh lưới ô của chính nó: một khung chia 24 ô mỗi chiều, một khung chỉ còn 8 ô. Càng ít ô thì mỗi ô càng phải gánh một mảng rộng, nên lưới càng thô so với ảnh gốc bên cạnh — nhưng lưới mới là dạng mà vòng lặp Python duyệt được.`,
       expectOut: {
         kind: "studio_start",
         minCount: 3,
       },
       solution: `from camera_charm import load_plate, compare_frames
 
-fine = load_plate("stag", 24)
-coarse = load_plate("stag", 8)
+fine = load_plate("dragon", 24)
+coarse = load_plate("dragon", 8)
 
-compare_frames([("GRID 24", fine, "stag"), ("GRID 8", coarse, "stag")], "FROM PICTURE TO NUMBERS", False)
+compare_frames([("GRID 24", fine, "dragon"), ("GRID 8", coarse, "dragon")], "FROM PICTURE TO NUMBERS", False)
 `,
     },
     {
@@ -138,8 +139,8 @@ compare_frames([("GRID 24", fine, "stag"), ("GRID 8", coarse, "stag")], "FROM PI
       code: `from camera_charm import load_plate, compare_frames
 
 # Lưới 8 ô để con số còn đọc được bằng mắt
-small = load_plate("stag", 8)
-compare_frames([("GRID 8", small, "stag")], "BRIGHTNESS OF EACH CELL", True)
+small = load_plate("dragon", 8)
+compare_frames([("GRID 8", small, "dragon")], "BRIGHTNESS OF EACH CELL", True)
 `,
       label: "xem_con_so.py",
       note: `RUN KIỂM CHỨNG
@@ -150,8 +151,8 @@ INPUT là tấm hiệu ứng đọc ở lưới 8×8 cho con số còn đủ to.
       },
       solution: `from camera_charm import load_plate, compare_frames
 
-small = load_plate("stag", 8)
-compare_frames([("GRID 8", small, "stag")], "BRIGHTNESS OF EACH CELL", True)
+small = load_plate("dragon", 8)
+compare_frames([("GRID 8", small, "dragon")], "BRIGHTNESS OF EACH CELL", True)
 `,
     },
     {
@@ -189,13 +190,25 @@ compare_frames([("GRID 8", small, "stag")], "BRIGHTNESS OF EACH CELL", True)
       },
     },
     {
+      npc: "Trước khi nhờ máy sửa hộ, bạn tự sửa bằng tay đã. Bảng số dưới đây là tấm hiệu ứng con rồng thu về lưới 8×8 — kéo chuột chọn một vùng, rồi bấm SÁNG hoặc TỐI.",
+    },
+    {
+      pixelBoard: {
+        plate: "dragon",
+        size: 8,
+        text: "Mỗi lần bấm, cả vùng đang chọn cộng hoặc trừ 50 ở cả ba kênh màu, và ảnh bên trái đổi ngay. Số chạm 0 thì dừng ở 0, chạm 255 thì dừng ở 255 — bạn thử ép nó xuống dưới 0 xem có được không.",
+        task: { mode: "dim", amount: 100, label: "nửa trái của ảnh (cột 0 tới cột 3)", region: { col0: 0, col1: 3 } },
+      },
+    },
+    {
       npc: "Đã đọc được bảng số thì bạn ghi vào đó được luôn. Ghi đè giá trị lên một vùng ô, và hình trong gương phải đổi ngay đúng chỗ đó.",
     },
     {
-      code: `from old_computer import say_num
+      code: `from old_computer import say, say_num
+from pip_test import count_color
 from camera_charm import load_plate, compare_frames
 
-before = load_plate("stag", 8)
+before = load_plate("dragon", 8)
 
 # Chép sang một lưới mới để vẫn giữ được ảnh gốc mà so sánh
 after = []
@@ -210,14 +223,10 @@ for row in range(2, 6):
     for col in range(2, 6):
         after[row][col] = before[row][col]
 
-painted = 0
-for row in range(len(after)):
-    for col in range(len(after[row])):
-        if after[row][col] == [255, 255, 255]:
-            painted = painted + 1
-say_num(painted)
+# Pip chấm hộ bạn
+say_num(count_color(after, [255, 255, 255]))
 
-compare_frames([("BEFORE", before, "stag"), ("AFTER", after)], "PAINT A REGION BY HAND", True)
+compare_frames([("BEFORE", before, "dragon"), ("AFTER", after, "result")], "PAINT A REGION BY HAND", True)
 `,
       label: "tu_to_mot_vung.py",
       note: "ĐỀ BÀI\nINPUT là tấm hiệu ứng đọc ở lưới 8×8; `after` là bản chép của nó để bạn sửa mà vẫn giữ được ảnh gốc. Dòng gán trong vòng lặp đang chép lại đúng giá trị cũ nên chưa có gì đổi. Hãy gán `[255, 255, 255]` cho mỗi ô trong vùng đó để tô trắng. OUTPUT đúng là số `16` (vùng 4 hàng × 4 cột) và cửa sổ so sánh cho thấy một khối trắng vuông vắn xuất hiện giữa ảnh AFTER, kèm bảng số đổi thành 255.",
@@ -226,10 +235,11 @@ compare_frames([("BEFORE", before, "stag"), ("AFTER", after)], "PAINT A REGION B
           /^16$/,
         ],
       },
-      solution: `from old_computer import say_num
+      solution: `from old_computer import say, say_num
+from pip_test import count_color
 from camera_charm import load_plate, compare_frames
 
-before = load_plate("stag", 8)
+before = load_plate("dragon", 8)
 
 after = []
 for row in range(len(before)):
@@ -242,14 +252,10 @@ for row in range(2, 6):
     for col in range(2, 6):
         after[row][col] = [255, 255, 255]
 
-painted = 0
-for row in range(len(after)):
-    for col in range(len(after[row])):
-        if after[row][col] == [255, 255, 255]:
-            painted = painted + 1
-say_num(painted)
+# Pip chấm hộ bạn
+say_num(count_color(after, [255, 255, 255]))
 
-compare_frames([("BEFORE", before, "stag"), ("AFTER", after)], "PAINT A REGION BY HAND", True)
+compare_frames([("BEFORE", before, "dragon"), ("AFTER", after, "result")], "PAINT A REGION BY HAND", True)
 `,
     },
     {
@@ -283,16 +289,221 @@ compare_frames([("BEFORE", before, "stag"), ("AFTER", after)], "PAINT A REGION B
       },
     },
     {
+      npc: "Mấy ô số vừa rồi là để bạn hiểu ảnh được ghi ra sao. Từ đây gương đưa hẳn tấm ảnh thật, 256 ô mỗi chiều: vẫn hai vòng lặp đó, nhưng hình hiện ra rõ nét.",
+    },
+    {
+      npc: "Tô trắng một vùng thì mất hết hình cũ ở đó. Muốn giữ nguyên hình mà chỉ làm nó tối đi, mình trừ bớt cùng một số ở cả ba kênh màu của mọi ô.",
+    },
+    {
+      npc: "Một kênh màu chỉ nhận số từ 0 tới 255. Ô đang tối sẵn mà trừ thêm sẽ rơi xuống dưới 0. Lệnh `max` trả về số lớn hơn trong hai số, nên `max(0, giá_trị)` chặn lại đúng ở 0.",
+    },
+    {
+      npc: "Chiều ngược lại cũng vậy: cộng thêm thì ô sáng sẵn sẽ vượt quá 255. Lệnh `min` trả về số nhỏ hơn, nên `min(255, giá_trị)` giữ nó lại đúng ở 255. Một tấm ảnh, hai chiều chỉnh sáng.",
+    },
+    {
+      code: `from pip_test import check_dim, check_blend
+from camera_charm import load_plate, blank_grid, compare_frames
+
+fx = load_plate("dragon", 256)
+dim = blank_grid(len(fx), len(fx[0]))
+bright = blank_grid(len(fx), len(fx[0]))
+AMOUNT = 50
+
+for row in range(len(fx)):
+    for col in range(len(fx[row])):
+        cell = fx[row][col]
+        red = cell[0]  # lượt của bạn: trừ AMOUNT rồi chặn bằng max(0, ...)
+        green = cell[1]  # lượt của bạn: làm tương tự với kênh xanh lá
+        blue = cell[2]  # lượt của bạn: làm tương tự với kênh xanh dương
+        dim[row][col] = [red, green, blue]
+        bright[row][col] = [cell[0], cell[1], cell[2]]  # lượt của bạn: cộng AMOUNT rồi chặn bằng min(255, ...)
+
+compare_frames([("GỐC", fx), ("TỐI ĐI 50", dim, "result"), ("SÁNG THÊM 50", bright, "result")], "TURN THE LIGHT UP AND DOWN")
+
+# Xem xong rồi Pip mới chấm
+check_dim(fx, dim, AMOUNT)
+check_blend(fx, bright)
+`,
+      label: "chinh_do_sang_ca_tam_anh.py",
+      note: "ĐỀ BÀI\nINPUT là tấm hiệu ứng con rồng ở độ nét thật, 256×256 ô; `AMOUNT` đã đặt sẵn bằng 50. Bốn dòng gán trong vòng lặp đang chép nguyên giá trị cũ nên chưa tấm nào đổi. Hãy dựng `dim` bằng cách trừ `AMOUNT` rồi chặn bằng `max(0, ...)`, và dựng `bright` bằng cách cộng `AMOUNT` rồi chặn bằng `min(255, ...)`. Ví dụ: kênh 200 khi trừ còn 150, kênh 20 dừng ở 0; kênh 230 khi cộng dừng ở 255. OUTPUT đúng là cửa sổ ba tấm gốc – tối – sáng, rồi in `EVERY CELL LOST 50 LIGHT`, `NOTHING WENT BELOW 0`, `ALL CHANNELS WITHIN 255` và `EFFECT AREA GOT BRIGHTER`.",
+      expectOut: {
+        all: [
+          /EVERY CELL LOST 50 LIGHT/,
+          /NOTHING WENT BELOW 0/,
+          /ALL CHANNELS WITHIN 255/,
+          /EFFECT AREA GOT BRIGHTER/,
+        ],
+      },
+      solution: `from pip_test import check_dim, check_blend
+from camera_charm import load_plate, blank_grid, compare_frames
+
+fx = load_plate("dragon", 256)
+dim = blank_grid(len(fx), len(fx[0]))
+bright = blank_grid(len(fx), len(fx[0]))
+AMOUNT = 50
+
+for row in range(len(fx)):
+    for col in range(len(fx[row])):
+        cell = fx[row][col]
+        red = max(0, cell[0] - AMOUNT)
+        green = max(0, cell[1] - AMOUNT)
+        blue = max(0, cell[2] - AMOUNT)
+        dim[row][col] = [red, green, blue]
+        bright[row][col] = [min(255, cell[0] + AMOUNT), min(255, cell[1] + AMOUNT), min(255, cell[2] + AMOUNT)]
+
+compare_frames([("GỐC", fx), ("TỐI ĐI 50", dim, "result"), ("SÁNG THÊM 50", bright, "result")], "TURN THE LIGHT UP AND DOWN")
+
+# Xem xong rồi Pip mới chấm
+check_dim(fx, dim, AMOUNT)
+check_blend(fx, bright)
+`,
+    },
+    {
+      quiz: {
+        title: "Làm tối, làm sáng một ô",
+        questions: [
+          {
+            q: "Một ô đang giữ `[30, 90, 200]`. Sau khi chạy đoạn này, ô đó giữ gì?\n```python\nred = max(0, cell[0] - 50)\ngreen = max(0, cell[1] - 50)\nblue = max(0, cell[2] - 50)\n```",
+            a: [
+              "`[0, 40, 150]`, vì 30 trừ 50 còn âm nên bị chặn lại ở 0",
+              "`[-20, 40, 150]`, vì kênh đỏ xuống dưới 0",
+              "`[30, 90, 200]`, vì `max` giữ lại giá trị cũ",
+            ],
+            correct: 0,
+          },
+          {
+            q: "Muốn cả tấm ảnh sáng hơn thay vì tối đi, sửa dòng `red = max(0, cell[0] - 50)` thành dòng nào?",
+            a: [
+              "`red = min(255, cell[0] + 50)`",
+              "`red = max(0, cell[0] + 50)`",
+              "`red = min(255, cell[0] - 50)`",
+            ],
+            correct: 0,
+          },
+        ],
+      },
+    },
+    {
+      npc: "Nhưng kẹp riêng từng kênh còn giấu một vết nứt. Ba tổng của một ô là 270, 292 và 130; kẹp xong còn `[255, 255, 130]`. Đỏ bị cắt 15, lục bị cắt 37, lam không mất gì.",
+    },
+    {
+      npc: "Ba kênh bị cắt ba mức khác nhau nên màu của ô lệch đi. Nền càng sáng càng nhiều ô dính, nên ô luyện dưới đây quay lại tấm nền ngọn hải đăng cho vết nứt lộ ra.",
+    },
+    {
+      npc: "Ngoài đời, chỗ ánh sáng chồng lên nhau quá mạnh thì cháy ra trắng chứ không ngả màu. Muốn biết ô nào đã quá mức, lấy `max(red, green, blue)` — `max` nhận ba số và trả về số lớn nhất.",
+    },
+    {
+      code: `from pip_test import check_burn
+from camera_charm import load_plate, blank_grid, compare_frames
+
+scene = load_plate("scene", 256)
+fx = load_plate("dragon", 256)
+clamped = blank_grid(len(scene), len(scene[0]))
+burned = blank_grid(len(scene), len(scene[0]))
+
+for row in range(len(scene)):
+    for col in range(len(scene[row])):
+        base = scene[row][col]
+        layer = fx[row][col]
+        red = base[0] + layer[0]
+        green = base[1] + layer[1]
+        blue = base[2] + layer[2]
+        clamped[row][col] = [min(255, red), min(255, green), min(255, blue)]
+        # lượt của bạn: nếu số lớn nhất trong ba tổng đã vượt 255
+        # thì đặt cả red, green, blue bằng 255
+        burned[row][col] = [min(255, red), min(255, green), min(255, blue)]
+
+compare_frames([("CLAMP EACH CHANNEL", clamped, "result"), ("BURN TO WHITE", burned, "result")], "WHERE THE COLOUR DRIFTS")
+
+# Xem xong rồi Pip mới chấm
+check_burn(scene, fx, burned)
+`,
+      label: "chay_trang_thay_vi_lech_mau.py",
+      note: "ĐỀ BÀI\nINPUT là hai tấm ảnh có sẵn 256×256 ô: `scene` là nền ngọn hải đăng ban đêm — chọn nền sáng vì nó làm vết nứt lộ ra — và `fx` là lớp con rồng. Ba tổng `red`, `green`, `blue` đã được cộng sẵn chưa kẹp, và `clamped` đã dựng xong theo cách cũ để bạn so sánh. PROCESS của bạn nằm ở dòng gán `burned`: dùng một khối `if` xét `max(red, green, blue)`, nếu số đó vượt 255 thì đặt cả ba kênh bằng 255, còn lại giữ nguyên cách kẹp cũ. OUTPUT đúng phải mở cửa sổ đặt hai cách cạnh nhau rồi in `OVERBRIGHT CELLS BURNED WHITE` và `CALM CELLS KEPT THEIR COLOUR`.",
+      expectOut: {
+        all: [
+          /OVERBRIGHT CELLS BURNED WHITE/,
+          /CALM CELLS KEPT THEIR COLOUR/,
+        ],
+      },
+      solution: `from pip_test import check_burn
+from camera_charm import load_plate, blank_grid, compare_frames
+
+scene = load_plate("scene", 256)
+fx = load_plate("dragon", 256)
+clamped = blank_grid(len(scene), len(scene[0]))
+burned = blank_grid(len(scene), len(scene[0]))
+
+for row in range(len(scene)):
+    for col in range(len(scene[row])):
+        base = scene[row][col]
+        layer = fx[row][col]
+        red = base[0] + layer[0]
+        green = base[1] + layer[1]
+        blue = base[2] + layer[2]
+        clamped[row][col] = [min(255, red), min(255, green), min(255, blue)]
+        if max(red, green, blue) > 255:
+            red = 255
+            green = 255
+            blue = 255
+        burned[row][col] = [min(255, red), min(255, green), min(255, blue)]
+
+compare_frames([("CLAMP EACH CHANNEL", clamped, "result"), ("BURN TO WHITE", burned, "result")], "WHERE THE COLOUR DRIFTS")
+
+# Xem xong rồi Pip mới chấm
+check_burn(scene, fx, burned)
+`,
+    },
+    {
+      checkpoint: {
+        text: "Ghép một lớp hiệu ứng quay trên nền đen lên nền là cộng từng kênh màu của hai ô cùng vị trí rồi kẹp lại: `min(255, ...)` chặn đầu trên khi cộng, `max(0, ...)` chặn đầu dưới khi trừ. Kẹp riêng từng kênh giữ được giá trị hợp lệ nhưng cắt ba kênh ba mức khác nhau, nên màu của ô lệch đi. Xét `max(red, green, blue) > 255` rồi đặt cả ba kênh bằng 255 thì ô quá sáng cháy ra trắng, không kênh nào bị cắt nhiều hơn kênh nào.",
+      },
+    },
+    {
+      quiz: {
+        title: "Cháy trắng hay lệch màu",
+        questions: [
+          {
+            q: "Ba tổng thô của một ô là `red = 270`, `green = 292`, `blue = 130`. Kẹp riêng từng kênh bằng `min(255, ...)` cho ra ô nào?",
+            a: [
+              "`[255, 255, 130]`",
+              "`[255, 255, 255]`",
+              "`[270, 292, 130]`",
+            ],
+            correct: 0,
+          },
+          {
+            q: "Vẫn ba tổng `270`, `292`, `130`. Chạy đoạn này xong, ô đó giữ gì?\n```python\nif max(red, green, blue) > 255:\n    red = 255\n    green = 255\n    blue = 255\n```",
+            a: [
+              "`[255, 255, 255]`, vì 292 đã vượt 255 nên cả ba kênh cùng được đặt lại",
+              "`[255, 255, 130]`, vì chỉ hai kênh vượt mức mới bị đổi",
+              "`[270, 292, 130]`, vì khối `if` chỉ đọc chứ không gán lại",
+            ],
+            correct: 0,
+          },
+          {
+            q: "Một ô có ba tổng thô là `red = 90`, `green = 120`, `blue = 60`. Chạy đoạn này xong, ô đó ra sao?\n```python\nif max(red, green, blue) > 255:\n    red = 255\n    green = 255\n    blue = 255\n```",
+            a: [
+              "Không làm gì, vì số lớn nhất là 120 vẫn chưa vượt 255",
+              "Đặt cả ba kênh bằng 255, vì khối `if` chạy cho mọi ô",
+              "Đặt cả ba kênh bằng 0, vì chưa ô nào đủ sáng",
+            ],
+            correct: 0,
+          },
+        ],
+      },
+    },
+    {
       npc: "Thần chú đầu tiên của gương là lật hình theo chiều ngang — đúng việc một tấm gương vẫn làm. Gương không xoay hình trong không gian đâu; nó chỉ đọc lại từng hàng theo thứ tự cột ngược lại.",
     },
     {
       npc: "Trong một hàng có `n` cột, cột cuối cùng mang chỉ số `n - 1`. Ô mới ở cột `col` nhận giá trị của ô cũ ở cột `n - 1 - col`.",
     },
     {
-      code: `from old_computer import say
+      code: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-fx = load_plate("stag", 16)
+fx = load_plate("dragon", 256)
 flipped = blank_grid(len(fx), len(fx[0]))
 
 for row in range(len(fx)):
@@ -300,41 +511,23 @@ for row in range(len(fx)):
     for col in range(len(fx[row])):
         flipped[row][col] = fx[row][col]  # lượt của bạn: đổi thành ô đối xứng
 
-# Bài tự kiểm tra: lật hai lần phải ra đúng ảnh gốc, và lật một lần phải đổi ảnh
-back = blank_grid(len(flipped), len(flipped[0]))
-for row in range(len(flipped)):
-    last = len(flipped[row]) - 1
-    for col in range(len(flipped[row])):
-        back[row][col] = flipped[row][last - col]
+compare_frames([("BEFORE FLIP", fx), ("AFTER FLIP", flipped, "result")], "MIRROR THE IMAGE")
 
-changed = 0
-broken = 0
-for row in range(len(fx)):
-    for col in range(len(fx[row])):
-        if flipped[row][col] != fx[row][col]:
-            changed = changed + 1
-        if back[row][col] != fx[row][col]:
-            broken = broken + 1
-
-if changed > 0:
-    say("IMAGE CHANGED SIDES")
-if broken == 0:
-    say("TWO FLIPS RESTORE THE SOURCE")
-
-compare_frames([("BEFORE FLIP", fx, "stag"), ("AFTER FLIP", flipped, "flipped")], "MIRROR THE IMAGE")
+# Xem xong rồi Pip mới chấm
+check_flip(fx, flipped)
 `,
       label: "viet_lenh_lat_anh.py",
-      note: "ĐỀ BÀI\nINPUT là tấm hiệu ứng con hươu 16×16. Dòng gán trong vòng lặp đang chép y nguyên từng ô nên ảnh không hề lật. Hãy sửa dòng đó để ô ở cột `col` nhận giá trị của ô đối xứng trong cùng hàng; biến `last` đã giữ sẵn chỉ số cột cuối cùng. OUTPUT đúng phải in cả hai dòng `IMAGE CHANGED SIDES` và `TWO FLIPS RESTORE THE SOURCE`, rồi mở cửa sổ đặt ảnh trước và ảnh sau cạnh nhau — con hươu phải quay đầu sang phía ngược lại.",
+      note: "ĐỀ BÀI\nINPUT là tấm hiệu ứng con rồng đọc ở độ nét thật, 256×256 ô. Dòng gán trong vòng lặp đang chép y nguyên từng ô nên ảnh không hề lật. Hãy sửa dòng đó để ô ở cột `col` nhận giá trị của ô đối xứng trong cùng hàng; biến `last` đã giữ sẵn chỉ số cột cuối cùng. OUTPUT đúng phải in cả hai dòng `IMAGE CHANGED SIDES` và `TWO FLIPS RESTORE THE SOURCE`, rồi mở cửa sổ đặt ảnh trước và ảnh sau cạnh nhau — con rồng phải quay đầu sang phía ngược lại.",
       expectOut: {
         all: [
           /IMAGE CHANGED SIDES/,
           /TWO FLIPS RESTORE THE SOURCE/,
         ],
       },
-      solution: `from old_computer import say
+      solution: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-fx = load_plate("stag", 16)
+fx = load_plate("dragon", 256)
 flipped = blank_grid(len(fx), len(fx[0]))
 
 for row in range(len(fx)):
@@ -342,27 +535,10 @@ for row in range(len(fx)):
     for col in range(len(fx[row])):
         flipped[row][col] = fx[row][last - col]
 
-back = blank_grid(len(flipped), len(flipped[0]))
-for row in range(len(flipped)):
-    last = len(flipped[row]) - 1
-    for col in range(len(flipped[row])):
-        back[row][col] = flipped[row][last - col]
+compare_frames([("BEFORE FLIP", fx), ("AFTER FLIP", flipped, "result")], "MIRROR THE IMAGE")
 
-changed = 0
-broken = 0
-for row in range(len(fx)):
-    for col in range(len(fx[row])):
-        if flipped[row][col] != fx[row][col]:
-            changed = changed + 1
-        if back[row][col] != fx[row][col]:
-            broken = broken + 1
-
-if changed > 0:
-    say("IMAGE CHANGED SIDES")
-if broken == 0:
-    say("TWO FLIPS RESTORE THE SOURCE")
-
-compare_frames([("BEFORE FLIP", fx, "stag"), ("AFTER FLIP", flipped, "flipped")], "MIRROR THE IMAGE")
+# Xem xong rồi Pip mới chấm
+check_flip(fx, flipped)
 `,
     },
     {
@@ -437,47 +613,29 @@ say("Adding a black cell keeps the base")
 `,
     },
     {
-      code: `from old_computer import say
+      code: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-scene = load_plate("scene", 16)
-fx = load_plate("stag", 16)
-result = blank_grid(len(scene), len(scene[0]))
+boss = load_plate("boss", 256)
+fx = load_plate("dragon", 256)
+result = blank_grid(len(boss), len(boss[0]))
 
-for row in range(len(scene)):
-    for col in range(len(scene[row])):
-        base = scene[row][col]
+for row in range(len(boss)):
+    for col in range(len(boss[row])):
+        base = boss[row][col]
         layer = fx[row][col]
         red = base[0]  # lượt của bạn: cộng thêm layer[0] rồi kẹp bằng min(255, ...)
         green = base[1]  # lượt của bạn: làm tương tự với kênh xanh lá
         blue = base[2]  # lượt của bạn: làm tương tự với kênh xanh dương
         result[row][col] = [red, green, blue]
 
-# Bài tự kiểm tra: không kênh nào được vượt 255, và không chỗ nào được tối đi
-too_big = 0
-darker = 0
-brighter = 0
-for row in range(len(result)):
-    for col in range(len(result[row])):
-        for channel in range(3):
-            if result[row][col][channel] > 255:
-                too_big = too_big + 1
-            if result[row][col][channel] < scene[row][col][channel]:
-                darker = darker + 1
-            if result[row][col][channel] > scene[row][col][channel]:
-                brighter = brighter + 1
+compare_frames([("BASE", boss), ("EFFECT LAYER", fx), ("AFTER ADD", result, "result")], "LAYER ONTO A BASE")
 
-if too_big == 0:
-    say("ALL CHANNELS WITHIN 255")
-if darker == 0:
-    say("NOTHING GOT DARKER")
-if brighter > 0:
-    say("EFFECT AREA GOT BRIGHTER")
-
-compare_frames([("BASE", scene, "scene"), ("EFFECT LAYER", fx, "stag"), ("AFTER ADD", result, "stagscene")], "LAYER ONTO A BASE")
+# Xem xong rồi Pip mới chấm
+check_blend(boss, result)
 `,
       label: "viet_lenh_cong_hai_lop.py",
-      note: "ĐỀ BÀI\nINPUT là hai tấm ảnh có sẵn: `scene` là nền ngọn hải đăng ban đêm, `fx` là lớp con hươu quay trên nền đen. Ba dòng gán `red`, `green`, `blue` đang chép nguyên nền nên lớp hiệu ứng chưa hiện ra. Hãy cộng thêm kênh tương ứng của `layer` vào từng dòng và kẹp kết quả bằng `min(255, ...)`. OUTPUT đúng phải in đủ ba dòng `ALL CHANNELS WITHIN 255`, `NOTHING GOT DARKER`, `EFFECT AREA GOT BRIGHTER`, rồi mở cửa sổ đặt nền, lớp hiệu ứng và kết quả cạnh nhau.",
+      note: "ĐỀ BÀI\nINPUT là hai tấm ảnh có sẵn ở độ nét thật, 256×256 ô: `boss` là nền con quái lỗi trong màn khói tím, `fx` là lớp con rồng quay trên nền đen. Ba dòng gán `red`, `green`, `blue` đang chép nguyên nền nên lớp hiệu ứng chưa hiện ra. Hãy cộng thêm kênh tương ứng của `layer` vào từng dòng và kẹp kết quả bằng `min(255, ...)`. OUTPUT đúng phải in đủ ba dòng `ALL CHANNELS WITHIN 255`, `NOTHING GOT DARKER`, `EFFECT AREA GOT BRIGHTER`, rồi mở cửa sổ đặt nền, lớp hiệu ứng và kết quả cạnh nhau.",
       expectOut: {
         all: [
           /ALL CHANNELS WITHIN 255/,
@@ -485,49 +643,27 @@ compare_frames([("BASE", scene, "scene"), ("EFFECT LAYER", fx, "stag"), ("AFTER 
           /EFFECT AREA GOT BRIGHTER/,
         ],
       },
-      solution: `from old_computer import say
+      solution: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-scene = load_plate("scene", 16)
-fx = load_plate("stag", 16)
-result = blank_grid(len(scene), len(scene[0]))
+boss = load_plate("boss", 256)
+fx = load_plate("dragon", 256)
+result = blank_grid(len(boss), len(boss[0]))
 
-for row in range(len(scene)):
-    for col in range(len(scene[row])):
-        base = scene[row][col]
+for row in range(len(boss)):
+    for col in range(len(boss[row])):
+        base = boss[row][col]
         layer = fx[row][col]
         red = min(255, base[0] + layer[0])
         green = min(255, base[1] + layer[1])
         blue = min(255, base[2] + layer[2])
         result[row][col] = [red, green, blue]
 
-too_big = 0
-darker = 0
-brighter = 0
-for row in range(len(result)):
-    for col in range(len(result[row])):
-        for channel in range(3):
-            if result[row][col][channel] > 255:
-                too_big = too_big + 1
-            if result[row][col][channel] < scene[row][col][channel]:
-                darker = darker + 1
-            if result[row][col][channel] > scene[row][col][channel]:
-                brighter = brighter + 1
+compare_frames([("BASE", boss), ("EFFECT LAYER", fx), ("AFTER ADD", result, "result")], "LAYER ONTO A BASE")
 
-if too_big == 0:
-    say("ALL CHANNELS WITHIN 255")
-if darker == 0:
-    say("NOTHING GOT DARKER")
-if brighter > 0:
-    say("EFFECT AREA GOT BRIGHTER")
-
-compare_frames([("BASE", scene, "scene"), ("EFFECT LAYER", fx, "stag"), ("AFTER ADD", result, "stagscene")], "LAYER ONTO A BASE")
+# Xem xong rồi Pip mới chấm
+check_blend(boss, result)
 `,
-    },
-    {
-      checkpoint: {
-        text: "Ghép một lớp hiệu ứng quay trên nền đen lên nền là cộng từng kênh màu của hai ô cùng vị trí, rồi kẹp bằng `min(255, tong)`. Ô đen của lớp hiệu ứng cộng vào 0 nên nền giữ nguyên; ô sáng đẩy nền lên tới mức tối đa 255.",
-      },
     },
     {
       quiz: {
@@ -564,61 +700,51 @@ compare_frames([("BASE", scene, "scene"), ("EFFECT LAYER", fx, "stag"), ("AFTER 
       },
     },
     {
-      npc: "Giờ quay lại câu đố gương đặt ra lúc đầu. Vẫn đúng phép cộng đó, chỉ đổi hai lớp mang vào thành con hươu và con quái — chính là hình bạn được xem ngay từ đầu.",
+      npc: "Giờ quay lại câu đố gương đặt ra lúc đầu. Vẫn đúng phép cộng đó, chỉ đổi hai lớp mang vào thành con rồng và con quái — chính là hình bạn được xem ngay từ đầu.",
     },
     {
-      code: `from old_computer import say
+      code: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-stag = load_plate("stag", 16)
-boss = load_plate("boss", 16)
+dragon = load_plate("dragon", 256)
+boss = load_plate("boss", 256)
 
-result = blank_grid(len(stag), len(stag[0]))
-for row in range(len(stag)):
-    for col in range(len(stag[row])):
-        a = stag[row][col]
+result = blank_grid(len(dragon), len(dragon[0]))
+for row in range(len(dragon)):
+    for col in range(len(dragon[row])):
+        a = dragon[row][col]
         b = boss[row][col]
         result[row][col] = [min(255, a[0] + b[0]), min(255, a[1] + b[1]), min(255, a[2] + b[2])]
 
-lit = 0
-for row in range(len(result)):
-    for col in range(len(result[row])):
-        if result[row][col][0] > stag[row][col][0]:
-            lit = lit + 1
-if lit > 0:
-    say("STAG IS OVER THE BEAST")
+compare_frames([("SPIRIT DRAGON", dragon), ("ERROR BEAST", boss), ("YOU BUILT THIS", result, "result"), ("GOAL", "goal")], "THE OPENING PUZZLE, SOLVED")
 
-compare_frames([("SPIRIT STAG", stag, "stag"), ("ERROR BEAST", boss, "boss"), ("YOU BUILT THIS", result, "goal"), ("GOAL", "goal")], "THE OPENING PUZZLE, SOLVED")
+# Xem xong rồi Pip mới chấm
+check_over(dragon, result, "DRAGON IS OVER THE BEAST")
 `,
       label: "giai_cau_do_mo_man.py",
-      note: "RUN KIỂM CHỨNG\nINPUT là hai lớp ảnh con hươu và con quái, cùng đọc ở lưới 16 ô. PROCESS dùng lại đúng phép cộng kèm `min(255, ...)` bạn vừa viết, không đổi một dòng nào. OUTPUT là dòng `STAG IS OVER THE BEAST` và cửa sổ bốn tấm: hai lớp rời, khung hình do chính bạn dựng, và tấm đích đã xem ở đầu đảo để bạn đối chiếu.",
+      note: "RUN KIỂM CHỨNG\nINPUT là hai lớp ảnh con rồng và con quái, cùng đọc ở độ nét thật, 256×256 ô. PROCESS dùng lại đúng phép cộng kèm `min(255, ...)` bạn vừa viết, không đổi một dòng nào. OUTPUT là dòng `DRAGON IS OVER THE BEAST` và cửa sổ bốn tấm: hai lớp rời, khung hình do chính bạn dựng, và tấm đích đã xem ở đầu đảo để bạn đối chiếu.",
       expectOut: {
         all: [
-          /STAG IS OVER THE BEAST/,
+          /DRAGON IS OVER THE BEAST/,
         ],
       },
-      solution: `from old_computer import say
+      solution: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-stag = load_plate("stag", 16)
-boss = load_plate("boss", 16)
+dragon = load_plate("dragon", 256)
+boss = load_plate("boss", 256)
 
-result = blank_grid(len(stag), len(stag[0]))
-for row in range(len(stag)):
-    for col in range(len(stag[row])):
-        a = stag[row][col]
+result = blank_grid(len(dragon), len(dragon[0]))
+for row in range(len(dragon)):
+    for col in range(len(dragon[row])):
+        a = dragon[row][col]
         b = boss[row][col]
         result[row][col] = [min(255, a[0] + b[0]), min(255, a[1] + b[1]), min(255, a[2] + b[2])]
 
-lit = 0
-for row in range(len(result)):
-    for col in range(len(result[row])):
-        if result[row][col][0] > stag[row][col][0]:
-            lit = lit + 1
-if lit > 0:
-    say("STAG IS OVER THE BEAST")
+compare_frames([("SPIRIT DRAGON", dragon), ("ERROR BEAST", boss), ("YOU BUILT THIS", result, "result"), ("GOAL", "goal")], "THE OPENING PUZZLE, SOLVED")
 
-compare_frames([("SPIRIT STAG", stag, "stag"), ("ERROR BEAST", boss, "boss"), ("YOU BUILT THIS", result, "goal"), ("GOAL", "goal")], "THE OPENING PUZZLE, SOLVED")
+# Xem xong rồi Pip mới chấm
+check_over(dragon, result, "DRAGON IS OVER THE BEAST")
 `,
     },
     {
@@ -633,29 +759,33 @@ compare_frames([("SPIRIT STAG", stag, "stag"), ("ERROR BEAST", boss, "boss"), ("
     {
       code: `from old_computer import say
 from voice_charm import listen
+from camera_charm import display
 
 # INPUT thật: từ bạn niệm ra tiếng. Gương chỉ nhận ba từ trong danh sách này.
-spells = ["koto", "boss", "flip"]
+spells = ["dragon", "boss", "flip"]
 command = listen(spells)
 
-say("Guong nghe duoc:")
+say("MIRROR HEARD:")
 say(command)
+display(command)
 `,
       label: "nghe_than_chu.py",
-      note: "RUN KIỂM CHỨNG\nINPUT là giọng của bạn. Khi chạy, gương mở micro và chờ vài giây — hãy niệm to một từ trong `spells`. Nếu micro chưa bật được thì gương hiện sẵn ba từ đó thành nút bấm, bạn chạm một nút cũng được. OUTPUT là dòng `Guong nghe duoc:` rồi tới đúng từ gương bắt được; không nghe ra từ nào thì dòng thứ hai trống.",
+      note: "RUN KIỂM CHỨNG\nINPUT là giọng của bạn. Khi chạy, gương mở micro và chờ vài giây — hãy niệm to một từ trong `spells`. Nếu micro chưa bật được thì gương hiện sẵn ba từ đó thành nút bấm, bạn chạm một nút cũng được. OUTPUT là dòng `MIRROR HEARD:` rồi tới đúng từ gương bắt được; không nghe ra từ nào thì dòng thứ hai trống.",
       expectOut: {
         all: [
-          /Guong nghe duoc:/,
+          /MIRROR HEARD:/,
         ],
       },
       solution: `from old_computer import say
 from voice_charm import listen
+from camera_charm import display
 
-spells = ["koto", "boss", "flip"]
+spells = ["dragon", "boss", "flip"]
 command = listen(spells)
 
-say("Guong nghe duoc:")
+say("MIRROR HEARD:")
 say(command)
+display(command)
 `,
     },
     {
@@ -666,23 +796,23 @@ say(command)
 from voice_charm import listen
 from camera_charm import load_plate, compare_frames
 
-spells = ["koto", "boss"]
+spells = ["dragon", "boss"]
 command = listen(spells)
 scene = load_plate("scene", 16)
 
-if command == "koto":
-    say("SPIRIT STAG SUMMONED")
-    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("stag", 16), "stag")], "KOTO")
+if command == "dragon":
+    say("SPIRIT DRAGON SUMMONED")
+    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("dragon", 16), "dragon")], "KOTO")
 elif command == "boss":
     say("ERROR BEAST SUMMONED")
-    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("boss", 16), "bossscene")], "BOSS")
+    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("boss", 16), "boss")], "BOSS")
 else:
     say("UNKNOWN WORD")
 `,
       label: "chon_hieu_ung_theo_loi.py",
-      note: "RUN KIỂM CHỨNG\nINPUT là từ bạn niệm ra tiếng, do `listen(spells)` bắt được. PROCESS so từ đó với từng mốc bằng `if` và `elif`. OUTPUT phụ thuộc vào từ bạn niệm: `koto` cho ra dòng `SPIRIT STAG SUMMONED` kèm cửa sổ đặt nền cạnh hình con hươu, `boss` cho ra con quái, còn im lặng cho hết giờ thì nhánh `else` chạy. Nhánh nào chạy cũng được tính là xong — điều cần thấy là bộ chọn đưa đúng từ tới đúng nhánh.",
+      note: "RUN KIỂM CHỨNG\nINPUT là từ bạn niệm ra tiếng, do `listen(spells)` bắt được. PROCESS so từ đó với từng mốc bằng `if` và `elif`. OUTPUT phụ thuộc vào từ bạn niệm: `dragon` cho ra dòng `SPIRIT DRAGON SUMMONED` kèm cửa sổ đặt nền cạnh hình con rồng, `boss` cho ra con quái, còn im lặng cho hết giờ thì nhánh `else` chạy. Nhánh nào chạy cũng được tính là xong — điều cần thấy là bộ chọn đưa đúng từ tới đúng nhánh.",
       expectOut: [
-        /SPIRIT STAG SUMMONED/,
+        /SPIRIT DRAGON SUMMONED/,
         /ERROR BEAST SUMMONED/,
         /UNKNOWN WORD/,
       ],
@@ -690,16 +820,16 @@ else:
 from voice_charm import listen
 from camera_charm import load_plate, compare_frames
 
-spells = ["koto", "boss"]
+spells = ["dragon", "boss"]
 command = listen(spells)
 scene = load_plate("scene", 16)
 
-if command == "koto":
-    say("SPIRIT STAG SUMMONED")
-    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("stag", 16), "stag")], "KOTO")
+if command == "dragon":
+    say("SPIRIT DRAGON SUMMONED")
+    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("dragon", 16), "dragon")], "KOTO")
 elif command == "boss":
     say("ERROR BEAST SUMMONED")
-    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("boss", 16), "bossscene")], "BOSS")
+    compare_frames([("BASE", scene, "scene"), ("SUMMONED LAYER", load_plate("boss", 16), "boss")], "BOSS")
 else:
     say("UNKNOWN WORD")
 `,
@@ -708,42 +838,35 @@ else:
       npc: "Gương còn nghe được thần chú `flip`, và từ đó không gọi hình phản chiếu nào cả — nó lật chính khung hình đang chiếu. Bạn hãy thêm nhánh cho nó.",
     },
     {
-      code: `from old_computer import say
+      code: `from camera_charm import play_effect, display
 
 # Bốn từ này lần lượt được đưa vào bộ chọn, thay cho bốn lần nghe micro
-heard = ["koto", "boss", "flip", "meo meo"]
+heard = ["dragon", "boss", "flip", "meo meo"]
 
 for command in heard:
-    if command == "koto":
-        say("SPIRIT STAG SUMMONED")
+    if command == "dragon":
+        play_effect("dragon")
     elif command == "boss":
-        say("ERROR BEAST SUMMONED")
+        play_effect("boss")
     else:
-        say("UNKNOWN WORD")
+        display("UNKNOWN WORD")
 `,
       label: "them_nhanh_lat_hinh.py",
-      note: "ĐỀ BÀI\nINPUT là bốn từ đã gán sẵn trong `heard`, chạy lần lượt qua bộ chọn. Bộ chọn hiện chưa biết từ `flip` nên nó rơi xuống nhánh `else`. Hãy thêm một nhánh `elif` cho `flip` in ra `MIRROR THE FRAME`, đặt trước `else`. OUTPUT đúng gồm bốn dòng theo thứ tự: `SPIRIT STAG SUMMONED`, `ERROR BEAST SUMMONED`, `MIRROR THE FRAME`, `UNKNOWN WORD`.",
-      expectOut: {
-        all: [
-          /SPIRIT STAG SUMMONED/,
-          /ERROR BEAST SUMMONED/,
-          /MIRROR THE FRAME/,
-          /UNKNOWN WORD/,
-        ],
-      },
-      solution: `from old_computer import say
+      note: "ĐỀ BÀI\nINPUT là bốn từ đã gán sẵn trong `heard`, chạy lần lượt qua bộ chọn. Hai từ đầu đã có nhánh riêng và chiếu hiệu ứng bằng `play_effect`. Bộ chọn chưa biết từ `flip` nên nó rơi xuống nhánh `else`. Hãy thêm một nhánh `elif` cho `flip` gọi `display(\"MIRROR THE FRAME\")`, đặt trước `else`. OUTPUT đúng: hai lần chiếu hiệu ứng (`dragon`, `boss`), rồi dòng `MIRROR THE FRAME`, rồi dòng `UNKNOWN WORD`.",
+      expectOut: { all: [/MIRROR THE FRAME/, /UNKNOWN WORD/, { kind: 'studio_start', text: /effect_play/, minCount: 2 }] },
+      solution: `from camera_charm import play_effect, display
 
-heard = ["koto", "boss", "flip", "meo meo"]
+heard = ["dragon", "boss", "flip", "meo meo"]
 
 for command in heard:
-    if command == "koto":
-        say("SPIRIT STAG SUMMONED")
+    if command == "dragon":
+        play_effect("dragon")
     elif command == "boss":
-        say("ERROR BEAST SUMMONED")
+        play_effect("boss")
     elif command == "flip":
-        say("MIRROR THE FRAME")
+        display("MIRROR THE FRAME")
     else:
-        say("UNKNOWN WORD")
+        display("UNKNOWN WORD")
 `,
     },
     {
@@ -751,10 +874,10 @@ for command in heard:
         title: "Bộ chọn hiệu ứng",
         questions: [
           {
-            q: "Đọc đoạn Mật Ngữ này:\n```python\nif command == \"koto\":\n    say(\"HUOU\")\nelif command == \"boss\":\n    say(\"QUAI\")\nelse:\n    say(\"LA\")\n```\nVới `command = \"boss\"`, máy in ra gì?",
+            q: "Đọc đoạn Mật Ngữ này:\n```python\nif command == \"dragon\":\n    say(\"RONG\")\nelif command == \"boss\":\n    say(\"QUAI\")\nelse:\n    say(\"LA\")\n```\nVới `command = \"boss\"`, máy in ra gì?",
             a: [
               "`QUAI`",
-              "`HUOU`",
+              "`RONG`",
               "`QUAI` rồi `LA`",
             ],
             correct: 0,
@@ -764,12 +887,12 @@ for command in heard:
             a: [
               "`LA`, vì không mốc nào khớp nên nhánh `else` chạy",
               "Không in gì, vì `rain` không có trong chuỗi điều kiện",
-              "`HUOU`, vì máy chạy nhánh đầu tiên khi không tìm được mốc khớp",
+              "`RONG`, vì máy chạy nhánh đầu tiên khi không tìm được mốc khớp",
             ],
             correct: 0,
           },
           {
-            q: "Bạn muốn thêm từ `flip` vào bộ chọn đã có `koto`, `boss` và một nhánh `else`. Đặt nhánh mới ở đâu thì đúng?",
+            q: "Bạn muốn thêm từ `flip` vào bộ chọn đã có `dragon`, `boss` và một nhánh `else`. Đặt nhánh mới ở đâu thì đúng?",
             a: [
               "Thêm một nhánh `elif command == \"flip\":` đứng trước `else`",
               "Thêm sau `else`, vì `else` chỉ lo các từ đứng trước nó",
@@ -838,65 +961,69 @@ else:
       code: `from old_computer import say
 from camera_charm import show_effect_source
 
-# Xem thang tep hieu ung: khong camera, khong pha tron
-say("DAY LA TEP GOC")
-show_effect_source("stag")
+# Play the effect file on its own: no camera under it, no blending over it
+show_effect_source("dragon")
 show_effect_source("phoenix")
 `,
       label: "xem_tep_goc.py",
       note: `RUN KIỂM CHỨNG
 INPUT là hai tệp hiệu ứng có sẵn. OUTPUT là chính hai tệp đó chiếu một mình: không có camera bên dưới, cũng không pha trộn gì. Nhìn kỹ mà xem — mỗi tệp chỉ là ánh sáng nằm trên một hình chữ nhật ĐEN, đúng thứ bạn đã cộng bằng tay ở lưới 16 ô.`,
-      expectOut: {
-        all: [
-          /DAY LA TEP GOC/,
-        ,
-          { kind: 'studio_start', text: /effect_play/, minCount: 2 },
-        ],
-      },
+      expectOut: { kind: 'studio_start', text: /effect_play/, minCount: 2 },
       solution: `from old_computer import say
 from camera_charm import show_effect_source
 
-# Xem thang tep hieu ung: khong camera, khong pha tron
-say("DAY LA TEP GOC")
-show_effect_source("stag")
+# Play the effect file on its own: no camera under it, no blending over it
+show_effect_source("dragon")
 show_effect_source("phoenix")
 `,
     },
     {
-      npc: "Và một đoạn video cũng không phải thứ gì lạ: nó là một DANH SÁCH ảnh, chiếu nối nhau thật nhanh. Mình lấy thử bốn khung hình ra khỏi đoạn con hươu.",
+      npc: "Và một đoạn video cũng không phải thứ gì lạ: nó là một DANH SÁCH ảnh, chiếu nối nhau thật nhanh. Mình lấy thử bốn khung hình ra khỏi đoạn con rồng.",
     },
     {
       code: `from old_computer import say, say_num
+from pip_test import count_color
 from camera_charm import load_plate, compare_frames
 
-# Bon khung hinh that, lay ra tu chinh doan video con huou
+# Four real frames, taken straight out of the spirit-dragon video
 frames = [load_plate("frame0", 16), load_plate("frame1", 16),
           load_plate("frame2", 16), load_plate("frame3", 16)]
 
-say("SO KHUNG HINH:")
+say("FRAME COUNT:")
 say_num(len(frames))
-compare_frames([("KHUNG 0", frames[0], "frame0"), ("KHUNG 1", frames[1], "frame1"),
-                ("KHUNG 2", frames[2], "frame2"), ("KHUNG 3", frames[3], "frame3")],
+
+# Walk the list by index — the same way a for loop will in a moment
+for i in range(len(frames)):
+    say("frames[" + str(i) + "] is one picture")
+
+compare_frames([("frames[0]", frames[0], "frame0"), ("frames[1]", frames[1], "frame1"),
+                ("frames[2]", frames[2], "frame2"), ("frames[3]", frames[3], "frame3")],
                "A VIDEO IS A LIST OF PICTURES", False)
 `,
       label: "video_la_danh_sach_anh.py",
-      note: "RUN KIỂM CHỨNG\nINPUT là bốn khung hình được cắt ra từ chính đoạn video con hươu. OUTPUT là số `4` và cửa sổ đặt bốn khung cạnh nhau. Chúng chỉ khác nhau chút ít, vì chúng là bốn thời điểm liền nhau của cùng một chuyển động — chiếu nối tiếp đủ nhanh thì mắt thấy con hươu đang chạy.",
+      note: "RUN KIỂM CHỨNG\nINPUT là bốn khung hình được cắt ra từ chính đoạn video con rồng. OUTPUT là số `4` và cửa sổ đặt bốn khung cạnh nhau. Chúng chỉ khác nhau chút ít, vì chúng là bốn thời điểm liền nhau của cùng một chuyển động — chiếu nối tiếp đủ nhanh thì mắt thấy con rồng đang bay.",
       expectOut: {
         all: [
           /^4$/,
         ],
       },
       solution: `from old_computer import say, say_num
+from pip_test import count_color
 from camera_charm import load_plate, compare_frames
 
-# Bon khung hinh that, lay ra tu chinh doan video con huou
+# Four real frames, taken straight out of the spirit-dragon video
 frames = [load_plate("frame0", 16), load_plate("frame1", 16),
           load_plate("frame2", 16), load_plate("frame3", 16)]
 
-say("SO KHUNG HINH:")
+say("FRAME COUNT:")
 say_num(len(frames))
-compare_frames([("KHUNG 0", frames[0], "frame0"), ("KHUNG 1", frames[1], "frame1"),
-                ("KHUNG 2", frames[2], "frame2"), ("KHUNG 3", frames[3], "frame3")],
+
+# Walk the list by index — the same way a for loop will in a moment
+for i in range(len(frames)):
+    say("frames[" + str(i) + "] is one picture")
+
+compare_frames([("frames[0]", frames[0], "frame0"), ("frames[1]", frames[1], "frame1"),
+                ("frames[2]", frames[2], "frame2"), ("frames[3]", frames[3], "frame3")],
                "A VIDEO IS A LIST OF PICTURES", False)
 `,
     },
@@ -904,44 +1031,39 @@ compare_frames([("KHUNG 0", frames[0], "frame0"), ("KHUNG 1", frames[1], "frame1
       npc: "Giờ ghép hai điều đó lại. Bạn đã biết cộng hai lưới thành một khung hình. Một đoạn video chỉ là nhiều khung hình. Vậy làm một khung trước đã.",
     },
     {
-      code: `from old_computer import say
+      code: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-# play_effect chi la phep cong nay, chay tren MOT khung hinh.
+# play_effect is only this sum, applied to ONE frame.
 def play_effect_myself(base, layer):
     result = blank_grid(len(base), len(base[0]))
     for row in range(len(base)):
         for col in range(len(base[row])):
             a = base[row][col]
             b = layer[row][col]
-            result[row][col] = a  # luot cua ban: cong a voi b roi kep bang min(255, ...)
+            result[row][col] = a  # lượt của bạn: cộng a với b theo từng kênh rồi kẹp bằng min(255, ...)
     return result
 
-scene = load_plate("scene", 16)
+boss = load_plate("boss", 16)
 fx = load_plate("frame1", 16)
-shot = play_effect_myself(scene, fx)
+shot = play_effect_myself(boss, fx)
 
-lit = 0
-for row in range(len(shot)):
-    for col in range(len(shot[row])):
-        if shot[row][col][0] > scene[row][col][0]:
-            lit = lit + 1
-if lit > 0:
-    say("ONE FRAME DONE")
+# Pip chấm hộ bạn
+check_over(boss, shot)
 
-compare_frames([("NEN", scene, "scene"), ("MOT KHUNG FX", fx, "frame1"), ("DA GHEP", shot)], "BLEND ONE FRAME")
+compare_frames([("BASE", boss, "boss"), ("ONE FX FRAME", fx, "frame1"), ("BLENDED", shot)], "BLEND ONE FRAME")
 `,
       label: "tu_viet_play_effect.py",
-      note: "ĐỀ BÀI\nINPUT là tấm nền và MỘT khung hình của lớp con hươu. Hãy hoàn thiện lệnh `play_effect_myself`: dòng gán trong vòng lặp đang chép nguyên ô nền, bạn sửa nó thành cộng `a` với `b` từng kênh rồi kẹp bằng `min(255, ...)`. OUTPUT đúng phải in `ONE FRAME DONE` và mở cửa sổ có khung hình đã ghép.",
+      note: "ĐỀ BÀI\nINPUT là tấm nền và MỘT khung hình của lớp con rồng. Hãy hoàn thiện lệnh `play_effect_myself`: dòng gán trong vòng lặp đang chép nguyên ô nền, bạn sửa nó thành cộng `a` với `b` từng kênh rồi kẹp bằng `min(255, ...)`. OUTPUT đúng phải in `ONE FRAME DONE` và mở cửa sổ có khung hình đã ghép.",
       expectOut: {
         all: [
           /ONE FRAME DONE/,
         ],
       },
-      solution: `from old_computer import say
+      solution: `from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
-# play_effect chi la phep cong nay, chay tren MOT khung hinh.
+# play_effect is only this sum, applied to ONE frame.
 def play_effect_myself(base, layer):
     result = blank_grid(len(base), len(base[0]))
     for row in range(len(base)):
@@ -951,19 +1073,14 @@ def play_effect_myself(base, layer):
             result[row][col] = [min(255, a[0] + b[0]), min(255, a[1] + b[1]), min(255, a[2] + b[2])]
     return result
 
-scene = load_plate("scene", 16)
+boss = load_plate("boss", 16)
 fx = load_plate("frame1", 16)
-shot = play_effect_myself(scene, fx)
+shot = play_effect_myself(boss, fx)
 
-lit = 0
-for row in range(len(shot)):
-    for col in range(len(shot[row])):
-        if shot[row][col][0] > scene[row][col][0]:
-            lit = lit + 1
-if lit > 0:
-    say("ONE FRAME DONE")
+# Pip chấm hộ bạn
+check_over(boss, shot)
 
-compare_frames([("NEN", scene, "scene"), ("MOT KHUNG FX", fx, "frame1"), ("DA GHEP", shot)], "BLEND ONE FRAME")
+compare_frames([("BASE", boss, "boss"), ("ONE FX FRAME", fx, "frame1"), ("BLENDED", shot)], "BLEND ONE FRAME")
 `,
     },
     {
@@ -971,6 +1088,7 @@ compare_frames([("NEN", scene, "scene"), ("MOT KHUNG FX", fx, "frame1"), ("DA GH
     },
     {
       code: `from old_computer import say
+from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
 def play_effect_myself(base, layer):
@@ -982,27 +1100,28 @@ def play_effect_myself(base, layer):
             result[row][col] = [min(255, a[0] + b[0]), min(255, a[1] + b[1]), min(255, a[2] + b[2])]
     return result
 
-scene = load_plate("scene", 16)
+boss = load_plate("boss", 16)
 frames = [load_plate("frame0", 16), load_plate("frame1", 16),
           load_plate("frame2", 16), load_plate("frame3", 16)]
 
-# lot cua ban: cho for chay qua tung khung hinh, ghep tung cai roi cat vao shots
+# lượt của bạn: cho vòng for chạy qua từng khung, ghép từng khung rồi append vào shots
 shots = []
-say("DA GHEP XONG CA DOAN")
+say("WHOLE CLIP BLENDED")
 
 labels = []
 for i in range(len(shots)):
-    labels.append(("KHUNG " + str(i), shots[i]))
+    labels.append(("shots[" + str(i) + "]", shots[i], "frame" + str(i)))
 compare_frames(labels, "A FOR LOOP MAKES IT A VIDEO", False)
 `,
       label: "for_noi_thanh_video.py",
-      note: "ĐỀ BÀI\nINPUT là tấm nền `scene` và danh sách `frames` gồm bốn khung hình của lớp con hươu; lệnh `play_effect_myself(base, layer)` đã hoàn chỉnh sẵn trong ô này và trả về một khung hình đã ghép. Hãy dùng `for` chạy qua từng khung trong `frames`, gọi lệnh đó với `scene`, rồi `append` kết quả vào danh sách `shots`. OUTPUT đúng phải in `DA GHEP XONG CA DOAN` và mở cửa sổ có đủ bốn khung hình đã ghép — đó chính là một đoạn video do bạn dựng.",
+      note: "ĐỀ BÀI\nINPUT là tấm nền `boss` và danh sách `frames` gồm bốn khung hình của lớp con rồng; lệnh `play_effect_myself(base, layer)` đã hoàn chỉnh sẵn trong ô này và trả về một khung hình đã ghép. Hãy dùng `for` chạy qua từng khung trong `frames`, gọi lệnh đó với `boss`, rồi `append` kết quả vào danh sách `shots`. OUTPUT đúng phải in `WHOLE CLIP BLENDED` và mở cửa sổ có đủ bốn khung hình đã ghép — đó chính là một đoạn video do bạn dựng.",
       expectOut: {
         all: [
-          /DA GHEP XONG CA DOAN/,
+          /WHOLE CLIP BLENDED/,
         ],
       },
       solution: `from old_computer import say
+from pip_test import check_flip, check_blend, check_over
 from camera_charm import load_plate, blank_grid, compare_frames
 
 def play_effect_myself(base, layer):
@@ -1014,18 +1133,18 @@ def play_effect_myself(base, layer):
             result[row][col] = [min(255, a[0] + b[0]), min(255, a[1] + b[1]), min(255, a[2] + b[2])]
     return result
 
-scene = load_plate("scene", 16)
+boss = load_plate("boss", 16)
 frames = [load_plate("frame0", 16), load_plate("frame1", 16),
           load_plate("frame2", 16), load_plate("frame3", 16)]
 
 shots = []
 for frame in frames:
-    shots.append(play_effect_myself(scene, frame))
-say("DA GHEP XONG CA DOAN")
+    shots.append(play_effect_myself(boss, frame))
+say("WHOLE CLIP BLENDED")
 
 labels = []
 for i in range(len(shots)):
-    labels.append(("KHUNG " + str(i), shots[i]))
+    labels.append(("shots[" + str(i) + "]", shots[i], "frame" + str(i)))
 compare_frames(labels, "A FOR LOOP MAKES IT A VIDEO", False)
 `,
     },
@@ -1055,7 +1174,7 @@ compare_frames(labels, "A FOR LOOP MAKES IT A VIDEO", False)
             correct: 0,
           },
           {
-            q: "Đọc đoạn Mật Ngữ này:\n```python\nshots = []\nfor frame in frames:\n    shots.append(play_effect_myself(scene, frame))\n```\nSau khi chạy, `shots` chứa gì?",
+            q: "Đọc đoạn Mật Ngữ này:\n```python\nshots = []\nfor frame in frames:\n    shots.append(play_effect_myself(boss, frame))\n```\nSau khi chạy, `shots` chứa gì?",
             a: [
               "Mỗi khung hình đã được ghép hiệu ứng lên nền, xếp theo đúng thứ tự cũ",
               "Chỉ khung hình cuối cùng, vì mỗi vòng lặp ghi đè lần trước",
@@ -1073,57 +1192,62 @@ compare_frames(labels, "A FOR LOOP MAKES IT A VIDEO", False)
       npc: "Đây là lá bùa cuối cùng. `find_human()` đi hỏi TỪNG Ô một câu duy nhất: ô này có nằm trên người không? Trả lời xong cả lưới là ra viền người.",
     },
     {
+      npc: "Trước khi dùng `find_human`, Pip cho bạn xem ruột của nó. `human_mask()` trả về một lưới chỉ gồm 1 và 0: ô nào nằm trên người thì là 1.",
+    },
+    {
+      code: 'from camera_charm import human_mask, blank_grid, compare_frames\n\n# human_mask asks every cell one question: is this cell on a person?\n# 1 = yes, 0 = no. Nothing more magical than that.\nmask = human_mask(16)\n\npainted = blank_grid(len(mask), len(mask[0]))\nfor row in range(len(mask)):\n    for col in range(len(mask[row])):\n        # lượt của bạn: tô [60, 140, 255] vào ô là người, [10, 14, 20] vào ô còn lại\n        painted[row][col] = [10, 14, 20]\n\ncompare_frames([("PAINTED BY HAND", painted)], "IF THE CELL IS HUMAN, PAINT IT BLUE", False)\n',
+      label: "to_mau_nguoi.py",
+      note: "ĐỀ BÀI\nINPUT là hình camera của bạn, đọc thành lưới 16 ô. `human_mask(16)` trả về `mask`, trong đó `mask[row][col]` bằng `1` nếu ô đó nằm trên người và `0` nếu không. Hãy dùng `if` để tô `[60, 140, 255]` (xanh dương) vào những ô là người, và `[10, 14, 20]` vào những ô còn lại. OUTPUT là một hình bóng người màu xanh dương do chính vòng lặp của bạn tô ra.",
+      expectOut: { kind: 'studio_start', text: /human_mask/, minCount: 1 },
+      solution: 'from camera_charm import human_mask, blank_grid, compare_frames\n\n# human_mask asks every cell one question: is this cell on a person?\n# 1 = yes, 0 = no. Nothing more magical than that.\nmask = human_mask(16)\n\npainted = blank_grid(len(mask), len(mask[0]))\nfor row in range(len(mask)):\n    for col in range(len(mask[row])):\n        if mask[row][col] == 1:\n            painted[row][col] = [60, 140, 255]\n        else:\n            painted[row][col] = [10, 14, 20]\n\ncompare_frames([("PAINTED BY HAND", painted)], "IF THE CELL IS HUMAN, PAINT IT BLUE", False)\n',
+    },
+    {
+      remember: "`human_mask()` chỉ trả lời một câu cho từng ô: ô này có nằm trên người không, 1 hay 0. Có lưới đó rồi thì `if mask[row][col] == 1` cho bạn quyết định vẽ gì lên người và vẽ gì lên nền. `find_human` cũng làm đúng vậy, chỉ khác là nó xếp sẵn các lớp giúp bạn.",
+    },
+    {
       npc: "Có viền người rồi thì gương kẹp bạn vào GIỮA: nền và hiệu ứng `behind` vẽ trước, tới lượt các ô thuộc về người, rồi hiệu ứng `front` vẽ sau cùng.",
     },
     {
       code: `from old_computer import say
 from camera_charm import find_human
 
-# scene: nen thay han can phong - behind: hieu ung sau lung ban
-# front: hieu ung bay truoc mat ban, sat ong kinh
-say("STACKING FOUR LAYERS")
-find_human(scene="forest", behind="stag", front="sakura")
+# find_human does the loop you just wrote, then stacks the layers for you:
+#   scene  = replaces the room, drawn first
+#   behind = an effect between the room and you
+#   front  = an effect in front of you, close to the lens
+find_human(scene="forest", behind="dragon", front="sakura")
 say("A FRAME WITH REAL DEPTH")
 `,
       label: "bua_tim_nguoi.py",
-      note: "RUN KIỂM CHỨNG\nINPUT là hình camera của bạn. PROCESS: `find_human` xét từng ô trong khung hình và hỏi ô đó có thuộc về người hay không; các ô trả lời CÓ gộp lại thành viền người. Sau đó gương xếp bốn lớp — rừng phép thay cho căn phòng, con hươu đi phía SAU lưng bạn, bạn ở giữa, cánh hoa rơi phía TRƯỚC mặt bạn. OUTPUT là khung hình có chiều sâu thật: con hươu bị bạn che bớt, còn cánh hoa thì phủ lên bạn. Vẫn đúng luật cộng ánh sáng cũ, chỉ khác chỗ đứng trong chồng lớp.",
-      expectOut: {
-        all: [
-          /A FRAME WITH REAL DEPTH/,
-        ,
-          { kind: 'studio_start', text: /human_layers/, minCount: 1 },
-        ],
-      },
+      note: "RUN KIỂM CHỨNG\nINPUT là hình camera của bạn. PROCESS: `find_human` xét từng ô trong khung hình và hỏi ô đó có thuộc về người hay không; các ô trả lời CÓ gộp lại thành viền người. Sau đó gương xếp bốn lớp — rừng phép thay cho căn phòng, con rồng đi phía SAU lưng bạn, bạn ở giữa, cánh hoa rơi phía TRƯỚC mặt bạn. OUTPUT là khung hình có chiều sâu thật: con rồng bị bạn che bớt, còn cánh hoa thì phủ lên bạn. Vẫn đúng luật cộng ánh sáng cũ, chỉ khác chỗ đứng trong chồng lớp.",
+      expectOut: { all: [/A FRAME WITH REAL DEPTH/, { kind: 'studio_start', text: /human_layers/, minCount: 1 }] },
       solution: `from old_computer import say
 from camera_charm import find_human
 
-# scene: nen thay han can phong - behind: hieu ung sau lung ban
-# front: hieu ung bay truoc mat ban, sat ong kinh
-say("STACKING FOUR LAYERS")
-find_human(scene="forest", behind="stag", front="sakura")
+# find_human does the loop you just wrote, then stacks the layers for you:
+#   scene  = replaces the room, drawn first
+#   behind = an effect between the room and you
+#   front  = an effect in front of you, close to the lens
+find_human(scene="forest", behind="dragon", front="sakura")
 say("A FRAME WITH REAL DEPTH")
 `,
     },
     {
-      code: `from old_computer import say
-from camera_charm import find_human
+      code: `from camera_charm import find_human
 
-# luot cua ban: doi ba lop nay thanh man dien cua rieng ban
-# behind: stag / phoenix / butterfly / smoke / lightning
+# lượt của bạn: đổi ba lớp này thành màn diễn của riêng bạn
+# behind: dragon / phoenix / butterfly / smoke / lightning
 # front: sakura / flower
-say("YOUR OWN SHOW")
 find_human(scene="forest", behind="phoenix", front="flower")
 `,
       label: "man_dien_cua_ban.py",
       note: "XƯỞNG CỦA BẠN — không chấm điểm. Đổi `behind` và `front` để dựng màn diễn của riêng bạn, rồi chạy lại. Thử đặt cùng một hiệu ứng vào `behind` rồi vào `front` để thấy rõ khác biệt: ở `behind` nó bị bạn che, ở `front` nó phủ lên bạn.",
       expectOut: null,
-      solution: `from old_computer import say
-from camera_charm import find_human
+      solution: `from camera_charm import find_human
 
-# luot cua ban: doi ba lop nay thanh man dien cua rieng ban
-# behind: stag / phoenix / butterfly / smoke / lightning
+# lượt của bạn: đổi ba lớp này thành màn diễn của riêng bạn
+# behind: dragon / phoenix / butterfly / smoke / lightning
 # front: sakura / flower
-say("YOUR OWN SHOW")
 find_human(scene="forest", behind="phoenix", front="flower")
 `,
     },
@@ -1132,9 +1256,9 @@ find_human(scene="forest", behind="phoenix", front="flower")
         title: "Thứ tự xa gần",
         questions: [
           {
-            q: "Bạn gọi `find_human(scene=\"forest\", behind=\"stag\", front=\"sakura\")`. Trong khung hình kết quả, con hươu và cánh hoa nằm ở đâu so với bạn?",
+            q: "Bạn gọi `find_human(scene=\"forest\", behind=\"dragon\", front=\"sakura\")`. Trong khung hình kết quả, con rồng và cánh hoa nằm ở đâu so với bạn?",
             a: [
-              "Con hươu ở sau lưng nên bị bạn che bớt; cánh hoa ở trước mặt nên phủ lên bạn",
+              "Con rồng ở sau lưng nên bị bạn che bớt; cánh hoa ở trước mặt nên phủ lên bạn",
               "Cả hai đều phủ lên bạn, vì hiệu ứng luôn nằm trên cùng",
               "Cả hai đều bị bạn che, vì người luôn nằm trên cùng",
             ],
@@ -1160,9 +1284,7 @@ find_human(scene="forest", behind="phoenix", front="flower")
 from camera_charm import play_my_effect
 
 # Chọn một tệp video từ máy của bạn; tệp chỉ được đọc trong trình duyệt
-say("CHON MOT DOAN VIDEO")
 play_my_effect()
-say("DA CHIEU XONG")
 `,
       label: "lop_hieu_ung_cua_ban.py",
       note: "XƯỞNG CỦA BẠN — không chấm điểm. INPUT là một tệp video bạn chọn từ thiết bị; nếu bấm hủy thì bài dùng lớp có sẵn để không bị ngắt. Đoạn video càng đúng kiểu SÁNG TRÊN NỀN ĐEN thì ghép càng đẹp, vì phép cộng giữ phần sáng và bỏ qua phần đen. OUTPUT là chính đoạn video đó nằm trên hình camera của bạn.",
@@ -1170,9 +1292,7 @@ say("DA CHIEU XONG")
       solution: `from old_computer import say
 from camera_charm import play_my_effect
 
-say("CHON MOT DOAN VIDEO")
 play_my_effect()
-say("DA CHIEU XONG")
 `,
     },
     {
@@ -1181,10 +1301,10 @@ say("DA CHIEU XONG")
     {
       code: `from old_computer import say, say_num
 from voice_charm import listen
-from camera_charm import watch
+from camera_charm import watch, play_effect, display
 
 # Hai INPUT thật cùng lúc: một từ miệng bạn, một từ bàn tay bạn
-spells = ["koto", "boss"]
+spells = ["dragon", "boss"]
 command = listen(spells)
 power = watch()
 
@@ -1192,9 +1312,11 @@ say(command)
 say_num(power)
 
 if power >= 3:
-    say("FULL POWER CAST")
+    display("FULL POWER CAST")
+    play_effect("phoenix")
 else:
-    say("WEAK CAST")
+    display("WEAK CAST")
+    play_effect("sakura")
 `,
       label: "giong_noi_va_ban_tay.py",
       note: "ĐỀ BÀI\nBài này có HAI input thật. `listen(spells)` nghe thần chú bạn niệm; `watch()` đợi bàn tay bạn giơ lên và trả về số ngón tay đang mở. Hãy chạy thử vài lần: đổi thần chú, và đổi số ngón tay giơ lên. OUTPUT là từ nghe được, số ngón tay đếm được, rồi `FULL POWER CAST` khi bạn giơ từ 3 ngón trở lên, ngược lại là `WEAK CAST`. Giơ mấy ngón cũng được tính là xong; hãy chạy hai lần với số ngón khác nhau để thấy cả hai nhánh.",
@@ -1204,9 +1326,9 @@ else:
       ],
       solution: `from old_computer import say, say_num
 from voice_charm import listen
-from camera_charm import watch
+from camera_charm import watch, play_effect, display
 
-spells = ["koto", "boss"]
+spells = ["dragon", "boss"]
 command = listen(spells)
 power = watch()
 
@@ -1214,9 +1336,11 @@ say(command)
 say_num(power)
 
 if power >= 3:
-    say("FULL POWER CAST")
+    display("FULL POWER CAST")
+    play_effect("phoenix")
 else:
-    say("WEAK CAST")
+    display("WEAK CAST")
+    play_effect("sakura")
 `,
     },
     {
@@ -1226,21 +1350,21 @@ else:
       npc: "Mảnh đầu là hai lệnh nhỏ chỉ lo VIỆC NGHĨ. Chúng không chạm vào camera hay micro, nên bạn thử được ngay bằng giá trị tự đặt.",
     },
     {
-      code: 'from old_computer import say\n\n# Hai lenh nay la bo nao cua man dien. Chung khong goi camera hay micro,\n# chi nhan mot gia tri vao va tra ve mot quyet dinh.\n\ndef pick_effect(command):\n    """Tra ve ten lop hieu ung ung voi tu nghe duoc."""\n    # luot cua ban: koto -> "stag", boss -> "boss", con lai -> "sakura"\n    return "sakura"\n\ndef pick_depth(power):\n    """Tu 3 ngon tro len thi hieu ung bay TRUOC mat, it hon thi o SAU lung."""\n    # luot cua ban: tra ve "front" hoac "behind"\n    return "behind"\n\n# Thu lai bang cac gia tri co dinh, khong can micro hay camera\nsay(pick_effect("koto"))\nsay(pick_effect("boss"))\nsay(pick_depth(4))\nsay(pick_depth(1))\n',
+      code: 'from old_computer import say\n\n# These two functions are the brain of the show. They never touch the camera\n# or the microphone: a value goes in, a decision comes out.\n\ndef pick_effect(command):\n    """Return the effect-layer name for the word that was heard."""\n    # lượt của bạn: dragon -> "dragon", boss -> "boss", còn lại -> "sakura"\n    return "sakura"\n\ndef pick_depth(power):\n    """3 fingers or more puts the effect IN FRONT; fewer puts it BEHIND."""\n    # lượt của bạn: trả về "front" hoặc "behind"\n    return "behind"\n\n# Try them with fixed values — no microphone, no camera needed\nsay(pick_effect("dragon"))\nsay(pick_effect("boss"))\nsay(pick_depth(4))\nsay(pick_depth(1))\n',
       label: "du_an_1_bo_nao.py",
-      note: "ĐỀ BÀI\nBài này không có INPUT thật; bạn tự đưa giá trị vào để thử. Hãy hoàn thiện hai lệnh: `pick_effect(command)` trả về `\"stag\"` khi nghe `koto`, `\"boss\"` khi nghe `boss`, còn lại trả về `\"sakura\"`; `pick_depth(power)` trả về `\"front\"` khi số ngón từ 3 trở lên, ngược lại `\"behind\"`. OUTPUT đúng gồm bốn dòng theo thứ tự: `stag`, `boss`, `front`, `behind`.",
-      expectOut: { all: [/^stag$/m, /^boss$/m, /^front$/m, /^behind$/m] },
-      solution: 'from old_computer import say\n\n# Hai lenh nay la bo nao cua man dien. Chung khong goi camera hay micro,\n# chi nhan mot gia tri vao va tra ve mot quyet dinh.\n\ndef pick_effect(command):\n    """Tra ve ten lop hieu ung ung voi tu nghe duoc."""\n    if command == "koto":\n        return "stag"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    """Tu 3 ngon tro len thi hieu ung bay TRUOC mat, it hon thi o SAU lung."""\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\n# Thu lai bang cac gia tri co dinh, khong can micro hay camera\nsay(pick_effect("koto"))\nsay(pick_effect("boss"))\nsay(pick_depth(4))\nsay(pick_depth(1))\n',
+      note: "ĐỀ BÀI\nBài này không có INPUT thật; bạn tự đưa giá trị vào để thử. Hãy hoàn thiện hai lệnh: `pick_effect(command)` trả về `\"dragon\"` khi nghe `dragon`, `\"boss\"` khi nghe `boss`, còn lại trả về `\"sakura\"`; `pick_depth(power)` trả về `\"front\"` khi số ngón từ 3 trở lên, ngược lại `\"behind\"`. OUTPUT đúng gồm bốn dòng theo thứ tự: `dragon`, `boss`, `front`, `behind`.",
+      expectOut: { all: [/^dragon$/m, /^boss$/m, /^front$/m, /^behind$/m] },
+      solution: 'from old_computer import say\n\n# These two functions are the brain of the show. They never touch the camera\n# or the microphone: a value goes in, a decision comes out.\n\ndef pick_effect(command):\n    """Return the effect-layer name for the word that was heard."""\n    if command == "dragon":\n        return "dragon"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    """3 fingers or more puts the effect IN FRONT; fewer puts it BEHIND."""\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\n# Try them with fixed values — no microphone, no camera needed\nsay(pick_effect("dragon"))\nsay(pick_effect("boss"))\nsay(pick_depth(4))\nsay(pick_depth(1))\n',
     },
     {
       npc: "Mảnh thứ hai là phần CHẠY THẬT. `run_show` đọc hai input thật, hỏi hai lệnh vừa viết, rồi mới xếp lớp — mỗi lệnh lo đúng một việc.",
     },
     {
-      code: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "koto":\n        return "stag"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef run_show():\n    """Doc hai INPUT that, hoi hai lenh tren, roi xep lop."""\n    command = listen(["koto", "boss", "sakura"])\n    power = watch()\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    say("SPELL: " + effect)\n    display("SPELL: " + effect)\n    say("DEPTH: " + depth)\n    # luot cua ban: goi find_human voi scene="forest" va dat effect vao\n    # dung cho — behind hay front, tuy depth\n    say("SHOW DONE")\n\nrun_show()\n',
+      code: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "dragon":\n        return "dragon"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef run_show():\n    """Read the two real inputs, ask the two functions, then stack the layers."""\n    command = listen(["dragon", "boss", "sakura"])\n    power = watch()\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    display("SPELL: " + effect)\n    # lượt của bạn: gọi find_human với scene="forest" và đặt effect vào\n    # đúng chỗ — behind hay front, tuỳ theo depth\n    say("SHOW DONE")\n\nrun_show()\n',
       label: "du_an_2_man_dien.py",
       note: "ĐỀ BÀI\nINPUT là giọng nói và bàn tay của bạn. Hai lệnh `pick_effect` và `pick_depth` đã có sẵn đầy đủ trong ô này. Trong `run_show`, hãy gọi `find_human(scene=\"forest\", ...)` và đặt `effect` vào đúng chỗ: nếu `depth` là `\"front\"` thì truyền qua tham số `front`, ngược lại truyền qua `behind`. OUTPUT đúng in `SPELL:`, `DEPTH:` rồi `SHOW DONE`, và dựng đúng màn diễn bạn vừa gọi ra.",
-      expectOut: { all: [/SPELL: /, /DEPTH: /, /SHOW DONE/, { kind: 'studio_start', text: /human_layers/, minCount: 1 }] },
-      solution: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "koto":\n        return "stag"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef run_show():\n    """Doc hai INPUT that, hoi hai lenh tren, roi xep lop."""\n    command = listen(["koto", "boss", "sakura"])\n    power = watch()\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    say("SPELL: " + effect)\n    display("SPELL: " + effect)\n    say("DEPTH: " + depth)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        find_human(scene="forest", behind=effect)\n    say("SHOW DONE")\n\nrun_show()\n',
+      expectOut: { all: [/SHOW DONE/, { kind: 'studio_start', text: /human_layers/, minCount: 1 }] },
+      solution: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "dragon":\n        return "dragon"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef run_show():\n    """Read the two real inputs, ask the two functions, then stack the layers."""\n    command = listen(["dragon", "boss", "sakura"])\n    power = watch()\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    display("SPELL: " + effect)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        find_human(scene="forest", behind=effect)\n    say("SHOW DONE")\n\nrun_show()\n',
     },
     {
       remember: "Một chương trình lớn được ghép từ nhiều lệnh nhỏ, mỗi lệnh lo đúng một việc: `pick_effect` và `pick_depth` chỉ NGHĨ nên thử được bằng giá trị tự đặt, còn `run_show` mới đọc INPUT thật và gọi chúng. Tách như vậy thì hỏng chỗ nào biết ngay chỗ đó.",
@@ -1277,11 +1401,11 @@ else:
       npc: "Muốn làm mãi thì dùng `while True`. Nó lặp không có điểm dừng sẵn, nên chính bạn phải đặt cửa ra: nghe thấy `stop` thì `break`.",
     },
     {
-      code: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "koto":\n        return "stag"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef cast_once(command, power):\n    """Dien mot lan: chon lop, chon cho dung, roi xep lop."""\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    say("CAST: " + effect + " (" + depth + ")")\n    display("CAST: " + effect)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        play_effect(effect)\n\nspells = ["koto", "boss", "stop"]\n\n# luot cua ban: cho guong nghe MAI, moi lan nghe duoc thi dien mot lan.\n# Nghe thay "stop" thi noi SHOW OVER roi break de thoat vong lap.\nwhile True:\n    command = listen(spells)\n    break\n',
+      code: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "dragon":\n        return "dragon"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef cast_once(command, power):\n    """Perform once: pick the layer, pick its place, then stack."""\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    display("CAST: " + effect)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        play_effect(effect)\n\nspells = ["dragon", "boss", "stop"]\n\n# lượt của bạn — viết ba bước vào thân vòng lặp, đúng thứ tự này:\n#   1. nghe thấy "stop"  -> display("SHOW OVER") rồi break\n#   2. chưa dừng         -> power = watch()   (đếm ngón tay)\n#   3. rồi               -> cast_once(command, power)\nwhile True:\n    command = listen(spells)\n    break        # <- xoá dòng này khi bạn đã viết xong ba bước trên\n',
       label: "du_an_3_san_khau_mo.py",
-      note: "ĐỀ BÀI\nINPUT là giọng nói và bàn tay bạn, lặp lại bao nhiêu lần tùy bạn. Các lệnh `pick_effect`, `pick_depth` và `cast_once` đã có sẵn đầy đủ trong ô này. Hãy hoàn thiện vòng `while True`: mỗi lần nghe được một từ, nếu đó là `stop` thì nói `SHOW OVER` bằng cả `say` lẫn `display` rồi `break`; nếu không thì đọc số ngón tay bằng `watch()` và gọi `cast_once(command, power)`. Giơ ít ngón thì lớp hiệu ứng chồng phẳng lên cả khung hình; giơ từ 3 ngón trở lên thì nó được xếp quanh người bạn. OUTPUT đúng in một dòng `CAST: ...` cho mỗi thần chú bạn niệm, và kết thúc bằng `SHOW OVER` khi bạn nói `stop`.",
-      expectOut: { all: [/CAST: stag/, /CAST: boss/, /SHOW OVER/, { kind: 'studio_start', text: /human_layers|effect_play/, minCount: 2 }] },
-      solution: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "koto":\n        return "stag"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef cast_once(command, power):\n    """Dien mot lan: chon lop, chon cho dung, roi xep lop."""\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    say("CAST: " + effect + " (" + depth + ")")\n    display("CAST: " + effect)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        play_effect(effect)\n\nspells = ["koto", "boss", "stop"]\n\nwhile True:\n    command = listen(spells)\n    if command == "stop":\n        say("SHOW OVER")\n        display("SHOW OVER")\n        break\n    power = watch()\n    cast_once(command, power)\n',
+      note: "ĐỀ BÀI\nINPUT là giọng nói và bàn tay bạn, lặp lại bao nhiêu lần tùy bạn. Các lệnh `pick_effect`, `pick_depth` và `cast_once` đã có sẵn đầy đủ trong ô này. Hãy hoàn thiện vòng `while True`: mỗi lần nghe được một từ, nếu đó là `stop` thì nói `SHOW OVER` bằng cả `say` lẫn `display` rồi `break`; nếu không thì đọc số ngón tay bằng `watch()` và gọi `cast_once(command, power)`. Giơ ít ngón thì lớp hiệu ứng chồng phẳng lên cả khung hình; giơ từ 3 ngón trở lên thì nó được xếp quanh người bạn. Khi bạn RUN, Pip chạy chính đoạn code này: màn hình mở TOÀN MÀN HÌNH, gương nghe bạn ở dải dưới đáy, và mỗi lần bạn niệm một thần chú thì màn diễn chạy ngay trước mắt. Nói `stop` để hạ màn và quay lại bài học.",
+      expectOut: { all: [/SHOW OVER/, { kind: 'studio_start', text: /human_layers|effect_play/, minCount: 2 }] },
+      solution: 'from old_computer import say\nfrom voice_charm import listen\nfrom camera_charm import watch, find_human, play_effect, display\n\ndef pick_effect(command):\n    if command == "dragon":\n        return "dragon"\n    elif command == "boss":\n        return "boss"\n    else:\n        return "sakura"\n\ndef pick_depth(power):\n    if power >= 3:\n        return "front"\n    else:\n        return "behind"\n\ndef cast_once(command, power):\n    """Perform once: pick the layer, pick its place, then stack."""\n    effect = pick_effect(command)\n    depth = pick_depth(power)\n    display("CAST: " + effect)\n    if depth == "front":\n        find_human(scene="forest", front=effect)\n    else:\n        play_effect(effect)\n\nspells = ["dragon", "boss", "stop"]\n\nwhile True:\n    command = listen(spells)\n    if command == "stop":\n        display("SHOW OVER")\n        break\n    power = watch()\n    cast_once(command, power)\n',
     },
     {
       checkpoint: {
@@ -1302,11 +1426,11 @@ else:
             correct: 0,
           },
           {
-            q: "Bạn niệm lần lượt `koto`, rồi `boss`, rồi `stop`. Máy in ra gì?",
+            q: "Bạn niệm lần lượt `dragon`, rồi `boss`, rồi `stop`. Máy in ra gì?",
             a: [
-              "`CAST: stag`, rồi `CAST: boss`, rồi `SHOW OVER`",
+              "`CAST: dragon`, rồi `CAST: boss`, rồi `SHOW OVER`",
               "Chỉ `SHOW OVER`, vì vòng lặp chỉ xét từ cuối cùng",
-              "Chỉ `CAST: stag`, vì `break` chạy ngay sau lần đầu",
+              "Chỉ `CAST: dragon`, vì `break` chạy ngay sau lần đầu",
             ],
             correct: 0,
           },

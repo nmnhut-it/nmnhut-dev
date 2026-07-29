@@ -21,13 +21,26 @@
 //   opts:   { title, numbers }  numbers = also render the digit table
 //   done:   Promise resolving when the learner dismisses the lab.
 // Used by engine/interactive-studio.js for the `frame_compare` studio action.
+// readGrid/paintCanvas/paintNumbers are also the renderer for the hand-editing
+// board (engine/pixel-board-cell.js) — one way of drawing pixels and digits.
 
-const MAX_SIDE = 48;                 // guards against a runaway grid
+// A learner looking at four panels cannot tell which one their code made, which
+// one is shipped artwork, and why one of them is blocky — so each panel says so
+// itself instead of relying on Pip having explained it three bubbles earlier.
+const TAGS = {
+  result: 'KẾT QUẢ — chính đoạn code của bạn vừa dựng ra tấm này ·',
+  input: 'ẢNH VÀO — tấm máy đưa cho bạn xử lý ·',
+  coarse: 'LƯỚI SỐ — thu nhỏ để bạn đọc được từng ô, chưa phải ảnh thật ·',
+  coarseResult: 'LƯỚI SỐ · KẾT QUẢ — code của bạn vừa ghi, thu nhỏ để đọc từng ô ·',
+  source: 'ẢNH GỐC — tấm ảnh thật mà lưới bên cạnh được đọc ra từ đó',
+  reference: 'ẢNH MẪU — để bạn đối chiếu, không phải kết quả của bạn',
+};
+const MAX_SIDE = 512;                // guards against a runaway grid; matches interactive-studio's IMAGE_GRID_MAX
 const NUMBER_LIMIT = 16;             // past 16 columns a digit is too small to read
 const channel = v => typeof v === 'number' && Number.isFinite(v) ? Math.max(0, Math.min(255, Math.trunc(v))) : 0;
 const lightOf = p => Math.floor((p[0] + p[1] + p[2]) / 3);
 
-function readGrid(image) {
+export function readGrid(image) {
   if (!Array.isArray(image) || !Array.isArray(image[0])) return null;
   const rows = Math.min(image.length, MAX_SIDE), cols = Math.min(image[0].length, MAX_SIDE);
   const cells = [];
@@ -42,9 +55,12 @@ function readGrid(image) {
   return { rows, cols, cells };
 }
 
-function paintCanvas(grid) {
+export function paintCanvas(grid) {
   const canvas = document.createElement('canvas');
-  canvas.className = 'ilab-art'; canvas.width = grid.cols; canvas.height = grid.rows;
+  // A coarse grid is read cell by cell beside its digits, so it stays small. A
+  // full-resolution result IS the payoff of the lesson and gets the room.
+  canvas.className = grid.cols > NUMBER_LIMIT ? 'ilab-art is-photo' : 'ilab-art';
+  canvas.width = grid.cols; canvas.height = grid.rows;
   const ctx = canvas.getContext('2d');
   if (ctx) {
     const data = ctx.createImageData(grid.cols, grid.rows);
@@ -59,7 +75,7 @@ function paintCanvas(grid) {
 
 // Each digit sits on its own brightness as a background, so the table reads as
 // a picture and as numbers at the same time.
-function paintNumbers(grid) {
+export function paintNumbers(grid) {
   const table = document.createElement('div');
   table.className = 'ilab-nums';
   table.style.setProperty('--ilab-cols', String(grid.cols));
@@ -84,7 +100,7 @@ function photoEl(src) {
 
 export function buildImageLab(frames, opts = {}) {
   const list = (Array.isArray(frames) ? frames : [])
-    .map(f => ({ label: String(f?.label ?? ''), grid: readGrid(f?.image), src: typeof f?.src === 'string' ? f.src : null }))
+    .map(f => ({ label: String(f?.label ?? ''), grid: readGrid(f?.image), src: typeof f?.src === 'string' ? f.src : null, result: f?.role === 'result' }))
     .filter(f => f.grid || f.src);
   const gridded = list.filter(f => f.grid);
   const el = document.createElement('div');
@@ -122,7 +138,8 @@ export function buildImageLab(frames, opts = {}) {
     if (frame.src) {
       const shot = document.createElement('div'); shot.className = 'ilab-stage';
       shot.appendChild(photoEl(frame.src));
-      const tag = document.createElement('b'); tag.className = 'ilab-tag'; tag.textContent = 'làm đủ nét thì như vầy';
+      const tag = document.createElement('b'); tag.className = 'ilab-tag';
+      tag.textContent = frame.grid ? TAGS.source : TAGS.reference;
       shot.appendChild(tag); pair.appendChild(shot);
     }
     if (frame.grid) {
@@ -130,7 +147,9 @@ export function buildImageLab(frames, opts = {}) {
       stage.appendChild(paintCanvas(frame.grid));
       mark = document.createElement('i'); mark.className = 'ilab-mark'; stage.appendChild(mark);
       const tag = document.createElement('b'); tag.className = 'ilab-tag';
-      tag.textContent = `lưới ${frame.grid.rows}×${frame.grid.cols} · để bạn hiểu`;
+      const coarse = frame.grid.cols <= NUMBER_LIMIT;
+      const kind = coarse ? (frame.result ? TAGS.coarseResult : TAGS.coarse) : frame.result ? TAGS.result : TAGS.input;
+      tag.textContent = `${kind} ${frame.grid.rows}×${frame.grid.cols}`;
       stage.appendChild(tag); pair.appendChild(stage);
     }
     panel.appendChild(pair);

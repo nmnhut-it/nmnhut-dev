@@ -56,7 +56,7 @@ export const FINGER_TO_SPELL={1:'fireball',2:'lightning'};
 // router treats these as one group (they don't stop each other's overlay the
 // way a particle cast does), so the list lives here once instead of being
 // re-typed at every branch in main.js.
-export const OVERLAY_SPELLS=['koto','phoenix','butterfly','sakura','smoke','rain','flower','magic'];
+export const OVERLAY_SPELLS=['koto','dragon','rose','phoenix','butterfly','sakura','smoke','rain','flower','magic'];
 
 // Plates that belong IN FRONT of the caster rather than behind them. Petals,
 // blossom and dust are near-camera weather: they should drift between the
@@ -70,9 +70,12 @@ export const FRONT_SPELLS=['sakura','flower','dust'];
 // needs none of that, so each spell also has a digit that fires the exact same
 // routine. 1 and 2 stay reserved for the finger-count override (see
 // CLAUDE.md's testing section) and 3 keeps the 'rain' binding it already had.
+// The digits ran out at 'magic', so the two newest plates take the letters of
+// their own name ('d'/'r') — same side channel, same routine.
 export const SPELL_KEYS={
   '3':'rain', '4':'koto', '5':'phoenix', '6':'butterfly',
   '7':'sakura', '8':'smoke', '9':'flower', '0':'magic',
+  'd':'dragon', 'r':'rose',
 };
 
 // Order here also defines the on-screen gesture-guide list order.
@@ -87,6 +90,8 @@ export const GUIDE=[
   {key:'flower', name:'Flower',    hotkey:'9', label:'Index + “Flower”',desc:'Loop a full-frame atmosphere of floating pink flower petals'},
   {key:'magic', name:'Glyphs',     hotkey:'0', label:'Index + “Magic”',desc:'Loop a separate atmosphere of luminous magical symbols'},
   {key:'koto', name:'Stag',      hotkey:'4', label:'Index + “Koto”',desc:'Summon the glowing spirit stag video spell'},
+  {key:'dragon', name:'Dragon',    hotkey:'D', label:'Index + “Dragon”',desc:'Call a spirit dragon that bursts out of a glowing summoning circle'},
+  {key:'rose', name:'Rose',      hotkey:'R', label:'Index + “Rose”',desc:'Bloom a luminous spirit rose in a drift of glowing motes'},
   {key:'phoenix', name:'Phoenix',   hotkey:'5', label:'Index + “Phoenix”',desc:'Summon a spirit phoenix that spreads its wings in a burst of embers'},
   {key:'butterfly', name:'Butterfly', hotkey:'6', label:'Index + “Butterfly”',desc:'Release a drifting swarm of glowing crystal butterflies'},
   {key:'sakura', name:'Sakura',    hotkey:'7', label:'Index + “Sakura”',desc:'Scatter a warm swirl of glowing cherry-blossom petals'},

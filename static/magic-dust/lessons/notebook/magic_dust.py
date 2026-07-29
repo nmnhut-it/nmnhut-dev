@@ -27,14 +27,15 @@ import os
 from PIL import Image
 
 PLATES = {
+    "dragon": "assets/fx-dragon.webp",
     "stag": "assets/fx-stag.webp",
     "boss": "assets/fx-boss.webp",
     "scene": "assets/bg-lighthouse.webp",
-    "goal": "assets/goal-stag-over-boss.webp",
-    "frame0": "assets/frame-stag-0.webp",
-    "frame1": "assets/frame-stag-1.webp",
-    "frame2": "assets/frame-stag-2.webp",
-    "frame3": "assets/frame-stag-3.webp",
+    "goal": "assets/goal-dragon-over-boss.webp",
+    "frame0": "assets/frame-dragon-0.webp",
+    "frame1": "assets/frame-dragon-1.webp",
+    "frame2": "assets/frame-dragon-2.webp",
+    "frame3": "assets/frame-dragon-3.webp",
 }
 _HERE = os.path.dirname(os.path.abspath(__file__))
 CELL_PX = 26          # a grid cell on screen
@@ -55,7 +56,7 @@ def blank_grid(rows, cols, value=0):
 
 
 def _open(name):
-    path = os.path.join(_HERE, PLATES.get(str(name), PLATES["stag"]))
+    path = os.path.join(_HERE, PLATES.get(str(name), PLATES["dragon"]))
     if not os.path.exists(path):
         raise FileNotFoundError(
             "Missing plate %r. Keep the assets/ folder next to this notebook." % path
@@ -63,7 +64,7 @@ def _open(name):
     return Image.open(path).convert("RGB")
 
 
-def load_plate(name="stag", size=16):
+def load_plate(name="dragon", size=16):
     """Read a named plate into a 2D RGB list — the same numbers the lesson uses."""
     side = max(8, min(MAX_SIDE, int(size)))
     small = _open(name).resize((side, side), Image.NEAREST)
@@ -153,7 +154,7 @@ def _browser_only(name, why):
     return False
 
 
-def play_effect(name="stag"):
+def play_effect(name="dragon"):
     return _browser_only("play_effect", "can mot khung hinh camera that de chieu len.")
 
 

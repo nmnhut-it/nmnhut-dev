@@ -111,6 +111,20 @@ html,body{background:#183f49}
 .ld-k{color:#fffaf0;text-shadow:0 4px 0 rgba(24,63,73,.55),0 0 38px rgba(244,200,90,.7)}
 .ld-bar{height:4px;border-radius:4px;background:rgba(255,253,245,.25);overflow:hidden}.ld-fill{background:#ffe6a0;box-shadow:0 0 12px #ffe6a0}
 .ld-sub{color:rgba(255,250,240,.78);text-shadow:0 2px 8px rgba(24,63,73,.5)}
+/* Contrast pass. The storybook theme repainted the chips CREAM but the text
+   inside them still inherited the old neon-on-black mint (--txt/--txt-dim/--c),
+   i.e. pale mint on cream — around 1.5:1, unreadable. Anything sitting ON a
+   cream chip gets ink; anything floating over the raw camera gets its own dark
+   plate instead of relying on a text-shadow the video can out-shout. */
+.gi .gn{color:#183f49}.gi.active .gn{color:#2d6425}
+.gi .gk{color:#fffaf0;background:#2d6425}.gi.active .gk{color:#183f49;background:#f4c85a}
+#perf,#testhelp,#voicestat,#elbl{color:#fffaf0;text-shadow:0 1px 3px rgba(9,28,34,.9);
+  background:rgba(9,28,34,.72);border-radius:6px;padding:4px 8px;backdrop-filter:blur(6px)}
+#voicestat.listening{color:#ffe6a0}
+/* the spell name keeps its spell-coloured glow, but a bright video plate can
+   sit right behind it — a dark halo underneath is what keeps it legible */
+#sname{text-shadow:0 0 2px rgba(9,28,34,.95),0 1px 3px rgba(9,28,34,.95),0 2px 10px rgba(9,28,34,.8),0 0 22px var(--g)}
+#f4c85ar{gap:7px}
 </style>
 
 <script type="importmap">
@@ -162,7 +176,7 @@ html,body{background:#183f49}
 <div id="testpanel">
   <button id="testcastbtn" type="button">TEST CAST</button>
   <span id="voicestat" title="Bấm để bật lại microphone">voice: show index finger, then say a spell</span>
-  <span id="testhelp">1/2 hold = fingers · Space = cast · 3-0 = spells · P = photo · M = depth mode · K = backdrop · G = hide list</span>
+  <span id="testhelp">1/2 hold = fingers · Space = cast · 3-0 + D/R = spells · P = photo · M = depth mode · K = backdrop · G = hide list</span>
 </div>
 
 <script type="module" src="./src/main.js"></script>

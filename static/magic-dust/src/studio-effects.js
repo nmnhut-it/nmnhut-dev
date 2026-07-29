@@ -17,6 +17,8 @@ export class StudioEffects{
   buildVideoOverlays(){
     const sources={
       koto:'./lessons/assets/camera-effects/overlays/koto-stag.mp4',
+      dragon:'./lessons/assets/camera-effects/overlays/dragon-strike.mp4',
+      rose:'./lessons/assets/camera-effects/overlays/spirit-rose.mp4',
       phoenix:'./lessons/assets/camera-effects/overlays/spirit-phoenix.mp4',
       butterfly:'./lessons/assets/camera-effects/overlays/crystal-butterflies.mp4',
       sakura:'./lessons/assets/camera-effects/overlays/sakura-bloom.mp4',

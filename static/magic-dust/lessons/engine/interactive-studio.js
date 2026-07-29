@@ -9,6 +9,9 @@ import { startVoiceGate } from './voice-gate.js';
 import { wordHits } from './chant-match.js';
 import { HumanLayers } from './human-layers.js';
 import { mountMicMeter } from './mic-meter.js';
+// The named stills live in engine/plates.js — the hand-editing cell seeds its
+// board from the same table and must not drag the camera stack along.
+import { IMAGE_PLATES } from './plates.js';
 
 const MOTIONS = new Set(['orbit', 'spiral-in', 'rain', 'pulse', 'comet']);
 const PHOTO_LIGHT_MODES = new Set(['steady', 'off', 'shift']);
@@ -18,42 +21,31 @@ const ANCHOR_INDEX = { wrist: 0, palm: 9, index_tip: 8 };
 const DEFAULT_STYLE = { color: '#78b2a5', symbols: '', motion: 'orbit', size: 1, density: 1, glow: 1 };
 const CAMERA_START_MS = 6000;
 const HAND_READ_MS = 1500, PARTICLE_FRAME_CAP = 120, IMAGE_FRAME_MAX_W = 64, IMAGE_FRAME_MAX_H = 48;
-const IMAGE_GRID_MIN = 8, IMAGE_GRID_MAX = 24, IMAGE_GRID_SAMPLE = 'assets/pixel-art-magic-owl.webp';
-// Named still plates for the FX-compositing island: two glowing effect layers
-// shot on black (so adding them to a scene is literally adding light) plus one
-// night background. Stills, not the .mp4 overlays, because a lesson grid must
-// be the same numbers on every run.
-const IMAGE_PLATES = {
-  stag: 'assets/camera-effects/plates/fx-stag.webp',
-  boss: 'assets/camera-effects/plates/fx-boss.webp',
-  scene: 'assets/camera-effects/plates/bg-lighthouse.webp',
-  // "Done at full resolution" counterparts, produced offline with the very
-  // flip / add-and-clamp the learner writes. A lesson pairs each coarse result
-  // with one of these so a grid is never the only thing on screen: the pixels
-  // are there to be understood, these show what the same maths really looks
-  // like. `goal` also opens the island as the puzzle to solve.
-  goal: 'assets/camera-effects/plates/goal-stag-over-boss.webp',
-  flipped: 'assets/camera-effects/plates/full-stag-flipped.webp',
-  stagscene: 'assets/camera-effects/plates/full-stag-over-scene.webp',
-  bossscene: 'assets/camera-effects/plates/full-boss-over-scene.webp',
-  // Four real frames lifted out of koto-stag.mp4. A video IS a list of
-  // pictures, and the island says so with the actual frames rather than a
-  // diagram: blend one, then let a for loop do the rest.
-  frame0: 'assets/camera-effects/plates/frame-stag-0.webp',
-  frame1: 'assets/camera-effects/plates/frame-stag-1.webp',
-  frame2: 'assets/camera-effects/plates/frame-stag-2.webp',
-  frame3: 'assets/camera-effects/plates/frame-stag-3.webp',
-};
+// A grid is two different things at two different moments. Up to ~16 cells a
+// side it is a TEACHING object: every cell is a readable number. Past that it
+// is the actual picture, which is what a learner must transform once the
+// numbers are understood — their flip has to produce a real flipped dragon,
+// not a plausible-looking mush. The ceiling is the plates' own 512px, but the
+// cost is not in the learner's loop (~150ms at 512) — it is in moving three
+// grids of JSON across the bridge and back: measured end to end, 256 lands
+// under a second and 512 takes 2-3.5s per RUN. Lessons use 256; the lab draws
+// a frame at ~200-380px anyway, so 512 buys almost no visible detail.
+const IMAGE_GRID_MIN = 8, IMAGE_GRID_MAX = 512, IMAGE_GRID_SAMPLE = 'assets/pixel-art-magic-owl.webp';
 // The real moving plates the root camera app summons. A learner who has just
 // written the add-and-clamp blend on a 16x16 grid gets to fire the full-size
 // version of the same idea over their own camera: each clip is glowing light
 // on black, screen-blended, i.e. the blend they wrote, at 1280x720x24fps.
 const EFFECT_CLIPS = {
+  dragon: 'assets/camera-effects/overlays/dragon-strike.mp4',
+  rose: 'assets/camera-effects/overlays/spirit-rose.mp4',
   stag: 'assets/camera-effects/overlays/koto-stag.mp4',
   phoenix: 'assets/camera-effects/overlays/spirit-phoenix.mp4',
   butterfly: 'assets/camera-effects/overlays/crystal-butterflies.mp4',
   sakura: 'assets/camera-effects/overlays/sakura-bloom.mp4',
   smoke: 'assets/camera-effects/overlays/smoke-blue.mp4',
+  // Copied from the AR fight's plate set (ar-boss/plate-fx.js) so lessons/ ships
+  // every clip it names: without it play_effect("boss") summoned the dragon.
+  boss: 'assets/camera-effects/overlays/boss-curse.mp4',
   lightning: 'assets/camera-effects/overlays/lightning-ground.mp4',
 };
 const EFFECT_MAX_MS = 12000;
@@ -295,6 +287,72 @@ export class InteractiveStudio {
     if (shouldPick && !picked) this.#outLine('bạn chưa chọn ảnh — máy dùng tranh cú phép thuật để bài vẫn chạy được');
     return JSON.stringify(Array.isArray(grid) ? grid : []);
   }
+  // Flatten the camera and the plate into one still so the result survives the
+  // cell that made it. Screen-blend, exactly as the CSS does live, or the saved
+  // frame would be a flat paste of the plate over the picture.
+  #freezeClip(clip, raw) {
+    const panel = this.#scenePanel, r = panel.getBoundingClientRect();
+    const w = Math.max(2, r.width | 0), h = Math.max(2, r.height | 0);
+    const still = document.createElement('canvas');
+    still.className = 'studio-result-still'; still.width = w; still.height = h;
+    const ctx = still.getContext('2d');
+    if (!ctx) return;
+    const cam = panel.querySelector('#cam');
+    const cover = (src, sw, sh, blend) => {
+      if (!sw || !sh) return;
+      ctx.save(); ctx.globalCompositeOperation = blend || 'source-over';
+      const k = Math.max(w / sw, h / sh), dw = sw * k, dh = sh * k;
+      ctx.drawImage(src, (w - dw) / 2, (h - dh) / 2, dw, dh); ctx.restore();
+    };
+    if (!raw && cam) cover(cam, cam.videoWidth, cam.videoHeight);
+    cover(clip, clip.videoWidth, clip.videoHeight, raw ? 'source-over' : 'screen');
+    panel.appendChild(still);
+  }
+
+  #clearResultStill() {
+    for (const el of this.#scenePanel.querySelectorAll('.studio-result-still, .human-layers.result-frozen')) el.remove();
+  }
+
+  // Take the whole screen for a performance and give it back afterwards.
+  // Nothing else changes — the same panel, the same canvases, just big enough
+  // to be the point of the exercise rather than a thumbnail beside it.
+  #enterStage(caption) {
+    this.#scenePanel.classList.add('stage-full');
+    document.body.classList.add('stage-full-on');
+    let tag = this.#scenePanel.querySelector('.stage-note');
+    if (!tag) { tag = document.createElement('div'); tag.className = 'stage-note'; this.#scenePanel.appendChild(tag); }
+    tag.textContent = caption || 'Pip đang chạy đoạn code của bạn…';
+  }
+  #exitStage() {
+    this.#scenePanel.classList.remove('stage-full');
+    document.body.classList.remove('stage-full-on');
+    const tag = this.#scenePanel.querySelector('.stage-note');
+    if (tag) tag.remove();
+  }
+
+  // human_mask — the mask as PLAIN DATA: a grid of 1 (this cell is on the
+  // person) and 0 (it is not). find_human reads as magic because the stacking
+  // is hidden inside it; handing over the same answer as a grid lets a learner
+  // loop over it and colour the person in by hand, which is all the charm is.
+  async #readHumanMask(cfg) {
+    this.stop(); this.#active = true;
+    const side = Math.round(clamp(cfg.size, IMAGE_GRID_MIN, IMAGE_GRID_MAX, 16));
+    let camTimer = null;
+    try {
+      const opened = this.#cameraEngine.ensure().then(() => true, () => false);
+      this.#cameraAvailable = await Promise.race([opened, new Promise(r => { camTimer = setTimeout(() => r(false), CAMERA_START_MS); })]);
+    } catch { this.#cameraAvailable = false; }
+    if (camTimer) clearTimeout(camTimer);
+    const video = this.#scenePanel.querySelector('#cam');
+    if (!this.#cameraAvailable || !video) { this.#outLine('chưa mở được camera'); return '[]'; }
+    const layers = new HumanLayers(this.#scenePanel, video);
+    try { await layers.init(); } catch { layers.stop(); this.#outLine('chưa tải được bùa tìm người'); return '[]'; }
+    const grid = await layers.maskGrid(side);
+    layers.stop(); this.stop();
+    if (!grid.length) this.#outLine('chưa thấy người trong khung hình — hãy lùi ra cho camera thấy bạn');
+    return JSON.stringify(grid);
+  }
+
   // human_layers — the payoff of the whole island: find the person, then stack
   // scene / behind / person / front so the FX has actual DEPTH instead of
   // washing over the learner's face. Everything else in the island composites
@@ -322,8 +380,10 @@ export class InteractiveStudio {
     const behind = cfg.behind ? clip(cfg.behind, EFFECT_CLIPS) : null;
     const front = cfg.front ? clip(cfg.front, EFFECT_CLIPS) : null;
 
+    this.#clearResultStill();
+    this.#enterStage('Pip đang chạy đoạn code của bạn…');
     const layers = new HumanLayers(this.#scenePanel, video);
-    try { await layers.init(); } catch { this.#outLine('chưa tải được bùa tìm người'); layers.stop(); return 'no-charm'; }
+    try { await layers.init(); } catch { this.#outLine('chưa tải được bùa tìm người'); layers.stop(); this.#exitStage(); return 'no-charm'; }
     const stat = this.#scenePanel.querySelector('#scstat');
     if (stat) stat.textContent = 'bùa đang tìm người trong khung hình…';
     const result = await layers.play({ scene, behind, front });
@@ -333,9 +393,9 @@ export class InteractiveStudio {
     this.#outLine(`bùa tìm người: ${layers.masks} lần thấy người · ${layers.frames} khung đã vẽ`
       + `${layers.errors ? ` · ${layers.errors} khung lỗi` : ''}`
       + `${layers.ready ? '' : ' · KHÔNG thấy người — đang chiếu phẳng, hãy lùi ra cho camera thấy bạn'}`);
-    layers.stop();
+    layers.freeze();                 // leave the final composite on screen
+    this.#exitStage();
     for (const v of [scene, behind, front]) if (v) v.pause();
-    this.stop();
     return result;
   }
 
@@ -351,7 +411,11 @@ export class InteractiveStudio {
     // no screen blend over it. The point is that an 'effect' is an ordinary
     // video on a black background, and the magic is entirely in the blend.
     const raw = !!cfg.raw;
-    let src = EFFECT_CLIPS[shortText(cfg.name, 16)] || EFFECT_CLIPS.stag, revoke = null;
+    const wanted = shortText(cfg.name, 16);
+    // An unknown name used to fall back to the dragon in silence, so a typo — or
+    // a lesson naming a clip nobody bundled — looked like a working spell.
+    if (!cfg.own && !EFFECT_CLIPS[wanted]) this.#outLine(`chưa có lớp hiệu ứng tên "${wanted}" — máy tạm chiếu lớp dragon`);
+    let src = EFFECT_CLIPS[wanted] || EFFECT_CLIPS.dragon, revoke = null;
     if (cfg.own) {
       const picked = await this.#pickClip();
       if (!picked) { this.#outLine('bạn chưa chọn tệp — máy dùng lớp hiệu ứng có sẵn để bài vẫn chạy được'); }
@@ -366,6 +430,8 @@ export class InteractiveStudio {
       this.#cameraAvailable = await Promise.race([opened, new Promise(r => { camTimer = setTimeout(() => r(false), CAMERA_START_MS); })]);
     } catch { this.#cameraAvailable = false; }
     if (camTimer) clearTimeout(camTimer);
+    this.#clearResultStill();
+    this.#enterStage(raw ? 'Đây là tệp gốc, chưa pha trộn gì' : 'Pip đang chạy đoạn code của bạn…');
     const clip = document.createElement('video');
     clip.className = raw ? 'studio-effect-clip studio-effect-raw' : 'studio-effect-clip';
     clip.src = src; clip.muted = true; clip.playsInline = true; clip.autoplay = true;
@@ -380,11 +446,10 @@ export class InteractiveStudio {
       clip.addEventListener('error', finish);
       clip.play().catch(finish);
     });
+    this.#freezeClip(clip, raw);     // keep the last frame instead of a bare camera
     clip.remove();
+    this.#exitStage();
     if (revoke) URL.revokeObjectURL(revoke);
-    // tear the project frame back down — mountPhotoProject() darkens the panel
-    // and only stop() removes it; without this the black frame never clears
-    this.stop();
     return 'played';
   }
   #pickClip() {
@@ -469,7 +534,7 @@ export class InteractiveStudio {
     // it decoded to — pixels on their own are unreadable.
     const frames = (Array.isArray(cfg.frames) ? cfg.frames : []).map(f => {
       const src = f && typeof f.plate === 'string' ? IMAGE_PLATES[shortText(f.plate, 12)] : null;
-      return src ? { label: f.label, image: f.image, src } : f;
+      return src ? { label: f.label, image: f.image, src, role: f.role } : f;
     });
     const lab = buildImageLab(frames, { title: cfg.title, numbers: cfg.numbers });
     document.body.appendChild(lab.el);
@@ -620,6 +685,7 @@ export class InteractiveStudio {
     clearTimeout(this.#stopTimer); this.#stopTimer = null; this.#active = false; this.#cameraAvailable = false; this.#lastLm = null;
     this.#finishPhotoStart('cancelled');
     this.#finishLightStart('cancelled');
+    this.#clearResultStill();
     this.clearStickers(); this.clearStudioFrame(); this.#gifts.forEach(el => el.remove()); this.#gifts.clear(); this.#bursts.forEach(el => el.remove()); this.#bursts.clear();
     if (this.#pendingHand) { clearTimeout(this.#pendingHand.timer); this.#pendingHand.resolve(JSON.stringify(this.#handResult(this.#pendingHand.anchor, false))); this.#pendingHand = null; }
     if (this.#titleEl) this.#titleEl.remove(); this.#titleEl = null;

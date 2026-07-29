@@ -780,9 +780,24 @@ compare versions of an image and cannot show the numbers behind a picture.
 
 - Each frame is `{label, image}` (draws the grid as an upscaled pixelated
   canvas) **or** `{label, src}` (shows real artwork at full resolution). Coarse
-  grids look nothing like the plate they came from, so lessons should keep the
-  real image on screen next to them — that mismatch was the first thing testers
-  complained about.
+  grids look nothing like the plate they came from, so a lesson that is still
+  *introducing* pixels should keep the real image on screen next to them — that
+  mismatch was the first thing testers complained about.
+- **Every panel says what it is.** A learner facing four pictures cannot tell
+  which one their code made — so the caption does it: `KẾT QUẢ` (their own
+  output, marked by passing `"result"` as the frame's third element),
+  `ẢNH VÀO` (a full-size grid the program was handed), `LƯỚI SỐ` (a coarse grid,
+  "chưa phải ảnh thật"), `ẢNH GỐC` (the plate a neighbouring grid was read
+  from), `ẢNH MẪU` (shipped artwork shown only to compare against). The strings
+  live in `TAGS` at the top of `image-lab.js`.
+- **Never pair a learner-built grid with a pre-baked "correct" plate.** That is
+  how the flip exercise used to work, and a broken loop showed an unchanged
+  grid beside a perfectly mirrored dragon — the panel lied about their code.
+  Pixels are for *introducing* the idea; once it is understood the exercise
+  reads the plate at full resolution (`load_plate(name, 256)`) and the learner's
+  own loop transforms the real picture, so the only thing on screen is what
+  their code actually produced. Grids past `NUMBER_LIMIT` (16) cells a side are
+  captioned as the real picture and drop the digit table automatically.
 - `numbers: true` adds a digit table: each cell shows its own brightness on a
   swatch of its own shade, so "an image is a grid of light" is visible at a
   glance. It is laid out with **CSS grid, never printed text** — printed rows
@@ -793,25 +808,52 @@ compare versions of an image and cannot show the numbers behind a picture.
 Python side (`py/camera_charm`), via the `frame_compare` studio action:
 
 ```python
-compare_frames([("TRUOC", before), ("SAU", after)], "LAT ANH", True)
-show_photos([("CON HUOU", "stag"), ("CON QUAI", "boss")], "HAI TAM ANH")
+compare_frames([("TRUOC", before), ("SAU", after, "result")], "LAT ANH", True)
+show_photos([("CON RONG", "dragon"), ("CON QUAI", "boss")], "HAI TAM ANH")
 show_numbers(grid, "DO SANG TUNG O")
 ```
 
 Named plates live in `assets/camera-effects/plates/` and are mapped by
-`IMAGE_PLATES` in `engine/interactive-studio.js`: `stag`, `boss`, `scene`, and
-`goal` (the finished stag-over-boss shot, produced offline with the same
-add-and-clamp the learner writes). `load_plate(name, size)` reads one into a
-grid; a named plate always decodes to the same numbers, so a lesson can assert
-on them.
+`IMAGE_PLATES` in `engine/interactive-studio.js`: `dragon`, `boss`, `scene`, and
+`goal` (the finished dragon-over-boss shot — the puzzle the island opens on,
+shown as a target to aim at, never beside a learner's own result).
+`load_plate(name, size)` reads one into a grid; a named plate always decodes to
+the same numbers, so a lesson can assert on them.
+
+`size` runs from 8 to **512**, the plates' own resolution (`GRID_MAX` in
+`py/camera_charm`, `IMAGE_GRID_MAX` in `engine/interactive-studio.js`,
+`MAX_SIDE` in `engine/image-lab.js` — keep the three together; `blank_grid`
+matches). Use 8–16 for cells that teach by reading digits, and **256** for cells
+that transform the picture.
+
+Why 256 and not the full 512: the cost is not the learner's loop (~150ms over
+512² cells) but moving grids of JSON across the bridge — measured end to end,
+256 runs in ~0.9–1.1s and 512 in 2–3.5s per RUN, for detail a frame drawn at
+~340px cannot show. A 256×256 plate is ~900KB of JSON coming back through
+`bridge.ask()`, which is why `py-bridge.js` sizes its reply buffer at
+`ASK_REPLY_MAX` (4MB) — the old 64KB buffer silently truncated anything past a
+24×24 grid. `test-fxforge-real-image-browser.mjs` holds those timings to a
+budget; re-measure there before raising a lesson's size.
 
 **GƯƠNG VÔ CỰC (`content/islandFXFORGE.js`)** is the saga's **final project —
 `NODES[25]` on the main trail** (promoted from a side island 2026-07-28), the
 capstone where the learner banishes Chúa tể Vô Định. It opens with
-the goal as a PUZZLE (stag, boss, then stag-over-boss — "how would you do
+the goal as a PUZZLE (dragon, boss, then dragon-over-boss — "how would you do
 that?") before any theory, then: image as a grid of light → hand-paint a region
-of cells → write the flip → write the add-and-clamp blend → reproduce the hero
-shot → route a spoken command with `if`/`elif`/`else`. Its `finish` block
+of cells → write the flip → write the add-and-clamp blend → fix the hue drift
+that per-channel clamping leaves behind → reproduce the hero shot → route a
+spoken command with `if`/`elif`/`else`. The blend cells layer the dragon onto
+the **`boss`** plate: `scene` (the lighthouse) is bright enough that the added
+layer washes out, and `boss` is the base the opening goal puzzle promises. The
+drift cell right after the blend checkpoint keeps the bright `scene` plate on
+purpose — clamping each channel separately cuts the three by different amounts,
+and only a bright base makes that visible; the learner writes
+`if max(red, green, blue) > 255:` to burn the pixel to white instead. Grading it
+needs `pip_test.check_burn(base, layer, result)`, not `check_blend`:
+`check_blend` only asks whether a channel stayed inside 0..255, which a
+per-channel clamp satisfies while the colour drifts, so it cannot tell the two
+answers apart. `check_burn` re-walks the raw sums and requires every
+overbright cell to be `[255, 255, 255]` and every calm cell to be untouched. Its `finish` block
 (supported by `island.js`) replaces the generic "về bản đồ" card and sends the
 learner to `../ar-boss/index.html` — the AR fight against Chúa tể Vô Định, whose
 MAGIC / FLIP / BLUR spells are the very functions they just wrote.
@@ -824,6 +866,34 @@ the finish card advance `magicdust.saga` monotonically — without it nothing
 would ever mark node 25 done. The live-broadcast project that used to hold the
 node-25 slot (`content/node25.js`, `node25-lesson.html`) is still reachable as
 the side island `islandBROADCAST`.
+
+## Pixel board — edit the numbers by hand (`engine/pixel-board-cell.js`)
+
+`{pixelBoard:{plate, size?, text, task?}}` is the image lab's digit table with
+the learner's hands on it: drag a rectangle across the numbers, press
+`SÁNG +50` / `TỐI −50`, and the picture beside the table changes cell by cell,
+clamped at 0 and 255 — the `max(0, ...)` / `min(255, ...)` they write a couple
+of cells later, felt before it is written. TRẢI NGHIỆM TRƯỚC KHÁI NIỆM, applied
+to pixels.
+
+- `plate` — a name from `engine/plates.js`'s `IMAGE_PLATES`; `size` 4–16
+  (default 8), because past ~16 columns a digit is too small to read. The board
+  is deliberately the ONE place a coarse grid is still right: it is for reading
+  and touching numbers, not for admiring the picture.
+- `task: {mode:'dim'|'brighten', amount, region?, label?}` is a small challenge
+  so nobody clicks past without moving a number: `XONG` stays disabled and the
+  goal line counts `đã đạt N/M ô` as they work. With a `region` every cell in it
+  must move; without one, any move counts. A cell driven to the bound (all three
+  channels at 0 or 255) counts however far it actually moved — clamping is per
+  channel, so a dark plate cell that can only fall 30 is still "hết cỡ".
+- Selection hit-tests by COORDINATE (`document.elementFromPoint`), not
+  `event.target`: a touch drag keeps firing at the element the finger started
+  on, and the table is built once and edited in place — re-rendering it per
+  pointermove destroys the element under the pointer and truncates the drag.
+- Reach it while authoring with `nodeDev.toPixelBoard()`.
+- Tests: `node lessons/test-pixel-board.mjs` (the pure selection/clamp/challenge
+  maths in `engine/plates.js`) and `node lessons/test-pixel-board-browser.mjs`
+  (real drag, real picture, real gating — needs `python serve.py 8123`).
 
 ## Voice charm — spoken INPUT (`py/voice_charm`)
 
@@ -849,8 +919,11 @@ it.
 `camera_charm.play_effect(name)` fires a full-size overlay clip over the live
 camera and waits for it; `play_my_effect()` opens a file picker so a learner can
 watch **their own** video composite (read in-browser, never uploaded). Names come
-from `EFFECT_CLIPS` in `interactive-studio.js`: `stag`, `phoenix`, `butterfly`,
-`sakura`, `smoke`, `lightning`.
+from `EFFECT_CLIPS` in `interactive-studio.js`: `dragon`, `rose`, `stag`,
+`phoenix`, `butterfly`, `sakura`, `smoke`, `lightning`, `boss` (the last one
+copied from the AR fight's plate set into `assets/camera-effects/overlays/`).
+A name that isn't in the table still plays `dragon`, but now says so in the
+cell output instead of pretending the spell worked.
 
 The clips are glowing light on pure black and are blended with
 `mix-blend-mode: screen` (`.studio-effect-clip`) — that CSS *is* the

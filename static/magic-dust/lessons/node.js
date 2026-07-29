@@ -8,7 +8,7 @@
 // subsystem lives in engine/*.js; see lessons/README.md for the module map.
 import { $, mountPage, warnIfNotIsolated, scenePanelHtml } from './engine/dom-scaffold.js';
 import { ProgressStore } from './engine/progress-store.js';
-import { castSpell, showValue, screenFx, createFxQueue } from './engine/casting.js';
+import { castSpell, showValue, screenFx, showPixels, createFxQueue } from './engine/casting.js';
 import { CameraEngine } from './engine/camera-engine.js';
 import { GestureDispatcher } from './engine/gesture-dispatcher.js';
 import { PyBridge } from './engine/py-bridge.js?v=20260714-165347';
@@ -79,6 +79,7 @@ const castingApi = {
   castSpell: name => castSpell(name, { scenePanel, fxQueue, vortexShare: photoBooth.vortexShare, loadVortex }),
   showValue: (sp, v) => showValue(sp, v),
   screenFx: (sp, mode, outLine) => screenFx(sp, mode, outLine),
+  showPixels: (sp, text) => showPixels(sp, text),
 };
 
 photoBooth = new PhotoBooth(scenePanel, {
@@ -307,6 +308,7 @@ window.nodeDev = {
   // for tests/console work that need one particular cell without hand-
   // authoring a new devTo predicate per target.
   toCell: label => notebookRunner.devTo(c => c.label === label, () => { enterNode(); openGift(); }),
+  toPixelBoard: () => notebookRunner.devTo(c => !!c.pixelBoard, () => { enterNode(); openGift(); }),
   // checkDisplay() — run the shared display-invariants check (engine/dom-
   // invariants.js) from the console or a Playwright script: every live cell
   // actually visible, no two cells overlapping, #scenepanel/#cam singleton

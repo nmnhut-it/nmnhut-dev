@@ -677,7 +677,7 @@ window.addEventListener('keydown',e=>{
   // Number keys are the no-mic path to the spoken spells: same routine voice
   // runs, minus the one-index-finger gate. Lets the whole set be demoed in a
   // noisy room, or on a browser with no SpeechRecognition at all.
-  else if(SPELL_KEYS[e.key])runVoiceSpell(SPELL_KEYS[e.key],true);
+  else if(SPELL_KEYS[e.key.toLowerCase()])runVoiceSpell(SPELL_KEYS[e.key.toLowerCase()],true);
   else if(e.key.toLowerCase()==='g')guideEl.classList.toggle('hidden');
   else if(e.key.toLowerCase()==='m'){segmentation.cycleMode();showSeg();}
   else if(e.key.toLowerCase()==='k'){segmentation.useScene=!segmentation.useScene;ptxtEl.textContent=segmentation.useScene?'BACKDROP: ENCHANTED FOREST':'BACKDROP: BLURRED ROOM';}
@@ -718,6 +718,8 @@ if(SpeechRecognitionImpl){
     if(['blur','blurr','bler'].some(word=>heard.includes(word)))return'blur';
     if(['flip','flipped','fliping'].some(word=>heard.includes(word)))return'flip';
     if(['koto','kodo','coto','photo'].some(word=>heard===word||heard.startsWith(word)))return'koto';
+    if(['dragon','draggon','dragen','drag on'].some(word=>heard.includes(word)))return'dragon';
+    if(['rose','rosa','roze','rows'].some(word=>heard===word||heard.startsWith(word)))return'rose';
     if(['phoenix','phenix','feenix','fenix'].some(word=>heard.includes(word)))return'phoenix';
     if(['butterfly','butterflies','butter fly'].some(word=>heard.includes(word)))return'butterfly';
     if(['sakura','sacura','sakawa','blossom'].some(word=>heard.includes(word)))return'sakura';

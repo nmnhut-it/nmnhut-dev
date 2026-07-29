@@ -49,6 +49,7 @@ export function codeCell(c, { runCell, workerUp, stickyOutput = false }) {
       <div class="chead-actions">
         ${c.solution ? `<button class="csolution" title="xem đáp án đầy đủ">💡 XEM ĐÁP ÁN</button>` : ''}
         ${c.solutionExplanation ? `<button class="cexplain" hidden title="đọc giải thích từng dòng">🔎 GIẢI THÍCH TỪNG DÒNG</button>` : ''}
+        <button class="cfull" title="mở rộng ô này ra toàn màn hình (Esc để thoát)" aria-pressed="false">⛶</button>
         <button class="creset" title="đặt lại ô này">↺</button>
         <button class="crun" disabled>▶ RUN</button>
       </div></div>
@@ -62,6 +63,30 @@ export function codeCell(c, { runCell, workerUp, stickyOutput = false }) {
     </div>
     ${c.solutionExplanation ? `<div class="csolution-explanation" hidden><ol>${c.solutionExplanation.map(item => `<li><b>Dòng ${item.line}</b><span>${renderProse(item.text)}</span></li>`).join('')}</ol></div>` : ''}
   `;
+  // Fullscreen this cell. Monaco sizes itself to its container, so it has to be
+  // told the container changed; without the relayout the editor keeps the old
+  // narrow width and the extra space goes to waste.
+  const fullBtn = el.querySelector('.cfull');
+  const setFull = on => {
+    el.classList.toggle('cell-full', on);
+    document.body.classList.toggle('cell-full-on', on);
+    fullBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    fullBtn.textContent = on ? '⤡' : '⛶';
+    setTimeout(() => { try { el._editor?.layout(); } catch { /* editor not up yet */ } }, 60);
+  };
+  fullBtn.onclick = () => setFull(!el.classList.contains('cell-full'));
+  el._exitFull = () => { if (el.classList.contains('cell-full')) setFull(false); };
+  // Esc is what everyone reaches for to leave a fullscreen thing. Bound once at
+  // the document level rather than per-cell, so it cannot leak listeners as the
+  // notebook builds more cells.
+  if (!document.body.dataset.cellFullEsc) {
+    document.body.dataset.cellFullEsc = '1';
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return;
+      const open = document.querySelector('.codecell.cell-full');
+      if (open && open._exitFull) { e.preventDefault(); open._exitFull(); }
+    });
+  }
   el.querySelector('.crun').onclick = () => runCell(el);
   el.querySelector('.creset').onclick = () => { if (el._editor) el._editor.setValue(el._src); };
   const solutionBtn = el.querySelector('.csolution');
@@ -92,6 +117,8 @@ export function codeCell(c, { runCell, workerUp, stickyOutput = false }) {
 
 export function mountEditor(el, src, runCell) {
   const host = el.querySelector('.ced');
+  // Inline, the editor grows with the code up to a sane ceiling; the fullscreen
+  // mode overrides this height in CSS and lets it fill the overlay instead.
   const fit = n => { host.style.height = Math.min(Math.max(n * 22 + 22, 66), 380) + 'px'; };
   fit(src.split('\n').length);
   if (!globalThis.monaco?.editor) return mountFallbackEditor(el, host, src, runCell, fit);
