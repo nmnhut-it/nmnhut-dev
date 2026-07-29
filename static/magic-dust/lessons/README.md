@@ -855,8 +855,10 @@ per-channel clamp satisfies while the colour drifts, so it cannot tell the two
 answers apart. `check_burn` re-walks the raw sums and requires every
 overbright cell to be `[255, 255, 255]` and every calm cell to be untouched. Its `finish` block
 (supported by `island.js`) replaces the generic "về bản đồ" card and sends the
-learner to `../ar-boss/index.html` — the AR fight against Chúa tể Vô Định, whose
-MAGIC / FLIP / BLUR spells are the very functions they just wrote.
+learner to **`../index.html`, the root VFX toy** — camera up, hands tracked,
+casting the very functions they just wrote. It aimed at `../ar-boss/index.html`
+until 2026-07-29; that AR fight is not finished, and a handover card must not
+hand over to something that isn't there.
 
 It is served by `islandFXFORGE.html` (still `island.js`, not `node.js`) because
 the capstone ends in that handoff rather than the vortex/seal ritual every other

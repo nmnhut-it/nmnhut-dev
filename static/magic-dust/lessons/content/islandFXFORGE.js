@@ -15,9 +15,9 @@ export default {
   },
   finish: {
     title: "✦ GƯƠNG ĐÃ NHẬN BẠN! ✦",
-    sub: "Bạn vừa tự viết thần chú lật hình, thần chú chồng hai lớp và bộ chọn thần chú theo lời gọi. Ba thần chú đó chính là vũ khí trục xuất Chúa tể Vô Định. Bước qua gương là vào thẳng trận cuối: gọi tên thần chú bằng giọng nói, giơ tay lên camera để định sức mạnh, và đánh cho tới khi hắn tan khỏi khung hình.",
+    sub: "Bạn vừa tự viết thần chú lật hình, thần chú chồng hai lớp và bộ chọn thần chú theo lời gọi. Bước qua gương là ra sân khấu thật: camera mở lên, bàn tay bạn hiện trong khung. Xoè cả bàn tay để triệu bụi sáng, rồi giơ một hoặc hai ngón và giữ yên cho phép thuật dồn lại. Đúng những phép bạn vừa viết, giờ chạy trên hình thật của chính bạn.",
     button: "BƯỚC QUA GƯƠNG",
-    page: "../ar-boss/index.html",
+    page: "../index.html",
   },
   modules: {
     old_computer: "../py/old_computer/__init__.py",

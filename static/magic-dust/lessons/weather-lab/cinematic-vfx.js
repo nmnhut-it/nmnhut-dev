@@ -157,9 +157,11 @@ export class CinematicVfxEngine {
   }
 
   loadFootagePlates() {
-    const root = "../assets/camera-effects/footagecrate-runtime/";
+    // Self-generated plate (Gemini/Veo) — see generated/SOURCE.md. The
+    // FootageCrate download it replaced may not be redistributed.
+    const root = "../assets/camera-effects/generated/";
     this.footage = {};
-    for (const [key, file] of Object.entries({ explosion: "simple-explosion-30.webm" })) {
+    for (const [key, file] of Object.entries({ explosion: "explosion-burst-v1-alpha.webm" })) {
       const video = document.createElement("video");
       video.muted = true;
       video.playsInline = true;

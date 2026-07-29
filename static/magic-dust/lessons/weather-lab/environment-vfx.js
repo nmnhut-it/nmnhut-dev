@@ -248,13 +248,15 @@ export class EnvironmentVfxEngine {
       this.sparkBlue = this.makeImageVariant(this.spark, "brightness(1.5) saturate(2) hue-rotate(168deg)");
     };
     this.spark.src = `${assetRoot}spark_05_a.png`;
-    this.footageRoot = "../assets/camera-effects/footagecrate-runtime/";
+    // Self-generated plate (Gemini/Veo) — the FootageCrate download it replaced
+    // may not be redistributed as a standalone asset pack, and this repo is public.
+    this.footageRoot = "../assets/camera-effects/generated/";
     this.fogPlate = document.createElement("video");
     this.fogPlate.muted = true;
     this.fogPlate.loop = true;
     this.fogPlate.playsInline = true;
     this.fogPlate.preload = "auto";
-    this.fogPlate.src = `${this.footageRoot}atmospheric-fog-23-alpha.webm`;
+    this.fogPlate.src = `${this.footageRoot}fog-drift-v1-alpha.webm`;
     this.fogPlate.addEventListener("loadedmetadata", () => {
       this.fogPlate.play().catch(() => {});
     }, { once: true });
