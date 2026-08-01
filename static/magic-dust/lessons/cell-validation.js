@@ -35,8 +35,15 @@ function cellOutputSatisfies(expectOut, captured, heldCount) {
   if (typeof expectOut === 'object' && typeof expectOut.kind === 'string') {
     const minimum = typeof expectOut.minCount === 'number' ? expectOut.minCount : 1;
     const matching = captured.filter(event => event.kind === expectOut.kind
-      && (expectOut.text == null || cellOutputSatisfies(expectOut.text, [event], heldCount)));
+      && (expectOut.exact == null ? (expectOut.text == null || cellOutputSatisfies(expectOut.text, [event], heldCount)) : String(event.text) === String(expectOut.exact)));
     return matching.length >= minimum;
+  }
+  if (typeof expectOut === 'object' && Array.isArray(expectOut.sequence)) {
+    let cursor = 0;
+    for (const event of captured) {
+      if (cursor < expectOut.sequence.length && cellOutputSatisfies(expectOut.sequence[cursor], [event], heldCount)) cursor += 1;
+    }
+    return cursor === expectOut.sequence.length;
   }
   if (typeof expectOut === 'object') {                 // held-finger-count map
     const key = String(heldCount);
