@@ -27,9 +27,20 @@ import leet_arrays  # noqa: E402  (import là đăng ký bài vào leet_judge)
 import leet_pointers  # noqa: E402
 import leet_search  # noqa: E402
 import leet_matrix  # noqa: E402
+import leet_backtrack  # noqa: E402
+import leet_dp  # noqa: E402
+import leet_dphard  # noqa: E402
+import leet_hash  # noqa: E402
+import leet_greedy  # noqa: E402
+import leet_stack  # noqa: E402
+import leet_tree  # noqa: E402
+import leet_design  # noqa: E402
 from leet_judge import PASS_PREFIX, check  # noqa: E402
 
-MODULES = [leet_arrays, leet_pointers, leet_search, leet_matrix]
+MODULES = [leet_arrays, leet_pointers, leet_search, leet_matrix, leet_backtrack,
+           leet_dp, leet_dphard, leet_hash,
+           leet_greedy, leet_stack, leet_tree,
+           leet_design]
 MUST_PASS = ("good",)
 MUST_FAIL = ("hardcoded", "wrong", "slow", "linear")
 # Ô nào chỉ bắt buộc khi bài có khai báo tương ứng.

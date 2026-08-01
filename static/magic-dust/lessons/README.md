@@ -1039,6 +1039,16 @@ Three layers per problem, all run on every RUN:
    (`trapping-rain-water` needs 20000 because `max(height[:i])` stays fast).
    Set `fast_oracle` to also check the answer at those sizes.
 
+`replay=True` switches a problem to CLASS DESIGN: the learner submits a class,
+`gen` returns a call SCRIPT `[(method, args), ...]` whose first entry is the
+constructor's arguments, `oracle` is a reference class, and the judge compares
+the whole list of return values. A single call cannot grade these — the bug in
+LeetCode 158 (dropping the leftover of the previous `read4`) produces a
+perfectly correct answer on the first call and only diverges on the second,
+which is exactly what separates it from 157. `py/leet_design` exploits that: the
+same leftover-dropping class is the `good` sample for 157 and the `wrong` sample
+for 158.
+
 A fourth layer, `probe(fn)`, exists because the clock cannot grade every kind
 of wrong approach. A linear scan of 20000 elements finishes instantly in Python,
 so no `sizes` ladder separates it from binary search. `py/leet_search` hands the
@@ -1079,10 +1089,26 @@ each other, only the shared `LEET_MAIN_REQUIRED` main-saga gate:
 
 | Island | Module | Problems | Completion key |
 |---|---|---|---|
-| `leetARRAYS` Đấu Trường Mảng | `py/leet_arrays` | 8 — 1, 26, 27, 88, 11, 53, 42, 15 | `magicdust.leet.set.arrays` |
+| `leetARRAYS` Đấu Trường Mảng | `py/leet_arrays` | 9 — 1, 11, 15, 26, 27, 41, 42, 53, 88 | `magicdust.leet.set.arrays` |
 | `leetPOINTERS` Vách Đá Hai Đầu | `py/leet_pointers` | 9 — 16, 18, 31, 75, 80, 167, 189, 209, 238 | `magicdust.leet.set.pointers` |
 | `leetSEARCH` Giếng Chia Đôi | `py/leet_search` | 9 — 4, 33, 34, 35, 74, 81, 153, 154, 162 | `magicdust.leet.set.search` |
 | `leetMATRIX` Sân Gạch Vuông | `py/leet_matrix` | 7 — 36, 37, 48, 54, 59, 73, 79 | `magicdust.leet.set.matrix` |
+| `leetBACKTRACK` Rừng Rẽ Nhánh | `py/leet_backtrack` | 9 — 39, 40, 46, 47, 51, 78, 90, 212, 216 | `magicdust.leet.set.backtrack` |
+| `leetDP` Thác Bậc Thang | `py/leet_dp` | 9 — 45, 55, 63, 64, 118, 119, 120, 121, 122 | `magicdust.leet.set.dp` |
+| `leetDPHARD` Hang Nhiều Tầng | `py/leet_dphard` | 9 — 123, 139, 140, 152, 174, 188, 198, 213, 221 | `magicdust.leet.set.dphard` |
+| `leetHASH` Chợ Đếm Đầu | `py/leet_hash` | 9 — 14, 49, 128, 136, 137, 169, 217, 219, 229 | `magicdust.leet.set.hash` |
+| `leetGREEDY` Bến Tham Lam | `py/leet_greedy` | 9 — 56, 57, 66, 68, 134, 135, 179, 220, 228 | `magicdust.leet.set.greedy` |
+| `leetSTACK` Cầu Thang Xếp Chồng | `py/leet_stack` | 9 — 84, 85, 149, 150, 164, 204, 215, 218, 239 | `magicdust.leet.set.stack` |
+| `leetTREE` Rừng Có Gốc | `py/leet_tree` | 6 — 105, 106, 108, 130, 163, 200 | `magicdust.leet.set.tree` |
+| `leetDESIGN` Xưởng Đồ Nghề | `py/leet_design` | 3 — 157, 158, 170 | `magicdust.leet.set.design` |
+
+Trees are nested lists — `[value, left, right]`, empty is `None` — not a
+`TreeNode` class, so a tree compares with `==` and survives `deepcopy`.
+
+These content files are NOT savable through `editor.html`: `serve.py`'s
+`SAFE_FILENAME_RE` only accepts `nodeNN[v2].js`, `islandXXX.js` and
+`TEMPLATE.js`, so a `leet*.js` POST is rejected. Edit them on disk. Widen the
+regex only if the teacher actually needs the editor for this track.
 
 Verify (the second one needs `python serve.py 8123`):
 
@@ -1104,10 +1130,41 @@ Two traps that make a `slow` sample pass and silently void the timing check:
 - The slow approach exits early. A brute-force pair scan stops at the first hit,
   so `big` must contain exactly ONE valid pair, placed at the END of the array
   (see `_big_two_sum`) — otherwise it finds a collision immediately.
-- The slow approach leans on a C-speed builtin. `nums.insert(0, nums.pop())` is
-  O(n·k) but the shifting runs in C; the sample has to shift with a Python
-  `for`. Same reason `trapping-rain-water` needs n=20000: `max(height[:i])`
-  stays fast. Measure before picking `sizes` — estimating is unreliable.
+- The slow sample is EXPONENTIAL. It gets run on the whole `big` ladder, so a
+  2^n reference at n=8000 hangs forever — the judge can only fail a rung after
+  that rung *finishes*. Every `slow` sample must be polynomial; write a separate
+  O(n²) one rather than reusing an enumerate-everything `oracle`.
+- The slow approach exits early on the chosen `big` input. `word-break`'s brute
+  splitter matches its first word immediately on a string of all `a`s and answers
+  in n steps; the input has to be UNbreakable to force every branch.
+- The slow approach never does the quadratic work. `jump-game`'s O(n²) marker
+  loops `for step in range(1, nums[i] + 1)`, so a `big` array of all 1s makes it
+  O(n) and the timing check proves nothing — the jump values have to be large.
+- The slow approach exits early *on the big input specifically*. `majority-element`'s
+  count-every-value reference hits the answer on its first iteration if the
+  majority value sits at index 0 — the big input has to bury it at the end.
+  Same trap in `gas-station` (put the fuel shortfall at the END of the ring) and
+  in `word-break` (the string has to be UNbreakable to force every branch).
+- The slow approach leans on a C-speed builtin. `nums.count(x)`, `x in nums`,
+  `max(height[:i])` and `nums.insert(0, nums.pop())` are all O(n) or O(n·k) but
+  run in C — roughly an order of magnitude faster than a Python `for`, which is
+  enough to slip under the limit. `py/leet_hash` keeps `_count_slowly` and
+  `_has_slowly` for exactly this reason.
+- The slow sample is EXPONENTIAL. It runs on the whole `big` ladder, so a 2^n
+  reference at n=8000 never returns — the judge can only fail a rung after that
+  rung *finishes*. Every `slow` sample must be polynomial; write a separate O(n²)
+  one rather than reusing an enumerate-everything `oracle`.
+- The rung is so big that the learner waits for it. Same "only fails after it
+  finishes" property, and Pyodide runs several times slower than the CPython you
+  tune against: a 12000-element O(n²) rung took over 90 seconds in the browser.
+  Prefer tightening `seconds` over raising `sizes` — `jump-game` sits at 8000
+  with `seconds=1.0`, still a two-to-one separation but `TOO SLOW` arrives in a
+  few seconds.
+
+Measure before picking `sizes`; estimating is unreliable. A bare Python `for`
+runs ~7e7 iterations/second here, so n=8000 buys an O(n²) reference only ~1s.
+Leave real headroom: several samples that landed near 2.0s passed on one run and
+failed on the next.
 
 ## Content validator
 

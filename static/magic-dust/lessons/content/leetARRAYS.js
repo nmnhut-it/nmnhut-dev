@@ -276,7 +276,33 @@ def trap(height):
 check("trapping-rain-water", trap)
 `),
 
-  { remember: "Bảy bài vừa rồi đều đi theo một kiểu: đặt hai vị trí ở hai đầu hoặc hai tốc độ khác nhau trên cùng một list, rồi mỗi bước dịch vị trí nào đang giữ giá trị không thể tốt hơn được nữa. Nhờ vậy mỗi phần tử chỉ được nhìn một lần, thay vì đem so với mọi phần tử còn lại." },
+  task("first-missing-positive", "first_missing_positive.py",
+    "ĐỀ BÀI\nCho sẵn list `nums`, có thể có số âm, số `0` và số trùng nhau.\nPROCESS: viết hàm `first_missing_positive(nums)` tìm số nguyên DƯƠNG nhỏ nhất KHÔNG có mặt trong `nums`.\nOUTPUT: trả về số đó. List rỗng cho `1`; list toàn số âm cũng cho `1`.\nVí dụ: `[3, 4, -1, 1]` cho `2`. `[1, 2, 0]` cho `3`. `[7, 8, 9, 11, 12]` cho `1`.\nLƯU Ý: đáp án có thể lớn hơn mọi số trong list — với `[1, 2, 3]` thì đáp án là `4`.\nCa lớn có đủ mọi số từ `1` tới hàng nghìn, nên dò từng số bằng cách quét lại cả list sẽ quá giờ.",
+    `from leet_arrays import check
+
+
+def first_missing_positive(nums):
+    # lượt của bạn
+    return 1
+
+
+check("first-missing-positive", first_missing_positive)
+`,
+    `from leet_arrays import check
+
+
+def first_missing_positive(nums):
+    pool = set(nums)
+    candidate = 1
+    while candidate in pool:
+        candidate += 1
+    return candidate
+
+
+check("first-missing-positive", first_missing_positive)
+`),
+
+  { remember: "Tám bài vừa rồi phần lớn đi theo một kiểu: đặt hai vị trí ở hai đầu hoặc hai tốc độ khác nhau trên cùng một list, rồi mỗi bước dịch vị trí nào đang giữ giá trị không thể tốt hơn được nữa. Bài cuối đi lối khác — nó đổ cả list vào một `set` để hỏi nhanh — nhưng cùng chung một mục đích: mỗi phần tử chỉ được nhìn một lần, thay vì đem so với mọi phần tử còn lại." },
 ];
 
 export default {
@@ -289,7 +315,7 @@ export default {
   kind: "dsa-island",
   cameraFree: true,
   title: "Đấu Trường Mảng",
-  subtitle: "tám bài LeetCode chấm bằng hàng trăm ca tự sinh, không phải một ví dụ",
+  subtitle: "chín bài LeetCode chấm bằng hàng trăm ca tự sinh, không phải một ví dụ",
   bundle: { art: "assets/rookie-bundle.webp", name: "TÚI DỤNG CỤ MẢNG" },
   machine: { art: "assets/old-computer.webp", name: "MÁY CHẤM TỰ ĐỘNG", blurb: "sinh ca thử rồi đối chiếu với lời giải chậm mà chắc đúng" },
   modules: {
@@ -298,5 +324,5 @@ export default {
     leet_arrays: "../py/leet_arrays/__init__.py",
   },
   cells,
-  finish: { title: "ĐẤU TRƯỜNG ĐÃ SẠCH", sub: "tám bài, không bài nào qua được bằng đáp án viết sẵn", button: "VỀ BẢN ĐỒ", page: "./leet.html" },
+  finish: { title: "ĐẤU TRƯỜNG ĐÃ SẠCH", sub: "chín bài, không bài nào qua được bằng đáp án viết sẵn", button: "VỀ BẢN ĐỒ", page: "./leet.html" },
 };

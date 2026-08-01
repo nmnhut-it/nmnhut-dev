@@ -20,6 +20,13 @@ Người soạn bài đăng ký bằng `problem(...)`, học sinh gọi `check(p
 
     gen(rng, size)  -> tuple đối số truyền vào hàm của học sinh
     big(size)       -> tuple đối số cho ca đo giờ, gọi lại theo `sizes`
+    replay=True     -> bài THIẾT KẾ LỚP. Khi đó học sinh nộp một class chứ
+                     không phải hàm, `gen` trả về một KỊCH BẢN gọi
+                     `[(tên_phương_thức, đối_số), ...]` mà phần tử đầu là đối
+                     số của hàm khởi tạo, và `oracle` là một class mẫu. Bộ chấm
+                     dựng đối tượng rồi gọi lần lượt, so danh sách giá trị trả
+                     về. Không thể chấm bằng một lời gọi duy nhất, vì cái sai
+                     của những bài này chỉ lộ ra sau vài thao tác liên tiếp.
     probe(fn)       -> None nếu đạt, hoặc lời giải thích vì sao cách làm sai.
                      Dùng khi đo giờ không phân biệt được: tìm kiếm nhị phân
                      trên 12000 phần tử và quét tuyến tính đều xong tức thì,
@@ -62,7 +69,7 @@ class Problem:
     """Một bài kèm đủ dữ liệu để chấm. Xem docstring module cho từng field."""
 
     def __init__(self, pid, title, gen, oracle, cases, capture, normalize,
-                 count, big, fast_oracle, seconds, sizes, probe):
+                 count, big, fast_oracle, seconds, sizes, probe, replay):
         self.pid = pid
         self.title = title
         self.gen = gen
@@ -76,15 +83,17 @@ class Problem:
         self.seconds = seconds
         self.sizes = tuple(sizes)
         self.probe = probe
+        self.replay = replay
 
 
 def problem(pid, title="", gen=None, oracle=None, cases=None, capture=None,
             normalize=None, count=DEFAULT_COUNT, big=None, fast_oracle=None,
-            seconds=DEFAULT_SECONDS, sizes=DEFAULT_SIZES, probe=None):
+            seconds=DEFAULT_SECONDS, sizes=DEFAULT_SIZES, probe=None,
+            replay=False):
     """Đăng ký một bài. Gọi lại cùng `pid` sẽ ghi đè bài cũ."""
     _PROBLEMS[pid] = Problem(pid, title or pid, gen, oracle, cases, capture,
                              normalize, count, big, fast_oracle, seconds, sizes,
-                             probe)
+                             probe, replay)
     return _PROBLEMS[pid]
 
 
@@ -100,10 +109,23 @@ def _short(value):
     return text[:MAX_SHOWN] + " …"
 
 
+def _replay(maker, script):
+    """Dựng đối tượng rồi gọi lần lượt theo kịch bản, gom giá trị trả về."""
+    name, first_args = script[0]
+    del name
+    obj = maker(*first_args)
+    out = []
+    for method, method_args in script[1:]:
+        if not hasattr(obj, method):
+            return "lớp của bạn chưa có phương thức " + repr(method)
+        out.append(getattr(obj, method)(*method_args))
+    return out
+
+
 def _answer(task, fn, args):
     """Gọi `fn` trên một bản sao riêng của args rồi lấy giá trị cần so sánh."""
     fresh = copy.deepcopy(args)
-    returned = fn(*fresh)
+    returned = _replay(fn, fresh[0]) if task.replay else fn(*fresh)
     return task.normalize(task.capture(fresh, returned))
 
 
@@ -167,6 +189,18 @@ def _all_cases(task):
         yield task.gen(rng, size)
 
 
+def _run_all_cases(task, fn):
+    """Chạy hết ca biên và ca ngẫu nhiên. Trả về số ca đã qua, hoặc None nếu sai."""
+    total = 0
+    for args in _all_cases(task):
+        total += 1
+        reason = _run_case(task, fn, args)
+        if reason is not None:
+            _report_failure(task, args, reason, total)
+            return None
+    return total
+
+
 def check(pid, fn):
     """Chấm `fn` cho bài `pid`. In verdict, trả về True nếu qua hết."""
     task = _PROBLEMS.get(pid)
@@ -174,15 +208,12 @@ def check(pid, fn):
         print(FAIL_PREFIX + " · không có bài tên " + repr(pid))
         return False
     if not callable(fn):
-        print(FAIL_PREFIX + " · " + pid + " · cần truyền vào một hàm")
+        wanted = "một lớp" if task.replay else "một hàm"
+        print(FAIL_PREFIX + " · " + pid + " · cần truyền vào " + wanted)
         return False
-    total = 0
-    for args in _all_cases(task):
-        total += 1
-        reason = _run_case(task, fn, args)
-        if reason is not None:
-            _report_failure(task, args, reason, total)
-            return False
+    total = _run_all_cases(task, fn)
+    if total is None:
+        return False
     if task.big is not None:
         slow = _check_speed(task, fn)
         if slow is not None:

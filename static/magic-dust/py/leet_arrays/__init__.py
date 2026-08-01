@@ -334,6 +334,50 @@ problem(
 )
 
 
+# --- 41. First Missing Positive -----------------------------------------------
+
+
+def _has_slowly(nums, wanted):
+    """Dò bằng vòng `for` của Python — `wanted in nums` chạy bằng C, nhanh gấp
+    chục lần, và mẫu chậm dựa vào nó sẽ vẫn kịp giờ ở ca lớn."""
+    for value in nums:
+        if value == wanted:
+            return True
+    return False
+
+
+def _gen_missing_positive(rng, size):
+    return ([rng.randint(-3, size + 2) for _ in range(size)],)
+
+
+def _oracle_first_missing(nums):
+    candidate = 1
+    while _has_slowly(nums, candidate):
+        candidate += 1
+    return candidate
+
+
+def _fast_first_missing(nums):
+    pool = set(nums)
+    candidate = 1
+    while candidate in pool:
+        candidate += 1
+    return candidate
+
+
+problem(
+    "first-missing-positive", title="41. First Missing Positive",
+    gen=_gen_missing_positive, oracle=_oracle_first_missing,
+    cases=[([],), ([1],), ([2],), ([1, 2, 0],), ([3, 4, -1, 1],), ([7, 8, 9, 11, 12],),
+           ([1, 1],), ([-5, -3],)],
+    # Đủ mọi số từ 1 tới n: cách dò từng số phải quét trọn mảng n lần.
+    # 12000 cho cách dò từng số ~2,8 giây — ngay sát ngưỡng 2 giây nên có lần
+    # máy đo được dưới ngưỡng; 20000 đưa nó lên ~8,6 giây, hết chập chờn.
+    big=lambda size: (list(range(1, size + 1)),),
+    fast_oracle=_fast_first_missing, sizes=(250, 1000, 20000),
+)
+
+
 # --- lời giải mẫu để tự kiểm tra bộ chấm -------------------------------------
 #
 # py/test_leet_judge.py đọc bảng này: mỗi bài phải có lời giải ĐÚNG (bắt buộc
@@ -442,6 +486,13 @@ SAMPLES = {
         "hardcoded": lambda height: 6,
         "wrong": lambda height: sum(height),
         "slow": _oracle_trap,
+    },
+    "first-missing-positive": {
+        "good": _fast_first_missing,
+        "hardcoded": lambda nums: 2,
+        # Quên rằng số bị thiếu có thể lớn hơn mọi số dương đang có.
+        "wrong": lambda nums: min([v for v in nums if v > 0], default=1),
+        "slow": _oracle_first_missing,
     },
     "three-sum": {
         "good": _good_three_sum,
