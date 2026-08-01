@@ -1,4 +1,4 @@
-import { pythonKidsPractice } from "./python-kids-builders.js?v=20260801-exercises";
+import { pythonKidsPractice } from "./python-kids-builders.js?v=20260801-python-kids-full";
 
 const starter = `from python_kids import say
 

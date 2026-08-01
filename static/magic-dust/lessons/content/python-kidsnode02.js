@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-python-kids-full";
 
 const starter = code(["from python_kids import show_value", "", "crystals = 3", "new_crystals = crystals + 2", "", "show_value(new_crystals)"]);
 const solution = code(["from python_kids import show_value", "", "crystals = 3", "new_crystals = crystals + 4", "", "show_value(new_crystals)"]);

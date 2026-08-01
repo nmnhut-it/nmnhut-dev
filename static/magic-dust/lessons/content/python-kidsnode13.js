@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-python-kids-full";
 
 const starter = code(["from python_kids import show_value", "", "def total(values):", "    result = 0", "    for value in values:", "        result = value", "    return result", "", "score = total([2, 4, 3])", "assert score == 9", "show_value(\"tests passed\")"]);
 const solution = code(["from python_kids import show_value", "", "def total(values):", "    result = 0", "    for value in values:", "        result = result + value", "    return result", "", "score = total([2, 4, 3])", "assert score == 9", "show_value(\"tests passed\")"]);

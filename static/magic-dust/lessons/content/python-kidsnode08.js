@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-python-kids-full";
 
 const starter = code(["from python_kids import show_value", "", "charges = [2, 4, 3]", "total = 0", "", "for charge in charges:", "    total = total + charge", "", "show_value(total)"]);
 const solution = code(["from python_kids import show_value", "", "charges = [2, 4, 3]", "total = 0", "", "for charge in charges:", "    total = total + charge * 2", "", "show_value(total)"]);

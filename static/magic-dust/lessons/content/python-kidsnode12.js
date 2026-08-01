@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-python-kids-full";
 
 const starter = code(["from python_kids import show_value", "", "class Creature:", "    def __init__(self, name):", "        self.name = name", "        self.energy = 3", "", "    def charge(self, amount):", "        self.energy = self.energy + amount", "", "pet = Creature(\"Nova\")", "pet.charge(2)", "show_value(pet.name + \" has \" + str(pet.energy) + \" energy\")"]);
 const solution = code(["from python_kids import show_value", "", "class Creature:", "    def __init__(self, name):", "        self.name = name", "        self.energy = 3", "", "    def charge(self, amount):", "        self.energy = self.energy + amount * 2", "", "pet = Creature(\"Nova\")", "pet.charge(2)", "show_value(pet.name + \" has \" + str(pet.energy) + \" energy\")"]);
