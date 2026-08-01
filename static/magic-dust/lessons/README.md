@@ -1020,6 +1020,95 @@ runs after a `ko` boss for now (a later pass folds it into the KO beat).
   `nodeDev.grantBadges(n)`, `nodeDev.grantBombs(n)`, `nodeDev.deployBomb()`,
   and `window.inventory` for direct access.
 
+## Auto-graded algorithm problems (`py/leet_judge`)
+
+LeetCode-style problems cannot be graded the way the rest of the saga is.
+`expectOut` matches printed text against ONE preset input, so `print(6)` — or a
+function that returns the example's answer — passes. `py/leet_judge/__init__.py`
+replaces that with a real judge; `expectOut` only matches its verdict line.
+
+Three layers per problem, all run on every RUN:
+
+1. `cases` — hand-written edge inputs (empty list, one element, all duplicates).
+2. random inputs from `gen(rng, size)` with a fixed `SEED`, compared against
+   `oracle` — a brute-force solution that is slow but certainly right.
+3. `big(size)` — a **ladder** of large inputs (`sizes`, default 250/1000/4000),
+   each under `seconds`. A ladder, not one huge case: an O(n³) attempt would run
+   for hours on a single n=60000 input and hang the lesson, whereas it fails at
+   the first rung. Bump `sizes` when the slow approach leans on C-speed builtins
+   (`trapping-rain-water` needs 20000 because `max(height[:i])` stays fast).
+   Set `fast_oracle` to also check the answer at those sizes.
+
+A fourth layer, `probe(fn)`, exists because the clock cannot grade every kind
+of wrong approach. A linear scan of 20000 elements finishes instantly in Python,
+so no `sizes` ladder separates it from binary search. `py/leet_search` hands the
+learner a list that counts how many times it is read (`_Counted`) and rejects
+anything far above log2(n) reads — three orders of magnitude apart, so there is
+no grey zone. Two notes on that counter: it must wrap `__iter__` and
+`__contains__` too, since `for x in nums` and `x in nums` run in C on the base
+list and would otherwise register zero reads; and the budget is computed from
+the counted containers' own length, not the notional input size, or a row-by-row
+scan of a 142×142 matrix slips under a budget sized for 20000 cells. Problems
+whose correct solution is genuinely O(n) (81, 154 — duplicates defeat the
+halving) simply have no `probe`.
+
+Two hooks handle problems where equality is the wrong test — both get the
+arguments, and every call receives its own `deepcopy`:
+
+- `capture(args, ret)` — in-place problems read the mutated list out of `args`;
+  problems with many valid answers (Two Sum indices) return a validity string.
+- `normalize(value)` — sorts when order is free (3Sum triplets, permutations).
+
+Problems are registered per topic module (`py/leet_arrays/__init__.py`), which
+re-exports `check` so a learner cell is just:
+
+```python
+from leet_arrays import check
+
+def two_sum(nums, target):
+    ...
+
+check("two-sum", two_sum)   # prints ALL TESTS PASSED · two-sum
+```
+
+Content islands (all run on `island.js`, `cameraFree: true`; cell `expectOut`
+is `/ALL TESTS PASSED · <pid>/`). `lessons/content/leet-curriculum.js` is the
+single registry feeding the map (`leet.html` / `leet-map.js`, styled by
+`dsa.css`) and the portal tile in `learning-portal.js`; the islands do not lock
+each other, only the shared `LEET_MAIN_REQUIRED` main-saga gate:
+
+| Island | Module | Problems | Completion key |
+|---|---|---|---|
+| `leetARRAYS` Đấu Trường Mảng | `py/leet_arrays` | 8 — 1, 26, 27, 88, 11, 53, 42, 15 | `magicdust.leet.set.arrays` |
+| `leetPOINTERS` Vách Đá Hai Đầu | `py/leet_pointers` | 9 — 16, 18, 31, 75, 80, 167, 189, 209, 238 | `magicdust.leet.set.pointers` |
+| `leetSEARCH` Giếng Chia Đôi | `py/leet_search` | 9 — 4, 33, 34, 35, 74, 81, 153, 154, 162 | `magicdust.leet.set.search` |
+| `leetMATRIX` Sân Gạch Vuông | `py/leet_matrix` | 7 — 36, 37, 48, 54, 59, 73, 79 | `magicdust.leet.set.matrix` |
+
+Verify (the second one needs `python serve.py 8123`):
+
+```powershell
+python py/test_leet_judge.py            # đúng qua · hard-code, sai, chậm đều trượt
+node lessons/test-leet-browser.mjs      # chạy thật trong Pyodide + ca âm bản
+```
+
+`py/test_leet_judge.py` is the gate that matters. Each topic module exports a
+`SAMPLES` table with, per problem, a `good` solution (must pass) plus
+`hardcoded`, `wrong`, `slow` (where `big` is set) and `linear` (where `probe`
+is set) — all of which must fail. The
+test errors on any registered problem missing from every module's `SAMPLES`, so
+a problem cannot ship with the judge unverified. Register the module in that
+file's `MODULES` list when adding one.
+
+Two traps that make a `slow` sample pass and silently void the timing check:
+
+- The slow approach exits early. A brute-force pair scan stops at the first hit,
+  so `big` must contain exactly ONE valid pair, placed at the END of the array
+  (see `_big_two_sum`) — otherwise it finds a collision immediately.
+- The slow approach leans on a C-speed builtin. `nums.insert(0, nums.pop())` is
+  O(n·k) but the shifting runs in C; the sample has to shift with a Python
+  `for`. Same reason `trapping-rain-water` needs n=20000: `max(height[:i])`
+  stays fast. Measure before picking `sizes` — estimating is unreliable.
+
 ## Content validator
 
 `node lessons/validate-content.mjs` — a dev-time Node script (not shipped

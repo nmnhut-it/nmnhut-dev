@@ -304,6 +304,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--honey);outline-offs
 .portal-cta{margin-top:6px;font-size:9px}
 .world-portal.vision{--portal-tone:var(--mint-line)}
 .world-portal.dsa{--portal-tone:var(--honey)}
+.world-portal.leet{--portal-tone:var(--honey)}
 .vision .portal-vortex{filter:none}
 .vision .portal-plaque{
   border-color:var(--mint-line);background:linear-gradient(180deg,var(--paper-raised),var(--mint-soft));

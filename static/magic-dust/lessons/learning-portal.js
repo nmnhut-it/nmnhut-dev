@@ -1,7 +1,9 @@
 import { MATH6_NODES, math6Reward } from "./content/math6-curriculum.js?v=20260713-233255";
 import { PYTHON50_NODES, python50Reward } from "./content/python50-curriculum.js?v=20260713-233255";
+import { PYTHON_KIDS_NODES, pythonKidsReward } from "./content/python-kids-curriculum.js";
 import { VISION_BATCHES, VISION_NODES, visionReward } from "./content/vision-curriculum.js?v=20260714-101425";
 import { DSA_ISLANDS, DSA_NODES, DSA_TOWERS, dsaReward } from "./content/dsa-curriculum.js";
+import { LEET_MAIN_REQUIRED, LEET_SETS, leetProblemCount, leetReward } from "./content/leet-curriculum.js";
 import {
   claimCollectibleGift,
   collectibleSnapshot,
@@ -37,6 +39,15 @@ const PORTAL_CONFIGS = Object.freeze([
     position: "second",
   },
   {
+    track: "pythonKids",
+    title: "Python for Kids",
+    subtitle: "Build tiny machines with pixels, words, numbers, and sound",
+    href: "./python-kids.html",
+    total: PYTHON_KIDS_NODES.length,
+    tone: "challenge",
+    position: "third",
+  },
+  {
     track: "vision",
     title: "Mắt Máy Kotopia",
     subtitle: `${VISION_NODES.length} chặng từ pinhole tới OpenCV`,
@@ -44,7 +55,7 @@ const PORTAL_CONFIGS = Object.freeze([
     total: VISION_NODES.length,
     readyTotal: VISION_NODES.filter(node => node.ready).length,
     tone: "vision",
-    position: "third",
+    position: "fourth",
     batchLabel: `Lộ trình ${VISION_BATCHES.length} batch`,
   },
   {
@@ -54,17 +65,29 @@ const PORTAL_CONFIGS = Object.freeze([
     href: "./dsa.html",
     total: DSA_NODES.length + DSA_ISLANDS.length + DSA_TOWERS.length,
     tone: "dsa",
-    position: "fourth",
+    position: "fifth",
     requiresMain: 21,
+  },
+  {
+    track: "leet",
+    title: "Đấu Trường LeetCode",
+    subtitle: `${leetProblemCount} bài chấm tự động · ${LEET_SETS.length} đảo theo chủ đề`,
+    href: "./leet.html",
+    total: LEET_SETS.length,
+    tone: "leet",
+    position: "sixth",
+    requiresMain: LEET_MAIN_REQUIRED,
   },
 ]);
 const REWARD_RECORDS = Object.freeze([
   ...MATH6_NODES.map(math6Reward),
   ...PYTHON50_NODES.map(python50Reward),
+  ...PYTHON_KIDS_NODES.map(pythonKidsReward),
   ...VISION_NODES.filter(node => node.ready).map(visionReward),
   ...DSA_NODES.map(meta => dsaReward("node", meta)),
   ...DSA_ISLANDS.map(meta => dsaReward("island", meta)),
   ...DSA_TOWERS.map(meta => dsaReward("tower", meta)),
+  ...LEET_SETS.map(leetReward),
 ]);
 
 let toastTimer;

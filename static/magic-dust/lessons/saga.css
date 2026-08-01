@@ -255,6 +255,10 @@ body{background:radial-gradient(1200px 700px at 70% -10%,var(--ink) 0%,var(--bg)
 #ob.bye{opacity:0;pointer-events:none}
 #obcam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:0;filter:saturate(.7);transition:opacity .8s}
 #ob.live #obcam{opacity:.14}
+/* onboard-bye.js's Kotopia scene shows the camera prominently (the spirit
+   plate screen-blends OVER it, and the player should see themself while
+   "casting") — the rune-gate's near-invisible .14 dim would swallow that. */
+#ob.live.obb-koto-live #obcam{opacity:.8}
 #ob .obin{position:relative;z-index:2;max-width:560px;padding:24px}
 #ob .obin.gone{display:none}
 /* --obc (0→1) = hold progress: the glyph flares and the vortex behind winds up */
@@ -267,6 +271,13 @@ body{background:radial-gradient(1200px 700px at 70% -10%,var(--ink) 0%,var(--bg)
 .obgauge{width:230px;height:8px;margin:18px auto 8px;border-radius:8px;background:var(--ink);overflow:hidden}
 .obgauge i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--c),var(--paper-raised));box-shadow:0 0 12px var(--c)}
 .obalt{margin-top:18px;color:var(--dim);font-size:11.5px;letter-spacing:1px}
+/* onboard-bye.js — 3-2-1 countdown after the palm-hold fully charges, before
+   the burst fires: a beat to let go of the pose and just watch. */
+.obb-count{margin-top:14px;font-size:64px;font-weight:900;color:var(--paper-raised);
+           text-shadow:0 0 24px var(--c),0 0 60px color-mix(in srgb,var(--c) 70%,transparent)}
+.obb-count.gone{display:none}
+.obb-count.go{animation:obbcount .7s cubic-bezier(.2,.9,.3,1) both}
+@keyframes obbcount{0%{transform:scale(1.6);opacity:0}30%{opacity:1}100%{transform:scale(1);opacity:.85}}
 /* the "CODE!" chant word: letters light up left→right with the hold
    charge (--obc); also the press-and-HOLD no-camera target */
 .obword{font-size:clamp(26px,7vw,54px);font-weight:900;letter-spacing:6px;line-height:1.1;margin:8px 0 2px;
@@ -302,13 +313,67 @@ body{background:radial-gradient(1200px 700px at 70% -10%,var(--ink) 0%,var(--bg)
    FULL-BLEED (2026-07-04, owner: "cutscene thì nên show full màn hình"):
    the clip covers the whole viewport, caption + skip float over its bottom
    edge. The old 560px .obin panel form lives in git history. */
-#obcut{position:absolute;inset:0;max-width:none;width:100%;height:100%;padding:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
+/* #ob (not just #obcut) — #ob .obin{max-width:560px} (1 id + 1 class) beats
+   a bare #obcut{max-width:none} (1 id) in specificity despite source order
+   and despite #obcut being more specific-LOOKING; confirmed live 2026-07-30
+   via #obkoto hitting the exact same trap (computed width stuck at 560px).
+   The extra #ob prefix here isn't decorative — it's what actually wins. */
+#ob #obcut{position:absolute;inset:0;max-width:none;width:100%;height:100%;padding:0;display:flex;flex-direction:column;justify-content:flex-end;align-items:center}
 #obcutvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:0;box-shadow:none;display:block;cursor:pointer}
 #obcutcap{position:relative;z-index:2;margin:0 0 12px;min-height:34px;padding:10px 22px;background:color-mix(in srgb,var(--ink) 55%,transparent);border-radius:14px;backdrop-filter:blur(4px)}
 #obcut .obskip{position:relative;z-index:2;margin:0 0 5vh}
 .obskip{margin-top:14px;background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:20px;
         padding:7px 18px;font-size:11.5px;letter-spacing:1.5px;cursor:pointer;transition:.2s}
 .obskip:hover{border-color:var(--c);color:var(--c)}
+
+/* ── onboard-bye.js — AI-restyled Kotopia farewell portrait ──
+   FULL-BLEED like #obcut. #obbkotostat is the brief "casting" wait state
+   before the restyled photo (`.obb-kotoimg`) arrives from /api/restyle-photo
+   (dev-only proxy, see serve.py). */
+/* #ob #obkoto (not bare #obkoto) — see the specificity note above #obcut;
+   the same trap, confirmed live: computed width was stuck at 560px/relative
+   from #ob .obin, ignoring this override, until the selector was strengthened. */
+#ob #obkoto{position:absolute;inset:0;max-width:none;width:100%;height:100%;padding:0;display:flex;align-items:center;justify-content:center}
+.obb-kotostat{color:var(--paper-raised);letter-spacing:1.5px;font-size:14px;text-align:center;animation:obbpulse 1.6s ease-in-out infinite;position:relative;z-index:2}
+@keyframes obbpulse{0%,100%{opacity:.55}50%{opacity:1}}
+.obb-kotoimg{width:100%;height:100%;object-fit:cover;display:block}
+/* spirit-animal video plate (koto-stag/spirit-phoenix/spirit-rose — the
+   SAME bundled clips engine/interactive-studio.js's EFFECT_CLIPS plays for
+   students): glowing light on black, screen-blended over the camera feed as
+   the "casting" fill while /api/restyle-photo runs. mix-blend-mode:screen IS
+   the black=transparent treatment — the plates are shot that way on purpose
+   (see node.css's #playEffectClip note), no per-pixel alpha needed. Full-bleed
+   while casting; shrinks to a small looping corner accent once the restyled
+   photo is showing (.obb-spirit.corner). */
+.obb-spirit{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1;
+            mix-blend-mode:screen;pointer-events:none;opacity:0;transition:opacity .5s}
+.obb-spirit.on{opacity:1}
+.obb-spirit.corner{inset:auto;bottom:5%;right:4%;width:34%;height:34%;border-radius:50%;object-fit:cover;z-index:3}
+/* tap-to-continue + download row shown once the restyled photo has landed
+   and HOLDS (2026-07-30, owner: "pause at the picture, it's good enough") —
+   no auto-timeout to Pip; the player taps when ready. .obb-kotodl downloads
+   the SAME picture with a baked-in corner spirit-animal frame (bakeCorner()
+   in onboard-bye.js) — the live on-screen accent is a playing video and a
+   still PNG can't hold that, so the download gets one frame in the same spot. */
+.obb-kotoactions{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);z-index:3;
+                  display:flex;gap:10px}
+.obb-kotogo{background:color-mix(in srgb,var(--ink) 55%,transparent);border:1px solid var(--line);
+            color:var(--paper-raised);border-radius:22px;padding:9px 22px;font-size:12.5px;
+            letter-spacing:1.5px;cursor:pointer;backdrop-filter:blur(4px);text-decoration:none;
+            display:inline-flex;align-items:center;animation:obbpulse 1.8s ease-in-out infinite}
+.obb-kotogo:hover{border-color:var(--c);color:var(--c)}
+.obb-kotodl{animation:none}
+.obb-pipfly{position:absolute;top:36%;left:-16%;width:96px;height:96px;border-radius:50%;
+            background:var(--pipimg) center/cover no-repeat,radial-gradient(circle at 38% 34%,var(--mint-soft) 0%,var(--c) 45%,transparent 78%);
+            box-shadow:0 0 30px color-mix(in srgb,var(--c) 60%,transparent);z-index:3;opacity:0;pointer-events:none}
+.obb-pipfly.go{animation:obbpipfly 3.2s ease-in-out forwards}
+@keyframes obbpipfly{
+  0%{opacity:0;transform:translate(0,0) scale(.7)}
+  8%{opacity:1}
+  50%{transform:translate(60vw,-6vh) scale(1)}
+  92%{opacity:1}
+  100%{opacity:0;transform:translate(130vw,4vh) scale(.8)}
+}
 
 .shake{animation:shake .45s ease}
 @keyframes shake{0%,100%{translate:0}20%{translate:-7px 0}40%{translate:7px 0}60%{translate:-5px 0}80%{translate:5px 0}}

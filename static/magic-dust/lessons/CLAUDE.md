@@ -66,6 +66,15 @@ node lessons/test-pixel-board.mjs
 node lessons/test-pixel-board-browser.mjs
 ```
 
+For the auto-graded algorithm problems (`py/leet_judge`, `content/leet*.js` —
+see README "Auto-graded algorithm problems"); the browser one needs
+`python serve.py 8123`:
+
+```powershell
+python py/test_leet_judge.py
+node lessons/test-leet-browser.mjs
+```
+
 For Computer Vision infrastructure:
 
 ```powershell
