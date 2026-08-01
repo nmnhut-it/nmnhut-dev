@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import play_note", "", "song = [\"C\", \"E\", \"G\"]", "", "for note in song:", "    play_note(note)"]);
 const solution = code(["from python_kids import play_note", "", "song = [\"C\", \"E\", \"G\", \"C\"]", "", "for note in song:", "    play_note(note)"]);

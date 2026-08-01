@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import robot_say, robot_set_mood", "", "mood = \"calm\"", "robot_set_mood(mood)", "robot_say(\"I am ready.\")"]);
 const solution = code(["from python_kids import robot_say, robot_set_mood", "", "mood = \"excited\"", "robot_set_mood(mood)", "robot_say(\"I am ready to explore!\")"]);

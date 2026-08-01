@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import show_value", "", "def double(value):", "    return value + value", "", "result = double(4)", "show_value(result)"]);
 const solution = code(["from python_kids import show_value", "", "def double(value):", "    return value * 2", "", "result = double(4)", "show_value(result)"]);

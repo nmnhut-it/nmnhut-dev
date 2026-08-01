@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import show_value", "", "robot = {\"name\": \"Pip\", \"mood\": \"calm\"}", "show_value(robot[\"mood\"])"]);
 const solution = code(["from python_kids import show_value", "", "robot = {\"name\": \"Pip\", \"mood\": \"calm\"}", "robot[\"mood\"] = \"excited\"", "show_value(robot[\"mood\"])"]);

@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const face = ["01110", "10001", "10101", "10001", "01110"];
 const faceOutput = "  \u2588\u2588\u2588\u2588\u2588\u2588  \n\u2588\u2588      \u2588\u2588\n\u2588\u2588  \u2588\u2588  \u2588\u2588\n\u2588\u2588      \u2588\u2588\n  \u2588\u2588\u2588\u2588\u2588\u2588  ";

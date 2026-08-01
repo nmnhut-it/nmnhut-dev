@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import read_num, show_value", "", "number = read_num(\"Enter a number: \")", "show_value(number + 1)"]);
 const solution = code(["from python_kids import read_num, show_value", "", "number = read_num(\"Enter a number: \")", "show_value(number * 2)"]);

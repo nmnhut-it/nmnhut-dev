@@ -5,10 +5,10 @@
 <link rel="stylesheet" href="node.css">
 <script defer src="theme.js"></script><script defer src="cell-validation.js"></script><script defer src="progress-versioning.js"></script>
 </head><body><script type="module">
-import { PYTHON_KIDS_NODES } from "./content/python-kids-curriculum.js";
+import { PYTHON_KIDS_NODES } from "./content/python-kids-curriculum.js?v=20260801-exercises";
 const id = Number.parseInt(new URLSearchParams(location.search).get("node"), 10);
 const mainProgress = Math.max(0, Number.parseInt(localStorage.getItem("magicdust.saga"), 10) || 0);
 const previousDone = id === 0 || localStorage.getItem(`magicdust.pythonKids.node.${id - 1}`) === "1";
 if (!PYTHON_KIDS_NODES[id] || mainProgress < 0 || !previousDone) location.replace("./python-kids.html");
-else { const { default: lesson } = await import(`./content/python-kidsnode${String(id).padStart(2, "0")}.js`); window.NODE = lesson; await import("./island.js"); }
+else { const { default: lesson } = await import(`./content/python-kidsnode${String(id).padStart(2, "0")}.js?v=20260801-exercises`); window.NODE = lesson; await import("./island.js?v=20260801-exercises"); }
 </script></body></html>

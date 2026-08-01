@@ -1,4 +1,4 @@
-import { code, pythonKidsLesson } from "./python-kids-builders.js";
+import { code, pythonKidsLesson } from "./python-kids-builders.js?v=20260801-exercises";
 
 const starter = code(["from python_kids import show_value", "", "energy = 8", "", "if energy >= 10:", "    show_value(\"full\")", "else:", "    show_value(\"recharge\")"]);
 const solution = code(["from python_kids import show_value", "", "energy = 12", "", "if energy >= 10:", "    show_value(\"full\")", "else:", "    show_value(\"recharge\")"]);
