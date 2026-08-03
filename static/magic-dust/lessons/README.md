@@ -1187,6 +1187,65 @@ gesture verb ships. Pass a path/glob as the first arg to point it at a
 different file (used for ad-hoc testing); with no args it scans the real
 `lessons/content/` directory.
 
+## Ask Book — how to use AI while learning (`askbook.html`)
+
+`lessons/askbook.html` (+ `askbook.css`/`askbook.js`/`askbook-data.js`) — a
+searchable deck of **40 prompt cards** for using a chat LLM (ChatGPT / Claude /
+Gemini) to *learn* to code, in 8 families: understand · read code you didn't
+write · get unstuck without getting the answer · practice & be tested · improve
+your own code · explore & plan · debug like an engineer · clean code rules.
+
+**It is not a lesson node** — no Pip, no cells, no Pyodide, no `window.NODE`.
+Reached from the saga map header (`saga.js`'s ungated `.askbook` chip → "SỔ TAY
+HỎI AI"); no progress gate, because a reference you must unlock is useless.
+
+Two views over the same 40 prompts:
+
+- **The course (default, `askbook-course.js`)** — 8 ordered *runs*, one per
+  family. A flat deck told a beginner nothing about what to do first, so each
+  run is a **hands-on experiment**: numbered steps to perform in a real chat
+  window, a "copy the card N prompt" button on the steps that need one, and a
+  text field per step for what came back. Ticking steps fills the run's
+  progress bar; the first unfinished run is badged **start here**.
+  **Export my log** writes every step + note out as `my-prompt-log.md` — that
+  file *is* the capstone deliverable (`ai-course/rubrics/capstone-rubric.md`
+  grades the log and an oral trace, not whether the program runs), so the log
+  must not live only in `localStorage`. `window.askbookLog()` returns the same
+  markdown for a teacher or a test.
+- **The slides (`askbook-slides.html?run=N`, `askbook-slides.js/.css`,
+  `askbook-slides-data.js`)** — reveal.js from CDN, 8 small decks (~13 slides
+  each, 101 total), one per run. This is the *teaching* layer: a run tells a
+  learner what to do, the deck explains why it works, slowly. One idea per
+  slide; `lines` reveal one at a time as reveal fragments; a **prompt is built
+  a piece at a time** (`ask` slides — each part carries the reason it's in the
+  prompt, because handing over a finished 4-sentence prompt teaches nothing);
+  every deck has an interactive `quiz` slide that explains the wrong answer,
+  and ends with a `cta` linking to `askbook.html#runN` (deep link handled in
+  `askbook.js`'s `fromHash`). Slide copy is authored markup — `<b>/<code>/<i>`
+  pass through `rich()`; anything that could hold learner input uses `esc()`.
+- **All 40 cards** — the searchable deck, for once they know the path. Every
+  card carries a `run N` tag (or a dashed `run N extra` for the 10 that are
+  useful but off the path), so the deck never reads as 40 equally urgent
+  options.
+
+- **Search is symptom-first.** Students type "infinite loop" or "wrong answer",
+  not a card title. Strict all-words matching runs first; if it returns fewer
+  than 3 cards (and the query is more than one word) it falls back to a scored
+  any-word match, title/moment weighted ×2. Don't "simplify" this back to a
+  plain `includes` — one-hit results for a real phrase was the bug it fixes.
+- **"What I know so far"** chips prepend `I am a beginner learning Python. I
+  only know: …` to every copied prompt and fill the `<your allowed features>`
+  slot. That single line is what stops answers running ahead of the learner
+  (use case 5 in the course), so it is a setting, not a card.
+- State (`knows` + `tried`) persists in `localStorage` under
+  `magicdust.askbook`. Nothing else is stored; there is no server call.
+- Content source of truth is `ai-course/USE-CASES.md` (full prose, examples,
+  traps). `askbook-data.js` is the condensed card version — **edit both** when
+  a card changes, and keep the numbering 1–40 aligned with the doc.
+
+Course docs, session plans, handouts and the capstone rubric live in
+[`../ai-course/`](../ai-course/README.md).
+
 ## Content editor
 
 `lessons/editor.html` (+ `editor.js`/`editor.css`/`editor-serializer.mjs`) —

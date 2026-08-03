@@ -1,0 +1,76 @@
+@import "palette.css";
+@import "fonts.css";
+/* Ask Book slide theme. Same paper palette as askbook.css so the deck and the
+   book read as one thing. Big type, one idea per slide — a class at the back
+   of the room has to read this off a projector. */
+:root{--ink2:var(--ink-muted);--line:color-mix(in srgb,var(--ink) 15%,transparent);--accent:var(--mint-line)}
+.reveal{font-family:"Be Vietnam Pro","Segoe UI",system-ui,sans-serif;font-size:30px;color:var(--ink)}
+html,body,.reveal{background:var(--paper)}
+.reveal .slides{text-align:left}
+.reveal section{padding:0 10px}
+.reveal h1{font-size:1.55em;line-height:1.15;margin:0 0 .25em;font-weight:800;letter-spacing:-.5px}
+.reveal h2{font-size:1.15em;line-height:1.25;margin:0 0 .6em;font-weight:800}
+.reveal .kicker{font-size:.5em;font-weight:800;letter-spacing:3px;color:var(--accent);margin-bottom:.6em}
+.reveal .sub{font-size:.65em;color:var(--ink2);max-width:24ch}
+.reveal p,.reveal li{line-height:1.45}
+.reveal b{color:var(--ink)}
+.reveal code{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;background:var(--mint-soft);
+             border-radius:5px;padding:.06em .3em;font-size:.92em}
+.reveal pre{width:100%;box-shadow:none;margin:0;font-size:.62em}
+.reveal pre code{display:block;background:var(--ink);color:var(--mint-mid);padding:22px 26px;border-radius:14px;
+                 line-height:1.5;overflow:visible;max-height:none;font-size:1em}
+.reveal .note{margin-top:.7em;font-size:.6em;color:var(--ink2);max-width:44ch;line-height:1.5}
+
+/* lines revealed one at a time — the whole point of the slow pace */
+.reveal ul.lines{list-style:none;margin:0;padding:0}
+.reveal ul.lines li{margin:0 0 .5em;font-size:.86em}
+.reveal .fragment.visible{opacity:1}
+
+/* a prompt built piece by piece: each part says WHY it's in there */
+.parts{display:grid;gap:10px;width:100%}
+.part{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;
+      background:var(--paper-raised);padding:11px 15px}
+.part .lbl{display:block;font-size:.42em;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;
+           color:var(--accent);margin-bottom:4px}
+.part .txt{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace;font-size:.5em;line-height:1.55;
+           white-space:pre-wrap;color:var(--ink)}
+
+.replybox{border:1px solid var(--line);border-radius:14px;background:var(--mint-soft);padding:18px 22px;
+          font-size:.66em;line-height:1.55;white-space:pre-wrap}
+
+/* quiz: click an option, get told which line of thinking was wrong */
+.quiz{display:grid;gap:11px;width:100%}
+.opt{border:1px solid var(--line);background:var(--paper-raised);border-radius:12px;padding:13px 17px;
+     font:600 .68em/1.35 inherit;color:var(--ink);cursor:pointer;text-align:left}
+.opt:hover{border-color:var(--accent)}
+.opt.right{background:var(--success-soft);border-color:var(--success-ink);color:var(--success-ink)}
+.opt.wrong{background:var(--danger-soft);border-color:var(--danger-ink);color:var(--danger-ink)}
+.why{display:none;margin-top:14px;border-left:3px solid var(--accent);background:var(--paper-warm);
+     padding:13px 17px;border-radius:0 12px 12px 0;font-size:.6em;line-height:1.5}
+.why.show{display:block}
+
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;width:100%}
+.steps li{counter-increment:s;border:1px solid var(--line);border-radius:12px;background:var(--paper-raised);
+          padding:12px 16px;margin:0 0 9px;font-size:.66em;line-height:1.45}
+.steps li::before{content:counter(s);display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
+                  background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);
+                  font-weight:800;margin-right:11px;font-size:.85em}
+.win{margin-top:12px;border-left:3px solid var(--success-ink);background:var(--success-soft);padding:12px 16px;
+     border-radius:0 12px 12px 0;font-size:.6em}
+.points{list-style:none;margin:0;padding:0;counter-reset:p}
+.points li{counter-increment:p;font-size:.8em;margin:0 0 .55em;padding-left:1.6em;position:relative}
+.points li::before{content:counter(p);position:absolute;left:0;font-weight:800;color:var(--accent)}
+.ctabtn{display:inline-block;margin-top:.5em;background:var(--ink);color:var(--paper);text-decoration:none;
+        border-radius:12px;padding:14px 24px;font-size:.62em;font-weight:700}
+
+/* deck-to-deck nav, outside reveal so it never scrolls away */
+.decknav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:10px;align-items:center;
+         padding:8px 14px;background:color-mix(in srgb,var(--paper) 90%,transparent);border-top:1px solid var(--line);
+         font-size:12.5px;flex-wrap:wrap}
+.decknav a,.decknav span{color:var(--ink2);text-decoration:none}
+.decknav a{border:1px solid var(--line);border-radius:99px;padding:5px 11px;background:var(--paper-raised)}
+.decknav a:hover{border-color:var(--accent);color:var(--ink)}
+.decknav a.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.decknav .title{font-weight:700;color:var(--ink);margin-right:auto}
+.reveal .slides section{max-height:none}
+@media (max-width:700px){.reveal{font-size:22px}.decknav{font-size:11.5px}}

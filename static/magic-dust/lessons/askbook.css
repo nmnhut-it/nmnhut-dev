@@ -1,0 +1,165 @@
+@import "palette.css";
+@import "fonts.css";
+/* Ask Book — a card deck, not a lesson. Deliberately NOT the dark saga
+   navy: this is a reference you keep open beside a chat window, so it uses
+   the paper side of the palette (light, printable, high contrast) while the
+   saga stays dark. Layout is one grid + one detail sheet; no framework. */
+:root{--ink2:var(--ink-muted);--line:color-mix(in srgb,var(--ink) 14%,transparent);--fam:var(--mint-line)}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--paper);color:var(--ink);font:15px/1.6 "Be Vietnam Pro","Segoe UI",system-ui,sans-serif;
+     background-image:radial-gradient(900px 500px at 85% -15%,var(--mint-soft) 0%,transparent 70%)}
+code,pre{font-family:"JetBrains Mono",ui-monospace,Consolas,monospace}
+
+/* ---- header ---- */
+.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 92%,transparent);
+     backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .bar{max-width:1180px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.5px;font-size:19px;margin-right:auto}
+.brand small{display:block;font-weight:500;font-size:12px;letter-spacing:.3px;color:var(--ink2)}
+.btn{border:1px solid var(--line);background:var(--paper-raised);color:var(--ink);border-radius:999px;
+     padding:7px 14px;font:600 13px/1 inherit;cursor:pointer;transition:.15s}
+.btn:hover{border-color:var(--mint-line);box-shadow:0 2px 10px rgba(24,63,73,.08)}
+.btn.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.count{font-size:12px;color:var(--ink2);letter-spacing:.4px}
+
+/* ---- controls ---- */
+.ctrl{max-width:1180px;margin:0 auto;padding:18px 20px 6px}
+.search{width:100%;padding:14px 18px;border:1px solid var(--line);border-radius:14px;background:var(--paper-raised);
+        font:400 16px/1.4 inherit;color:var(--ink)}
+.search:focus{outline:none;border-color:var(--mint-line);box-shadow:0 0 0 4px color-mix(in srgb,var(--mint-line) 18%,transparent)}
+.search::placeholder{color:var(--ink2)}
+.fams{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 4px}
+.fam{border:1px solid var(--line);background:var(--paper-raised);border-radius:999px;padding:6px 13px;
+     font:600 12.5px/1 inherit;cursor:pointer;color:var(--ink2);display:flex;align-items:center;gap:7px}
+.fam .dot{width:9px;height:9px;border-radius:50%;background:var(--fam)}
+.fam.on{color:var(--ink);border-color:currentColor;background:var(--paper)}
+.knowbox{margin:16px 0 0;padding:14px 16px;border:1px dashed var(--line);border-radius:14px;background:var(--paper-raised)}
+.knowbox h3{margin:0 0 4px;font-size:13px;letter-spacing:.6px;text-transform:uppercase;color:var(--ink2)}
+.knowbox p{margin:0 0 10px;font-size:13px;color:var(--ink2)}
+.knows{display:flex;gap:7px;flex-wrap:wrap}
+.know{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:5px 11px;font:600 12.5px/1 inherit;
+      cursor:pointer;color:var(--ink2)}
+.know.on{background:var(--mint-soft);border-color:var(--mint-line);color:var(--ink)}
+
+/* ---- tabs (course | deck) ---- */
+.top .tabs{padding-top:0;padding-bottom:10px;gap:8px}
+.tab{border:1px solid var(--line);background:transparent;border-radius:10px 10px 0 0;padding:8px 15px;
+     font:700 13.5px/1 inherit;cursor:pointer;color:var(--ink2)}
+.tab.on{background:var(--paper-raised);color:var(--ink);border-bottom-color:var(--paper-raised);box-shadow:0 -2px 0 var(--mint-line) inset}
+.tabhint{font-size:12.5px;color:var(--ink2);flex:1;min-width:180px}
+
+/* ---- course: intro + path ---- */
+.intro{border:1px solid var(--line);border-radius:14px;background:var(--paper-raised);padding:16px 18px}
+.intro h2{margin:0 0 6px;font-size:19px}
+.intro p{margin:0 0 12px;font-size:13.5px;color:var(--ink2);max-width:62ch}
+.intro .whatis{border-left:3px solid var(--mint-line);background:var(--mint-soft);padding:10px 14px;
+               border-radius:0 10px 10px 0;color:var(--ink);max-width:70ch}
+.introbtns{display:flex;gap:8px;flex-wrap:wrap}
+.path{max-width:1180px;margin:0 auto;padding:20px;display:grid;gap:12px}
+/* One column on purpose: the point of this view is that there IS an order. */
+.run{display:flex;gap:14px;align-items:flex-start;text-align:left;font:inherit;color:inherit;cursor:pointer;
+     border:1px solid var(--line);border-left:4px solid var(--fam);border-radius:14px;background:var(--paper-raised);
+     padding:15px 17px;transition:.15s}
+.run:hover{transform:translateY(-1px);box-shadow:0 8px 22px rgba(24,63,73,.10);border-color:var(--fam)}
+.run.now{border-color:var(--fam);box-shadow:0 0 0 3px color-mix(in srgb,var(--fam) 20%,transparent)}
+.run.done{opacity:.72}
+.runno{flex:0 0 34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;
+       background:color-mix(in srgb,var(--fam) 16%,transparent);color:var(--fam)}
+.run.done .runno{background:var(--success-soft);color:var(--success-ink)}
+.runbody{display:block;flex:1}
+.runbody b{display:block;font-size:16.5px;margin-bottom:2px}
+.runbody i{display:block;font-style:normal;font-size:13.5px;color:var(--ink2);margin-bottom:8px;max-width:70ch}
+.runmeta{display:block;font-size:11.5px;letter-spacing:.7px;text-transform:uppercase;color:var(--ink2);margin-bottom:7px}
+.runmeta b{display:inline;text-transform:none;letter-spacing:0;font-size:12px;color:var(--fam)}
+.slidelink{text-transform:none;letter-spacing:0;font-size:12px;color:var(--fam);font-weight:700;text-decoration:none;
+           border-bottom:1px solid color-mix(in srgb,var(--fam) 45%,transparent)}
+.slidelink:hover{border-bottom-color:var(--fam)}
+a.mini{display:inline-block;text-decoration:none;margin-left:0}
+.runbody .bar{display:block;height:5px;border-radius:99px;background:color-mix(in srgb,var(--ink) 8%,transparent);overflow:hidden}
+.runbody .bar span{display:block;height:100%;background:var(--fam);transition:width .25s}
+
+/* ---- run steps (the hands-on part) ---- */
+.why{color:var(--ink2)}
+.steps{list-style:none;counter-reset:s;margin:0 0 22px;padding:0}
+.step{counter-increment:s;border:1px solid var(--line);border-radius:12px;background:var(--paper-raised);
+      padding:13px 15px;margin:0 0 10px}
+.step.done{background:var(--success-soft);border-color:color-mix(in srgb,var(--success-ink) 35%,transparent)}
+.tick{display:flex;gap:11px;align-items:flex-start;cursor:pointer}
+.tick input{margin-top:3px;width:17px;height:17px;flex:0 0 auto;accent-color:var(--success-ink)}
+.tick span{flex:1;font-size:14px}
+.tick span::before{content:counter(s) ". ";font-weight:800;color:var(--ink2)}
+.steppre{margin:10px 0 0 28px;font-size:12.5px;padding:11px 13px}
+.mini{margin:10px 8px 0 28px;border:1px solid var(--ink);background:var(--ink);color:var(--paper);border-radius:9px;
+      padding:7px 12px;font:700 12.5px/1 inherit;cursor:pointer}
+.mini.ok{background:var(--success-ink);border-color:var(--success-ink)}
+.mini.ghost{background:transparent;color:var(--ink2);border-color:var(--line)}
+.mini.ghost:hover{border-color:var(--mint-line);color:var(--ink)}
+.rec{display:block;margin:11px 0 0 28px}
+.rec span{display:block;font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:5px}
+.rec textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 11px;background:var(--paper);
+              font:400 13.5px/1.5 inherit;color:var(--ink);resize:vertical}
+.rec textarea:focus{outline:none;border-color:var(--mint-line);box-shadow:0 0 0 3px color-mix(in srgb,var(--mint-line) 16%,transparent)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--paper-raised);border-radius:999px;padding:6px 12px;
+      font:600 12.5px/1 inherit;cursor:pointer;color:var(--ink2)}
+.chip:hover{border-color:var(--fam);color:var(--ink)}
+.runtag{position:absolute;bottom:12px;right:14px;font:700 10.5px/1 inherit;letter-spacing:.8px;text-transform:uppercase;
+        color:var(--fam);border:1px solid color-mix(in srgb,var(--fam) 45%,transparent);border-radius:99px;padding:4px 8px}
+.runtag.extra{color:var(--ink2);border-color:var(--line);border-style:dashed}
+
+/* ---- grid ---- */
+.grid{max-width:1180px;margin:0 auto;padding:20px;display:grid;gap:14px;
+      grid-template-columns:repeat(auto-fill,minmax(268px,1fr))}
+.card{position:relative;border:1px solid var(--line);border-left:4px solid var(--fam);border-radius:14px;
+      background:var(--paper-raised);padding:15px 16px 14px;cursor:pointer;text-align:left;font:inherit;color:inherit;
+      transition:.15s}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 22px rgba(24,63,73,.10);border-color:var(--fam)}
+.card .no{font:800 11px/1 inherit;letter-spacing:1.4px;color:var(--fam)}
+.card h4{margin:8px 0 6px;font-size:15.5px;line-height:1.35}
+.card p{margin:0;font-size:13px;color:var(--ink2);padding-right:56px}
+.card.done::after{content:"✓";position:absolute;top:12px;right:14px;color:var(--success-ink);font-weight:800}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink2);padding:50px 20px}
+
+/* ---- detail sheet ---- */
+.scrim{position:fixed;inset:0;background:rgba(24,63,73,.44);z-index:30;display:none}
+.scrim.open{display:block}
+.sheet{position:fixed;top:0;right:0;bottom:0;width:min(620px,100%);background:var(--paper);z-index:31;
+       overflow-y:auto;transform:translateX(100%);transition:transform .22s ease;box-shadow:-8px 0 40px rgba(24,63,73,.2)}
+.sheet.open{transform:none}
+.sheet .head{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);
+             border-top:5px solid var(--fam);padding:18px 24px 14px;display:flex;align-items:flex-start;gap:12px}
+.sheet .head h2{margin:6px 0 0;font-size:21px;line-height:1.25;flex:1}
+.sheet .head .no{font:800 11px/1 inherit;letter-spacing:1.4px;color:var(--fam)}
+.x{border:none;background:none;font-size:26px;line-height:1;cursor:pointer;color:var(--ink2);padding:0 4px}
+.sheet .body{padding:18px 24px 60px}
+.sec{margin:0 0 20px}
+.sec h5{margin:0 0 7px;font-size:11.5px;letter-spacing:1.3px;text-transform:uppercase;color:var(--ink2)}
+.sec p{margin:0}
+pre{margin:0;padding:13px 15px;border-radius:11px;background:var(--ink);color:var(--mint-mid);overflow-x:auto;
+    font-size:13px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.promptbox{position:relative;border:1px solid var(--mint-line);border-radius:12px;background:var(--mint-soft);padding:14px 15px}
+.promptbox pre{background:none;color:var(--ink);padding:0;font-size:13.5px}
+.copy{margin-top:11px;width:100%;padding:11px;border-radius:10px;border:none;background:var(--ink);color:var(--paper);
+      font:700 13.5px/1 inherit;cursor:pointer;letter-spacing:.4px}
+.copy:hover{background:color-mix(in srgb,var(--ink) 88%,#000)}
+.copy.ok{background:var(--success-ink)}
+.trap{border-left:3px solid var(--honey-line);background:var(--paper-warm);padding:11px 14px;border-radius:0 10px 10px 0}
+.act{border-left:3px solid var(--success-ink);background:var(--success-soft);padding:11px 14px;border-radius:0 10px 10px 0}
+.tried{width:100%;padding:12px;border-radius:10px;border:1px dashed var(--line);background:var(--paper-raised);
+       font:600 13px/1 inherit;cursor:pointer;color:var(--ink2)}
+.tried.on{border-style:solid;border-color:var(--success-ink);color:var(--success-ink);background:var(--success-soft)}
+
+/* ---- poster overlay (rules / verify) ---- */
+.poster{position:fixed;inset:0;z-index:32;display:none;place-items:center;padding:22px;background:rgba(24,63,73,.5)}
+.poster.open{display:grid}
+.poster .inner{background:var(--paper);border-radius:18px;max-width:620px;width:100%;max-height:90vh;overflow-y:auto;padding:28px 30px}
+.poster h2{margin:0 0 4px;font-size:23px}
+.poster .lead{margin:0 0 20px;color:var(--ink2);font-size:14px}
+.poster ol{margin:0;padding-left:22px}
+.poster li{margin:0 0 13px;padding-left:4px}
+.poster li b{display:block;font-size:15.5px}
+.poster li span{font-size:13.5px;color:var(--ink2)}
+.foot{max-width:1180px;margin:0 auto;padding:0 20px 60px;color:var(--ink2);font-size:13px}
+.foot a{color:var(--ink)}
+@media (max-width:560px){.sheet .body,.sheet .head{padding-left:17px;padding-right:17px}.grid{padding:14px}}

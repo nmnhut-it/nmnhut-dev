@@ -293,6 +293,9 @@ document.body.innerHTML = `
   <header class="hdr">
     <div class="logo">✦ MAGIC&nbsp;DUST <small>saga</small></div>
     <a class="mathportal" id="mathportal" href="./learning-portal.html">CỔNG SAGA</a>
+    <!-- Always available (no progress gate): the Ask Book is a reference the
+         learner opens BESIDE a chat tab, not a track to unlock. -->
+    <a class="askbook" href="./askbook.html">SỔ TAY HỎI AI</a>
     <div class="prog" id="prog"></div>
     <button class="themebtn" id="themebtn" title="change the magic's colors"></button>
   </header>
